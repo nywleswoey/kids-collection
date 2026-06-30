@@ -247,3 +247,11 @@
 **Context**: CONSTRUCTION - U3 Functional Design COMPLETE (GATE)
 
 ---
+
+## U3 NFR Requirements - Complete
+**Timestamp**: 2026-06-30T09:05:00Z
+**User Input**: "/aidlc:approve" (approved U3 Functional Design)
+**AI Response**: "Generated directly. nfr-requirements.md (SEC: review-before-publish/no-publish-without-image/blob-token-server-only; RES: bounded retry+skip, idempotent, fail-fast validation; PERF: one-time batch zero per-pull cost; TEST: pure loadSeed/buildPrompt + mocked generateImage) and tech-stack-decisions.md (Pollinations.ai, @vercel/blob, tsx seed script, seed/cards.json; no new env). U3 NFR Requirements COMPLETE. GATE before U3 NFR Design."
+**Context**: CONSTRUCTION - U3 NFR Requirements COMPLETE (GATE)
+
+---
