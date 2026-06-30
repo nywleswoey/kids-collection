@@ -303,3 +303,11 @@
 **Context**: CONSTRUCTION - U4 Functional Design COMPLETE (GATE)
 
 ---
+
+## U4 NFR Requirements - Complete
+**Timestamp**: 2026-06-30T10:30:00Z
+**User Input**: "/aidlc:approve" (approved U4 Functional Design)
+**AI Response**: "Generated directly. nfr-requirements.md (SEC: no-double-spend conditional UPDATE, active-child scope, parent-only grants, server validation; REL: refund + no-partial-mutate; PERF: 3 cheap queries; TEST: concurrent-pull/out-of-tokens/duplicate/grant integration) and tech-stack-decisions.md (conditional UPDATE + ON CONFLICT upsert, no transactions package, no new infra/env). U4 NFR Requirements COMPLETE. GATE before U4 NFR Design."
+**Context**: CONSTRUCTION - U4 NFR Requirements COMPLETE (GATE)
+
+---
