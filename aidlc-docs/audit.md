@@ -255,3 +255,11 @@
 **Context**: CONSTRUCTION - U3 NFR Requirements COMPLETE (GATE)
 
 ---
+
+## U3 NFR Design - Complete
+**Timestamp**: 2026-06-30T09:15:00Z
+**User Input**: "/aidlc:approve" (approved U3 NFR Requirements)
+**AI Response**: "Generated directly. nfr-design-patterns.md (human review gate, per-card publish atomicity, bounded retry+backoff, idempotent resume, fail-fast validation, batch-once-serve-many, concurrency cap, injected fetch; no queue infra) and logical-components.md (LC-S1 loader, S2 prompt builder, S3 image generator, S4 blob uploader, S5 pool writer, S6 orchestrator CLI, S7 runtime CardPool reader). U3 NFR Design COMPLETE. GATE before U3 Infrastructure Design."
+**Context**: CONSTRUCTION - U3 NFR Design COMPLETE (GATE)
+
+---
