@@ -17,7 +17,8 @@ design docs live in `aidlc-docs/`.
 
 ## Status (build units)
 - **U1 Foundation & Data** — ✅ scaffold, schema, DB client, pure logic, tests
-- U2 Auth & Profiles · U3 Pool & Seeding · U4 Pull & Rewards · U5 Binder · U6 Card UI & Effects · U7 Admin — pending
+- **U2 Auth & Profiles** — ✅ Google sign-in (allowlist), child profiles, picker
+- U3 Pool & Seeding · U4 Pull & Rewards · U5 Binder · U6 Card UI & Effects · U7 Admin — pending
 
 ## Getting started
 ```bash
