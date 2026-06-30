@@ -59,10 +59,10 @@ Free text (or "none").
 ---
 
 ## Artifacts to generate after approval
-- [ ] `application-design/unit-of-work.md` — unit definitions, responsibilities, code-org strategy (greenfield)
-- [ ] `application-design/unit-of-work-dependency.md` — dependency matrix + build order
-- [ ] `application-design/unit-of-work-story-map.md` — stories → units (all stories assigned)
-- [ ] Validate boundaries; confirm every story is assigned
+- [x] `application-design/unit-of-work.md` — unit definitions, responsibilities, code-org strategy (greenfield)
+- [x] `application-design/unit-of-work-dependency.md` — dependency matrix + build order
+- [x] `application-design/unit-of-work-story-map.md` — stories → units (all stories assigned)
+- [x] Validate boundaries; confirm every story is assigned
 
 ---
 
