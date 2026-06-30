@@ -1,0 +1,33 @@
+{
+  "themes": [
+    {
+      "name": "Animals",
+      "cards": [
+        {
+          "name": "Red Fox",
+          "rarity": "common",
+          "eduText": "Red foxes can hear a mouse squeak from over 100 feet away.",
+          "imagePrompt": "a friendly red fox sitting in a meadow"
+        },
+        {
+          "name": "Snowy Owl",
+          "rarity": "rare",
+          "eduText": "Snowy owls have feathers on their feet to keep warm in the Arctic.",
+          "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch"
+        },
+        {
+          "name": "Giant Panda",
+          "rarity": "epic",
+          "eduText": "Pandas eat bamboo for up to 12 hours every single day.",
+          "imagePrompt": "a happy giant panda munching green bamboo"
+        },
+        {
+          "name": "Blue Whale",
+          "rarity": "legendary",
+          "eduText": "The blue whale is the largest animal that has ever lived on Earth.",
+          "imagePrompt": "a majestic blue whale swimming in deep blue ocean"
+        }
+      ]
+    }
+  ]
+}

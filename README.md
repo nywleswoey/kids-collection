@@ -18,7 +18,15 @@ design docs live in `aidlc-docs/`.
 ## Status (build units)
 - **U1 Foundation & Data** — ✅ scaffold, schema, DB client, pure logic, tests
 - **U2 Auth & Profiles** — ✅ Google sign-in (allowlist), child profiles, picker
-- U3 Pool & Seeding · U4 Pull & Rewards · U5 Binder · U6 Card UI & Effects · U7 Admin — pending
+- **U3 Pool & Seeding** — ✅ seed pipeline (Pollinations → Blob → DB), pool reader
+- U4 Pull & Rewards · U5 Binder · U6 Card UI & Effects · U7 Admin — pending
+
+## Seeding the card pool
+```bash
+# author data: paste seed/AUTHORING_PROMPT.md into claude.ai → save seed/cards.json
+npm run seed -- --review     # generate preview images to seed/review/
+npm run seed -- --publish    # upload to Blob + insert cards (idempotent)
+```
 
 ## Getting started
 ```bash
