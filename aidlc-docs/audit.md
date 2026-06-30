@@ -191,3 +191,11 @@
 **Context**: CONSTRUCTION - U2 Functional Design COMPLETE (GATE)
 
 ---
+
+## U2 NFR Requirements - Complete
+**Timestamp**: 2026-06-30T07:40:00Z
+**User Input**: "/aidlc:approve" (approved U2 Functional Design)
+**AI Response**: "No ambiguity (auth approach fixed) — generated directly. nfr-requirements.md (U2-SEC-1..8: Auth.js Google, server-side requireParent, allowlist, HTTP-only/Secure/signed cookies, child-scope from server cookie, fail-closed; REL/PERF/UX/TEST) and tech-stack-decisions.md (Auth.js NextAuth v5, Google, allowlist, signed activeChildId cookie, new env vars AUTH_SECRET/AUTH_GOOGLE_ID/SECRET/PARENT_EMAILS). U2 NFR Requirements COMPLETE. GATE before U2 NFR Design."
+**Context**: CONSTRUCTION - U2 NFR Requirements COMPLETE (GATE)
+
+---
