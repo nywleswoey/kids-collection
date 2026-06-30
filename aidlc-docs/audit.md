@@ -287,3 +287,11 @@
 **Context**: CONSTRUCTION - U3 Code Generation COMPLETE (GATE; U3 done)
 
 ---
+
+## U4 Pull & Rewards - Functional Design Planning
+**Timestamp**: 2026-06-30T10:10:00Z
+**User Input**: "/aidlc:approve" (U3 complete; start U4)
+**AI Response**: "Entered U4 Pull & Rewards (core gameplay). Stories C1-C4, F1, F2. Security (no double-spend) + PBT blocking. Created functional design plan with questions (pull atomicity approach given neon-http, token-spend-failure handling, grant amount model, out-of-tokens UX). Holding at GATE."
+**Context**: CONSTRUCTION - U4 Functional Design - Planning (GATE)
+
+---
