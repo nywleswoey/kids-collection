@@ -295,3 +295,11 @@
 **Context**: CONSTRUCTION - U4 Functional Design - Planning (GATE)
 
 ---
+
+## U4 Functional Design - Complete
+**Timestamp**: 2026-06-30T10:20:00Z
+**User Input**: "/aidlc:approve" (answers all A, Q5 none)
+**AI Response**: "Generated business-logic-model.md (pull(): load pool -> atomic conditional UPDATE WHERE tokens>=1 -> drawCard -> ON CONFLICT upsert count+1 -> best-effort refund on failure; getBalance; grantTokens GREATEST(0,...)), business-rules.md (U4-BR1..BR11: exactly-one-spend, no double-spend, weighted draw, duplicate count, active-child scope, parent-only grants, out-of-tokens), frontend-components.md (PullScreen/PullButton/TokenBalance/RevealResult/GrantTokens + testids; card visuals deferred to U6). U4 Functional Design COMPLETE. GATE before U4 NFR Requirements."
+**Context**: CONSTRUCTION - U4 Functional Design COMPLETE (GATE)
+
+---

@@ -56,9 +56,9 @@ Free text (or "none").
 ---
 
 ## Artifacts to generate after approval
-- [ ] `U4-pull-rewards/functional-design/business-logic-model.md` (pull transaction, grant)
-- [ ] `U4-pull-rewards/functional-design/business-rules.md`
-- [ ] `U4-pull-rewards/functional-design/frontend-components.md` (pull button, reveal handoff, balance, admin grant)
+- [x] `U4-pull-rewards/functional-design/business-logic-model.md` (pull transaction, grant)
+- [x] `U4-pull-rewards/functional-design/business-rules.md`
+- [x] `U4-pull-rewards/functional-design/frontend-components.md` (pull button, reveal handoff, balance, admin grant)
 
 ---
 
