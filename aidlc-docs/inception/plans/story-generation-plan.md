@@ -64,12 +64,12 @@ Free text — any story, edge case, or constraint you want represented (or "none
 ---
 
 ## Execution Checklist (runs after approval — Part 2)
-- [ ] Generate `personas.md` (Parent + child personas per Q2) with goals, motivations, constraints
-- [ ] Generate `stories.md` grouped per approved breakdown (Q1), INVEST-compliant
-- [ ] Add Given/When/Then acceptance criteria per story (per Q3), incl. negative/edge cases (zero tokens, duplicate pull, reduced-motion, unauthorized admin action)
-- [ ] Map each persona to its relevant stories
-- [ ] Tag stories touching Security/PBT concerns for downstream enforcement
-- [ ] Update `aidlc-state.md` and `audit.md`
+- [x] Generate `personas.md` (Parent + child personas per Q2) with goals, motivations, constraints
+- [x] Generate `stories.md` grouped per approved breakdown (Q1), INVEST-compliant
+- [x] Add Given/When/Then acceptance criteria per story (per Q3), incl. negative/edge cases (zero tokens, duplicate pull, reduced-motion, unauthorized admin action)
+- [x] Map each persona to its relevant stories
+- [x] Tag stories touching Security/PBT concerns for downstream enforcement
+- [x] Update `aidlc-state.md` and `audit.md`
 
 ---
 
