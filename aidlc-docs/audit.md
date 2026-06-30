@@ -311,3 +311,11 @@
 **Context**: CONSTRUCTION - U4 NFR Requirements COMPLETE (GATE)
 
 ---
+
+## U4 NFR Design - Complete
+**Timestamp**: 2026-06-30T10:38:00Z
+**User Input**: "/aidlc:approve" (approved U4 NFR Requirements)
+**AI Response**: "Generated directly. nfr-design-patterns.md (compare-and-swap spend, atomic ON CONFLICT upsert, side-effect ordering, compensating refund, U2 gateway reuse, per-request pool cache, concurrency test; no locks/queues) and logical-components.md (LC-P1 PullService, P2 TokenService, P3 actions, P4 pull UI, P5 grant UI). U4 NFR Design COMPLETE. GATE before U4 Infrastructure Design."
+**Context**: CONSTRUCTION - U4 NFR Design COMPLETE (GATE)
+
+---
