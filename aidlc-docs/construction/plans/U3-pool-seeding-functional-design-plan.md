@@ -70,9 +70,9 @@ Free text (or "none").
 ---
 
 ## Artifacts to generate after approval
-- [ ] `U3-pool-seeding/functional-design/domain-entities.md` (seed card shape)
-- [ ] `U3-pool-seeding/functional-design/business-rules.md` (seed/publish rules)
-- [ ] `U3-pool-seeding/functional-design/business-logic-model.md` (pipeline steps)
+- [x] `U3-pool-seeding/functional-design/domain-entities.md` (seed card shape)
+- [x] `U3-pool-seeding/functional-design/business-rules.md` (seed/publish rules)
+- [x] `U3-pool-seeding/functional-design/business-logic-model.md` (pipeline steps)
 
 ---
 
