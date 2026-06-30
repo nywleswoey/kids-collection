@@ -175,3 +175,19 @@
 **Context**: CONSTRUCTION - U1 Code Generation COMPLETE (GATE; U1 fully done)
 
 ---
+
+## U2 Auth & Profiles - Functional Design Planning
+**Timestamp**: 2026-06-30T07:20:00Z
+**User Input**: "/aidlc:approve" (U1 complete; start U2)
+**AI Response**: "Entered U2 Auth & Profiles. Stories A1 (Google sign-in), A2 (manage profiles), B1 (profile picker). Security extension blocking. Created U2 functional design plan with questions (parent allowlist scope, auth library confirm, active-profile session mechanism, profile-removal confirmation). Holding at GATE."
+**Context**: CONSTRUCTION - U2 Functional Design - Planning (GATE)
+
+---
+
+## U2 Functional Design - Complete
+**Timestamp**: 2026-06-30T07:30:00Z
+**User Input**: "/aidlc:approve" (answers all A; Q6 none)
+**AI Response**: "Generated domain-entities.md (ParentSession, ActiveProfile cookie, Child), business-rules.md (U2-BR1..BR11, [SEC]: allowlist server-side, parent-only CRUD, cookie-scoped child reads, no-leak redirects), business-logic-model.md (isParentEmail, requireParent, child CRUD, setActiveProfile/getActiveChild), frontend-components.md (SignInScreen, ProfilePicker, ProfileManager + data-testids). U2 Functional Design COMPLETE. GATE before U2 NFR Requirements."
+**Context**: CONSTRUCTION - U2 Functional Design COMPLETE (GATE)
+
+---
