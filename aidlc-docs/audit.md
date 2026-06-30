@@ -95,3 +95,35 @@
 **Context**: INCEPTION - Units Generation COMPLETE / INCEPTION COMPLETE (GATE before Construction)
 
 ---
+
+## Construction - Phase Entered
+**Timestamp**: 2026-06-30T05:45:00Z
+**User Input**: "/aidlc:approve" (approved Units Generation; Inception complete)
+**AI Response**: "Entered CONSTRUCTION PHASE. Per-unit loop begins with U1 (Foundation & Data). Per-unit stages (Functional Design, NFR Requirements, NFR Design, Infrastructure Design, Code Generation) x 7 units = many approval gates. Pausing to confirm Construction cadence with user before first unit stage, since they control stage inclusion."
+**Context**: CONSTRUCTION - Phase entry (cadence decision before U1)
+
+---
+
+## Construction - Cadence Decision
+**Timestamp**: 2026-06-30T05:46:00Z
+**User Input**: "Full AI-DLC ceremony" (every per-unit stage as separate doc + gate)
+**AI Response**: "Proceeding with full ceremony. Per unit (U1..U7): Functional Design -> NFR Requirements -> NFR Design -> Infrastructure Design -> Code Generation, each with its own approval gate. Starting U1 (Foundation & Data) Functional Design."
+**Context**: CONSTRUCTION - cadence = full ceremony; begin U1 Functional Design
+
+---
+
+## U1 Functional Design - Planning (questions issued)
+**Timestamp**: 2026-06-30T05:50:00Z
+**User Input**: "(continuing full ceremony)"
+**AI Response**: "Created U1-foundation-data-functional-design-plan.md with data-model questions (rarity drop weights, starting token balance, avatars, duplicate storage model, pull history). Holding at GATE for answers before generating domain-entities/business-rules/business-logic-model."
+**Context**: CONSTRUCTION - U1 Functional Design - Planning (GATE)
+
+---
+
+## U1 Functional Design - Complete
+**Timestamp**: 2026-06-30T06:00:00Z
+**User Input**: "/aidlc:approve" (answers: Q1=A 60/25/12/3, Q2=3 starter tokens, Q3=A preset avatars, Q4=A count-based duplicates, Q5=A no history)
+**AI Response**: "No ambiguity. NOTE: new child starting balance set to 3 (not the recommended 0) per Q2. Generated domain-entities.md, business-rules.md (BR1-BR17, PBT/SEC tagged), business-logic-model.md (drawCard/applyPull/grantTokens/themeProgress + test seams). U1 Functional Design COMPLETE. Holding at GATE before U1 NFR Requirements."
+**Context**: CONSTRUCTION - U1 Functional Design COMPLETE (GATE before NFR Requirements)
+
+---

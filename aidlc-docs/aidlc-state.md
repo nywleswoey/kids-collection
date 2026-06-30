@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCEPTION COMPLETE - Units Generation done (awaiting approval to start CONSTRUCTION)
+- **Current Stage**: CONSTRUCTION - U1 Functional Design COMPLETE (awaiting approval to start U1 NFR Requirements)
 
 ## Workspace State
 - **Existing Code**: No
@@ -24,6 +24,17 @@
 - [x] Workflow Planning
 - [x] Application Design
 - [x] Units Generation
+
+### 🟢 CONSTRUCTION PHASE — Cadence: FULL CEREMONY (per-unit gates)
+Order: U1 → {U2, U3} → U4 → {U5, U6} → U7. Per unit: Functional Design → NFR Requirements → NFR Design → Infrastructure Design → Code Generation.
+- [ ] **U1 Foundation & Data** — [x] Functional Design → NFR Req (next) → NFR Design → Infra Design → Code Gen
+- [ ] U2 Auth & Profiles
+- [ ] U3 Pool & Seeding
+- [ ] U4 Pull & Rewards
+- [ ] U5 Binder
+- [ ] U6 Card UI & Effects
+- [ ] U7 Admin
+- [ ] Build and Test (after all units)
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
