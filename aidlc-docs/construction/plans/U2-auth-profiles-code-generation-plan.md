@@ -7,34 +7,34 @@
 
 ## Steps
 
-- [ ] **Step 1 — Auth.js setup**
+- [x] **Step 1 — Auth.js setup**
   `src/auth/config.ts` (NextAuth v5 Google provider, `AUTH_SECRET`), `app/api/auth/[...nextauth]/route.ts` (handlers). Add auth deps to `package.json` (`next-auth@beta`, `zod`).
 
-- [ ] **Step 2 — Authorization guard + allowlist**
+- [x] **Step 2 — Authorization guard + allowlist**
   `src/features/auth/policy.ts` — pure `isParentEmail(email, allowlist)`. `src/features/auth/guard.ts` — `requireParent()` (server, reads session + allowlist, redirects on fail), `getParent()`.
 
-- [ ] **Step 3 — Active-profile session**
+- [x] **Step 3 — Active-profile session**
   `src/features/profiles/active-profile.ts` — `setActiveProfile`, `getActiveChild` (validate vs DB), `clearActiveProfile` (signed HTTP-only cookie `activeChildId`).
 
-- [ ] **Step 4 — Profile service + server actions**
+- [x] **Step 4 — Profile service + server actions**
   `src/features/profiles/service.ts` (listChildren, createChild, updateChild, removeChild — parent-gated, Zod-validated). `src/features/profiles/actions.ts` (Server Actions wrapping the service + setActiveProfile/signOut).
 
-- [ ] **Step 5 — Sign-in UI**
+- [x] **Step 5 — Sign-in UI**
   `app/(auth)/signin/page.tsx` + `src/features/auth/SignInButton.tsx` (Google). `data-testid="signin-google-button"`.
 
-- [ ] **Step 6 — Profile picker**
+- [x] **Step 6 — Profile picker**
   `app/play/page.tsx` (server: requireParent + listChildren) + `src/features/profiles/ProfilePicker.tsx`, `ProfileCard.tsx`. Large tap targets, avatar emoji. `data-testid="profile-card-{id}"`, `switch-profile-button`.
 
-- [ ] **Step 7 — Profile manager (parent)**
+- [x] **Step 7 — Profile manager (parent)**
   `app/admin/profiles/page.tsx` + `ProfileForm.tsx`, `ConfirmDialog.tsx`. Create/edit/remove with confirm. testids per frontend-components.md.
 
-- [ ] **Step 8 — Route protection**
+- [x] **Step 8 — Route protection**
   `middleware.ts` or per-page `requireParent()` to gate `/play`, `/admin`, redirect unauth to `/signin`. (Auth.js middleware.)
 
-- [ ] **Step 9 — Tests**
+- [x] **Step 9 — Tests**
   `tests/auth-policy.pbt.test.ts` — property test `isParentEmail` (case/whitespace invariance, membership). Integration test stubs for guard/active-profile (run in Build & Test).
 
-- [ ] **Step 10 — Docs**
+- [x] **Step 10 — Docs**
   `aidlc-docs/construction/U2-auth-profiles/code/summary.md`; update README status + env.
 
 ## Story traceability

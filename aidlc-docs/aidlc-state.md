@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: CONSTRUCTION - U2 Code Generation / Part 1 Planning (awaiting plan approval)
+- **Current Stage**: CONSTRUCTION - U2 COMPLETE (awaiting approval to start U3)
 
 ## Workspace State
 - **Existing Code**: No
@@ -28,7 +28,7 @@
 ### 🟢 CONSTRUCTION PHASE — Cadence: FULL CEREMONY (per-unit gates)
 Order: U1 → {U2, U3} → U4 → {U5, U6} → U7. Per unit: Functional Design → NFR Requirements → NFR Design → Infrastructure Design → Code Generation.
 - [x] **U1 Foundation & Data** — Functional/NFR/Infra design + Code Gen DONE
-- [ ] U2 Auth & Profiles — Functional Design (in progress)
+- [x] U2 Auth & Profiles — DONE (A1, A2, B1)
 - [ ] U3 Pool & Seeding
 - [ ] U4 Pull & Rewards
 - [ ] U5 Binder
