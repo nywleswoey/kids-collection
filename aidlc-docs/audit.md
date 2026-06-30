@@ -231,3 +231,11 @@
 **Context**: CONSTRUCTION - U2 Code Generation COMPLETE (GATE; U2 done)
 
 ---
+
+## U3 Pool & Seeding - Functional Design Planning
+**Timestamp**: 2026-06-30T08:45:00Z
+**User Input**: "/aidlc:approve" (U2 complete; start U3)
+**AI Response**: "Entered U3 Pool & Seeding. Story G2. Created functional design plan with questions (theme/card counts at launch, art style for images, card-text authoring via claude.ai prompt, seed idempotency/review). Holding at GATE."
+**Context**: CONSTRUCTION - U3 Functional Design - Planning (GATE)
+
+---
