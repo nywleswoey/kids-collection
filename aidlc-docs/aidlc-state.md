@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCEPTION - Workflow Planning COMPLETE (awaiting approval to start Application Design)
+- **Current Stage**: INCEPTION - Application Design COMPLETE (awaiting approval to start Units Generation)
 
 ## Workspace State
 - **Existing Code**: No
@@ -22,8 +22,8 @@
 - [x] Requirements Analysis
 - [x] User Stories
 - [x] Workflow Planning
-- [ ] Application Design - EXECUTE (next)
-- [ ] Units Generation - EXECUTE
+- [x] Application Design
+- [ ] Units Generation - EXECUTE (next)
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
