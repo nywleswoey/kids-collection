@@ -50,3 +50,22 @@ export interface ThemeProgress {
   owned: number;
   total: number;
 }
+
+/** Binder read-model (U5). */
+export interface BinderCard {
+  card: Card;
+  owned: boolean;
+  count: number;
+}
+
+export interface ThemeSection {
+  theme: Theme;
+  cards: BinderCard[];
+  progress: { owned: number; total: number; complete: boolean };
+}
+
+export interface BinderView {
+  themes: ThemeSection[];
+  totalOwned: number;
+  totalCards: number;
+}
