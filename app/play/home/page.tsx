@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
@@ -21,9 +22,21 @@ export default async function PlayHomePage() {
       <p className="opacity-80" data-testid="token-balance">
         You have {child.pullTokens} pull{child.pullTokens === 1 ? "" : "s"}.
       </p>
-      <p className="text-sm opacity-60">
-        Pulling and your binder arrive in the next units.
-      </p>
+      <div className="flex gap-4">
+        <Link
+          href="/play/pull"
+          data-testid="go-pull-link"
+          className="rounded-xl bg-gradient-to-br from-amber-300 to-pink-400 px-6 py-3 font-bold text-gray-900 transition hover:scale-105"
+        >
+          ✨ Pull a card
+        </Link>
+        <Link
+          href="/play/binder"
+          className="rounded-xl bg-white/10 px-6 py-3 font-semibold transition hover:bg-white/20"
+        >
+          📖 My binder
+        </Link>
+      </div>
       <form action={switchProfileAction}>
         <button
           type="submit"
