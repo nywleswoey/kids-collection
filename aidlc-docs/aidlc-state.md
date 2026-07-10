@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: CONSTRUCTION - U6 Functional Design COMPLETE (awaiting approval to start U6 NFR Requirements)
+- **Current Stage**: CONSTRUCTION - U6 NFR Requirements COMPLETE (awaiting approval to start U6 NFR Design)
 
 ## Workspace State
 - **Existing Code**: No

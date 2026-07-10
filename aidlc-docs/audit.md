@@ -415,3 +415,11 @@
 **Context**: CONSTRUCTION - U6 Functional Design COMPLETE (GATE)
 
 ---
+
+## U6 NFR Requirements - Complete
+**Timestamp**: 2026-07-10T02:18:00Z
+**User Input**: "approve" (approved U6 Functional Design)
+**AI Response**: "Generated directly. nfr-requirements.md (PERF: 60fps GPU transforms, rAF-throttled CSS-var updates not React state, listener cleanup; A11Y: reduced-motion static, non-color rarity, real text/alt/pre-reader, deviceorientation permission graceful; RES: degrade static; TEST rarity-class + reduced-motion) and tech-stack-decisions.md (custom CSS, pointer+deviceorientation via rAF, single Card+useCardTilt+RevealCard, no lib, no new deps). U6 NFR Requirements COMPLETE. GATE before U6 NFR Design."
+**Context**: CONSTRUCTION - U6 NFR Requirements COMPLETE (GATE)
+
+---
