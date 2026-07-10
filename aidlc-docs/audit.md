@@ -375,3 +375,11 @@
 **Context**: CONSTRUCTION - U5 NFR Design COMPLETE (GATE)
 
 ---
+
+## U5 Infrastructure Design - Complete
+**Timestamp**: 2026-07-10T01:30:00Z
+**User Input**: "approve" (approved U5 NFR Design)
+**AI Response**: "Generated directly. infrastructure-design.md (no new infra; read-only binder on shared Vercel+Neon+Blob) and deployment-architecture.md (binder read topology). U5 Infrastructure Design COMPLETE — last U5 design stage. GATE before U5 Code Generation."
+**Context**: CONSTRUCTION - U5 Infrastructure Design COMPLETE (GATE before Code Gen)
+
+---
