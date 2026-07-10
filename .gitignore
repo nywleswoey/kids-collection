@@ -27,3 +27,5 @@ next-env.d.ts
 
 # seed review images (generated for human review, not committed)
 /seed/review/
+.env*
+!.env.example
