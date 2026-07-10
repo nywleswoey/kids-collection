@@ -10,10 +10,52 @@
           "imagePrompt": "a friendly red fox sitting in a meadow"
         },
         {
+          "name": "Sea Otter",
+          "rarity": "common",
+          "eduText": "Sea otters hold hands while they sleep so they do not float apart.",
+          "imagePrompt": "a cheerful sea otter floating on its back in calm water"
+        },
+        {
+          "name": "Emperor Penguin",
+          "rarity": "common",
+          "eduText": "Emperor penguin dads balance the egg on their feet to keep it warm.",
+          "imagePrompt": "a round emperor penguin standing on ice with a fluffy chick"
+        },
+        {
+          "name": "Honey Bee",
+          "rarity": "common",
+          "eduText": "Honey bees dance in a figure eight to tell friends where flowers are.",
+          "imagePrompt": "a fuzzy honey bee hovering beside a bright yellow sunflower"
+        },
+        {
+          "name": "Green Tree Frog",
+          "rarity": "common",
+          "eduText": "Tree frogs have sticky toe pads that let them climb smooth leaves.",
+          "imagePrompt": "a small bright green tree frog perched on a shiny leaf"
+        },
+        {
+          "name": "African Elephant",
+          "rarity": "common",
+          "eduText": "An elephant's trunk has about 40,000 muscles and can pick up one peanut.",
+          "imagePrompt": "a gentle african elephant with big ears standing in tall grass"
+        },
+        {
           "name": "Snowy Owl",
           "rarity": "rare",
           "eduText": "Snowy owls have feathers on their feet to keep warm in the Arctic.",
           "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch"
+        },
+        {
+          "name": "Axolotl",
+          "rarity": "rare",
+          "eduText": "An axolotl can grow back a lost leg, and even parts of its heart.",
+          "imagePrompt": "a smiling pink axolotl with feathery gills in clear water"
+        },
+        {
+          "name": "Red Panda",
+          "rarity": "rare",
+          "eduText": "Red pandas wrap their bushy tails around themselves like a warm blanket.",
+          "imagePrompt": "a fluffy red panda curled on a mossy tree branch"
         },
         {
           "name": "Giant Panda",
@@ -22,10 +64,170 @@
           "imagePrompt": "a happy giant panda munching green bamboo"
         },
         {
+          "name": "Bengal Tiger",
+          "rarity": "epic",
+          "eduText": "Every tiger's stripes are unique, just like our fingerprints.",
+          "imagePrompt": "a calm bengal tiger resting in a sunny jungle clearing"
+        },
+        {
           "name": "Blue Whale",
           "rarity": "legendary",
           "eduText": "The blue whale is the largest animal that has ever lived on Earth.",
           "imagePrompt": "a majestic blue whale swimming in deep blue ocean"
+        }
+      ]
+    },
+    {
+      "name": "Superheroes",
+      "cards": [
+        {
+          "name": "Captain Kindness",
+          "rarity": "common",
+          "eduText": "Her power grows every time someone helps a friend in need.",
+          "imagePrompt": "a smiling young superhero in a yellow cape giving a helping hand"
+        },
+        {
+          "name": "Bookworm",
+          "rarity": "common",
+          "eduText": "He learns a brand new fact every minute, because reading is his superpower.",
+          "imagePrompt": "a cheerful boy hero in glasses and a green cape holding an open book"
+        },
+        {
+          "name": "Sprout",
+          "rarity": "common",
+          "eduText": "Wherever Sprout walks, seeds grow into flowers that clean the air.",
+          "imagePrompt": "a small hero in a leafy green suit with flowers blooming at her feet"
+        },
+        {
+          "name": "Echo",
+          "rarity": "common",
+          "eduText": "Echo listens carefully to everyone, because good friends listen first.",
+          "imagePrompt": "a friendly hero with big headphones and a swirling blue cape"
+        },
+        {
+          "name": "Sunbeam",
+          "rarity": "common",
+          "eduText": "Sunbeam glows warmly, like real sunlight that helps plants make food.",
+          "imagePrompt": "a glowing girl hero with a bright yellow suit and sunny smile"
+        },
+        {
+          "name": "Gearheart",
+          "rarity": "common",
+          "eduText": "Gearheart builds a helpful invention whenever someone has a tricky problem.",
+          "imagePrompt": "a young inventor hero with goggles and a toolbelt holding a tiny robot"
+        },
+        {
+          "name": "Tidecaller",
+          "rarity": "rare",
+          "eduText": "Tidecaller keeps the oceans tidy, because clean seas keep the fish healthy.",
+          "imagePrompt": "a hero in a teal wetsuit riding a gentle wave with a happy dolphin"
+        },
+        {
+          "name": "Stormrider",
+          "rarity": "rare",
+          "eduText": "Stormrider races clouds across the sky, then brings rain to thirsty fields.",
+          "imagePrompt": "a hero in a silver cape surfing on a fluffy cloud above a rainbow"
+        },
+        {
+          "name": "Whisker Knight",
+          "rarity": "rare",
+          "eduText": "Based on a house cat, this hero lands softly and always sees in the dark.",
+          "imagePrompt": "a brave cat-eared hero in a purple cape crouching on a rooftop"
+        },
+        {
+          "name": "Aurora",
+          "rarity": "epic",
+          "eduText": "Aurora paints the sky with colors, like the real northern lights do.",
+          "imagePrompt": "a hero with flowing green and purple light ribbons trailing behind her"
+        },
+        {
+          "name": "Terra Guardian",
+          "rarity": "epic",
+          "eduText": "Terra Guardian protects forests, because trees give us the air we breathe.",
+          "imagePrompt": "a tall gentle hero made of stone and moss standing among giant trees"
+        },
+        {
+          "name": "Starweaver",
+          "rarity": "legendary",
+          "eduText": "Starweaver connects the stars into pictures, the way sailors once found their way.",
+          "imagePrompt": "a glowing hero drawing bright constellations across a night sky"
+        }
+      ]
+    },
+    {
+      "name": "Mythic Creatures",
+      "cards": [
+        {
+          "name": "Griffin",
+          "rarity": "common",
+          "eduText": "Told of in ancient Greece, the griffin has an eagle's head and a lion's body.",
+          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill"
+        },
+        {
+          "name": "Pegasus",
+          "rarity": "common",
+          "eduText": "Pegasus is a winged horse from Greek stories who could gallop through clouds.",
+          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky"
+        },
+        {
+          "name": "Kappa",
+          "rarity": "common",
+          "eduText": "In Japanese folklore, the kappa is a polite river creature who loves cucumbers.",
+          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber"
+        },
+        {
+          "name": "Selkie",
+          "rarity": "common",
+          "eduText": "Scottish stories say selkies are seals who can step ashore as people.",
+          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak"
+        },
+        {
+          "name": "Fenghuang",
+          "rarity": "common",
+          "eduText": "The fenghuang is a Chinese bird of peace whose arrival means good times ahead.",
+          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch"
+        },
+        {
+          "name": "Brownie",
+          "rarity": "common",
+          "eduText": "British folklore says brownies tidy the house at night, asking only for cream.",
+          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom"
+        },
+        {
+          "name": "Unicorn",
+          "rarity": "rare",
+          "eduText": "Stories from many lands say a unicorn's horn can turn muddy water clean.",
+          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers"
+        },
+        {
+          "name": "Kirin",
+          "rarity": "rare",
+          "eduText": "The kirin of East Asian legend walks so softly it never bends a blade of grass.",
+          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers"
+        },
+        {
+          "name": "Thunderbird",
+          "rarity": "rare",
+          "eduText": "Many Indigenous peoples of North America tell of a great bird who brings the rain.",
+          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills"
+        },
+        {
+          "name": "Sky Dragon",
+          "rarity": "epic",
+          "eduText": "In Chinese legend, dragons are wise and kind, and they look after the rivers.",
+          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds"
+        },
+        {
+          "name": "Phoenix",
+          "rarity": "epic",
+          "eduText": "The phoenix is reborn from its own ashes, a very old symbol of starting again.",
+          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight"
+        },
+        {
+          "name": "World Turtle",
+          "rarity": "legendary",
+          "eduText": "Many old stories picture the whole world resting on a giant turtle's back.",
+          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell"
         }
       ]
     }
