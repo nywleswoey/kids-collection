@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import { getCardDetail } from "@/features/binder/service";
-import { PullResultView } from "@/features/pull/PullResultView";
+import { Card } from "@/features/card/Card";
 
 export default async function CardDetailPage({
   params,
@@ -23,8 +23,7 @@ export default async function CardDetailPage({
       className="flex min-h-screen flex-col items-center justify-center gap-4 p-6"
       data-testid="card-detail"
     >
-      {/* Placeholder card view; U6 replaces with full effects. */}
-      <PullResultView card={detail.card} isDuplicate={detail.count > 1} />
+      <Card card={detail.card} interactive size="lg" count={detail.count} />
       {detail.count > 1 ? (
         <p className="opacity-80">You own {detail.count} of these.</p>
       ) : null}

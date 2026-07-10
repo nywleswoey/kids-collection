@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
 import { pullAction } from "./actions";
-import { PullResultView } from "./PullResultView";
+import { RevealCard } from "@/features/card/RevealCard";
 
 export function PullButton({ initialBalance }: { initialBalance: number }) {
   const [balance, setBalance] = useState(initialBalance);
@@ -46,8 +46,13 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
       )}
 
       {outcome && !outcome.outOfTokens ? (
-        <div className="flex flex-col items-center gap-2">
-          <PullResultView card={outcome.card} isDuplicate={outcome.isDuplicate} />
+        <div className="flex flex-col items-center gap-2" data-testid="pull-result">
+          <RevealCard key={outcome.card.id + balance} card={outcome.card} />
+          {outcome.isDuplicate ? (
+            <span data-testid="duplicate-badge" className="text-sm opacity-80">
+              Duplicate — nice, it stacks!
+            </span>
+          ) : null}
         </div>
       ) : null}
     </div>
