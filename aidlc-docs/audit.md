@@ -455,3 +455,43 @@
 **Context**: CONSTRUCTION - U6 Code Generation COMPLETE (GATE; U6 done)
 
 ---
+
+## U7 Admin - Functional Design Planning
+**Timestamp**: 2026-07-10T03:30:00Z
+**User Input**: "continue u7"
+**AI Response**: "Entered U7 Admin (final unit). Stories A2 (profile mgmt - base built in U2), G1 (view all collections + balances), + F1 token-grant UI (grant service from U4 exists; U7 adds the admin UI). Security blocking (parent-only). Created functional design plan with questions (grant UI placement, oversight view shape, pool overview scope). Holding at GATE."
+**Context**: CONSTRUCTION - U7 Functional Design - Planning (GATE)
+
+---
+
+## U7 Admin - Functional Design Complete
+**Timestamp**: 2026-07-10T03:40:00Z
+**User Input**: "approve" (answers all A, Q5 none)
+**AI Response**: "Generated business-logic-model.md (getAdminOverview composing U2 profiles + U5 collection + U3 pool counts; reuse U4 grantTokensAction; no new persistence), business-rules.md (U7-BR1..BR10: parent-only admin, oversight balances+progress, read-only child binder, pool counts, grant reuse), frontend-components.md (AdminDashboard, ChildAdminRow, GrantControl +1/+5/custom, read-only child binder + testids). U7 Functional Design COMPLETE. GATE before U7 NFR Requirements."
+**Context**: CONSTRUCTION - U7 Functional Design COMPLETE (GATE)
+
+---
+
+## U7 NFR Requirements - Complete
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "approve" (approved U7 Functional Design)
+**AI Response**: "Generated directly. nfr-requirements.md (SEC: parent-only admin, reused grant rules, read-only oversight; PERF: aggregate count over full binder; A11Y responsive table; REL grant errors; TEST admin authz) and tech-stack-decisions.md (Server Components + client GrantControl, Drizzle aggregate, reuse U4 grant + U2 guard; no new infra/deps). U7 NFR Requirements COMPLETE. GATE before U7 NFR Design."
+**Context**: CONSTRUCTION - U7 NFR Requirements COMPLETE (GATE)
+
+---
+
+## U7 NFR Design - Complete
+**Timestamp**: 2026-07-11T00:08:00Z
+**User Input**: "approve" (approved U7 NFR Requirements)
+**AI Response**: "Generated directly. nfr-design-patterns.md (single authz choke point, aggregate-not-hydrate, service composition, read-only oversight, optimistic grant + reconcile; no new tables/analytics) and logical-components.md (LC-AD1 AdminService, LC-AD2 Admin UI; reuse U2/U4/U5/U3). U7 NFR Design COMPLETE. GATE before U7 Infrastructure Design."
+**Context**: CONSTRUCTION - U7 NFR Design COMPLETE (GATE)
+
+---
+
+## U7 Infrastructure Design - Complete
+**Timestamp**: 2026-07-11T00:14:00Z
+**User Input**: "approve" (approved U7 NFR Design)
+**AI Response**: "Generated directly. infrastructure-design.md (no new infra; admin composition on shared Vercel+Neon) and deployment-architecture.md (admin path topology). U7 Infrastructure Design COMPLETE — last U7 design stage. GATE before U7 Code Generation (final code unit)."
+**Context**: CONSTRUCTION - U7 Infrastructure Design COMPLETE (GATE before Code Gen)
+
+---
