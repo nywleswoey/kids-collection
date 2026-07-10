@@ -1,8 +1,8 @@
 /**
  * Offline seed CLI — builds the card pool. NOT in the request path.
  *
- *   npm run seed -- --review     generate images to seed/review/ (no DB/Blob writes)
- *   npm run seed -- --publish    generate -> upload to Blob -> insert cards (idempotent)
+ *   pnpm seed --review     generate images to seed/review/ (no DB/Blob writes)
+ *   pnpm seed --publish    generate -> upload to Blob -> insert cards (idempotent)
  *
  * Requires DATABASE_URL and (for --publish) BLOB_READ_WRITE_TOKEN in env.
  */
@@ -16,7 +16,13 @@ import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed", "review");
-const CONCURRENCY = 3;
+
+// Pollinations' anonymous tier rate-limits (HTTP 429) under parallel bursts.
+// Keep a low concurrency and space request *starts* apart; all env-tunable so a
+// keyed/higher tier can crank them up. Defaults recover cleanly from 429.
+const CONCURRENCY = intEnv("SEED_CONCURRENCY", 2);
+const THROTTLE_MS = intEnv("SEED_THROTTLE_MS", 3000);
+const RETRIES = intEnv("SEED_RETRIES", 5);
 
 type Mode = "review" | "publish";
 
@@ -36,7 +42,8 @@ async function main() {
           report.skipped++;
           return;
         }
-        const bytes = await generateImage(buildPrompt(card)); // retried internally
+        await throttle(); // space request starts to stay under the rate limit
+        const bytes = await generateImage(buildPrompt(card), { retries: RETRIES }); // retried internally
         const key = slug(`${theme.name}-${card.name}`);
 
         if (mode === "review") {
@@ -67,6 +74,29 @@ async function main() {
 
 function slug(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+/** Read a non-negative integer from env, falling back to `def` if unset/invalid. */
+function intEnv(name: string, def: number): number {
+  const raw = process.env[name];
+  if (raw === undefined) return def;
+  const n = Number(raw);
+  return Number.isInteger(n) && n >= 0 ? n : def;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+// Global gate: hands out request "slots" at least THROTTLE_MS apart, so all
+// pool workers across all themes collectively stay under the rate limit.
+let nextSlot = 0;
+async function throttle(): Promise<void> {
+  if (THROTTLE_MS <= 0) return;
+  const now = Date.now();
+  const wait = Math.max(0, nextSlot - now);
+  nextSlot = Math.max(now, nextSlot) + THROTTLE_MS;
+  if (wait > 0) await sleep(wait);
 }
 
 /** Run tasks with a small concurrency cap (U3-PERF). */
