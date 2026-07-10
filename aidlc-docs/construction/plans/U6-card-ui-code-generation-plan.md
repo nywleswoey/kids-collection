@@ -7,25 +7,25 @@
 
 ## Steps
 
-- [ ] **Step 1 — Rarity styles + CSS**
+- [x] **Step 1 — Rarity styles + CSS**
   `src/features/card/rarity.ts` (pure `rarityClass(rarity)`, per-tier config), `src/features/card/card.css` (frames, holographic keyframes, tilt transform via CSS vars, `prefers-reduced-motion` disable).
 
-- [ ] **Step 2 — useCardTilt hook**
+- [x] **Step 2 — useCardTilt hook**
   `src/features/card/useCardTilt.ts` — pointer + `deviceorientation` listeners, rAF-throttled writes to `--rx/--ry/--mx/--my`; no-op under reduced motion; cleanup; iOS permission-safe.
 
-- [ ] **Step 3 — Card component**
+- [x] **Step 3 — Card component**
   `src/features/card/Card.tsx` (client) — rarity frame + image (next/image, image-forward) + name + rarity badge + eduText; `interactive` wires useCardTilt + holo sheen; sizes sm/lg. testids.
 
-- [ ] **Step 4 — RevealCard**
+- [x] **Step 4 — RevealCard**
   `src/features/card/RevealCard.tsx` (client) — pack-open flip → front → interactive Card; reduced-motion skips flip.
 
-- [ ] **Step 5 — Replace placeholders (Q4)**
+- [x] **Step 5 — Replace placeholders (Q4)**
   Update `src/features/pull/PullButton.tsx` → use `RevealCard`. Update `app/play/binder/[cardId]/page.tsx` → use `<Card interactive size="lg">`. Remove/retire `PullResultView` (or keep as fallback).
 
-- [ ] **Step 6 — Tests**
+- [x] **Step 6 — Tests**
   `tests/card.test.ts` — `rarityClass` mapping (pure); reduced-motion branch of tilt logic (extract the "should animate" decision as a pure helper).
 
-- [ ] **Step 7 — Docs**
+- [x] **Step 7 — Docs**
   `aidlc-docs/construction/U6-card-ui/code/summary.md`; README status.
 
 ## Story traceability
