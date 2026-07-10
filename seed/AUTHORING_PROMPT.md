@@ -39,7 +39,7 @@ a claude.ai chat, then save the JSON it returns over `seed/cards.json`.
 After saving, review the generated images:
 
 ```bash
-npm run seed -- --review     # generates images to seed/review/ (no DB writes)
+pnpm seed --review     # generates images to seed/review/ (no DB writes)
 # eyeball seed/review/*, then:
-npm run seed -- --publish    # uploads to Blob + inserts cards (idempotent)
+pnpm seed --publish    # uploads to Blob + inserts cards (idempotent)
 ```

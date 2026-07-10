@@ -29,7 +29,7 @@
 ## How to seed
 ```bash
 # 1) author full data: paste seed/AUTHORING_PROMPT.md into claude.ai, save → seed/cards.json
-npm run seed -- --review     # generate images to seed/review/, eyeball them
-npm run seed -- --publish    # upload + insert (safe to re-run)
+pnpm seed --review     # generate images to seed/review/, eyeball them
+pnpm seed --publish    # upload + insert (safe to re-run)
 ```
 Install + tests + seed run happen in Build & Test.

@@ -33,4 +33,4 @@
 ## Security notes
 - Authz centralized in `requireParent()`; allowlist enforced server-side + at signIn callback (defense in depth).
 - Child scope resolved from server-validated cookie; no client-trusted childId for authorization.
-- `npm install` + tests run in Build & Test.
+- `pnpm install` + tests run in Build & Test.

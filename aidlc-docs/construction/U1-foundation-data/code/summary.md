@@ -28,7 +28,7 @@ Greenfield generation. All application code at workspace root (not in aidlc-docs
 - `tests/logic.pbt.test.ts` — property-based (fast-check): BR1 draw distribution, BR5/BR6 token rules, BR8/BR9 duplicates, BR11 progress bounds
 
 ## Notes
-- `npm install`, DB migration, and test execution run in **Build & Test** (after all units).
+- `pnpm install`, DB migration, and test execution run in **Build & Test** (after all units).
 - Business rules BR1–BR16 encoded in schema constraints + pure logic.
 - Property-based tests satisfy the PBT extension (blocking) for U1's core logic.
 - Stories: U1 closes none directly (enabling infra); underpins C/D/F/G.

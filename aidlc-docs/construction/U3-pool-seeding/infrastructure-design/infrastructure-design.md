@@ -11,7 +11,7 @@ U3 adds **no new managed services**. It uses the shared stack (Blob, Neon) and a
 | LC-S3 Image Generator | seed script | **Pollinations.ai** (HTTPS GET, no key) |
 | LC-S4 Blob Uploader | seed script | **Vercel Blob** (`@vercel/blob`) |
 | LC-S5 Pool Writer | seed script | **Neon Postgres** (Drizzle) |
-| LC-S6 Orchestrator | CLI: `npm run seed` | local/CI |
+| LC-S6 Orchestrator | CLI: `pnpm seed` | local/CI |
 | LC-S7 CardPool Reader | Vercel Functions | runtime app |
 
 ## Execution environment

@@ -27,26 +27,26 @@ design docs live in `aidlc-docs/`.
 ## Seeding the card pool
 ```bash
 # author data: paste seed/AUTHORING_PROMPT.md into claude.ai → save seed/cards.json
-npm run seed -- --review     # generate preview images to seed/review/
-npm run seed -- --publish    # upload to Blob + insert cards (idempotent)
+pnpm seed --review     # generate preview images to seed/review/
+pnpm seed --publish    # upload to Blob + insert cards (idempotent)
 ```
 
 ## Getting started
 ```bash
-npm install
+pnpm install
 
 # env: provision Neon + Blob via Vercel Marketplace, then
 cp .env.example .env.local   # or: vercel env pull .env.local
 
 # database
-npm run db:migrate           # apply migrations to DATABASE_URL
+pnpm db:migrate           # apply migrations to DATABASE_URL
 
 # dev
-npm run dev                  # http://localhost:3000
+pnpm dev                  # http://localhost:3000
 
 # quality
-npm run typecheck
-npm run test                 # property-based tests (fast-check)
+pnpm typecheck
+pnpm test                 # property-based tests (fast-check)
 ```
 
 ## Project layout

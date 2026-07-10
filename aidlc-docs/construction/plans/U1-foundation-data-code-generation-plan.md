@@ -11,7 +11,7 @@
 - Doc summaries → `aidlc-docs/construction/U1-foundation-data/code/`.
 
 ## Approach
-Hand-create config + source (deterministic, no network). `npm install`, migrations, and test runs happen in **Build & Test** (after all units). Pure logic written with a clean seam for property-based tests (PBT extension, blocking).
+Hand-create config + source (deterministic, no network). `pnpm install`, migrations, and test runs happen in **Build & Test** (after all units). Pure logic written with a clean seam for property-based tests (PBT extension, blocking).
 
 ## Steps
 
