@@ -1,5 +1,3 @@
-import "server-only";
-
 /**
  * Server-only environment access. Fails fast if a required var is missing.
  * Never import this from a client component.

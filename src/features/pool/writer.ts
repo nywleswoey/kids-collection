@@ -1,4 +1,3 @@
-import "server-only";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { themes, cards } from "@/db/schema";
