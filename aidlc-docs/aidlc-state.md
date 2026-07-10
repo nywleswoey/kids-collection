@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: CONSTRUCTION - U5 COMPLETE (awaiting approval to start U6)
+- **Current Stage**: CONSTRUCTION - U6 Functional Design / Planning (awaiting answers)
 
 ## Workspace State
 - **Existing Code**: No
@@ -32,7 +32,7 @@ Order: U1 → {U2, U3} → U4 → {U5, U6} → U7. Per unit: Functional Design �
 - [x] U3 Pool & Seeding — DONE (G2)
 - [x] U4 Pull & Rewards — DONE (C1,C3,C4,F1,F2; C2 in U6)
 - [x] U5 Binder — DONE (D1, D2)
-- [ ] U6 Card UI & Effects
+- [ ] U6 Card UI & Effects — Functional Design (in progress)
 - [ ] U7 Admin
 - [ ] Build and Test (after all units)
 

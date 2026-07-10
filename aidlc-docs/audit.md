@@ -399,3 +399,11 @@
 **Context**: CONSTRUCTION - U5 Code Generation COMPLETE (GATE; U5 done)
 
 ---
+
+## U6 Card UI & Effects - Functional Design Planning
+**Timestamp**: 2026-07-10T02:00:00Z
+**User Input**: "approve" (U5 complete; start U6)
+**AI Response**: "Entered U6 Card UI & Effects. Stories E1 (rarity styling), E2 (holo/3D/rarity-scaled effects), E3 (educational text/image-forward). Accessibility (reduced-motion) + resiliency (low-end degrade). Created functional design plan with questions (effect triggers, reveal style, placeholder replacement scope, intensity model). Holding at GATE."
+**Context**: CONSTRUCTION - U6 Functional Design - Planning (GATE)
+
+---
