@@ -327,3 +327,19 @@
 **Context**: CONSTRUCTION - U4 Infrastructure Design COMPLETE (GATE before Code Gen)
 
 ---
+
+## U4 Code Generation - Part 1 Planning
+**Timestamp**: 2026-07-09T00:00:00Z
+**User Input**: "/aidlc:approve" (approved U4 Infrastructure Design)
+**AI Response**: "Created U4-pull-rewards-code-generation-plan.md: 8 steps (PullService atomic spend, TokenService, actions, pull UI, temporary card view placeholder until U6, wire play home, tests, docs). No new deps. Holding at GATE for plan approval."
+**Context**: CONSTRUCTION - U4 Code Generation - Part 1 Planning (GATE)
+
+---
+
+## U4 Code Generation - Part 2 Complete
+**Timestamp**: 2026-07-10T00:00:00Z
+**User Input**: "/aidlc:approve" (approved U4 code-gen plan)
+**AI Response**: "Executed all 8 steps. Created src/features/pull/{pull-service,token-service,actions}.ts + PullButton/PullResultView; app/play/pull/page.tsx; wired app/play/home links; tests/pull.model.test.ts (property tests of spend/grant invariants). Stories C1/C3/C4/F1/F2 closed; C2 reveal deferred to U6. No new deps. U4 COMPLETE. GATE before next unit (U5)."
+**Context**: CONSTRUCTION - U4 Code Generation COMPLETE (GATE; U4 done)
+
+---
