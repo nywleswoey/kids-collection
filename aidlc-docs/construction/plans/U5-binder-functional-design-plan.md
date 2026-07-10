@@ -58,9 +58,9 @@ Free text (or "none").
 ---
 
 ## Artifacts to generate after approval
-- [ ] `U5-binder/functional-design/business-logic-model.md` (collection query + progress)
-- [ ] `U5-binder/functional-design/business-rules.md`
-- [ ] `U5-binder/functional-design/frontend-components.md` (binder grid, theme section, card slot, detail)
+- [x] `U5-binder/functional-design/business-logic-model.md` (collection query + progress)
+- [x] `U5-binder/functional-design/business-rules.md`
+- [x] `U5-binder/functional-design/frontend-components.md` (binder grid, theme section, card slot, detail)
 
 ---
 

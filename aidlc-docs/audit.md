@@ -351,3 +351,11 @@
 **Context**: CONSTRUCTION - U5 Functional Design - Planning (GATE)
 
 ---
+
+## U5 Binder - Functional Design Complete
+**Timestamp**: 2026-07-10T01:10:00Z
+**User Input**: "/aidlc:approve" (answers all A, Q5 none)
+**AI Response**: "Generated business-logic-model.md (getBinder: pool+collection -> ThemeSection with owned/locked + themeProgress; getCardDetail owned-only), business-rules.md (U5-BR1..BR10: own-binder scope, locked silhouettes, M/N + bar progress, complete tick, empty nudge, read-only), frontend-components.md (BinderPage/ThemeSection/ProgressBar/CardSlot/CardDetail + testids; card visuals via U6). U5 Functional Design COMPLETE. GATE before U5 NFR Requirements."
+**Context**: CONSTRUCTION - U5 Functional Design COMPLETE (GATE)
+
+---
