@@ -7,22 +7,22 @@
 
 ## Steps
 
-- [ ] **Step 1 — CollectionService**
+- [x] **Step 1 — CollectionService**
   `src/features/binder/service.ts` — `getBinder(childId)` (merge pool + collection → ThemeSections w/ owned/locked + `themeProgress`), `getCardDetail(childId, cardId)` (owned-only). Types (`BinderView`, `ThemeSection`, `BinderCard`) in `src/lib/types.ts`.
 
-- [ ] **Step 2 — Binder UI components**
+- [x] **Step 2 — Binder UI components**
   `src/features/binder/ProgressBar.tsx`, `CardSlot.tsx` (owned thumb + xN / locked silhouette), `ThemeSection.tsx`.
 
-- [ ] **Step 3 — Binder page**
+- [x] **Step 3 — Binder page**
   `app/play/binder/page.tsx` — server: requireParent + active child + `getBinder`; overall progress header; empty-state nudge → pull. testids.
 
-- [ ] **Step 4 — Card detail**
+- [x] **Step 4 — Card detail**
   `app/play/binder/[cardId]/page.tsx` — `getCardDetail`; 404/redirect if not owned; big card (PullResultView-style placeholder; U6 effects later) + count.
 
-- [ ] **Step 5 — Tests**
+- [x] **Step 5 — Tests**
   `tests/binder.test.ts` — mapping: owned→owned+count, not owned→locked; progress via `themeProgress`; getCardDetail returns null for unowned (pure/logic-level with fake data).
 
-- [ ] **Step 6 — Docs**
+- [x] **Step 6 — Docs**
   `aidlc-docs/construction/U5-binder/code/summary.md`; README status.
 
 ## Story traceability

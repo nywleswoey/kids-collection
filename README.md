@@ -20,7 +20,8 @@ design docs live in `aidlc-docs/`.
 - **U2 Auth & Profiles** — ✅ Google sign-in (allowlist), child profiles, picker
 - **U3 Pool & Seeding** — ✅ seed pipeline (Pollinations → Blob → DB), pool reader
 - **U4 Pull & Rewards** — ✅ atomic pull (no double-spend), duplicates, token grants
-- U5 Binder · U6 Card UI & Effects · U7 Admin — pending
+- **U5 Binder** — ✅ collection by theme, progress, card detail
+- U6 Card UI & Effects · U7 Admin — pending
 
 ## Seeding the card pool
 ```bash
