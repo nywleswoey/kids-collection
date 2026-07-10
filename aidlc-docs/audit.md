@@ -359,3 +359,11 @@
 **Context**: CONSTRUCTION - U5 Functional Design COMPLETE (GATE)
 
 ---
+
+## U5 NFR Requirements - Complete
+**Timestamp**: 2026-07-10T01:18:00Z
+**User Input**: "approve" (approved U5 Functional Design)
+**AI Response**: "Generated directly. nfr-requirements.md (SEC: active-child scope, owned-only detail; PERF: single indexed collection query, lazy images; A11Y: non-color owned/locked + text progress, large targets; read-only) and tech-stack-decisions.md (Server Components, Drizzle reads, next/image, U6 card visuals; no new infra/deps). U5 NFR Requirements COMPLETE. GATE before U5 NFR Design."
+**Context**: CONSTRUCTION - U5 NFR Requirements COMPLETE (GATE)
+
+---
