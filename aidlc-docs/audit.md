@@ -407,3 +407,11 @@
 **Context**: CONSTRUCTION - U6 Functional Design - Planning (GATE)
 
 ---
+
+## U6 Card UI - Functional Design Complete
+**Timestamp**: 2026-07-10T02:10:00Z
+**User Input**: "approve" (answers all A, Q5 none)
+**AI Response**: "Generated frontend-components.md (Card client component w/ rarity frame + holo sheen + 3D tilt via CSS vars, useCardTilt hook w/ pointer+deviceorientation, RevealCard pack-open flip; replaces PullResultView in pull+binder; reduced-motion + low-end degrade) and business-rules.md (U6-BR1..BR11: rarity styling non-color, rarity-scaled intensity, reduced-motion static, graceful degrade, image-forward pre-reader, reveal, single Card component). U6 Functional Design COMPLETE. GATE before U6 NFR Requirements."
+**Context**: CONSTRUCTION - U6 Functional Design COMPLETE (GATE)
+
+---

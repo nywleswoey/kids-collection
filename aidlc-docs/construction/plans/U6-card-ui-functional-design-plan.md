@@ -60,8 +60,8 @@ Free text (or "none").
 ---
 
 ## Artifacts to generate after approval
-- [ ] `U6-card-ui/functional-design/frontend-components.md` (Card, effect hooks, reveal)
-- [ ] `U6-card-ui/functional-design/business-rules.md` (rarity styling + a11y rules)
+- [x] `U6-card-ui/functional-design/frontend-components.md` (Card, effect hooks, reveal)
+- [x] `U6-card-ui/functional-design/business-rules.md` (rarity styling + a11y rules)
 
 ---
 
