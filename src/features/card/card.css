@@ -1,0 +1,83 @@
+/* U6 card effects — GPU-friendly transforms + gradients driven by CSS vars.
+   --rx/--ry: tilt degrees; --mx/--my: pointer position (0..100%). */
+
+.card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  border: 3px solid var(--frame, #9ca3af);
+}
+
+.card--interactive {
+  transform: perspective(800px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 120ms ease-out;
+}
+
+/* Holographic sheen follows the pointer. */
+.card__holo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0) 45%
+  );
+  mix-blend-mode: soft-light;
+  opacity: var(--holo-strength, 0.3);
+}
+
+/* Rarity frames + effect intensity (scaled by tier). */
+.card--common { --frame: #9ca3af; --holo-strength: 0.15; }
+.card--rare { --frame: #60a5fa; --holo-strength: 0.3; }
+.card--epic { --frame: #c084fc; --holo-strength: 0.5; box-shadow: 0 0 18px rgba(192, 132, 252, 0.4); }
+.card--legendary {
+  --frame: #fbbf24;
+  --holo-strength: 0.7;
+  box-shadow: 0 0 28px rgba(251, 191, 36, 0.6);
+}
+.card--legendary .card__holo {
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 40%),
+    linear-gradient(115deg, transparent 20%, rgba(255, 0, 200, 0.25), rgba(0, 200, 255, 0.25), transparent 80%);
+  background-size: 100% 100%, 200% 200%;
+  animation: holo-shimmer 3s linear infinite;
+}
+
+@keyframes holo-shimmer {
+  0% { background-position: 0 0, 0% 50%; }
+  100% { background-position: 0 0, 200% 50%; }
+}
+
+/* Pull reveal — pack-open flip. */
+.reveal {
+  perspective: 1000px;
+}
+.reveal__inner {
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal--flipped .reveal__inner {
+  transform: rotateY(180deg);
+}
+.reveal__back,
+.reveal__front {
+  backface-visibility: hidden;
+}
+.reveal__front {
+  transform: rotateY(180deg);
+}
+
+/* Respect reduced motion: kill all card animation/tilt. */
+@media (prefers-reduced-motion: reduce) {
+  .card--interactive { transform: none; transition: none; }
+  .card__holo { animation: none; }
+  .reveal__inner { transition: none; }
+  .card--legendary .card__holo { animation: none; }
+}
