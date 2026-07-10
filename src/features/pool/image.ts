@@ -43,7 +43,7 @@ export async function uploadImage(
   key: string,
   bytes: Uint8Array,
 ): Promise<string> {
-  const { url } = await put(`cards/${key}.jpg`, bytes, {
+  const { url } = await put(`cards/${key}.jpg`, Buffer.from(bytes), {
     access: "public",
     contentType: "image/jpeg",
   });
