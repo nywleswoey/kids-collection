@@ -938,3 +938,13 @@
 **Context**: OPERATIONS — production deploy; increment closed.
 
 ---
+
+## Session Resume — New Increment Request (INCREMENT 9 candidate)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "- as the number of categories increase, need a better way to view them in the galaxy
+- make the menu in the galaxy page sticky
+- selection of category when pulling cards is not too prominent, my kids missed it, also when they do the next pull, should be able to change it from that view"
+**AI Response**: "Prior increment (8) COMPLETE + deployed. New request = 3 UX items → INCREMENT 9. Read galaxy page (header already sticky from Inc7; themes stack vertically), ThemeSection, PullButton (category <select> hidden after outcome). Wrote clarifying questions; presented Welcome-back A/B."
+**Context**: Session resume; new increment scoping.
+
+---
