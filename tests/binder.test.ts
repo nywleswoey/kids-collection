@@ -23,7 +23,7 @@ function mapSection(themeCards: Card[], owned: Map<string, number>) {
 }
 
 function card(id: string): Card {
-  return { id, themeId: "t", name: id, rarity: "common", imageUrl: "x", eduText: "y" };
+  return { id, themeId: "t", name: id, rarity: "common", imageUrl: "x", eduText: "y", sourceUrl: "" };
 }
 
 describe("binder mapping (U5-BR2/BR3)", () => {

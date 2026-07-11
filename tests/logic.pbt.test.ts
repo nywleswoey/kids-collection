@@ -24,6 +24,7 @@ const cardArb = (i: number): fc.Arbitrary<Card> =>
     rarity: fc.constantFrom(...RARITIES),
     imageUrl: fc.constant("https://example/i.png"),
     eduText: fc.string(),
+    sourceUrl: fc.constant("https://example/s"),
   });
 
 const poolArb = fc
@@ -57,6 +58,7 @@ describe("drawCard (BR1, BR2)", () => {
       rarity,
       imageUrl: "x",
       eduText: "y",
+      sourceUrl: "",
     }));
     const counts: Record<Rarity, number> = {
       common: 0,
@@ -91,6 +93,7 @@ describe("applyPull (BR6, BR8, BR9)", () => {
             rarity: "common",
             imageUrl: "x",
             eduText: "y",
+            sourceUrl: "",
           };
           const existing: CollectionEntry | undefined =
             existingCount === undefined
@@ -117,6 +120,7 @@ describe("applyPull (BR6, BR8, BR9)", () => {
       rarity: "common",
       imageUrl: "x",
       eduText: "y",
+      sourceUrl: "",
     };
     expect(() => applyPull(child, card, undefined)).toThrow();
   });

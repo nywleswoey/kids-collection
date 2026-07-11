@@ -10,7 +10,7 @@ describe("loader / seed validation (U3-BR1/BR2)", () => {
         {
           name: "Animals",
           cards: [
-            { name: "Fox", rarity: "common", eduText: "Fact.", imagePrompt: "a fox" },
+            { name: "Fox", rarity: "common", eduText: "Fact.", imagePrompt: "a fox", sourceUrl: "https://example.com/fox" },
           ],
         },
       ],
@@ -30,7 +30,16 @@ describe("loader / seed validation (U3-BR1/BR2)", () => {
   it("rejects empty theme / missing fields", () => {
     expect(() => parseSeed({ themes: [] })).toThrow();
     expect(() =>
-      parseSeed({ themes: [{ name: "A", cards: [{ name: "", rarity: "common", eduText: "f", imagePrompt: "p" }] }] }),
+      parseSeed({ themes: [{ name: "A", cards: [{ name: "", rarity: "common", eduText: "f", imagePrompt: "p", sourceUrl: "https://x.com" }] }] }),
+    ).toThrow();
+  });
+
+  it("rejects a missing or non-URL sourceUrl (U4-FR5)", () => {
+    expect(() =>
+      parseSeed({ themes: [{ name: "A", cards: [{ name: "X", rarity: "common", eduText: "f", imagePrompt: "p" }] }] }),
+    ).toThrow();
+    expect(() =>
+      parseSeed({ themes: [{ name: "A", cards: [{ name: "X", rarity: "common", eduText: "f", imagePrompt: "p", sourceUrl: "not-a-url" }] }] }),
     ).toThrow();
   });
 });
