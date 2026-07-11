@@ -1,45 +1,60 @@
 /**
- * Background-music loop manager (client-only). One HTMLAudioElement, looped,
- * `preload=none` so nothing loads until the child opts in. Autoplay-policy safe:
- * play() is only called after a user gesture, and rejections are swallowed.
+ * Background-music controller (client-only).
  *
- * BGM_SRC is the single swap point — replace public/bgm/playful-loop.mp3 (or
- * point this at your own URL) to change the music.
+ * Default is a synthesized loop (MusicEngine) so music plays with no asset.
+ * If a real file exists at BGM_SRC, it takes over and the synth stops — so you
+ * can swap in licensed music by dropping public/bgm/playful-loop.mp3 (or point
+ * BGM_SRC elsewhere). Autoplay-safe: only started after a user gesture.
  */
+import { startMusic, stopMusic } from "./MusicEngine";
 
 export const BGM_SRC = "/bgm/playful-loop.mp3";
 
 let el: HTMLAudioElement | null = null;
+let wantOn = false;
 
-function ensureEl(): HTMLAudioElement | null {
-  if (typeof Audio === "undefined") return null;
-  if (el) return el;
+function tryFile(): void {
+  if (typeof Audio === "undefined") return;
   try {
-    el = new Audio(BGM_SRC);
-    el.loop = true;
-    el.preload = "none";
-    el.volume = 0.35;
-    return el;
+    const a = new Audio(BGM_SRC);
+    a.loop = true;
+    a.preload = "auto";
+    a.volume = 0.35;
+    a.addEventListener("canplaythrough", () => {
+      if (!wantOn) return;
+      stopMusic(); // real track wins over the synth
+      a.play().catch(() => {
+        /* blocked — fall back to synth */
+        if (wantOn) startMusic();
+      });
+    });
+    a.addEventListener("error", () => {
+      /* no/invalid file — synth stays */
+    });
+    a.load();
+    el = a;
   } catch {
-    return null;
+    /* keep synth */
   }
 }
 
-/** Start (or resume) the loop. Safe to call repeatedly. */
+/** Start music: synth immediately, upgrade to the file if one is available. */
 export function startBgm(): void {
-  const a = ensureEl();
-  if (!a) return;
-  a.play().catch(() => {
-    /* autoplay blocked or file missing — stay silent, non-fatal */
-  });
+  wantOn = true;
+  startMusic();
+  if (!el) tryFile();
+  else el.play().catch(() => startMusic());
 }
 
 export function stopBgm(): void {
-  if (!el) return;
-  try {
-    el.pause();
-    el.currentTime = 0;
-  } catch {
-    /* ignore */
+  wantOn = false;
+  stopMusic();
+  if (el) {
+    try {
+      el.pause();
+      el.currentTime = 0;
+    } catch {
+      /* ignore */
+    }
   }
 }

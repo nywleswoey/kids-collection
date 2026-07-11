@@ -1,6 +1,8 @@
 # Background music
 
-The play area streams one looping track from this folder.
+By **default the play area plays a synthesized looping track** (Web Audio, no
+file needed — see `src/features/sound/MusicEngine.ts`). Dropping a real file
+here overrides the synth.
 
 ## Swap the music
 
@@ -14,8 +16,7 @@ Requirements / recommendations:
 - Keep it small (< ~1–2 MB) for kids' devices; it streams (`preload="none"`).
 - Use royalty-free / licensed music only.
 
-## No file yet?
+## No file?
 
-The app degrades gracefully: if the file is missing, BGM simply stays silent —
-sound effects and everything else keep working. No placeholder binary is
-committed so the repo stays light.
+Fine — the synthesized loop plays instead. Everything works; no placeholder
+binary is committed so the repo stays light.

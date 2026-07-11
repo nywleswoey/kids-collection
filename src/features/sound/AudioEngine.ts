@@ -60,6 +60,11 @@ export function isAvailable(): boolean {
   return available;
 }
 
+/** Shared AudioContext (creates/returns it) for the music engine. Null if blocked. */
+export function acquireContext(): AudioContext | null {
+  return ensureCtx();
+}
+
 /**
  * Play a synthesized SFX. `intensity` (0..1) scales loudness; `attenuate`
  * softens output under reduced-motion. Never throws.
