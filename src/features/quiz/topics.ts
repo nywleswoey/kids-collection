@@ -1,67 +1,97 @@
-/** The 6 quiz topics (Inc11 Q2=B) — titles + authored lessons (Q5=A). Single
+/** Quiz topics (Inc11; Inc12 harder set) — titles + authored lessons. Single
  * source of truth for the picker, lesson screens, and question routing. */
 
 import type { Topic } from "./types";
 
 export const TOPICS: Topic[] = [
   {
-    id: "add-within-20",
+    id: "multiplication-within-100",
     subject: "math",
-    title: "Addition within 20",
+    title: "Multiplication within 100",
     lesson: {
       intro:
-        "Adding means putting two groups together to find how many there are altogether. Count on from the bigger number to add quickly.",
-      example: "8 + 5: start at 8, then count on 5 more — 9, 10, 11, 12, 13. So 8 + 5 = 13.",
+        "Multiplication is repeated addition — putting equal groups together. Knowing your times tables helps you find the answer quickly.",
+      example: "7 × 8 means 8 added seven times (or 7 added eight times) = 56.",
     },
   },
   {
-    id: "sub-within-20",
+    id: "division-within-100",
     subject: "math",
-    title: "Subtraction within 20",
+    title: "Division within 100",
     lesson: {
       intro:
-        "Subtracting means taking some away to find how many are left. You can count back from the bigger number.",
-      example: "14 − 6: start at 14 and count back 6 — 13, 12, 11, 10, 9, 8. So 14 − 6 = 8.",
+        "Division shares a number into equal groups. It is the opposite of multiplication, so your times tables help here too.",
+      example: "56 ÷ 8: how many 8s make 56? Since 8 × 7 = 56, the answer is 7.",
     },
   },
   {
-    id: "number-bonds-10",
+    id: "number-bonds-100",
     subject: "math",
-    title: "Number Bonds to 10",
+    title: "Number Bonds to 100",
     lesson: {
       intro:
-        "Number bonds are two numbers that add up to make 10. They are like best friends — if you know one, you can find the other.",
-      example: "If you have 7, you need 3 more to make 10, because 7 + 3 = 10.",
+        "Number bonds to 100 are two numbers that add up to make 100. Tip: make the ones add to 10, then the tens add to 90.",
+      example: "For 63, you need 37 more, because 63 + 37 = 100.",
     },
   },
   {
-    id: "nouns-vs-verbs",
+    id: "verb-tenses",
     subject: "grammar",
-    title: "Nouns vs Verbs",
+    title: "Verb Tenses",
     lesson: {
       intro:
-        "A noun is a naming word — a person, animal, place, or thing (like dog, school, ball). A verb is an action word — something we do (like run, eat, jump).",
-      example: "In 'The boy kicks the ball', 'boy' and 'ball' are nouns, and 'kicks' is the verb.",
+        "The present tense is happening now (I walk). The past tense already happened (I walked). The past continuous is something that was going on (I was walking).",
+      example: "Now: She eats. Past: She ate. Past continuous: She was eating when the phone rang.",
     },
   },
   {
-    id: "articles",
+    id: "pronouns-vs-proper-nouns",
     subject: "grammar",
-    title: "A, An, The",
+    title: "Pronouns vs Proper Nouns",
     lesson: {
       intro:
-        "Use 'a' before a word that starts with a consonant sound (a cat), and 'an' before a vowel sound — a, e, i, o, u (an apple). Use 'the' for one special thing we both know (the sun).",
-      example: "an egg, a book, the moon.",
+        "A proper noun is the special name of a person, place, or thing and always starts with a capital letter (Mary, Singapore). A pronoun takes the place of a noun (he, she, it, they, we, us, him, her).",
+      example: "Instead of 'Mary loves Mary's cat', we say 'She loves her cat'. 'Mary' is a proper noun; 'She' and 'her' are pronouns.",
     },
   },
   {
-    id: "singular-vs-plural",
+    id: "adjectives-vs-adverbs",
     subject: "grammar",
-    title: "Singular vs Plural",
+    title: "Adjectives vs Adverbs",
     lesson: {
       intro:
-        "Singular means one; plural means more than one. We usually add 's' (cat → cats). Add 'es' after x, s, sh, ch (box → boxes). Some words change fully (child → children).",
-      example: "one dog → two dogs, one box → three boxes, one child → many children.",
+        "An adjective describes a noun (a happy boy). An adverb describes a verb — how something is done — and often ends in -ly (he sang loudly).",
+      example: "'A quick fox' — quick is an adjective. 'The fox ran quickly' — quickly is an adverb.",
+    },
+  },
+  {
+    id: "conjunctions",
+    subject: "grammar",
+    title: "Conjunctions",
+    lesson: {
+      intro:
+        "A conjunction is a joining word. Use 'and' to add, 'but' to show a difference, 'or' to give a choice, 'because' to give a reason, and 'so' to show a result.",
+      example: "I was hungry, so I ate. I like apples but not pears.",
+    },
+  },
+  {
+    id: "prepositions",
+    subject: "grammar",
+    title: "Prepositions",
+    lesson: {
+      intro:
+        "A preposition tells us where or when something is — like in, on, under, over, between, behind, and next to.",
+      example: "The cat is on the mat. The ball is under the chair. She sat between her friends.",
+    },
+  },
+  {
+    id: "subject-verb-agreement",
+    subject: "grammar",
+    title: "Subject–Verb Agreement",
+    lesson: {
+      intro:
+        "The verb must match its subject. For one person or thing (he, she, it), we usually add -s to the verb. For more than one (they, we), we do not.",
+      example: "She walks to school. They walk to school. The dog barks. The dogs bark.",
     },
   },
 ];

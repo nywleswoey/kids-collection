@@ -1,6 +1,6 @@
 /**
- * Hand-authored grammar question banks (Inc11 Q1=D). SG lower-primary. Every
- * `correct` is verified to be one of `options`. Runtime picks 5 at random.
+ * Hand-authored grammar question banks (Inc11; Inc12 harder set). Upper-primary.
+ * Every `correct` is one of `options`. Runtime picks 5 at random.
  */
 
 import type { QuizQuestion } from "./types";
@@ -14,70 +14,129 @@ function mc(
   return { id, prompt, options: [correct, ...distractors], correct };
 }
 
-/** Nouns vs Verbs — "is this word a naming word or an action word?" */
-const nounsVerbs: QuizQuestion[] = [
-  mc("nv-1", "Which word is a noun (a naming word)?", "dog", ["run", "jump", "eat"]),
-  mc("nv-2", "Which word is a verb (an action word)?", "swim", ["table", "apple", "chair"]),
-  mc("nv-3", "Which word is a noun?", "school", ["sing", "read", "play"]),
-  mc("nv-4", "Which word is a verb?", "kick", ["ball", "field", "shoe"]),
-  mc("nv-5", "Which word is a naming word?", "teacher", ["write", "talk", "walk"]),
-  mc("nv-6", "Which word is an action word?", "jump", ["park", "slide", "bench"]),
-  mc("nv-7", "In 'The cat sleeps.', which word is the verb?", "sleeps", ["The", "cat", "."]),
-  mc("nv-8", "In 'Boys play football.', which word is the noun?", "football", ["play", "fast", "loudly"]),
-  mc("nv-9", "Which word is a noun?", "flower", ["grow", "smell", "pick"]),
-  mc("nv-10", "Which word is a verb?", "drink", ["water", "cup", "juice"]),
-  mc("nv-11", "Which word names a thing?", "bus", ["ride", "wait", "stop"]),
-  mc("nv-12", "Which word shows an action?", "clap", ["hand", "song", "stage"]),
-  mc("nv-13", "In 'She reads a book.', which word is the verb?", "reads", ["She", "book", "a"]),
-  mc("nv-14", "Which word is a noun?", "river", ["flow", "splash", "float"]),
-  mc("nv-15", "Which word is a verb?", "paint", ["brush", "colour", "wall"]),
-  mc("nv-16", "Which word is a naming word?", "market", ["buy", "sell", "pay"]),
+/** Verb Tenses — past / present / past-continuous. */
+const verbTenses: QuizQuestion[] = [
+  mc("vt-1", "Yesterday, I ___ to the park.", "walked", ["walk", "walking", "walks"]),
+  mc("vt-2", "Every morning, she ___ her teeth.", "brushes", ["brushed", "brushing", "brush"]),
+  mc("vt-3", "Right now, the baby ___ sleeping.", "is", ["was", "were", "be"]),
+  mc("vt-4", "Choose the past tense: 'They ___ football last Sunday.'", "played", ["play", "plays", "playing"]),
+  mc("vt-5", "Which is past continuous? 'While it rained, we ___ inside.'", "were playing", ["played", "play", "are playing"]),
+  mc("vt-6", "Present tense: 'He ___ to school by bus.'", "goes", ["went", "going", "gone"]),
+  mc("vt-7", "'Last night I ___ my homework.'", "did", ["do", "does", "doing"]),
+  mc("vt-8", "Past continuous: 'At 8 pm I ___ my dinner.'", "was eating", ["ate", "eat", "eats"]),
+  mc("vt-9", "'The sun ___ in the east every day.'", "rises", ["rose", "rising", "risen"]),
+  mc("vt-10", "'We ___ a movie when the lights went out.'", "were watching", ["watched", "watch", "watches"]),
+  mc("vt-11", "Past tense of 'run': 'She ___ very fast.'", "ran", ["run", "running", "runs"]),
+  mc("vt-12", "'Look! The dog ___ chasing its tail now.'", "is", ["was", "were", "been"]),
+  mc("vt-13", "'They ___ their grandparents last week.'", "visited", ["visit", "visiting", "visits"]),
+  mc("vt-14", "Present: 'Water ___ at 100 degrees.'", "boils", ["boiled", "boiling", "boil"]),
+  mc("vt-15", "Past continuous: 'The children ___ in the garden all afternoon.'", "were playing", ["played", "play", "plays"]),
+  mc("vt-16", "'I ___ my keys yesterday.'", "lost", ["lose", "losing", "loses"]),
 ];
 
-/** A / An / The — choosing the right article. */
-const articles: QuizQuestion[] = [
-  mc("ar-1", "I saw ___ elephant at the zoo.", "an", ["a", "the", "no word"]),
-  mc("ar-2", "She has ___ cat.", "a", ["an", "the", "no word"]),
-  mc("ar-3", "___ sun is very hot today.", "The", ["A", "An", "No word"]),
-  mc("ar-4", "He ate ___ apple.", "an", ["a", "the", "no word"]),
-  mc("ar-5", "Can I have ___ orange, please?", "an", ["a", "the", "no word"]),
-  mc("ar-6", "We went to ___ park near my house.", "the", ["a", "an", "no word"]),
-  mc("ar-7", "There is ___ bird on the tree.", "a", ["an", "the", "no word"]),
-  mc("ar-8", "I need ___ umbrella because it is raining.", "an", ["a", "the", "no word"]),
-  mc("ar-9", "___ moon is bright tonight.", "The", ["A", "An", "No word"]),
-  mc("ar-10", "My father drives ___ car.", "a", ["an", "the", "no word"]),
-  mc("ar-11", "She is reading ___ interesting book.", "an", ["a", "the", "no word"]),
-  mc("ar-12", "Please close ___ door when you leave.", "the", ["a", "an", "no word"]),
-  mc("ar-13", "I want ___ ice cream.", "an", ["a", "the", "no word"]),
-  mc("ar-14", "He is ___ honest boy.", "an", ["a", "the", "no word"]),
-  mc("ar-15", "We saw ___ rainbow after the rain.", "a", ["an", "the", "no word"]),
-  mc("ar-16", "___ Earth goes around the Sun.", "The", ["A", "An", "No word"]),
+/** Pronouns vs Proper Nouns. */
+const pronounsProperNouns: QuizQuestion[] = [
+  mc("pp-1", "Which word is a pronoun?", "she", ["Mary", "Singapore", "Monday"]),
+  mc("pp-2", "Which word is a proper noun?", "London", ["he", "city", "they"]),
+  mc("pp-3", "Which word is a pronoun?", "they", ["David", "dog", "school"]),
+  mc("pp-4", "Which word is a proper noun?", "Amir", ["it", "boy", "we"]),
+  mc("pp-5", "In 'Sara loves her cat.', which word is a pronoun?", "her", ["Sara", "cat", "loves"]),
+  mc("pp-6", "Which is a proper noun?", "January", ["month", "she", "them"]),
+  mc("pp-7", "Which word is a pronoun?", "we", ["Tokyo", "teacher", "river"]),
+  mc("pp-8", "Which is a proper noun?", "Everest", ["mountain", "it", "you"]),
+  mc("pp-9", "In 'They visited Rome.', which is the proper noun?", "Rome", ["They", "visited", "city"]),
+  mc("pp-10", "Which word is a pronoun?", "him", ["John", "ball", "park"]),
+  mc("pp-11", "Which is a proper noun?", "Nile", ["river", "it", "we"]),
+  mc("pp-12", "Which word is a pronoun?", "it", ["Kumar", "house", "car"]),
+  mc("pp-13", "In 'Mr Tan drives us to school.', which word is a pronoun?", "us", ["Mr Tan", "school", "drives"]),
+  mc("pp-14", "Which is a proper noun?", "Singapore", ["country", "they", "island"]),
+  mc("pp-15", "Which word is a pronoun?", "you", ["Sunday", "apple", "Anna"]),
+  mc("pp-16", "Which is a proper noun?", "Diwali", ["festival", "he", "it"]),
 ];
 
-/** Singular vs Plural — the correct plural form. */
-const singularPlural: QuizQuestion[] = [
-  mc("sp-1", "What is the plural of 'cat'?", "cats", ["cat", "cates", "caties"]),
-  mc("sp-2", "What is the plural of 'box'?", "boxes", ["boxs", "box", "boxies"]),
-  mc("sp-3", "What is the plural of 'baby'?", "babies", ["babys", "babyes", "baby"]),
-  mc("sp-4", "What is the plural of 'child'?", "children", ["childs", "childrens", "childes"]),
-  mc("sp-5", "What is the plural of 'bus'?", "buses", ["buss", "busses", "bus"]),
-  mc("sp-6", "What is the plural of 'foot'?", "feet", ["foots", "feets", "foot"]),
-  mc("sp-7", "What is the plural of 'dog'?", "dogs", ["doges", "dog", "dogies"]),
-  mc("sp-8", "What is the plural of 'leaf'?", "leaves", ["leafs", "leafes", "leaf"]),
-  mc("sp-9", "What is the plural of 'man'?", "men", ["mans", "mens", "man"]),
-  mc("sp-10", "What is the plural of 'brush'?", "brushes", ["brushs", "brush", "brushies"]),
-  mc("sp-11", "What is the plural of 'toy'?", "toys", ["toies", "toy", "toyes"]),
-  mc("sp-12", "What is the plural of 'mouse'?", "mice", ["mouses", "mouse", "mices"]),
-  mc("sp-13", "What is the plural of 'book'?", "books", ["bookes", "book", "bookies"]),
-  mc("sp-14", "What is the plural of 'tooth'?", "teeth", ["tooths", "teeths", "tooth"]),
-  mc("sp-15", "What is the plural of 'lady'?", "ladies", ["ladys", "ladyes", "lady"]),
-  mc("sp-16", "What is the plural of 'fish'?", "fish", ["fishs", "fishies", "fishess"]),
+/** Adjectives vs Adverbs. */
+const adjectivesAdverbs: QuizQuestion[] = [
+  mc("aa-1", "Which word is an adjective?", "happy", ["quickly", "run", "loudly"]),
+  mc("aa-2", "Which word is an adverb?", "slowly", ["slow", "car", "big"]),
+  mc("aa-3", "'She sang ___.' (choose the adverb)", "beautifully", ["beautiful", "beauty", "beautify"]),
+  mc("aa-4", "'It was a ___ day.' (choose the adjective)", "sunny", ["sunnily", "sun", "shine"]),
+  mc("aa-5", "Which word describes a noun (adjective)?", "tall", ["neatly", "quickly", "softly"]),
+  mc("aa-6", "Which word describes a verb (adverb)?", "carefully", ["careful", "care", "caring"]),
+  mc("aa-7", "'The turtle moved ___.'", "slowly", ["slow", "slowness", "slower one"]),
+  mc("aa-8", "'He is a ___ runner.'", "fast", ["quickly", "swiftly", "loudly"]),
+  mc("aa-9", "Adverb: 'She spoke very ___.'", "quietly", ["quiet", "quietness", "quieter thing"]),
+  mc("aa-10", "Adjective: 'What a ___ cake!'", "delicious", ["deliciously", "delight", "deliciousness"]),
+  mc("aa-11", "Which is an adverb?", "loudly", ["loud", "noise", "big"]),
+  mc("aa-12", "Which is an adjective?", "brave", ["bravely", "run", "quickly"]),
+  mc("aa-13", "'The stars shone ___ in the sky.'", "brightly", ["bright light", "bright", "brightness"]),
+  mc("aa-14", "'That is a ___ dog.'", "friendly", ["friendlily", "friend", "friendship"]),
+  mc("aa-15", "Adverb: 'He finished the test ___.'", "easily", ["easy", "ease", "easier one"]),
+  mc("aa-16", "Adjective: 'The soup is too ___.'", "hot", ["hotly", "heat", "hotness"]),
+];
+
+/** Conjunctions — and / but / because / or / so. */
+const conjunctions: QuizQuestion[] = [
+  mc("cj-1", "I was tired, ___ I went to bed.", "so", ["but", "or", "because"]),
+  mc("cj-2", "She likes tea ___ coffee.", "and", ["but", "so", "because"]),
+  mc("cj-3", "He ran fast, ___ he still missed the bus.", "but", ["and", "so", "or"]),
+  mc("cj-4", "We stayed home ___ it was raining.", "because", ["and", "or", "but"]),
+  mc("cj-5", "Would you like an apple ___ a pear?", "or", ["and", "so", "because"]),
+  mc("cj-6", "It was cold, ___ we wore jackets.", "so", ["but", "or", "because"]),
+  mc("cj-7", "I wanted to play, ___ I had to study.", "but", ["and", "so", "or"]),
+  mc("cj-8", "She was happy ___ she won the race.", "because", ["but", "or", "and"]),
+  mc("cj-9", "You can have milk ___ juice.", "or", ["so", "because", "but"]),
+  mc("cj-10", "The dog barked ___ wagged its tail.", "and", ["but", "because", "or"]),
+  mc("cj-11", "He studied hard, ___ he passed the test.", "so", ["but", "or", "because"]),
+  mc("cj-12", "I like the book ___ it is a little long.", "but", ["so", "and", "because"]),
+  mc("cj-13", "We brought umbrellas ___ it might rain.", "because", ["and", "or", "but"]),
+  mc("cj-14", "Do you want to walk ___ take the bus?", "or", ["and", "so", "because"]),
+];
+
+/** Prepositions — in / on / under / between / behind / next to. */
+const prepositions: QuizQuestion[] = [
+  mc("pr-1", "The cat is ___ the table. (on top of it)", "on", ["in", "under", "between"]),
+  mc("pr-2", "The ball rolled ___ the bed. (hidden below)", "under", ["on", "above", "beside"]),
+  mc("pr-3", "The milk is ___ the fridge.", "in", ["on", "under", "between"]),
+  mc("pr-4", "She sat ___ her two friends.", "between", ["on", "under", "in"]),
+  mc("pr-5", "The picture hangs ___ the wall.", "on", ["in", "under", "between"]),
+  mc("pr-6", "The dog is hiding ___ the sofa. (at the back)", "behind", ["on", "in", "between"]),
+  mc("pr-7", "Put your shoes ___ the box.", "in", ["on", "between", "under"]),
+  mc("pr-8", "The bird flew ___ the tree. (up over it)", "over", ["under", "in", "between"]),
+  mc("pr-9", "The bank is ___ to the school.", "next", ["in", "under", "between"]),
+  mc("pr-10", "There is a rug ___ the floor.", "on", ["in", "under", "between"]),
+  mc("pr-11", "The toys are ___ the basket.", "in", ["on", "over", "between"]),
+  mc("pr-12", "The bridge goes ___ the river. (across, above)", "over", ["in", "under", "between"]),
+  mc("pr-13", "My pencil fell ___ the chair. (below)", "under", ["on", "in", "over"]),
+  mc("pr-14", "Stand ___ the line, please. (on it)", "on", ["in", "under", "between"]),
+];
+
+/** Subject–Verb Agreement. */
+const subjectVerbAgreement: QuizQuestion[] = [
+  mc("sv-1", "She ___ to school every day.", "goes", ["go", "going", "gone"]),
+  mc("sv-2", "They ___ football on Sundays.", "play", ["plays", "playing", "is play"]),
+  mc("sv-3", "The dog ___ loudly at night.", "barks", ["bark", "barking", "are bark"]),
+  mc("sv-4", "My friends ___ very kind.", "are", ["is", "am", "be"]),
+  mc("sv-5", "He ___ his homework now.", "does", ["do", "doing", "done"]),
+  mc("sv-6", "The children ___ in the pool.", "swim", ["swims", "swimming", "is swim"]),
+  mc("sv-7", "That bird ___ beautifully.", "sings", ["sing", "singing", "are sing"]),
+  mc("sv-8", "I ___ a big family.", "have", ["has", "having", "haves"]),
+  mc("sv-9", "The baby ___ when it is hungry.", "cries", ["cry", "crying", "are cry"]),
+  mc("sv-10", "We ___ our teacher.", "like", ["likes", "liking", "is like"]),
+  mc("sv-11", "The cat and the dog ___ friends.", "are", ["is", "am", "be"]),
+  mc("sv-12", "My mother ___ delicious food.", "cooks", ["cook", "cooking", "are cook"]),
+  mc("sv-13", "You ___ very tall.", "are", ["is", "am", "be"]),
+  mc("sv-14", "The boys ___ their bicycles to school.", "ride", ["rides", "riding", "is ride"]),
+  mc("sv-15", "It ___ hot in the afternoon.", "gets", ["get", "getting", "are get"]),
+  mc("sv-16", "The students ___ hard for the exam.", "study", ["studies", "studying", "is study"]),
 ];
 
 export const GRAMMAR_BANKS: Record<string, QuizQuestion[]> = {
-  "nouns-vs-verbs": nounsVerbs,
-  "articles": articles,
-  "singular-vs-plural": singularPlural,
+  "verb-tenses": verbTenses,
+  "pronouns-vs-proper-nouns": pronounsProperNouns,
+  "adjectives-vs-adverbs": adjectivesAdverbs,
+  "conjunctions": conjunctions,
+  "prepositions": prepositions,
+  "subject-verb-agreement": subjectVerbAgreement,
 };
 
 export function isGrammarTopic(topicId: string): boolean {

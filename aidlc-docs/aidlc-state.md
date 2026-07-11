@@ -122,4 +122,8 @@ Item 4. Answers pre-captured in increment10-quiz-categories-questions.md: D1=A b
 Brownfield content change inside Inc11 quiz module. Cadence: LIGHT. No schema/migration/seed.
 Request: math → multiplication & division within 100, number bonds to 100; grammar → verb tenses (past/present/past-continuous), pronouns vs proper nouns, + more advanced topics.
 ### 🔵 INCEPTION
-- [ ] Requirements Analysis — questions posed (increment12-harder-quizzes-questions.md); AWAITING ANSWERS
+- [x] Requirements Analysis — APPROVED (increment12-harder-quizzes-requirements.md); answers Q1=A,Q2=A,Q3=C,Q4=A/B/C/D,Q5=9,Q6=A
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment12-harder-quizzes-code-summary.md); 9 topics (3 math procedural mult/div/bonds-100, 6 grammar banks), typecheck clean, 77/77 tests, build ✅, no schema/migration/seed.
+### 🟡 OPERATIONS
+- [ ] Operations gate — redeploy only (git push→Vercel); no migrate/seed. PENDING.

@@ -27,10 +27,10 @@ describe("grammar banks (Inc11)", () => {
 });
 
 describe("topics (Inc11)", () => {
-  it("has 6 topics, 3 math + 3 grammar, all with lessons", () => {
-    expect(TOPICS).toHaveLength(6);
+  it("has 9 topics, 3 math + 6 grammar, all with lessons", () => {
+    expect(TOPICS).toHaveLength(9);
     expect(TOPICS.filter((t) => t.subject === "math")).toHaveLength(3);
-    expect(TOPICS.filter((t) => t.subject === "grammar")).toHaveLength(3);
+    expect(TOPICS.filter((t) => t.subject === "grammar")).toHaveLength(6);
     for (const t of TOPICS) {
       expect(t.lesson.intro.length).toBeGreaterThan(10);
       expect(t.lesson.example.length).toBeGreaterThan(5);
