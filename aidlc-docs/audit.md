@@ -708,3 +708,19 @@
 **Context**: CONSTRUCTION / Code Generation — completion gate. Security extension: compliant.
 
 ---
+
+## Increment 4 — Build & Test Complete
+**Timestamp**: 2026-07-11T13:15:00Z
+**User Input**: "commit in logical chunks then a" (6 chunk commits; approve code-gen → Build & Test)
+**AI Response**: "Committed in 6 chunks (pool data layer, seed content, passcode gate, admin preview+effects, tests, docs). Wrote increment4-admin-content-build-and-test.md. Final verification: typecheck clean, 42/42 tests, build ✅, zero new deps, client-bundle secret grep clean. DB migration + reseed + ADMIN_PASSCODE flagged as user-run (Neon shared/prod). Presented Operations gate."
+**Context**: CONSTRUCTION / Build & Test — Operations gate.
+
+---
+
+## Increment 4 — COMPLETE (Operations Gate)
+**Timestamp**: 2026-07-11T13:20:00Z
+**User Input**: "yes" (proceed to Operations)
+**AI Response**: "Increment 4 (Admin Gate, Preview & Content) marked COMPLETE, held at Operations placeholder gate. Delivered: admin passcode gate (server-only ADMIN_PASSCODE, constant-time compare, signed httpOnly HMAC cookie, middleware + per-page enforcement), full-catalog admin preview with effect-trigger panel, Superheroes→Dinosaurs swap, and true fun facts + admin-only Wikipedia source links on all cards (cards.sourceUrl). typecheck clean, 42/42 tests, build ✅, zero new deps, no client-bundle secret leak; no blocking security findings. Committed in 6 chunks. PENDING user actions: pnpm db:migrate, pnpm seed --reset --publish, set ADMIN_PASSCODE."
+**Context**: OPERATIONS — increment closed. Security extension: compliant.
+
+---

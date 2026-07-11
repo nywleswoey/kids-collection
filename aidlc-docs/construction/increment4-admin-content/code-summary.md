@@ -49,7 +49,9 @@
 
 ## Pending (user-run, DB writes)
 1. **Apply migration**: `pnpm db:migrate` (adds `cards.source_url`).
-2. **Reseed with the new pool**: `pnpm seed --reset --publish` — wipes pool (collections/cards/themes) and rebuilds Animals + **Dinosaurs** + Mythic with facts + sources. NOTE: regenerates all 36 images via the seed image pipeline (Pollinations + Blob) — slower, needs `BLOB_READ_WRITE_TOKEN`.
+2. **Delta sync (recommended)**: `pnpm seed --sync` — generates images ONLY for the 12 new Dinosaurs, backfills `eduText`/`sourceUrl` on existing cards in place (no image regen), and prunes Superheroes. Full rebuild `pnpm seed --reset --publish` remains available (regenerates all 36 images). Both need `BLOB_READ_WRITE_TOKEN`.
 3. **Set `ADMIN_PASSCODE`** in `.env.local` (and Vercel env) — pick your own value.
+
+Seed modes: `--review` (images to disk, no DB) · `--publish` (insert new only) · `--publish --reset` (wipe + rebuild all) · `--sync` (delta: new images only + update existing text + prune).
 
 I was blocked earlier from writing to the Neon DB (shared/prod). These three steps are left for the user (or explicit authorization).
