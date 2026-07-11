@@ -8,6 +8,7 @@ import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
+import { shouldShowAskParent } from "./ticket-display";
 import type { EggTicket } from "@/lib/types";
 
 export function PullButton({
@@ -35,6 +36,11 @@ export function PullButton({
   const prevBalance = useRef(initialBalance);
 
   const outOfTokens = balance < 1;
+  // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
+  // all. If they still hold a special ticket, keep the Discover button visible
+  // but greyed so they know a normal ticket is needed for it (B2=B).
+  const askParent = shouldShowAskParent(balance, epic, lucky);
+  const hasSpecial = epic > 0 || lucky > 0;
 
   // Soft chime as the token counter rolls after a pull.
   useEffect(() => {
@@ -122,7 +128,7 @@ export function PullButton({
         </div>
       ) : null}
 
-      {outOfTokens ? (
+      {askParent ? (
         <p
           data-testid="out-of-tokens-message"
           className="panel max-w-xs px-6 py-4 text-center text-[color:var(--ink-soft)]"
@@ -130,15 +136,27 @@ export function PullButton({
           You&apos;re out of tickets! Ask your parent for more. 🎟️
         </p>
       ) : (
-        <button
-          type="button"
-          onClick={doPull}
-          disabled={pending}
-          data-testid="pull-button"
-          className="btn btn--primary btn--xl press font-extrabold"
-        >
-          {pending ? "Launching…" : "🚀 Discover a card"}
-        </button>
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={doPull}
+            disabled={pending || outOfTokens}
+            data-testid="pull-button"
+            className={`btn btn--primary btn--xl press font-extrabold ${
+              outOfTokens ? "opacity-50" : ""
+            }`}
+          >
+            {pending ? "Launching…" : "🚀 Discover a card"}
+          </button>
+          {outOfTokens && hasSpecial ? (
+            <span
+              data-testid="use-special-hint"
+              className="text-sm text-[color:var(--ink-soft)]"
+            >
+              Out of normal tickets — use a special ticket below! ✨
+            </span>
+          ) : null}
+        </div>
       )}
 
       {/* Special egg tickets — guaranteed pick-1-of-5 (FR4). */}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
+import { getSpecialBalances } from "@/features/pull/token-service";
 import { avatarEmoji } from "@/lib/avatars";
 import { switchProfileAction } from "@/features/profiles/actions";
 
@@ -9,6 +10,11 @@ export default async function PlayHomePage() {
   await requireParent();
   const child = await getActiveChild();
   if (!child) redirect("/play"); // U2-SEC-7: invalid/missing profile → picker
+
+  // FR1 (Inc10): surface special-egg tickets on the landing page so they don't
+  // silently read as "0 tickets".
+  const { epic, lucky } = await getSpecialBalances(child.id);
+  const specialTotal = epic + lucky;
 
   return (
     <main
@@ -25,6 +31,11 @@ export default async function PlayHomePage() {
         <p className="pill pill--gold" data-testid="token-balance">
           🎟️ {child.pullTokens} ticket{child.pullTokens === 1 ? "" : "s"} ready
         </p>
+        {specialTotal > 0 ? (
+          <p className="pill pill--gold" data-testid="special-balance">
+            ✨ {specialTotal} special ticket{specialTotal === 1 ? "" : "s"}
+          </p>
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Link

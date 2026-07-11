@@ -35,5 +35,7 @@ export function pickUpgradeCard(
   if (inTier.length === 0) return null;
   const unowned = inTier.filter((c) => !ownedIds.has(c.id));
   const pickFrom = unowned.length > 0 ? unowned : inTier;
-  return pickFrom[Math.floor(rng() * pickFrom.length)];
+  // Clamp: an rng() that returns exactly 1 would index out of bounds.
+  const idx = Math.min(pickFrom.length - 1, Math.floor(rng() * pickFrom.length));
+  return pickFrom[idx];
 }

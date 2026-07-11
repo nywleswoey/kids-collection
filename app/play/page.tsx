@@ -19,13 +19,12 @@ export default async function ProfilePickerPage() {
       </div>
 
       {kids.length === 0 ? (
-        <p className="panel px-6 py-4 text-[color:var(--ink-soft)]">
-          No profiles yet.{" "}
-          <Link href="/admin/profiles" className="link-soft">
-            Add one
+        <div className="panel flex flex-col items-center gap-3 px-6 py-4 text-[color:var(--ink-soft)]">
+          <span>No profiles yet.</span>
+          <Link href="/admin/profiles" className="btn btn--ghost">
+            ➕ Add one
           </Link>
-          .
-        </p>
+        </div>
       ) : (
         <div className="flex flex-wrap items-center justify-center gap-6">
           {kids.map((c) => (

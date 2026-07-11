@@ -31,7 +31,7 @@ export default async function CardDetailPage({
       {detail.count >= 3 ? (
         <SacrificePanel cardId={detail.card.id} count={detail.count} />
       ) : null}
-      <Link href="/play/binder" className="link-soft text-sm">
+      <Link href="/play/binder" className="btn btn--ghost text-sm">
         ← Back to My Galaxy
       </Link>
     </main>

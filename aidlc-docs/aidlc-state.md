@@ -98,7 +98,7 @@ Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket p
 - [x] Requirements Analysis — APPROVED (increment10-fixes-categories-requirements.md)
 ### 🟢 CONSTRUCTION
 - [x] Application Design — DONE (increment10-fixes-categories-design.md); rosters locked (30 Country + 30 Famous People incl 3 SG)
-- [ ] Code Generation
+- [x] Code Generation — DONE (increment10-fixes-categories/code-summary.md); typecheck clean, 61/61 tests (stable x3), build ✅, zero deps, no migration, no secret leak. NEW ticket-display.ts (PBT); FR1 home special pill; FR2 PullButton greyed-Discover; FR3 5 links→buttons; FR4/FR5 seed Country+Famous People (180 cards); incidental pickUpgradeCard clamp. ⚠️ images not yet generated (pnpm seed --sync required).
 - [ ] Build & Test
 ### 🟡 OPERATIONS
 - [ ] Operations gate

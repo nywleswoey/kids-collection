@@ -48,7 +48,7 @@ export function AdminCardSlot({ entry }: { entry: BinderCard }) {
           target="_blank"
           rel="noopener noreferrer"
           data-testid={`card-source-${entry.card.id}`}
-          className="link-soft truncate text-[0.7rem]"
+          className="btn btn--ghost truncate text-[0.7rem]"
         >
           🔗 Source
         </a>

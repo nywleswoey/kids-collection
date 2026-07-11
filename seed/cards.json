@@ -3,141 +3,1291 @@
     {
       "name": "Animals",
       "cards": [
-        { "name": "Red Fox", "rarity": "common", "eduText": "Red foxes have such sharp hearing they can locate small animals moving under snow or soil.", "imagePrompt": "a friendly red fox sitting in a meadow", "sourceUrl": "https://en.wikipedia.org/wiki/Red_fox" },
-        { "name": "Sea Otter", "rarity": "common", "eduText": "Sea otters often hold hands while resting so they do not drift apart on the water.", "imagePrompt": "a cheerful sea otter floating on its back in calm water", "sourceUrl": "https://en.wikipedia.org/wiki/Sea_otter" },
-        { "name": "Emperor Penguin", "rarity": "common", "eduText": "Emperor penguin dads balance the egg on their feet under a warm flap of skin to keep it cozy.", "imagePrompt": "a round emperor penguin standing on ice with a fluffy chick", "sourceUrl": "https://en.wikipedia.org/wiki/Emperor_penguin" },
-        { "name": "Honey Bee", "rarity": "common", "eduText": "Honey bees do a figure-eight 'waggle dance' to tell other bees where to find flowers.", "imagePrompt": "a fuzzy honey bee hovering beside a bright yellow sunflower", "sourceUrl": "https://en.wikipedia.org/wiki/Waggle_dance" },
-        { "name": "Green Tree Frog", "rarity": "common", "eduText": "Tree frogs have sticky toe pads that let them cling to smooth leaves and climb.", "imagePrompt": "a small bright green tree frog perched on a shiny leaf", "sourceUrl": "https://en.wikipedia.org/wiki/Australian_green_tree_frog" },
-        { "name": "African Elephant", "rarity": "common", "eduText": "An elephant's trunk has tens of thousands of muscles, enough to pick up a single blade of grass.", "imagePrompt": "a gentle african elephant with big ears standing in tall grass", "sourceUrl": "https://en.wikipedia.org/wiki/African_bush_elephant" },
-        { "name": "Giraffe", "rarity": "common", "eduText": "A giraffe has only seven bones in its very long neck — the same number as a human.", "imagePrompt": "a friendly giraffe with a long neck nibbling leaves from a tall tree", "sourceUrl": "https://en.wikipedia.org/wiki/Giraffe" },
-        { "name": "Koala", "rarity": "common", "eduText": "Koalas sleep up to 20 hours a day to save energy from their low-nutrient eucalyptus diet.", "imagePrompt": "a sleepy koala hugging a eucalyptus branch", "sourceUrl": "https://en.wikipedia.org/wiki/Koala" },
-        { "name": "Chameleon", "rarity": "common", "eduText": "Chameleons can move their two eyes in different directions at the same time.", "imagePrompt": "a colorful chameleon with swiveling eyes on a leafy twig", "sourceUrl": "https://en.wikipedia.org/wiki/Chameleon" },
-        { "name": "Kangaroo", "rarity": "common", "eduText": "Kangaroos use their strong tail like a fifth leg and cannot easily walk backwards.", "imagePrompt": "a bouncy kangaroo with a joey peeking from its pouch", "sourceUrl": "https://en.wikipedia.org/wiki/Kangaroo" },
-        { "name": "Bottlenose Dolphin", "rarity": "common", "eduText": "Each dolphin has its own signature whistle it uses a bit like a name.", "imagePrompt": "a smiling bottlenose dolphin leaping from sparkling water", "sourceUrl": "https://en.wikipedia.org/wiki/Bottlenose_dolphin" },
-        { "name": "Raccoon", "rarity": "common", "eduText": "Raccoons have very sensitive front paws and often dip their food in water before eating.", "imagePrompt": "a curious raccoon dipping a berry beside a stream", "sourceUrl": "https://en.wikipedia.org/wiki/Raccoon" },
-        { "name": "Hedgehog", "rarity": "common", "eduText": "When frightened, a hedgehog rolls into a tight ball so its sharp spines point outward.", "imagePrompt": "a cute hedgehog curled into a spiky ball on soft moss", "sourceUrl": "https://en.wikipedia.org/wiki/Hedgehog" },
-        { "name": "Flamingo", "rarity": "common", "eduText": "Flamingos get their pink color from the tiny shrimp and algae that they eat.", "imagePrompt": "a bright pink flamingo standing on one leg in shallow water", "sourceUrl": "https://en.wikipedia.org/wiki/Flamingo" },
-        { "name": "Chimpanzee", "rarity": "common", "eduText": "Chimpanzees make and use tools, like poking sticks into mounds to fish for termites.", "imagePrompt": "a clever chimpanzee holding a small stick tool in a jungle", "sourceUrl": "https://en.wikipedia.org/wiki/Chimpanzee" },
-        { "name": "Snowy Owl", "rarity": "rare", "eduText": "Snowy owls have feathers covering their feet to keep warm in the freezing Arctic.", "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch", "sourceUrl": "https://en.wikipedia.org/wiki/Snowy_owl" },
-        { "name": "Axolotl", "rarity": "rare", "eduText": "An axolotl can regrow lost body parts, including legs and even parts of its heart and brain.", "imagePrompt": "a smiling pink axolotl with feathery gills in clear water", "sourceUrl": "https://en.wikipedia.org/wiki/Axolotl" },
-        { "name": "Red Panda", "rarity": "rare", "eduText": "Red pandas wrap their long bushy tails around themselves like a blanket to stay warm.", "imagePrompt": "a fluffy red panda curled on a mossy tree branch", "sourceUrl": "https://en.wikipedia.org/wiki/Red_panda" },
-        { "name": "Platypus", "rarity": "rare", "eduText": "The platypus is a mammal that lays eggs and senses prey using tiny electric signals in its bill.", "imagePrompt": "a quirky platypus with a duck-like bill swimming in a clear creek", "sourceUrl": "https://en.wikipedia.org/wiki/Platypus" },
-        { "name": "Octopus", "rarity": "rare", "eduText": "An octopus has three hearts and blue blood.", "imagePrompt": "a friendly orange octopus with curling arms among coral", "sourceUrl": "https://en.wikipedia.org/wiki/Octopus" },
-        { "name": "Sloth", "rarity": "rare", "eduText": "Sloths move so slowly that algae can grow on their fur, helping them blend into the trees.", "imagePrompt": "a slow smiling sloth hanging from a rainforest branch", "sourceUrl": "https://en.wikipedia.org/wiki/Sloth" },
-        { "name": "Arctic Fox", "rarity": "rare", "eduText": "The Arctic fox's fur turns white in winter and brown in summer to help it stay hidden.", "imagePrompt": "a fluffy white arctic fox sitting in soft snow", "sourceUrl": "https://en.wikipedia.org/wiki/Arctic_fox" },
-        { "name": "Naked Mole-rat", "rarity": "rare", "eduText": "Naked mole-rats live in underground colonies with a single queen, a bit like bees.", "imagePrompt": "a funny little naked mole-rat peeking from an underground tunnel", "sourceUrl": "https://en.wikipedia.org/wiki/Naked_mole-rat" },
-        { "name": "Giant Panda", "rarity": "epic", "eduText": "Giant pandas spend many hours a day eating bamboo, sometimes more than half the day.", "imagePrompt": "a happy giant panda munching green bamboo", "sourceUrl": "https://en.wikipedia.org/wiki/Giant_panda" },
-        { "name": "Bengal Tiger", "rarity": "epic", "eduText": "Every tiger's stripe pattern is unique, and the stripes are even on their skin, not just fur.", "imagePrompt": "a calm bengal tiger resting in a sunny jungle clearing", "sourceUrl": "https://en.wikipedia.org/wiki/Tiger" },
-        { "name": "Polar Bear", "rarity": "epic", "eduText": "Polar bears have black skin under their fur to help soak up the sun's warmth.", "imagePrompt": "a big gentle polar bear walking across white sea ice", "sourceUrl": "https://en.wikipedia.org/wiki/Polar_bear" },
-        { "name": "Great White Shark", "rarity": "epic", "eduText": "Great white sharks can sense the tiny electric signals given off by other animals nearby.", "imagePrompt": "a sleek great white shark gliding through blue ocean", "sourceUrl": "https://en.wikipedia.org/wiki/Great_white_shark" },
-        { "name": "Orca", "rarity": "epic", "eduText": "Orcas, also called killer whales, are actually the largest members of the dolphin family.", "imagePrompt": "a playful black-and-white orca leaping from the sea", "sourceUrl": "https://en.wikipedia.org/wiki/Killer_whale" },
-        { "name": "Blue Whale", "rarity": "legendary", "eduText": "The blue whale is the largest animal known to have ever lived on Earth.", "imagePrompt": "a majestic blue whale swimming in deep blue ocean", "sourceUrl": "https://en.wikipedia.org/wiki/Blue_whale" },
-        { "name": "Whale Shark", "rarity": "legendary", "eduText": "The whale shark is the largest fish in the world, yet it feeds mostly on tiny plankton.", "imagePrompt": "an enormous gentle whale shark with white spots gliding in deep blue water", "sourceUrl": "https://en.wikipedia.org/wiki/Whale_shark" }
+        {
+          "name": "Red Fox",
+          "rarity": "common",
+          "eduText": "Red foxes have such sharp hearing they can locate small animals moving under snow or soil.",
+          "imagePrompt": "a friendly red fox sitting in a meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red_fox"
+        },
+        {
+          "name": "Sea Otter",
+          "rarity": "common",
+          "eduText": "Sea otters often hold hands while resting so they do not drift apart on the water.",
+          "imagePrompt": "a cheerful sea otter floating on its back in calm water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sea_otter"
+        },
+        {
+          "name": "Emperor Penguin",
+          "rarity": "common",
+          "eduText": "Emperor penguin dads balance the egg on their feet under a warm flap of skin to keep it cozy.",
+          "imagePrompt": "a round emperor penguin standing on ice with a fluffy chick",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Emperor_penguin"
+        },
+        {
+          "name": "Honey Bee",
+          "rarity": "common",
+          "eduText": "Honey bees do a figure-eight 'waggle dance' to tell other bees where to find flowers.",
+          "imagePrompt": "a fuzzy honey bee hovering beside a bright yellow sunflower",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Waggle_dance"
+        },
+        {
+          "name": "Green Tree Frog",
+          "rarity": "common",
+          "eduText": "Tree frogs have sticky toe pads that let them cling to smooth leaves and climb.",
+          "imagePrompt": "a small bright green tree frog perched on a shiny leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Australian_green_tree_frog"
+        },
+        {
+          "name": "African Elephant",
+          "rarity": "common",
+          "eduText": "An elephant's trunk has tens of thousands of muscles, enough to pick up a single blade of grass.",
+          "imagePrompt": "a gentle african elephant with big ears standing in tall grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/African_bush_elephant"
+        },
+        {
+          "name": "Giraffe",
+          "rarity": "common",
+          "eduText": "A giraffe has only seven bones in its very long neck — the same number as a human.",
+          "imagePrompt": "a friendly giraffe with a long neck nibbling leaves from a tall tree",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giraffe"
+        },
+        {
+          "name": "Koala",
+          "rarity": "common",
+          "eduText": "Koalas sleep up to 20 hours a day to save energy from their low-nutrient eucalyptus diet.",
+          "imagePrompt": "a sleepy koala hugging a eucalyptus branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Koala"
+        },
+        {
+          "name": "Chameleon",
+          "rarity": "common",
+          "eduText": "Chameleons can move their two eyes in different directions at the same time.",
+          "imagePrompt": "a colorful chameleon with swiveling eyes on a leafy twig",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chameleon"
+        },
+        {
+          "name": "Kangaroo",
+          "rarity": "common",
+          "eduText": "Kangaroos use their strong tail like a fifth leg and cannot easily walk backwards.",
+          "imagePrompt": "a bouncy kangaroo with a joey peeking from its pouch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kangaroo"
+        },
+        {
+          "name": "Bottlenose Dolphin",
+          "rarity": "common",
+          "eduText": "Each dolphin has its own signature whistle it uses a bit like a name.",
+          "imagePrompt": "a smiling bottlenose dolphin leaping from sparkling water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bottlenose_dolphin"
+        },
+        {
+          "name": "Raccoon",
+          "rarity": "common",
+          "eduText": "Raccoons have very sensitive front paws and often dip their food in water before eating.",
+          "imagePrompt": "a curious raccoon dipping a berry beside a stream",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Raccoon"
+        },
+        {
+          "name": "Hedgehog",
+          "rarity": "common",
+          "eduText": "When frightened, a hedgehog rolls into a tight ball so its sharp spines point outward.",
+          "imagePrompt": "a cute hedgehog curled into a spiky ball on soft moss",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hedgehog"
+        },
+        {
+          "name": "Flamingo",
+          "rarity": "common",
+          "eduText": "Flamingos get their pink color from the tiny shrimp and algae that they eat.",
+          "imagePrompt": "a bright pink flamingo standing on one leg in shallow water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Flamingo"
+        },
+        {
+          "name": "Chimpanzee",
+          "rarity": "common",
+          "eduText": "Chimpanzees make and use tools, like poking sticks into mounds to fish for termites.",
+          "imagePrompt": "a clever chimpanzee holding a small stick tool in a jungle",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chimpanzee"
+        },
+        {
+          "name": "Snowy Owl",
+          "rarity": "rare",
+          "eduText": "Snowy owls have feathers covering their feet to keep warm in the freezing Arctic.",
+          "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snowy_owl"
+        },
+        {
+          "name": "Axolotl",
+          "rarity": "rare",
+          "eduText": "An axolotl can regrow lost body parts, including legs and even parts of its heart and brain.",
+          "imagePrompt": "a smiling pink axolotl with feathery gills in clear water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Axolotl"
+        },
+        {
+          "name": "Red Panda",
+          "rarity": "rare",
+          "eduText": "Red pandas wrap their long bushy tails around themselves like a blanket to stay warm.",
+          "imagePrompt": "a fluffy red panda curled on a mossy tree branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red_panda"
+        },
+        {
+          "name": "Platypus",
+          "rarity": "rare",
+          "eduText": "The platypus is a mammal that lays eggs and senses prey using tiny electric signals in its bill.",
+          "imagePrompt": "a quirky platypus with a duck-like bill swimming in a clear creek",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Platypus"
+        },
+        {
+          "name": "Octopus",
+          "rarity": "rare",
+          "eduText": "An octopus has three hearts and blue blood.",
+          "imagePrompt": "a friendly orange octopus with curling arms among coral",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Octopus"
+        },
+        {
+          "name": "Sloth",
+          "rarity": "rare",
+          "eduText": "Sloths move so slowly that algae can grow on their fur, helping them blend into the trees.",
+          "imagePrompt": "a slow smiling sloth hanging from a rainforest branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sloth"
+        },
+        {
+          "name": "Arctic Fox",
+          "rarity": "rare",
+          "eduText": "The Arctic fox's fur turns white in winter and brown in summer to help it stay hidden.",
+          "imagePrompt": "a fluffy white arctic fox sitting in soft snow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Arctic_fox"
+        },
+        {
+          "name": "Naked Mole-rat",
+          "rarity": "rare",
+          "eduText": "Naked mole-rats live in underground colonies with a single queen, a bit like bees.",
+          "imagePrompt": "a funny little naked mole-rat peeking from an underground tunnel",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Naked_mole-rat"
+        },
+        {
+          "name": "Giant Panda",
+          "rarity": "epic",
+          "eduText": "Giant pandas spend many hours a day eating bamboo, sometimes more than half the day.",
+          "imagePrompt": "a happy giant panda munching green bamboo",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giant_panda"
+        },
+        {
+          "name": "Bengal Tiger",
+          "rarity": "epic",
+          "eduText": "Every tiger's stripe pattern is unique, and the stripes are even on their skin, not just fur.",
+          "imagePrompt": "a calm bengal tiger resting in a sunny jungle clearing",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tiger"
+        },
+        {
+          "name": "Polar Bear",
+          "rarity": "epic",
+          "eduText": "Polar bears have black skin under their fur to help soak up the sun's warmth.",
+          "imagePrompt": "a big gentle polar bear walking across white sea ice",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Polar_bear"
+        },
+        {
+          "name": "Great White Shark",
+          "rarity": "epic",
+          "eduText": "Great white sharks can sense the tiny electric signals given off by other animals nearby.",
+          "imagePrompt": "a sleek great white shark gliding through blue ocean",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Great_white_shark"
+        },
+        {
+          "name": "Orca",
+          "rarity": "epic",
+          "eduText": "Orcas, also called killer whales, are actually the largest members of the dolphin family.",
+          "imagePrompt": "a playful black-and-white orca leaping from the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Killer_whale"
+        },
+        {
+          "name": "Blue Whale",
+          "rarity": "legendary",
+          "eduText": "The blue whale is the largest animal known to have ever lived on Earth.",
+          "imagePrompt": "a majestic blue whale swimming in deep blue ocean",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Blue_whale"
+        },
+        {
+          "name": "Whale Shark",
+          "rarity": "legendary",
+          "eduText": "The whale shark is the largest fish in the world, yet it feeds mostly on tiny plankton.",
+          "imagePrompt": "an enormous gentle whale shark with white spots gliding in deep blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Whale_shark"
+        }
       ]
     },
     {
       "name": "Dinosaurs",
       "cards": [
-        { "name": "Triceratops", "rarity": "common", "eduText": "Triceratops had three horns on its face and a large bony frill around the back of its head.", "imagePrompt": "a friendly triceratops with three horns standing in a green prehistoric meadow", "sourceUrl": "https://en.wikipedia.org/wiki/Triceratops" },
-        { "name": "Stegosaurus", "rarity": "common", "eduText": "Stegosaurus had tall bony plates along its back and sharp spikes on its tail for defense.", "imagePrompt": "a gentle stegosaurus with big back plates grazing among ferns", "sourceUrl": "https://en.wikipedia.org/wiki/Stegosaurus" },
-        { "name": "Ankylosaurus", "rarity": "common", "eduText": "Ankylosaurus was covered in bony armor and swung a heavy club on the end of its tail.", "imagePrompt": "a sturdy armored ankylosaurus with a club tail walking in a valley", "sourceUrl": "https://en.wikipedia.org/wiki/Ankylosaurus" },
-        { "name": "Parasaurolophus", "rarity": "common", "eduText": "Parasaurolophus had a long hollow head crest that may have let it make trumpet-like calls.", "imagePrompt": "a friendly parasaurolophus with a long curved head crest near a river", "sourceUrl": "https://en.wikipedia.org/wiki/Parasaurolophus" },
-        { "name": "Iguanodon", "rarity": "common", "eduText": "Iguanodon had a spiky thumb that it may have used for defense or to break open plants.", "imagePrompt": "a calm iguanodon standing on two legs reaching for leafy plants", "sourceUrl": "https://en.wikipedia.org/wiki/Iguanodon" },
-        { "name": "Gallimimus", "rarity": "common", "eduText": "Gallimimus looked a bit like an ostrich and was one of the fastest running dinosaurs.", "imagePrompt": "a slender ostrich-like gallimimus running across an open plain", "sourceUrl": "https://en.wikipedia.org/wiki/Gallimimus" },
-        { "name": "Pachycephalosaurus", "rarity": "common", "eduText": "Pachycephalosaurus had a very thick, domed skull that it may have used for head-butting.", "imagePrompt": "a pachycephalosaurus with a thick round domed head in a prehistoric forest", "sourceUrl": "https://en.wikipedia.org/wiki/Pachycephalosaurus" },
-        { "name": "Protoceratops", "rarity": "common", "eduText": "Protoceratops was a sheep-sized relative of Triceratops with a bony frill but no big horns.", "imagePrompt": "a small sheep-sized protoceratops with a bony frill in a sandy desert", "sourceUrl": "https://en.wikipedia.org/wiki/Protoceratops" },
-        { "name": "Maiasaura", "rarity": "common", "eduText": "Maiasaura means 'good mother lizard' — fossils show it looked after its babies in nests.", "imagePrompt": "a caring maiasaura standing over a nest of eggs", "sourceUrl": "https://en.wikipedia.org/wiki/Maiasaura" },
-        { "name": "Compsognathus", "rarity": "common", "eduText": "Compsognathus was about the size of a chicken, one of the smallest dinosaurs known.", "imagePrompt": "a tiny chicken-sized compsognathus darting across rocks", "sourceUrl": "https://en.wikipedia.org/wiki/Compsognathus" },
-        { "name": "Edmontosaurus", "rarity": "common", "eduText": "Edmontosaurus was a large duck-billed dinosaur with hundreds of grinding teeth.", "imagePrompt": "a large duck-billed edmontosaurus grazing by a river", "sourceUrl": "https://en.wikipedia.org/wiki/Edmontosaurus" },
-        { "name": "Styracosaurus", "rarity": "common", "eduText": "Styracosaurus had a frill lined with long spikes around the back of its head.", "imagePrompt": "a styracosaurus with a spiky frill of horns in a green valley", "sourceUrl": "https://en.wikipedia.org/wiki/Styracosaurus" },
-        { "name": "Corythosaurus", "rarity": "common", "eduText": "Corythosaurus had a tall, helmet-shaped crest on top of its head.", "imagePrompt": "a corythosaurus with a tall helmet-shaped crest near ferns", "sourceUrl": "https://en.wikipedia.org/wiki/Corythosaurus" },
-        { "name": "Dryosaurus", "rarity": "common", "eduText": "Dryosaurus was a small plant-eater with long back legs built for running fast.", "imagePrompt": "a small speedy dryosaurus running on two legs across a plain", "sourceUrl": "https://en.wikipedia.org/wiki/Dryosaurus" },
-        { "name": "Nigersaurus", "rarity": "common", "eduText": "Nigersaurus had a wide, straight-edged mouth with hundreds of tiny teeth for cropping plants.", "imagePrompt": "a nigersaurus with a wide flat mouth cropping low green plants", "sourceUrl": "https://en.wikipedia.org/wiki/Nigersaurus" },
-        { "name": "Velociraptor", "rarity": "rare", "eduText": "The real Velociraptor was only about the size of a turkey and had feathers.", "imagePrompt": "a small feathered velociraptor perched alertly on a rock", "sourceUrl": "https://en.wikipedia.org/wiki/Velociraptor" },
-        { "name": "Brachiosaurus", "rarity": "rare", "eduText": "Brachiosaurus had front legs longer than its back legs, helping it lift its head high to reach treetops.", "imagePrompt": "a towering gentle brachiosaurus reaching leaves at the top of tall trees", "sourceUrl": "https://en.wikipedia.org/wiki/Brachiosaurus" },
-        { "name": "Pteranodon", "rarity": "rare", "eduText": "Pteranodon was a flying reptile with a huge wingspan — but it was a pterosaur, not a true dinosaur.", "imagePrompt": "a large winged pteranodon with a long head crest gliding over the sea", "sourceUrl": "https://en.wikipedia.org/wiki/Pteranodon" },
-        { "name": "Deinonychus", "rarity": "rare", "eduText": "Deinonychus had a large sickle-shaped claw on each foot and probably had feathers.", "imagePrompt": "a feathered deinonychus with a big curved claw crouching alertly", "sourceUrl": "https://en.wikipedia.org/wiki/Deinonychus" },
-        { "name": "Coelophysis", "rarity": "rare", "eduText": "Coelophysis was a slender, fast hunter and one of the earliest dinosaurs, from the Triassic.", "imagePrompt": "a slender coelophysis running quickly through Triassic scrubland", "sourceUrl": "https://en.wikipedia.org/wiki/Coelophysis" },
-        { "name": "Oviraptor", "rarity": "rare", "eduText": "Oviraptor's name means 'egg thief', but it was likely guarding its own eggs, not stealing them.", "imagePrompt": "a feathered oviraptor gently sitting on a nest of eggs", "sourceUrl": "https://en.wikipedia.org/wiki/Oviraptor" },
-        { "name": "Baryonyx", "rarity": "rare", "eduText": "Baryonyx had a crocodile-like snout and ate fish, with a big curved claw on each hand.", "imagePrompt": "a baryonyx with a crocodile-like snout catching a fish in a river", "sourceUrl": "https://en.wikipedia.org/wiki/Baryonyx" },
-        { "name": "Microraptor", "rarity": "rare", "eduText": "Microraptor was a small feathered dinosaur with wings on all four of its limbs.", "imagePrompt": "a small feathered microraptor with four wings gliding between trees", "sourceUrl": "https://en.wikipedia.org/wiki/Microraptor" },
-        { "name": "Spinosaurus", "rarity": "epic", "eduText": "Spinosaurus is the longest known meat-eating dinosaur and likely spent much of its time hunting fish in water.", "imagePrompt": "a large spinosaurus with a tall sail on its back wading in a river", "sourceUrl": "https://en.wikipedia.org/wiki/Spinosaurus" },
-        { "name": "Allosaurus", "rarity": "epic", "eduText": "Allosaurus was a powerful Jurassic hunter with saw-edged teeth built for slicing meat.", "imagePrompt": "a strong allosaurus standing over a rocky Jurassic landscape", "sourceUrl": "https://en.wikipedia.org/wiki/Allosaurus" },
-        { "name": "Therizinosaurus", "rarity": "epic", "eduText": "Therizinosaurus had some of the longest claws of any animal, up to about a meter long.", "imagePrompt": "a therizinosaurus with very long curved claws reaching for tall leaves", "sourceUrl": "https://en.wikipedia.org/wiki/Therizinosaurus" },
-        { "name": "Carnotaurus", "rarity": "epic", "eduText": "Carnotaurus had two horns above its eyes and tiny arms even shorter than a T. rex's.", "imagePrompt": "a carnotaurus with two small horns above its eyes and tiny arms", "sourceUrl": "https://en.wikipedia.org/wiki/Carnotaurus" },
-        { "name": "Giganotosaurus", "rarity": "epic", "eduText": "Giganotosaurus was one of the largest meat-eating dinosaurs, even a bit longer than T. rex.", "imagePrompt": "a huge giganotosaurus roaring in an ancient forest", "sourceUrl": "https://en.wikipedia.org/wiki/Giganotosaurus" },
-        { "name": "Tyrannosaurus rex", "rarity": "legendary", "eduText": "Tyrannosaurus rex had one of the most powerful bites of any land animal that has ever lived.", "imagePrompt": "a mighty tyrannosaurus rex roaring in a misty prehistoric forest", "sourceUrl": "https://en.wikipedia.org/wiki/Tyrannosaurus" },
-        { "name": "Argentinosaurus", "rarity": "legendary", "eduText": "Argentinosaurus may be one of the heaviest land animals ever, as heavy as many elephants together.", "imagePrompt": "a colossal long-necked argentinosaurus towering over the treetops", "sourceUrl": "https://en.wikipedia.org/wiki/Argentinosaurus" }
+        {
+          "name": "Triceratops",
+          "rarity": "common",
+          "eduText": "Triceratops had three horns on its face and a large bony frill around the back of its head.",
+          "imagePrompt": "a friendly triceratops with three horns standing in a green prehistoric meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Triceratops"
+        },
+        {
+          "name": "Stegosaurus",
+          "rarity": "common",
+          "eduText": "Stegosaurus had tall bony plates along its back and sharp spikes on its tail for defense.",
+          "imagePrompt": "a gentle stegosaurus with big back plates grazing among ferns",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Stegosaurus"
+        },
+        {
+          "name": "Ankylosaurus",
+          "rarity": "common",
+          "eduText": "Ankylosaurus was covered in bony armor and swung a heavy club on the end of its tail.",
+          "imagePrompt": "a sturdy armored ankylosaurus with a club tail walking in a valley",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ankylosaurus"
+        },
+        {
+          "name": "Parasaurolophus",
+          "rarity": "common",
+          "eduText": "Parasaurolophus had a long hollow head crest that may have let it make trumpet-like calls.",
+          "imagePrompt": "a friendly parasaurolophus with a long curved head crest near a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Parasaurolophus"
+        },
+        {
+          "name": "Iguanodon",
+          "rarity": "common",
+          "eduText": "Iguanodon had a spiky thumb that it may have used for defense or to break open plants.",
+          "imagePrompt": "a calm iguanodon standing on two legs reaching for leafy plants",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Iguanodon"
+        },
+        {
+          "name": "Gallimimus",
+          "rarity": "common",
+          "eduText": "Gallimimus looked a bit like an ostrich and was one of the fastest running dinosaurs.",
+          "imagePrompt": "a slender ostrich-like gallimimus running across an open plain",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gallimimus"
+        },
+        {
+          "name": "Pachycephalosaurus",
+          "rarity": "common",
+          "eduText": "Pachycephalosaurus had a very thick, domed skull that it may have used for head-butting.",
+          "imagePrompt": "a pachycephalosaurus with a thick round domed head in a prehistoric forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pachycephalosaurus"
+        },
+        {
+          "name": "Protoceratops",
+          "rarity": "common",
+          "eduText": "Protoceratops was a sheep-sized relative of Triceratops with a bony frill but no big horns.",
+          "imagePrompt": "a small sheep-sized protoceratops with a bony frill in a sandy desert",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Protoceratops"
+        },
+        {
+          "name": "Maiasaura",
+          "rarity": "common",
+          "eduText": "Maiasaura means 'good mother lizard' — fossils show it looked after its babies in nests.",
+          "imagePrompt": "a caring maiasaura standing over a nest of eggs",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Maiasaura"
+        },
+        {
+          "name": "Compsognathus",
+          "rarity": "common",
+          "eduText": "Compsognathus was about the size of a chicken, one of the smallest dinosaurs known.",
+          "imagePrompt": "a tiny chicken-sized compsognathus darting across rocks",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Compsognathus"
+        },
+        {
+          "name": "Edmontosaurus",
+          "rarity": "common",
+          "eduText": "Edmontosaurus was a large duck-billed dinosaur with hundreds of grinding teeth.",
+          "imagePrompt": "a large duck-billed edmontosaurus grazing by a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Edmontosaurus"
+        },
+        {
+          "name": "Styracosaurus",
+          "rarity": "common",
+          "eduText": "Styracosaurus had a frill lined with long spikes around the back of its head.",
+          "imagePrompt": "a styracosaurus with a spiky frill of horns in a green valley",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Styracosaurus"
+        },
+        {
+          "name": "Corythosaurus",
+          "rarity": "common",
+          "eduText": "Corythosaurus had a tall, helmet-shaped crest on top of its head.",
+          "imagePrompt": "a corythosaurus with a tall helmet-shaped crest near ferns",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Corythosaurus"
+        },
+        {
+          "name": "Dryosaurus",
+          "rarity": "common",
+          "eduText": "Dryosaurus was a small plant-eater with long back legs built for running fast.",
+          "imagePrompt": "a small speedy dryosaurus running on two legs across a plain",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dryosaurus"
+        },
+        {
+          "name": "Nigersaurus",
+          "rarity": "common",
+          "eduText": "Nigersaurus had a wide, straight-edged mouth with hundreds of tiny teeth for cropping plants.",
+          "imagePrompt": "a nigersaurus with a wide flat mouth cropping low green plants",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nigersaurus"
+        },
+        {
+          "name": "Velociraptor",
+          "rarity": "rare",
+          "eduText": "The real Velociraptor was only about the size of a turkey and had feathers.",
+          "imagePrompt": "a small feathered velociraptor perched alertly on a rock",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Velociraptor"
+        },
+        {
+          "name": "Brachiosaurus",
+          "rarity": "rare",
+          "eduText": "Brachiosaurus had front legs longer than its back legs, helping it lift its head high to reach treetops.",
+          "imagePrompt": "a towering gentle brachiosaurus reaching leaves at the top of tall trees",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Brachiosaurus"
+        },
+        {
+          "name": "Pteranodon",
+          "rarity": "rare",
+          "eduText": "Pteranodon was a flying reptile with a huge wingspan — but it was a pterosaur, not a true dinosaur.",
+          "imagePrompt": "a large winged pteranodon with a long head crest gliding over the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pteranodon"
+        },
+        {
+          "name": "Deinonychus",
+          "rarity": "rare",
+          "eduText": "Deinonychus had a large sickle-shaped claw on each foot and probably had feathers.",
+          "imagePrompt": "a feathered deinonychus with a big curved claw crouching alertly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Deinonychus"
+        },
+        {
+          "name": "Coelophysis",
+          "rarity": "rare",
+          "eduText": "Coelophysis was a slender, fast hunter and one of the earliest dinosaurs, from the Triassic.",
+          "imagePrompt": "a slender coelophysis running quickly through Triassic scrubland",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coelophysis"
+        },
+        {
+          "name": "Oviraptor",
+          "rarity": "rare",
+          "eduText": "Oviraptor's name means 'egg thief', but it was likely guarding its own eggs, not stealing them.",
+          "imagePrompt": "a feathered oviraptor gently sitting on a nest of eggs",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Oviraptor"
+        },
+        {
+          "name": "Baryonyx",
+          "rarity": "rare",
+          "eduText": "Baryonyx had a crocodile-like snout and ate fish, with a big curved claw on each hand.",
+          "imagePrompt": "a baryonyx with a crocodile-like snout catching a fish in a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Baryonyx"
+        },
+        {
+          "name": "Microraptor",
+          "rarity": "rare",
+          "eduText": "Microraptor was a small feathered dinosaur with wings on all four of its limbs.",
+          "imagePrompt": "a small feathered microraptor with four wings gliding between trees",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Microraptor"
+        },
+        {
+          "name": "Spinosaurus",
+          "rarity": "epic",
+          "eduText": "Spinosaurus is the longest known meat-eating dinosaur and likely spent much of its time hunting fish in water.",
+          "imagePrompt": "a large spinosaurus with a tall sail on its back wading in a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spinosaurus"
+        },
+        {
+          "name": "Allosaurus",
+          "rarity": "epic",
+          "eduText": "Allosaurus was a powerful Jurassic hunter with saw-edged teeth built for slicing meat.",
+          "imagePrompt": "a strong allosaurus standing over a rocky Jurassic landscape",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Allosaurus"
+        },
+        {
+          "name": "Therizinosaurus",
+          "rarity": "epic",
+          "eduText": "Therizinosaurus had some of the longest claws of any animal, up to about a meter long.",
+          "imagePrompt": "a therizinosaurus with very long curved claws reaching for tall leaves",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Therizinosaurus"
+        },
+        {
+          "name": "Carnotaurus",
+          "rarity": "epic",
+          "eduText": "Carnotaurus had two horns above its eyes and tiny arms even shorter than a T. rex's.",
+          "imagePrompt": "a carnotaurus with two small horns above its eyes and tiny arms",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Carnotaurus"
+        },
+        {
+          "name": "Giganotosaurus",
+          "rarity": "epic",
+          "eduText": "Giganotosaurus was one of the largest meat-eating dinosaurs, even a bit longer than T. rex.",
+          "imagePrompt": "a huge giganotosaurus roaring in an ancient forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giganotosaurus"
+        },
+        {
+          "name": "Tyrannosaurus rex",
+          "rarity": "legendary",
+          "eduText": "Tyrannosaurus rex had one of the most powerful bites of any land animal that has ever lived.",
+          "imagePrompt": "a mighty tyrannosaurus rex roaring in a misty prehistoric forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tyrannosaurus"
+        },
+        {
+          "name": "Argentinosaurus",
+          "rarity": "legendary",
+          "eduText": "Argentinosaurus may be one of the heaviest land animals ever, as heavy as many elephants together.",
+          "imagePrompt": "a colossal long-necked argentinosaurus towering over the treetops",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Argentinosaurus"
+        }
       ]
     },
     {
       "name": "Superheroes",
       "cards": [
-        { "name": "Captain Kindness", "rarity": "common", "eduText": "Her power grows every time someone helps a friend in need — real kindness is called altruism.", "imagePrompt": "a smiling young superhero in a yellow cape giving a helping hand", "sourceUrl": "https://en.wikipedia.org/wiki/Altruism" },
-        { "name": "Bookworm", "rarity": "common", "eduText": "He learns a brand new fact every minute, because reading really is a superpower for the brain.", "imagePrompt": "a cheerful boy hero in glasses and a green cape holding an open book", "sourceUrl": "https://en.wikipedia.org/wiki/Reading" },
-        { "name": "Sprout", "rarity": "common", "eduText": "Wherever Sprout walks, seeds grow into plants — real seeds hold everything a new plant needs to start.", "imagePrompt": "a small hero in a leafy green suit with flowers blooming at her feet", "sourceUrl": "https://en.wikipedia.org/wiki/Seed" },
-        { "name": "Echo", "rarity": "common", "eduText": "Echo listens carefully to everyone; a real echo is sound bouncing back off a surface.", "imagePrompt": "a friendly hero with big headphones and a swirling blue cape", "sourceUrl": "https://en.wikipedia.org/wiki/Echo" },
-        { "name": "Sunbeam", "rarity": "common", "eduText": "Sunbeam glows warmly, like real sunlight that plants use to make their food by photosynthesis.", "imagePrompt": "a glowing girl hero with a bright yellow suit and sunny smile", "sourceUrl": "https://en.wikipedia.org/wiki/Photosynthesis" },
-        { "name": "Gearheart", "rarity": "common", "eduText": "Gearheart builds a helpful invention for every tricky problem — inventing means creating something new.", "imagePrompt": "a young inventor hero with goggles and a toolbelt holding a tiny robot", "sourceUrl": "https://en.wikipedia.org/wiki/Invention" },
-        { "name": "Sparkwing", "rarity": "common", "eduText": "Sparkwing zips along wires, like the real electricity that powers our lights and homes.", "imagePrompt": "a speedy hero in a blue suit trailing crackling sparks of light", "sourceUrl": "https://en.wikipedia.org/wiki/Electricity" },
-        { "name": "Melody", "rarity": "common", "eduText": "Melody turns feelings into songs; real sound travels as waves through the air to our ears.", "imagePrompt": "a joyful hero with musical notes swirling around a flowing purple cape", "sourceUrl": "https://en.wikipedia.org/wiki/Sound" },
-        { "name": "Pixel", "rarity": "common", "eduText": "Pixel builds worlds from tiny squares, just like the pixels that make up a real screen.", "imagePrompt": "a playful hero made of glowing colorful squares striking a pose", "sourceUrl": "https://en.wikipedia.org/wiki/Pixel" },
-        { "name": "Compass", "rarity": "common", "eduText": "Compass always finds the way, like a real compass whose needle points toward the north.", "imagePrompt": "an adventurous hero in an orange cape holding a glowing compass", "sourceUrl": "https://en.wikipedia.org/wiki/Compass" },
-        { "name": "Bubble", "rarity": "common", "eduText": "Bubble floats friends to safety using buoyancy, the force that makes light things rise in water.", "imagePrompt": "a cheerful hero inside a shimmering floating bubble", "sourceUrl": "https://en.wikipedia.org/wiki/Buoyancy" },
-        { "name": "Beacon", "rarity": "common", "eduText": "Beacon shines a guiding light, like a real lighthouse that warns ships away from rocks.", "imagePrompt": "a steady hero glowing with warm light standing on a rocky shore", "sourceUrl": "https://en.wikipedia.org/wiki/Lighthouse" },
-        { "name": "Rootling", "rarity": "common", "eduText": "Rootling turns scraps into rich soil, the way real compost breaks down into food for plants.", "imagePrompt": "a tiny earthy hero in a mossy cloak tending a garden bed", "sourceUrl": "https://en.wikipedia.org/wiki/Compost" },
-        { "name": "Whisk", "rarity": "common", "eduText": "Whisk cooks warm meals with a smile; real cooking uses heat to change how food tastes and feels.", "imagePrompt": "a friendly chef hero in an apron and cape holding a wooden spoon", "sourceUrl": "https://en.wikipedia.org/wiki/Cooking" },
-        { "name": "Snowcap", "rarity": "common", "eduText": "Snowcap freezes water into ice, just like water turns solid on a very cold winter day.", "imagePrompt": "a cool hero in a white and blue suit with frosty sparkles", "sourceUrl": "https://en.wikipedia.org/wiki/Ice" },
-        { "name": "Tidecaller", "rarity": "rare", "eduText": "Tidecaller keeps the oceans tidy, because clean seas keep real ocean animals healthy.", "imagePrompt": "a hero in a teal wetsuit riding a gentle wave with a happy dolphin", "sourceUrl": "https://en.wikipedia.org/wiki/Ocean" },
-        { "name": "Stormrider", "rarity": "rare", "eduText": "Stormrider races clouds and brings rain — real rain is part of the water cycle that waters the land.", "imagePrompt": "a hero in a silver cape surfing on a fluffy cloud above a rainbow", "sourceUrl": "https://en.wikipedia.org/wiki/Water_cycle" },
-        { "name": "Whisker Knight", "rarity": "rare", "eduText": "Based on a house cat, this hero lands softly and sees well in the dark, just like a real cat.", "imagePrompt": "a brave cat-eared hero in a purple cape crouching on a rooftop", "sourceUrl": "https://en.wikipedia.org/wiki/Cat" },
-        { "name": "Windrunner", "rarity": "rare", "eduText": "Windrunner races the breeze; real wind can spin turbines to make clean electricity.", "imagePrompt": "a swift hero in a green cape dashing on gusts of wind", "sourceUrl": "https://en.wikipedia.org/wiki/Wind_power" },
-        { "name": "Magneta", "rarity": "rare", "eduText": "Magneta pulls metal with a wave of her hand, like a real magnet attracting iron.", "imagePrompt": "a bold hero with red and silver armor lifting metal objects", "sourceUrl": "https://en.wikipedia.org/wiki/Magnet" },
-        { "name": "Lumen", "rarity": "rare", "eduText": "Lumen bends light into colors, the way real raindrops split sunlight into a rainbow.", "imagePrompt": "a radiant hero surrounded by arcs of rainbow light", "sourceUrl": "https://en.wikipedia.org/wiki/Rainbow" },
-        { "name": "Coral", "rarity": "rare", "eduText": "Coral shelters tiny sea creatures, just like a real coral reef is home to many fish.", "imagePrompt": "a gentle hero in pink and orange armor among glowing reef shapes", "sourceUrl": "https://en.wikipedia.org/wiki/Coral_reef" },
-        { "name": "Quakestep", "rarity": "rare", "eduText": "Quakestep feels the ground rumble, like real earthquakes caused by moving rock deep in the Earth.", "imagePrompt": "a strong hero in brown armor standing firm as the ground cracks", "sourceUrl": "https://en.wikipedia.org/wiki/Earthquake" },
-        { "name": "Aurora", "rarity": "epic", "eduText": "Aurora paints the sky with color, like the real northern lights glowing high in the atmosphere.", "imagePrompt": "a hero with flowing green and purple light ribbons trailing behind her", "sourceUrl": "https://en.wikipedia.org/wiki/Aurora" },
-        { "name": "Terra Guardian", "rarity": "epic", "eduText": "Terra Guardian protects forests, because real trees make much of the oxygen we breathe.", "imagePrompt": "a tall gentle hero made of stone and moss standing among giant trees", "sourceUrl": "https://en.wikipedia.org/wiki/Tree" },
-        { "name": "Voltra", "rarity": "epic", "eduText": "Voltra crackles with power, like the real lightning that flashes during a thunderstorm.", "imagePrompt": "a dynamic hero wreathed in bright blue-white lightning", "sourceUrl": "https://en.wikipedia.org/wiki/Lightning" },
-        { "name": "Terranova", "rarity": "epic", "eduText": "Terranova shapes new land, the way real volcanoes build islands from cooled lava.", "imagePrompt": "a powerful hero in glowing red-orange armor rising from molten rock", "sourceUrl": "https://en.wikipedia.org/wiki/Volcano" },
-        { "name": "Nimbus", "rarity": "epic", "eduText": "Nimbus rides the sky; real clouds are made of countless tiny drops of water and ice.", "imagePrompt": "a serene hero floating among soft towering clouds", "sourceUrl": "https://en.wikipedia.org/wiki/Cloud" },
-        { "name": "Starweaver", "rarity": "legendary", "eduText": "Starweaver links stars into pictures, the way real constellations once helped sailors find their way.", "imagePrompt": "a glowing hero drawing bright constellations across a night sky", "sourceUrl": "https://en.wikipedia.org/wiki/Constellation" },
-        { "name": "Solaris", "rarity": "legendary", "eduText": "Solaris blazes like a tiny star; the real Sun is a giant star that lights and warms our whole planet.", "imagePrompt": "a brilliant hero radiating golden sunlight with a fiery halo", "sourceUrl": "https://en.wikipedia.org/wiki/Sun" }
+        {
+          "name": "Captain Kindness",
+          "rarity": "common",
+          "eduText": "Her power grows every time someone helps a friend in need — real kindness is called altruism.",
+          "imagePrompt": "a smiling young superhero in a yellow cape giving a helping hand",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Altruism"
+        },
+        {
+          "name": "Bookworm",
+          "rarity": "common",
+          "eduText": "He learns a brand new fact every minute, because reading really is a superpower for the brain.",
+          "imagePrompt": "a cheerful boy hero in glasses and a green cape holding an open book",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Reading"
+        },
+        {
+          "name": "Sprout",
+          "rarity": "common",
+          "eduText": "Wherever Sprout walks, seeds grow into plants — real seeds hold everything a new plant needs to start.",
+          "imagePrompt": "a small hero in a leafy green suit with flowers blooming at her feet",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Seed"
+        },
+        {
+          "name": "Echo",
+          "rarity": "common",
+          "eduText": "Echo listens carefully to everyone; a real echo is sound bouncing back off a surface.",
+          "imagePrompt": "a friendly hero with big headphones and a swirling blue cape",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Echo"
+        },
+        {
+          "name": "Sunbeam",
+          "rarity": "common",
+          "eduText": "Sunbeam glows warmly, like real sunlight that plants use to make their food by photosynthesis.",
+          "imagePrompt": "a glowing girl hero with a bright yellow suit and sunny smile",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Photosynthesis"
+        },
+        {
+          "name": "Gearheart",
+          "rarity": "common",
+          "eduText": "Gearheart builds a helpful invention for every tricky problem — inventing means creating something new.",
+          "imagePrompt": "a young inventor hero with goggles and a toolbelt holding a tiny robot",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Invention"
+        },
+        {
+          "name": "Sparkwing",
+          "rarity": "common",
+          "eduText": "Sparkwing zips along wires, like the real electricity that powers our lights and homes.",
+          "imagePrompt": "a speedy hero in a blue suit trailing crackling sparks of light",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Electricity"
+        },
+        {
+          "name": "Melody",
+          "rarity": "common",
+          "eduText": "Melody turns feelings into songs; real sound travels as waves through the air to our ears.",
+          "imagePrompt": "a joyful hero with musical notes swirling around a flowing purple cape",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sound"
+        },
+        {
+          "name": "Pixel",
+          "rarity": "common",
+          "eduText": "Pixel builds worlds from tiny squares, just like the pixels that make up a real screen.",
+          "imagePrompt": "a playful hero made of glowing colorful squares striking a pose",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pixel"
+        },
+        {
+          "name": "Compass",
+          "rarity": "common",
+          "eduText": "Compass always finds the way, like a real compass whose needle points toward the north.",
+          "imagePrompt": "an adventurous hero in an orange cape holding a glowing compass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Compass"
+        },
+        {
+          "name": "Bubble",
+          "rarity": "common",
+          "eduText": "Bubble floats friends to safety using buoyancy, the force that makes light things rise in water.",
+          "imagePrompt": "a cheerful hero inside a shimmering floating bubble",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Buoyancy"
+        },
+        {
+          "name": "Beacon",
+          "rarity": "common",
+          "eduText": "Beacon shines a guiding light, like a real lighthouse that warns ships away from rocks.",
+          "imagePrompt": "a steady hero glowing with warm light standing on a rocky shore",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lighthouse"
+        },
+        {
+          "name": "Rootling",
+          "rarity": "common",
+          "eduText": "Rootling turns scraps into rich soil, the way real compost breaks down into food for plants.",
+          "imagePrompt": "a tiny earthy hero in a mossy cloak tending a garden bed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Compost"
+        },
+        {
+          "name": "Whisk",
+          "rarity": "common",
+          "eduText": "Whisk cooks warm meals with a smile; real cooking uses heat to change how food tastes and feels.",
+          "imagePrompt": "a friendly chef hero in an apron and cape holding a wooden spoon",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cooking"
+        },
+        {
+          "name": "Snowcap",
+          "rarity": "common",
+          "eduText": "Snowcap freezes water into ice, just like water turns solid on a very cold winter day.",
+          "imagePrompt": "a cool hero in a white and blue suit with frosty sparkles",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ice"
+        },
+        {
+          "name": "Tidecaller",
+          "rarity": "rare",
+          "eduText": "Tidecaller keeps the oceans tidy, because clean seas keep real ocean animals healthy.",
+          "imagePrompt": "a hero in a teal wetsuit riding a gentle wave with a happy dolphin",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ocean"
+        },
+        {
+          "name": "Stormrider",
+          "rarity": "rare",
+          "eduText": "Stormrider races clouds and brings rain — real rain is part of the water cycle that waters the land.",
+          "imagePrompt": "a hero in a silver cape surfing on a fluffy cloud above a rainbow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Water_cycle"
+        },
+        {
+          "name": "Whisker Knight",
+          "rarity": "rare",
+          "eduText": "Based on a house cat, this hero lands softly and sees well in the dark, just like a real cat.",
+          "imagePrompt": "a brave cat-eared hero in a purple cape crouching on a rooftop",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cat"
+        },
+        {
+          "name": "Windrunner",
+          "rarity": "rare",
+          "eduText": "Windrunner races the breeze; real wind can spin turbines to make clean electricity.",
+          "imagePrompt": "a swift hero in a green cape dashing on gusts of wind",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wind_power"
+        },
+        {
+          "name": "Magneta",
+          "rarity": "rare",
+          "eduText": "Magneta pulls metal with a wave of her hand, like a real magnet attracting iron.",
+          "imagePrompt": "a bold hero with red and silver armor lifting metal objects",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Magnet"
+        },
+        {
+          "name": "Lumen",
+          "rarity": "rare",
+          "eduText": "Lumen bends light into colors, the way real raindrops split sunlight into a rainbow.",
+          "imagePrompt": "a radiant hero surrounded by arcs of rainbow light",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rainbow"
+        },
+        {
+          "name": "Coral",
+          "rarity": "rare",
+          "eduText": "Coral shelters tiny sea creatures, just like a real coral reef is home to many fish.",
+          "imagePrompt": "a gentle hero in pink and orange armor among glowing reef shapes",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coral_reef"
+        },
+        {
+          "name": "Quakestep",
+          "rarity": "rare",
+          "eduText": "Quakestep feels the ground rumble, like real earthquakes caused by moving rock deep in the Earth.",
+          "imagePrompt": "a strong hero in brown armor standing firm as the ground cracks",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Earthquake"
+        },
+        {
+          "name": "Aurora",
+          "rarity": "epic",
+          "eduText": "Aurora paints the sky with color, like the real northern lights glowing high in the atmosphere.",
+          "imagePrompt": "a hero with flowing green and purple light ribbons trailing behind her",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aurora"
+        },
+        {
+          "name": "Terra Guardian",
+          "rarity": "epic",
+          "eduText": "Terra Guardian protects forests, because real trees make much of the oxygen we breathe.",
+          "imagePrompt": "a tall gentle hero made of stone and moss standing among giant trees",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tree"
+        },
+        {
+          "name": "Voltra",
+          "rarity": "epic",
+          "eduText": "Voltra crackles with power, like the real lightning that flashes during a thunderstorm.",
+          "imagePrompt": "a dynamic hero wreathed in bright blue-white lightning",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lightning"
+        },
+        {
+          "name": "Terranova",
+          "rarity": "epic",
+          "eduText": "Terranova shapes new land, the way real volcanoes build islands from cooled lava.",
+          "imagePrompt": "a powerful hero in glowing red-orange armor rising from molten rock",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Volcano"
+        },
+        {
+          "name": "Nimbus",
+          "rarity": "epic",
+          "eduText": "Nimbus rides the sky; real clouds are made of countless tiny drops of water and ice.",
+          "imagePrompt": "a serene hero floating among soft towering clouds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cloud"
+        },
+        {
+          "name": "Starweaver",
+          "rarity": "legendary",
+          "eduText": "Starweaver links stars into pictures, the way real constellations once helped sailors find their way.",
+          "imagePrompt": "a glowing hero drawing bright constellations across a night sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Constellation"
+        },
+        {
+          "name": "Solaris",
+          "rarity": "legendary",
+          "eduText": "Solaris blazes like a tiny star; the real Sun is a giant star that lights and warms our whole planet.",
+          "imagePrompt": "a brilliant hero radiating golden sunlight with a fiery halo",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sun"
+        }
       ]
     },
     {
       "name": "Mythic Creatures",
       "cards": [
-        { "name": "Griffin", "rarity": "common", "eduText": "Told of in the ancient Near East and Greece, the griffin has an eagle's head and a lion's body.", "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill", "sourceUrl": "https://en.wikipedia.org/wiki/Griffin" },
-        { "name": "Pegasus", "rarity": "common", "eduText": "Pegasus is a winged horse from ancient Greek myths who was said to gallop through the sky.", "imagePrompt": "a white winged horse trotting on a cloud in a blue sky", "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus" },
-        { "name": "Kappa", "rarity": "common", "eduText": "In Japanese folklore, the kappa is a mischievous river creature said to love cucumbers.", "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber", "sourceUrl": "https://en.wikipedia.org/wiki/Kappa_(folklore)" },
-        { "name": "Selkie", "rarity": "common", "eduText": "Scottish and Irish folklore tells of selkies, seals who could shed their skin to walk on land as people.", "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak", "sourceUrl": "https://en.wikipedia.org/wiki/Selkie" },
-        { "name": "Fenghuang", "rarity": "common", "eduText": "The fenghuang is a bird from Chinese mythology, long seen as a symbol of peace and good fortune.", "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch", "sourceUrl": "https://en.wikipedia.org/wiki/Fenghuang" },
-        { "name": "Brownie", "rarity": "common", "eduText": "In British and Scottish folklore, brownies are helpful house spirits who tidy up in exchange for treats.", "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom", "sourceUrl": "https://en.wikipedia.org/wiki/Brownie_(folklore)" },
-        { "name": "Mermaid", "rarity": "common", "eduText": "Tales of mermaids — half-human, half-fish — appear in folklore all around the world.", "imagePrompt": "a friendly mermaid with a shimmering tail sitting on a rock by the sea", "sourceUrl": "https://en.wikipedia.org/wiki/Mermaid" },
-        { "name": "Fairy", "rarity": "common", "eduText": "European folklore describes fairies as tiny magical beings, sometimes shown with delicate wings.", "imagePrompt": "a tiny glowing fairy with delicate wings among flowers", "sourceUrl": "https://en.wikipedia.org/wiki/Fairy" },
-        { "name": "Gnome", "rarity": "common", "eduText": "In Renaissance folklore, gnomes are small earth spirits said to live underground.", "imagePrompt": "a cheerful little gnome with a pointed red hat in a garden", "sourceUrl": "https://en.wikipedia.org/wiki/Gnome" },
-        { "name": "Troll", "rarity": "common", "eduText": "Norse and Scandinavian folklore tell of trolls, large creatures said to live in mountains or caves.", "imagePrompt": "a big friendly troll sitting among mossy mountain boulders", "sourceUrl": "https://en.wikipedia.org/wiki/Troll" },
-        { "name": "Goblin", "rarity": "common", "eduText": "European folklore describes goblins as small, mischievous creatures.", "imagePrompt": "a small mischievous goblin grinning in a torch-lit cave", "sourceUrl": "https://en.wikipedia.org/wiki/Goblin" },
-        { "name": "Centaur", "rarity": "common", "eduText": "In Greek mythology, a centaur has the upper body of a human and the body of a horse.", "imagePrompt": "a noble centaur, half human and half horse, standing in a meadow", "sourceUrl": "https://en.wikipedia.org/wiki/Centaur" },
-        { "name": "Minotaur", "rarity": "common", "eduText": "Greek myth tells of the Minotaur, a creature with a bull's head kept in a maze called the Labyrinth.", "imagePrompt": "a strong minotaur with a bull's head standing at the entrance of a maze", "sourceUrl": "https://en.wikipedia.org/wiki/Minotaur" },
-        { "name": "Cyclops", "rarity": "common", "eduText": "In Greek mythology, the Cyclopes were giants with a single eye in the middle of the forehead.", "imagePrompt": "a giant one-eyed cyclops resting beside a rocky hillside", "sourceUrl": "https://en.wikipedia.org/wiki/Cyclopes" },
-        { "name": "Satyr", "rarity": "common", "eduText": "Greek myth describes satyrs as playful nature spirits, part human and part goat.", "imagePrompt": "a playful satyr with goat legs holding pan pipes in a forest", "sourceUrl": "https://en.wikipedia.org/wiki/Satyr" },
-        { "name": "Unicorn", "rarity": "rare", "eduText": "Legends across many cultures describe the unicorn, a horse-like creature with a single spiraling horn.", "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers", "sourceUrl": "https://en.wikipedia.org/wiki/Unicorn" },
-        { "name": "Kirin", "rarity": "rare", "eduText": "The qilin (kirin) of East Asian legend is a gentle mythical creature whose appearance was seen as a good omen.", "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers", "sourceUrl": "https://en.wikipedia.org/wiki/Qilin" },
-        { "name": "Thunderbird", "rarity": "rare", "eduText": "Many Indigenous peoples of North America tell of the thunderbird, a great bird linked to storms and rain.", "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills", "sourceUrl": "https://en.wikipedia.org/wiki/Thunderbird_(mythology)" },
-        { "name": "Sphinx", "rarity": "rare", "eduText": "The sphinx of Greek myth had a lion's body and a human head, and was famous for asking riddles.", "imagePrompt": "a majestic sphinx with a lion's body and a calm human face", "sourceUrl": "https://en.wikipedia.org/wiki/Sphinx" },
-        { "name": "Hydra", "rarity": "rare", "eduText": "In Greek myth, the Hydra was a serpent that grew two new heads whenever one was cut off.", "imagePrompt": "a many-headed serpent hydra rising from a misty swamp", "sourceUrl": "https://en.wikipedia.org/wiki/Lernaean_Hydra" },
-        { "name": "Basilisk", "rarity": "rare", "eduText": "European legend tells of the basilisk, a serpent said to be the 'king of serpents'.", "imagePrompt": "a green serpent basilisk with a small crown-like crest", "sourceUrl": "https://en.wikipedia.org/wiki/Basilisk" },
-        { "name": "Yeti", "rarity": "rare", "eduText": "Himalayan folklore tells of the Yeti, a large ape-like creature said to live in the snowy mountains.", "imagePrompt": "a big furry white yeti walking through snowy mountains", "sourceUrl": "https://en.wikipedia.org/wiki/Yeti" },
-        { "name": "Banshee", "rarity": "rare", "eduText": "In Irish folklore, the banshee is a spirit whose wailing cry was said to be an omen.", "imagePrompt": "a pale ghostly banshee floating over misty green Irish hills", "sourceUrl": "https://en.wikipedia.org/wiki/Banshee" },
-        { "name": "Sky Dragon", "rarity": "epic", "eduText": "In Chinese mythology, dragons are wise, benevolent beings often connected with water and rain.", "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds", "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_dragon" },
-        { "name": "Phoenix", "rarity": "epic", "eduText": "The phoenix is a mythical bird said to be reborn from its own ashes, an ancient symbol of renewal.", "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight", "sourceUrl": "https://en.wikipedia.org/wiki/Phoenix_(mythology)" },
-        { "name": "Kraken", "rarity": "epic", "eduText": "Scandinavian legends tell of the Kraken, a giant sea monster said to rise up near ships.", "imagePrompt": "a giant kraken sea monster with huge tentacles rising near a wooden ship", "sourceUrl": "https://en.wikipedia.org/wiki/Kraken" },
-        { "name": "Cerberus", "rarity": "epic", "eduText": "In Greek myth, Cerberus was a many-headed dog who guarded the gates of the underworld.", "imagePrompt": "a three-headed dog cerberus guarding a shadowy gate", "sourceUrl": "https://en.wikipedia.org/wiki/Cerberus" },
-        { "name": "Roc", "rarity": "epic", "eduText": "Middle Eastern legends describe the Roc, a bird so enormous it was said to carry off elephants.", "imagePrompt": "an enormous roc bird with vast wings soaring over mountains", "sourceUrl": "https://en.wikipedia.org/wiki/Roc_(mythology)" },
-        { "name": "World Turtle", "rarity": "legendary", "eduText": "The World Turtle appears in myths from several cultures, picturing the world resting on a giant turtle's back.", "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell", "sourceUrl": "https://en.wikipedia.org/wiki/World_Turtle" },
-        { "name": "Leviathan", "rarity": "legendary", "eduText": "The Leviathan is a giant sea creature described in ancient Hebrew texts.", "imagePrompt": "a colossal sea creature leviathan coiling through deep dark ocean", "sourceUrl": "https://en.wikipedia.org/wiki/Leviathan" }
+        {
+          "name": "Griffin",
+          "rarity": "common",
+          "eduText": "Told of in the ancient Near East and Greece, the griffin has an eagle's head and a lion's body.",
+          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Griffin"
+        },
+        {
+          "name": "Pegasus",
+          "rarity": "common",
+          "eduText": "Pegasus is a winged horse from ancient Greek myths who was said to gallop through the sky.",
+          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus"
+        },
+        {
+          "name": "Kappa",
+          "rarity": "common",
+          "eduText": "In Japanese folklore, the kappa is a mischievous river creature said to love cucumbers.",
+          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kappa_(folklore)"
+        },
+        {
+          "name": "Selkie",
+          "rarity": "common",
+          "eduText": "Scottish and Irish folklore tells of selkies, seals who could shed their skin to walk on land as people.",
+          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Selkie"
+        },
+        {
+          "name": "Fenghuang",
+          "rarity": "common",
+          "eduText": "The fenghuang is a bird from Chinese mythology, long seen as a symbol of peace and good fortune.",
+          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fenghuang"
+        },
+        {
+          "name": "Brownie",
+          "rarity": "common",
+          "eduText": "In British and Scottish folklore, brownies are helpful house spirits who tidy up in exchange for treats.",
+          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Brownie_(folklore)"
+        },
+        {
+          "name": "Mermaid",
+          "rarity": "common",
+          "eduText": "Tales of mermaids — half-human, half-fish — appear in folklore all around the world.",
+          "imagePrompt": "a friendly mermaid with a shimmering tail sitting on a rock by the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mermaid"
+        },
+        {
+          "name": "Fairy",
+          "rarity": "common",
+          "eduText": "European folklore describes fairies as tiny magical beings, sometimes shown with delicate wings.",
+          "imagePrompt": "a tiny glowing fairy with delicate wings among flowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fairy"
+        },
+        {
+          "name": "Gnome",
+          "rarity": "common",
+          "eduText": "In Renaissance folklore, gnomes are small earth spirits said to live underground.",
+          "imagePrompt": "a cheerful little gnome with a pointed red hat in a garden",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gnome"
+        },
+        {
+          "name": "Troll",
+          "rarity": "common",
+          "eduText": "Norse and Scandinavian folklore tell of trolls, large creatures said to live in mountains or caves.",
+          "imagePrompt": "a big friendly troll sitting among mossy mountain boulders",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Troll"
+        },
+        {
+          "name": "Goblin",
+          "rarity": "common",
+          "eduText": "European folklore describes goblins as small, mischievous creatures.",
+          "imagePrompt": "a small mischievous goblin grinning in a torch-lit cave",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goblin"
+        },
+        {
+          "name": "Centaur",
+          "rarity": "common",
+          "eduText": "In Greek mythology, a centaur has the upper body of a human and the body of a horse.",
+          "imagePrompt": "a noble centaur, half human and half horse, standing in a meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Centaur"
+        },
+        {
+          "name": "Minotaur",
+          "rarity": "common",
+          "eduText": "Greek myth tells of the Minotaur, a creature with a bull's head kept in a maze called the Labyrinth.",
+          "imagePrompt": "a strong minotaur with a bull's head standing at the entrance of a maze",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Minotaur"
+        },
+        {
+          "name": "Cyclops",
+          "rarity": "common",
+          "eduText": "In Greek mythology, the Cyclopes were giants with a single eye in the middle of the forehead.",
+          "imagePrompt": "a giant one-eyed cyclops resting beside a rocky hillside",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cyclopes"
+        },
+        {
+          "name": "Satyr",
+          "rarity": "common",
+          "eduText": "Greek myth describes satyrs as playful nature spirits, part human and part goat.",
+          "imagePrompt": "a playful satyr with goat legs holding pan pipes in a forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Satyr"
+        },
+        {
+          "name": "Unicorn",
+          "rarity": "rare",
+          "eduText": "Legends across many cultures describe the unicorn, a horse-like creature with a single spiraling horn.",
+          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Unicorn"
+        },
+        {
+          "name": "Kirin",
+          "rarity": "rare",
+          "eduText": "The qilin (kirin) of East Asian legend is a gentle mythical creature whose appearance was seen as a good omen.",
+          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Qilin"
+        },
+        {
+          "name": "Thunderbird",
+          "rarity": "rare",
+          "eduText": "Many Indigenous peoples of North America tell of the thunderbird, a great bird linked to storms and rain.",
+          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thunderbird_(mythology)"
+        },
+        {
+          "name": "Sphinx",
+          "rarity": "rare",
+          "eduText": "The sphinx of Greek myth had a lion's body and a human head, and was famous for asking riddles.",
+          "imagePrompt": "a majestic sphinx with a lion's body and a calm human face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sphinx"
+        },
+        {
+          "name": "Hydra",
+          "rarity": "rare",
+          "eduText": "In Greek myth, the Hydra was a serpent that grew two new heads whenever one was cut off.",
+          "imagePrompt": "a many-headed serpent hydra rising from a misty swamp",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lernaean_Hydra"
+        },
+        {
+          "name": "Basilisk",
+          "rarity": "rare",
+          "eduText": "European legend tells of the basilisk, a serpent said to be the 'king of serpents'.",
+          "imagePrompt": "a green serpent basilisk with a small crown-like crest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Basilisk"
+        },
+        {
+          "name": "Yeti",
+          "rarity": "rare",
+          "eduText": "Himalayan folklore tells of the Yeti, a large ape-like creature said to live in the snowy mountains.",
+          "imagePrompt": "a big furry white yeti walking through snowy mountains",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yeti"
+        },
+        {
+          "name": "Banshee",
+          "rarity": "rare",
+          "eduText": "In Irish folklore, the banshee is a spirit whose wailing cry was said to be an omen.",
+          "imagePrompt": "a pale ghostly banshee floating over misty green Irish hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banshee"
+        },
+        {
+          "name": "Sky Dragon",
+          "rarity": "epic",
+          "eduText": "In Chinese mythology, dragons are wise, benevolent beings often connected with water and rain.",
+          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_dragon"
+        },
+        {
+          "name": "Phoenix",
+          "rarity": "epic",
+          "eduText": "The phoenix is a mythical bird said to be reborn from its own ashes, an ancient symbol of renewal.",
+          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phoenix_(mythology)"
+        },
+        {
+          "name": "Kraken",
+          "rarity": "epic",
+          "eduText": "Scandinavian legends tell of the Kraken, a giant sea monster said to rise up near ships.",
+          "imagePrompt": "a giant kraken sea monster with huge tentacles rising near a wooden ship",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kraken"
+        },
+        {
+          "name": "Cerberus",
+          "rarity": "epic",
+          "eduText": "In Greek myth, Cerberus was a many-headed dog who guarded the gates of the underworld.",
+          "imagePrompt": "a three-headed dog cerberus guarding a shadowy gate",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cerberus"
+        },
+        {
+          "name": "Roc",
+          "rarity": "epic",
+          "eduText": "Middle Eastern legends describe the Roc, a bird so enormous it was said to carry off elephants.",
+          "imagePrompt": "an enormous roc bird with vast wings soaring over mountains",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Roc_(mythology)"
+        },
+        {
+          "name": "World Turtle",
+          "rarity": "legendary",
+          "eduText": "The World Turtle appears in myths from several cultures, picturing the world resting on a giant turtle's back.",
+          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell",
+          "sourceUrl": "https://en.wikipedia.org/wiki/World_Turtle"
+        },
+        {
+          "name": "Leviathan",
+          "rarity": "legendary",
+          "eduText": "The Leviathan is a giant sea creature described in ancient Hebrew texts.",
+          "imagePrompt": "a colossal sea creature leviathan coiling through deep dark ocean",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leviathan"
+        }
+      ]
+    },
+    {
+      "name": "Country",
+      "cards": [
+        {
+          "name": "Eiffel Tower (France)",
+          "rarity": "common",
+          "eduText": "The Eiffel Tower in Paris is made of iron and can grow about 15 cm taller on hot days as the metal expands.",
+          "imagePrompt": "a colourful illustration of the Eiffel Tower in Paris",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eiffel_Tower"
+        },
+        {
+          "name": "Colosseum (Italy)",
+          "rarity": "common",
+          "eduText": "Rome's Colosseum could hold over 50,000 people who came to watch games almost 2,000 years ago.",
+          "imagePrompt": "a colourful illustration of the Roman Colosseum",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Colosseum"
+        },
+        {
+          "name": "Pyramids of Giza (Egypt)",
+          "rarity": "common",
+          "eduText": "The Great Pyramid of Giza was the tallest structure built by people for over 3,800 years.",
+          "imagePrompt": "a colourful illustration of the Great Pyramids of Giza with a camel",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giza_pyramid_complex"
+        },
+        {
+          "name": "Statue of Liberty (USA)",
+          "rarity": "common",
+          "eduText": "The Statue of Liberty was a gift from France and slowly turned green as its copper skin weathered.",
+          "imagePrompt": "a colourful illustration of the Statue of Liberty",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Statue_of_Liberty"
+        },
+        {
+          "name": "Great Wall (China)",
+          "rarity": "common",
+          "eduText": "The Great Wall of China stretches more than 21,000 km, longer than any other wall on Earth.",
+          "imagePrompt": "a colourful illustration of the Great Wall of China winding over hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Great_Wall_of_China"
+        },
+        {
+          "name": "Mount Fuji (Japan)",
+          "rarity": "common",
+          "eduText": "Mount Fuji is Japan's tallest mountain and is actually a volcano that last erupted in 1707.",
+          "imagePrompt": "a colourful illustration of snow-capped Mount Fuji with cherry blossoms",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mount_Fuji"
+        },
+        {
+          "name": "Taj Mahal (India)",
+          "rarity": "common",
+          "eduText": "The Taj Mahal is built of white marble and seems to change colour at different times of day.",
+          "imagePrompt": "a colourful illustration of the Taj Mahal with its reflecting pool",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taj_Mahal"
+        },
+        {
+          "name": "Sydney Opera House (Australia)",
+          "rarity": "common",
+          "eduText": "The Sydney Opera House roof is covered in over one million shiny tiles shaped like sails.",
+          "imagePrompt": "a colourful illustration of the Sydney Opera House by the harbour",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sydney_Opera_House"
+        },
+        {
+          "name": "Big Ben (United Kingdom)",
+          "rarity": "common",
+          "eduText": "Big Ben is really the name of the giant bell inside London's famous clock tower, not the tower itself.",
+          "imagePrompt": "a colourful illustration of the Big Ben clock tower in London",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Big_Ben"
+        },
+        {
+          "name": "Christ the Redeemer (Brazil)",
+          "rarity": "common",
+          "eduText": "This giant statue in Rio de Janeiro stands with arms 30 metres wide on top of a mountain.",
+          "imagePrompt": "a colourful illustration of the Christ the Redeemer statue above Rio",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Christ_the_Redeemer_(statue)"
+        },
+        {
+          "name": "Parthenon (Greece)",
+          "rarity": "common",
+          "eduText": "The Parthenon is a marble temple in Athens built almost 2,500 years ago for the goddess Athena.",
+          "imagePrompt": "a colourful illustration of the ancient Parthenon temple in Athens",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Parthenon"
+        },
+        {
+          "name": "Merlion (Singapore)",
+          "rarity": "common",
+          "eduText": "Singapore's Merlion has a lion's head and a fish's tail, and spouts water into the bay.",
+          "imagePrompt": "a colourful illustration of the Singapore Merlion spouting water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Merlion"
+        },
+        {
+          "name": "Windmill (Netherlands)",
+          "rarity": "common",
+          "eduText": "The Netherlands built windmills to pump water off the land, because much of the country sits below sea level.",
+          "imagePrompt": "a colourful illustration of a Dutch windmill beside tulip fields",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Windmills_in_the_Netherlands"
+        },
+        {
+          "name": "Chichen Itza (Mexico)",
+          "rarity": "common",
+          "eduText": "This Maya pyramid in Mexico has exactly 365 steps, one for each day of the year.",
+          "imagePrompt": "a colourful illustration of the Chichen Itza pyramid",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chichen_Itza"
+        },
+        {
+          "name": "St. Basil's Cathedral (Russia)",
+          "rarity": "common",
+          "eduText": "St. Basil's Cathedral in Moscow has swirly, colourful domes that look like scoops of ice cream.",
+          "imagePrompt": "a colourful illustration of St. Basil's Cathedral with rainbow domes",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saint_Basil's_Cathedral"
+        },
+        {
+          "name": "Neuschwanstein Castle (Germany)",
+          "rarity": "rare",
+          "eduText": "This fairy-tale castle in Germany helped inspire the famous castle in Disney films.",
+          "imagePrompt": "a colourful illustration of Neuschwanstein Castle on a forested hill",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Neuschwanstein_Castle"
+        },
+        {
+          "name": "Sagrada Familia (Spain)",
+          "rarity": "rare",
+          "eduText": "Builders started this amazing church in Barcelona in 1882, and it is still not finished today.",
+          "imagePrompt": "a colourful illustration of the Sagrada Familia basilica in Barcelona",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sagrada_Família"
+        },
+        {
+          "name": "Machu Picchu (Peru)",
+          "rarity": "rare",
+          "eduText": "Machu Picchu is an ancient Inca city high in the Andes mountains, hidden for centuries.",
+          "imagePrompt": "a colourful illustration of the Machu Picchu ruins in the mountains",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Machu_Picchu"
+        },
+        {
+          "name": "Petra (Jordan)",
+          "rarity": "rare",
+          "eduText": "Petra is a whole city carved into pink rock cliffs more than 2,000 years ago.",
+          "imagePrompt": "a colourful illustration of the carved rose-red facade of Petra",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Petra"
+        },
+        {
+          "name": "Wat Arun (Thailand)",
+          "rarity": "rare",
+          "eduText": "This temple in Bangkok is decorated with colourful pieces of broken porcelain that sparkle in the sun.",
+          "imagePrompt": "a colourful illustration of the Wat Arun temple by the river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wat_Arun"
+        },
+        {
+          "name": "Gyeongbokgung Palace (South Korea)",
+          "rarity": "rare",
+          "eduText": "This grand palace in Seoul was the home of Korean kings hundreds of years ago.",
+          "imagePrompt": "a colourful illustration of Gyeongbokgung Palace with mountains behind",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gyeongbokgung"
+        },
+        {
+          "name": "CN Tower (Canada)",
+          "rarity": "rare",
+          "eduText": "The CN Tower in Toronto has a glass floor you can stand on and look straight down.",
+          "imagePrompt": "a colourful illustration of the CN Tower in Toronto",
+          "sourceUrl": "https://en.wikipedia.org/wiki/CN_Tower"
+        },
+        {
+          "name": "Burj Khalifa (UAE)",
+          "rarity": "rare",
+          "eduText": "The Burj Khalifa in Dubai is the tallest building in the world at over 800 metres.",
+          "imagePrompt": "a colourful illustration of the towering Burj Khalifa in Dubai",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Burj_Khalifa"
+        },
+        {
+          "name": "Angkor Wat (Cambodia)",
+          "rarity": "epic",
+          "eduText": "Angkor Wat is the largest religious monument in the world and appears on Cambodia's flag.",
+          "imagePrompt": "a colourful illustration of the Angkor Wat temple at sunrise",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Angkor_Wat"
+        },
+        {
+          "name": "Hagia Sophia (Turkey)",
+          "rarity": "epic",
+          "eduText": "Hagia Sophia in Istanbul has been a church, a mosque, and a museum over its 1,500-year life.",
+          "imagePrompt": "a colourful illustration of the Hagia Sophia with its great dome",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hagia_Sophia"
+        },
+        {
+          "name": "Borobudur (Indonesia)",
+          "rarity": "epic",
+          "eduText": "Borobudur is the world's largest Buddhist temple, decorated with over 2,600 stone carvings.",
+          "imagePrompt": "a colourful illustration of the Borobudur temple with its many stupas",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Borobudur"
+        },
+        {
+          "name": "Koutoubia Mosque (Morocco)",
+          "rarity": "epic",
+          "eduText": "This mosque in Marrakech has a tall tower you can see from far across the city.",
+          "imagePrompt": "a colourful illustration of the Koutoubia Mosque tower in Marrakech",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kutubiyya_Mosque"
+        },
+        {
+          "name": "Cliffs of Moher (Ireland)",
+          "rarity": "epic",
+          "eduText": "These dramatic sea cliffs in Ireland drop over 200 metres straight down into the ocean.",
+          "imagePrompt": "a colourful illustration of the Cliffs of Moher above the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cliffs_of_Moher"
+        },
+        {
+          "name": "Tiger's Nest Monastery (Bhutan)",
+          "rarity": "legendary",
+          "eduText": "This monastery clings to a cliff in Bhutan more than 900 metres above the valley floor.",
+          "imagePrompt": "a colourful illustration of the Tiger's Nest monastery on a cliff",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Paro_Taktsang"
+        },
+        {
+          "name": "Great Mosque of Djenne (Mali)",
+          "rarity": "legendary",
+          "eduText": "This is the largest mud-brick building in the world, and the whole town helps re-plaster it every year.",
+          "imagePrompt": "a colourful illustration of the mud-brick Great Mosque of Djenne",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Great_Mosque_of_Djenné"
+        }
+      ]
+    },
+    {
+      "name": "Famous People",
+      "cards": [
+        {
+          "name": "Albert Einstein",
+          "rarity": "common",
+          "eduText": "Einstein came up with the famous equation E=mc squared and won the Nobel Prize in Physics.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Albert Einstein with wild hair",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Albert_Einstein"
+        },
+        {
+          "name": "Isaac Newton",
+          "rarity": "common",
+          "eduText": "Newton described gravity, the force that pulls things down, after thinking about falling apples.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Isaac Newton with an apple",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Isaac_Newton"
+        },
+        {
+          "name": "Leonardo da Vinci",
+          "rarity": "common",
+          "eduText": "Leonardo painted the Mona Lisa and also sketched flying machines centuries before planes existed.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Leonardo da Vinci with a sketchbook",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leonardo_da_Vinci"
+        },
+        {
+          "name": "Marie Curie",
+          "rarity": "common",
+          "eduText": "Marie Curie was the first person ever to win two Nobel Prizes, for her work on radioactivity.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Marie Curie in a science lab",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Marie_Curie"
+        },
+        {
+          "name": "Neil Armstrong",
+          "rarity": "common",
+          "eduText": "In 1969 Neil Armstrong became the first person to walk on the Moon.",
+          "imagePrompt": "a friendly stylised cartoon portrait of astronaut Neil Armstrong",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Neil_Armstrong"
+        },
+        {
+          "name": "Nelson Mandela",
+          "rarity": "common",
+          "eduText": "Mandela spent 27 years in prison and later became South Africa's first Black president.",
+          "imagePrompt": "a friendly stylised cartoon portrait of a smiling Nelson Mandela",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nelson_Mandela"
+        },
+        {
+          "name": "Mahatma Gandhi",
+          "rarity": "common",
+          "eduText": "Gandhi helped India become free using peaceful protest instead of fighting.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Mahatma Gandhi with round glasses",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mahatma_Gandhi"
+        },
+        {
+          "name": "William Shakespeare",
+          "rarity": "common",
+          "eduText": "Shakespeare wrote about 37 plays and invented many words we still use today.",
+          "imagePrompt": "a friendly stylised cartoon portrait of William Shakespeare with a quill",
+          "sourceUrl": "https://en.wikipedia.org/wiki/William_Shakespeare"
+        },
+        {
+          "name": "Charles Darwin",
+          "rarity": "common",
+          "eduText": "Darwin explained how living things change over time through a theory called evolution.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Charles Darwin with a long beard",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Charles_Darwin"
+        },
+        {
+          "name": "Thomas Edison",
+          "rarity": "common",
+          "eduText": "Edison helped invent the practical light bulb and held over 1,000 patents.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Thomas Edison holding a light bulb",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thomas_Edison"
+        },
+        {
+          "name": "Wolfgang Amadeus Mozart",
+          "rarity": "common",
+          "eduText": "Mozart was writing music by age five and composed over 600 pieces in his short life.",
+          "imagePrompt": "a friendly stylised cartoon portrait of young Mozart at a piano",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart"
+        },
+        {
+          "name": "Vincent van Gogh",
+          "rarity": "common",
+          "eduText": "Van Gogh painted The Starry Night and made over 2,000 artworks in his lifetime.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Vincent van Gogh with a paintbrush",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Vincent_van_Gogh"
+        },
+        {
+          "name": "Abraham Lincoln",
+          "rarity": "common",
+          "eduText": "Lincoln was a United States president who helped end slavery in America.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Abraham Lincoln with a top hat",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Abraham_Lincoln"
+        },
+        {
+          "name": "Cleopatra",
+          "rarity": "common",
+          "eduText": "Cleopatra was the last pharaoh of ancient Egypt and could speak many languages.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Queen Cleopatra of Egypt",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cleopatra"
+        },
+        {
+          "name": "Lee Kuan Yew",
+          "rarity": "common",
+          "eduText": "Lee Kuan Yew was Singapore's first prime minister and helped turn it into a modern city.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Lee Kuan Yew",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lee_Kuan_Yew"
+        },
+        {
+          "name": "Galileo Galilei",
+          "rarity": "rare",
+          "eduText": "Galileo used an early telescope to discover that Jupiter has its own moons.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Galileo with a telescope",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Galileo_Galilei"
+        },
+        {
+          "name": "Florence Nightingale",
+          "rarity": "rare",
+          "eduText": "Florence Nightingale was a nurse who made hospitals cleaner and much safer for patients.",
+          "imagePrompt": "a friendly stylised cartoon portrait of nurse Florence Nightingale with a lamp",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Florence_Nightingale"
+        },
+        {
+          "name": "The Wright Brothers",
+          "rarity": "rare",
+          "eduText": "Orville and Wilbur Wright built and flew the world's first powered airplane in 1903.",
+          "imagePrompt": "a friendly stylised cartoon illustration of the Wright brothers with their airplane",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wright_brothers"
+        },
+        {
+          "name": "Rosa Parks",
+          "rarity": "rare",
+          "eduText": "Rosa Parks bravely refused to give up her bus seat, helping the fight for equal rights.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Rosa Parks",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rosa_Parks"
+        },
+        {
+          "name": "Amelia Earhart",
+          "rarity": "rare",
+          "eduText": "Amelia Earhart was the first woman to fly a plane alone across the Atlantic Ocean.",
+          "imagePrompt": "a friendly stylised cartoon portrait of pilot Amelia Earhart",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amelia_Earhart"
+        },
+        {
+          "name": "Nikola Tesla",
+          "rarity": "rare",
+          "eduText": "Tesla's work on electricity helped create the power that lights our homes today.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Nikola Tesla with glowing coils",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nikola_Tesla"
+        },
+        {
+          "name": "Ada Lovelace",
+          "rarity": "rare",
+          "eduText": "Ada Lovelace is often called the world's first computer programmer, long before computers existed.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Ada Lovelace",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ada_Lovelace"
+        },
+        {
+          "name": "Joseph Schooling",
+          "rarity": "rare",
+          "eduText": "Joseph Schooling won Singapore's first Olympic gold medal in swimming in 2016.",
+          "imagePrompt": "a friendly stylised cartoon portrait of swimmer Joseph Schooling with a gold medal",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Joseph_Schooling"
+        },
+        {
+          "name": "Katherine Johnson",
+          "rarity": "epic",
+          "eduText": "Katherine Johnson was a mathematician whose calculations helped send astronauts safely into space.",
+          "imagePrompt": "a friendly stylised cartoon portrait of mathematician Katherine Johnson",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Katherine_Johnson"
+        },
+        {
+          "name": "Jane Goodall",
+          "rarity": "epic",
+          "eduText": "Jane Goodall spent years living near wild chimpanzees and learning how they behave.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Jane Goodall with a chimpanzee",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jane_Goodall"
+        },
+        {
+          "name": "Ferdinand Magellan",
+          "rarity": "epic",
+          "eduText": "Magellan led the first voyage that sailed all the way around the world.",
+          "imagePrompt": "a friendly stylised cartoon portrait of explorer Ferdinand Magellan with a map",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ferdinand_Magellan"
+        },
+        {
+          "name": "Confucius",
+          "rarity": "epic",
+          "eduText": "Confucius was a Chinese teacher whose wise sayings about kindness are still shared today.",
+          "imagePrompt": "a friendly stylised cartoon portrait of the teacher Confucius",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Confucius"
+        },
+        {
+          "name": "Yusof Ishak",
+          "rarity": "epic",
+          "eduText": "Yusof Ishak was Singapore's first president, and his face appears on Singapore's banknotes.",
+          "imagePrompt": "a friendly stylised cartoon portrait of Yusof Ishak",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yusof_Ishak"
+        },
+        {
+          "name": "Hypatia",
+          "rarity": "legendary",
+          "eduText": "Hypatia was one of the first known women to teach maths and astronomy, in ancient Egypt.",
+          "imagePrompt": "a friendly stylised cartoon portrait of the scholar Hypatia with scrolls",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hypatia"
+        },
+        {
+          "name": "Zheng He",
+          "rarity": "legendary",
+          "eduText": "Zheng He was a Chinese explorer who sailed huge treasure fleets across the seas 600 years ago.",
+          "imagePrompt": "a friendly stylised cartoon portrait of admiral Zheng He with a great ship",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Zheng_He"
+        }
       ]
     }
   ]

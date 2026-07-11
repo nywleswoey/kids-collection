@@ -63,7 +63,7 @@ export function CardModal({
             target="_blank"
             rel="noopener noreferrer"
             data-testid="card-modal-source"
-            className="link-soft text-sm"
+            className="btn btn--ghost text-sm"
           >
             🔗 Source
           </a>

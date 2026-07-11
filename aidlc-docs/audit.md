@@ -1009,3 +1009,11 @@
 **Context**: INCREMENT 10 Application Design — doc written; approval gate.
 
 ---
+
+## INCREMENT 10 — Code Generation
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "/commit and b" (approve design → code gen)
+**AI Response**: "Committed design (255e8e3). Implemented all FRs. NEW src/features/pull/ticket-display.ts (shouldShowAskParent + specialTicketTotal, PBT). FR1 home page combined special pill. FR2 PullButton: ask-parent only when all ticket types 0, else greyed/disabled Discover when balance<1 + special hint. FR3 converted all 5 link-soft sites → buttons (binder-back, picker, admin×2, CardModal/AdminCardSlot source). FR4/FR5 seed/cards.json +Country +Famous People (30 each, 15/8/5/2, real Wikipedia sources, 3 SG figures), 6 themes/180 cards, loadSeed-validated. Incidental: clamped pickUpgradeCard index (fast-check rng()==1 out-of-bounds → sacrifice.pbt was flaky; prod safe). typecheck clean, 61/61 tests stable x3, build ✅, zero deps, no migration, no secret leak, no link-soft in views. ⚠️ pnpm seed --sync still needed to generate ~60 images. Presenting code-gen gate."
+**Context**: INCREMENT 10 Construction — Code Generation complete.
+
+---
