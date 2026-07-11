@@ -19,7 +19,7 @@ interface Streak {
   top: number; // vh start offset, %
 }
 
-export function Asteroids() {
+export function Asteroids({ trigger }: { trigger?: number } = {}) {
   const reduced = useReducedMotion();
   const [streak, setStreak] = useState<Streak | null>(null);
 
@@ -52,6 +52,14 @@ export function Asteroids() {
       if (flightTimer) clearTimeout(flightTimer);
     };
   }, [reduced]);
+
+  // On-demand streak when `trigger` changes (admin effect panel, U4-FR3).
+  useEffect(() => {
+    if (!trigger || reduced) return;
+    setStreak({ id: 1_000_000 + trigger, top: 4 + Math.random() * 46 });
+    const t = setTimeout(() => setStreak(null), FLIGHT_MS);
+    return () => clearTimeout(t);
+  }, [trigger, reduced]);
 
   if (!streak) return null;
 

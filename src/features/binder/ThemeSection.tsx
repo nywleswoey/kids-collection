@@ -3,7 +3,14 @@ import { ProgressBar } from "./ProgressBar";
 import { CardSlot } from "./CardSlot";
 import { SetCompleteCelebration } from "./SetCompleteCelebration";
 
-export function ThemeSection({ section }: { section: ThemeSectionData }) {
+export function ThemeSection({
+  section,
+  admin = false,
+}: {
+  section: ThemeSectionData;
+  /** Admin preview: show source links, no play links, no auto-celebration. */
+  admin?: boolean;
+}) {
   return (
     <section
       data-testid={`theme-section-${section.theme.id}`}
@@ -20,10 +27,10 @@ export function ThemeSection({ section }: { section: ThemeSectionData }) {
       </div>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
         {section.cards.map((entry) => (
-          <CardSlot key={entry.card.id} entry={entry} />
+          <CardSlot key={entry.card.id} entry={entry} admin={admin} />
         ))}
       </div>
-      {section.progress.complete ? (
+      {section.progress.complete && !admin ? (
         <SetCompleteCelebration themeId={section.theme.id} />
       ) : null}
     </section>
