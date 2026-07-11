@@ -788,3 +788,19 @@
 **Context**: OPERATIONS — increment closed.
 
 ---
+
+## Session Resume — Increment 6 Request
+**Timestamp**: 2026-07-11T15:00:00Z
+**User Input**: "- for missing cards, show the name of the card / - randomly, when discovering a card, give a very very small change of an easter egg to allow user to choose from 1 of 5 cards of rarity epic and above. celebrate when this happens but don't use confetti. maybe fireworks?"
+**AI Response**: "Resumed. Increment 5 COMPLETE (deployed). Loaded pull-service (atomic spend→draw→upsert→refund), actions, logic.ts (weighted drawCard), CardSlot (locked slot shows only ❔). Rendered Welcome-back proposing Increment 6 (Missing-card names + Easter-egg pick-1-of-5): FR1 show name on locked slots; FR2 rare server-side easter egg on discover → choose 1 of 5 epic+ cards, signed offer (no double-spend/cheat), fireworks celebration (not confetti). Awaiting A/B."
+**Context**: Session continuity — Increment 5 complete; new increment requested.
+
+---
+
+## Increment 6 — Requirements Analysis Start
+**Timestamp**: 2026-07-11T15:05:00Z
+**User Input**: "a" (start Increment 6)
+**AI Response**: "Intent: presentational (locked-slot names) + server-side pull-flow easter egg (rare pick-1-of-5 epic+, fireworks). Security-relevant (signed offer). Wrote 7 clarification questions to increment6-easter-egg-questions.md (odds, 5-card rarity mix, dedupe, unclaimed handling, spoiler scope, fireworks placement, overall scope). Updated state to Increment 6 Requirements Analysis. Awaiting answers."
+**Context**: INCEPTION / Requirements Analysis — clarification gate.
+
+---
