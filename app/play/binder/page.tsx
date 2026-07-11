@@ -13,25 +13,30 @@ export default async function BinderPage() {
   const binder = await getBinder(child.id);
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 p-6" data-testid="binder-page">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">{child.name}&apos;s Binder</h1>
-        <span className="text-sm opacity-80">
-          {binder.totalOwned} / {binder.totalCards} cards
+    <main
+      className="mx-auto flex max-w-3xl flex-col gap-6 p-6"
+      data-testid="binder-page"
+    >
+      <header className="panel flex flex-wrap items-center justify-between gap-3 p-5">
+        <h1 className="text-2xl font-bold">
+          <span className="title-pop">{child.name}</span>&apos;s Binder
+        </h1>
+        <span className="pill pill--gold">
+          🗂️ {binder.totalOwned} / {binder.totalCards} cards
         </span>
       </header>
 
       {binder.totalOwned === 0 ? (
         <div
           data-testid="binder-empty"
-          className="flex flex-col items-center gap-3 rounded-2xl bg-white/5 p-8 text-center"
+          className="panel flex flex-col items-center gap-4 p-10 text-center"
         >
-          <p className="text-lg">No cards yet — go pull your first! ✨</p>
-          <Link
-            href="/play/pull"
-            className="rounded-xl bg-gradient-to-br from-amber-300 to-pink-400 px-5 py-2 font-bold text-gray-900"
-          >
-            Pull a card
+          <div className="text-6xl float" aria-hidden>
+            🎴
+          </div>
+          <p className="display text-lg">No cards yet — go pull your first! ✨</p>
+          <Link href="/play/pull" className="btn btn--primary btn--lg">
+            ✨ Pull a card
           </Link>
         </div>
       ) : (
@@ -40,7 +45,7 @@ export default async function BinderPage() {
         ))
       )}
 
-      <Link href="/play/home" className="text-sm underline opacity-80">
+      <Link href="/play/home" className="link-soft self-start text-sm">
         ← Home
       </Link>
     </main>

@@ -11,9 +11,9 @@ export default async function ProfileManagerPage() {
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-8" data-testid="profile-manager">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Manage Profiles</h1>
-        <Link href="/play" className="text-sm underline opacity-80">
+      <div className="panel flex items-center justify-between p-5">
+        <h1 className="text-2xl font-bold">👥 Manage Profiles</h1>
+        <Link href="/play" className="btn btn--ghost text-sm">
           ← Back
         </Link>
       </div>
@@ -22,26 +22,28 @@ export default async function ProfileManagerPage() {
         {kids.map((c) => (
           <li
             key={c.id}
-            className="flex items-center justify-between rounded-2xl bg-white/5 p-3"
+            className="panel flex items-center justify-between p-3"
             data-testid={`profile-row-${c.id}`}
           >
             <span className="flex items-center gap-3">
-              <span className="text-3xl" aria-hidden>
+              <span className="hero-avatar h-11 w-11 text-xl" aria-hidden>
                 {avatarEmoji(c.avatar)}
               </span>
-              <span className="font-semibold">{c.name}</span>
-              <span className="text-sm opacity-60">{c.pullTokens} pulls</span>
+              <span className="display font-semibold">{c.name}</span>
+              <span className="pill text-xs">🎟️ {c.pullTokens}</span>
             </span>
             <RemoveProfileButton id={c.id} name={c.name} />
           </li>
         ))}
         {kids.length === 0 ? (
-          <li className="opacity-60">No profiles yet — add one below.</li>
+          <li className="text-[color:var(--ink-mute)]">
+            No profiles yet — add one below.
+          </li>
         ) : null}
       </ul>
 
-      <section>
-        <h2 className="mb-2 text-lg font-semibold">Add a profile</h2>
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Add a profile</h2>
         <ProfileForm />
       </section>
     </main>

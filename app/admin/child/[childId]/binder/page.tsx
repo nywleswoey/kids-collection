@@ -18,15 +18,19 @@ export default async function AdminChildBinderPage({
       className="mx-auto flex max-w-3xl flex-col gap-6 p-6"
       data-testid="admin-child-binder"
     >
-      <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{child?.name ?? "Child"}&apos;s Binder</h1>
-        <Link href="/admin" className="text-sm underline opacity-80">
+      <header className="panel flex flex-wrap items-center justify-between gap-3 p-5">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">
+            <span className="title-pop">{child?.name ?? "Child"}</span>&apos;s Binder
+          </h1>
+          <p className="text-sm text-[color:var(--ink-mute)]">
+            {binder.totalOwned} / {binder.totalCards} cards (read-only)
+          </p>
+        </div>
+        <Link href="/admin" className="btn btn--ghost text-sm">
           ← Admin
         </Link>
       </header>
-      <p className="text-sm opacity-70">
-        {binder.totalOwned} / {binder.totalCards} cards (read-only)
-      </p>
       {binder.themes.map((section) => (
         <ThemeSection key={section.theme.id} section={section} />
       ))}

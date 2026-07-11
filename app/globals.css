@@ -1,8 +1,47 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Kids Card Collection — "Collector's Arcade" design system
+   Cosmic aurora backdrop · rounded playful type · glass panels
+   · tactile 3D buttons. All motion honors prefers-reduced-motion.
+   ============================================================ */
+
 :root {
-  --background: #0f1226;
-  --foreground: #f5f5ff;
+  /* Cosmic backdrop */
+  --bg-0: #0d0826;
+  --bg-1: #17103f;
+  --bg-2: #241559;
+
+  /* Ink */
+  --ink: #f7f5ff;
+  --ink-soft: rgba(247, 245, 255, 0.72);
+  --ink-mute: rgba(247, 245, 255, 0.55);
+
+  /* Brand / play accents */
+  --brand-1: #ffd45e; /* warm gold */
+  --brand-2: #ff6fae; /* bubblegum */
+  --brand-3: #8b5cff; /* arcade violet */
+  --brand-4: #43e6c8; /* mint pop */
+
+  /* Glass surfaces */
+  --glass: rgba(255, 255, 255, 0.07);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+  --glass-brd: rgba(255, 255, 255, 0.16);
+
+  --radius: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 12px 32px -16px rgba(8, 4, 26, 0.9);
+  --shadow-glow: 0 18px 50px -18px rgba(139, 92, 255, 0.65);
+  --ring-focus: 0 0 0 3px rgba(255, 212, 94, 0.55);
+
+  /* --font-display / --font-body are injected by next/font in layout.tsx
+     (self-hosted Fredoka + Nunito, each with an adjusted fallback). */
+
+  /* legacy vars kept for anything referencing them */
+  --background: var(--bg-0);
+  --foreground: var(--ink);
 }
 
 html,
@@ -12,18 +51,244 @@ body {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family: var(--font-body);
+  background:
+    radial-gradient(1200px 800px at 15% -10%, #2a1a6e 0%, transparent 55%),
+    radial-gradient(1000px 700px at 100% 0%, #4a1f66 0%, transparent 50%),
+    radial-gradient(900px 900px at 50% 120%, #123a6b 0%, transparent 55%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-0) 55%, var(--bg-2));
+  background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Respect users who prefer less motion (card effects honor this in U6). */
+/* Slow-drifting aurora + starfield behind everything. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 30% at 20% 25%, rgba(139, 92, 255, 0.35), transparent 70%),
+    radial-gradient(34% 26% at 80% 20%, rgba(255, 111, 174, 0.28), transparent 70%),
+    radial-gradient(40% 32% at 65% 85%, rgba(67, 230, 200, 0.22), transparent 72%);
+  filter: blur(20px) saturate(120%);
+  animation: aurora 22s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 22%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 78% 14%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 42% 62%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 88% 74%, rgba(255, 255, 255, 0.75), transparent),
+    radial-gradient(1px 1px at 28% 82%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 62% 34%, rgba(255, 255, 255, 0.65), transparent);
+  background-repeat: no-repeat;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+  100% { transform: translate3d(3%, 2%, 0) scale(1.12); }
+}
+@keyframes twinkle {
+  0% { opacity: 0.35; }
+  100% { opacity: 0.6; }
+}
+
+/* ---------- Typography ---------- */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.display {
+  font-family: var(--font-display);
+}
+
+/* ---------- Glass panels ---------- */
+.panel {
+  position: relative;
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.panel--glow {
+  box-shadow: var(--shadow-soft), var(--shadow-glow);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  --btn-bg: var(--glass-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--btn-bg);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-pill);
+  padding: 0.75rem 1.4rem;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease,
+    filter 160ms ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+}
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary — chunky candy gradient with a 3D lip. */
+.btn--primary {
+  color: #2b1338;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 40%),
+    linear-gradient(135deg, var(--brand-1), var(--brand-2) 65%, var(--brand-3));
+  border: none;
+  box-shadow:
+    0 10px 0 -2px rgba(124, 58, 170, 0.55),
+    0 18px 30px -12px rgba(255, 111, 174, 0.6);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.btn--primary:hover {
+  filter: brightness(1.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 40%),
+    linear-gradient(135deg, var(--brand-1), var(--brand-2) 65%, var(--brand-3));
+}
+.btn--primary:active {
+  box-shadow:
+    0 4px 0 -2px rgba(124, 58, 170, 0.55),
+    0 8px 16px -10px rgba(255, 111, 174, 0.6);
+}
+
+/* Ghost — quiet secondary action. */
+.btn--ghost {
+  background: var(--glass);
+}
+
+.btn--lg {
+  padding: 1.1rem 2.4rem;
+  font-size: 1.35rem;
+}
+.btn--xl {
+  padding: 1.3rem 2.8rem;
+  font-size: 1.6rem;
+  border-radius: var(--radius-pill);
+}
+
+/* Text link, soft. */
+.link-soft {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(247, 245, 255, 0.35);
+  transition: color 140ms ease, border-color 140ms ease;
+}
+.link-soft:hover {
+  color: var(--ink);
+  border-color: var(--brand-1);
+}
+
+/* ---------- Pills / chips ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-brd);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.pill--gold {
+  background: linear-gradient(135deg, rgba(255, 212, 94, 0.25), rgba(255, 111, 174, 0.2));
+  border-color: rgba(255, 212, 94, 0.5);
+  color: #ffe9a8;
+}
+
+/* ---------- Avatar hero glow ---------- */
+.hero-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.18), transparent 60%),
+    conic-gradient(from 210deg, var(--brand-3), var(--brand-2), var(--brand-1), var(--brand-4), var(--brand-3));
+  box-shadow: var(--shadow-glow);
+}
+.hero-avatar::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: rgba(13, 8, 38, 0.7);
+  backdrop-filter: blur(4px);
+}
+.hero-avatar > * {
+  position: relative;
+}
+
+/* Fun float for hero emoji. */
+.float {
+  animation: float 4.5s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Playful gradient headline. */
+.title-pop {
+  background: linear-gradient(120deg, var(--brand-1), var(--brand-2) 55%, var(--brand-4));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Motion preferences ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
 }

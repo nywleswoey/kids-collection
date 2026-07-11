@@ -7,24 +7,31 @@ export default async function AdminDashboardPage() {
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 p-6" data-testid="admin-dashboard">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">Parent Admin</h1>
-        <nav className="flex gap-4 text-sm underline opacity-80">
-          <Link href="/admin/profiles" data-testid="admin-profiles-link">
+      <header className="panel flex flex-wrap items-center justify-between gap-3 p-5">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">🛠️ Parent Admin</h1>
+          <p className="text-sm text-[color:var(--ink-mute)]" data-testid="pool-summary">
+            Pool: {overview.themes} themes · {overview.cards} cards
+          </p>
+        </div>
+        <nav className="flex gap-2 text-sm">
+          <Link
+            href="/admin/profiles"
+            data-testid="admin-profiles-link"
+            className="btn btn--ghost"
+          >
             Profiles
           </Link>
-          <Link href="/play">Play</Link>
+          <Link href="/play" className="btn btn--ghost">
+            Play
+          </Link>
         </nav>
       </header>
 
-      <p className="text-sm opacity-70" data-testid="pool-summary">
-        Pool: {overview.themes} themes · {overview.cards} cards
-      </p>
-
       {overview.children.length === 0 ? (
-        <p className="opacity-70">
+        <p className="panel px-6 py-4 text-[color:var(--ink-soft)]">
           No profiles yet.{" "}
-          <Link href="/admin/profiles" className="underline">
+          <Link href="/admin/profiles" className="link-soft">
             Add one
           </Link>
           .
