@@ -511,3 +511,60 @@
 **Context**: CONSTRUCTION - U7 Code Generation COMPLETE; all units built (GATE before Build & Test)
 
 ---
+
+## Build and Test Stage
+**Timestamp**: 2026-07-11T01:00:00Z
+**Build Status**: Success (next build, 11 routes; tsc clean)
+**Test Status**: Pass (27/27 vitest + fast-check)
+**User Input**: "redeploy now" + "continue"
+**AI Response**: "Redeployed to production (kids-collection.vercel.app READY; /signin 200, /play & /admin 302 auth-gated). Generated build-and-test instruction files (build, unit-test, integration-test, security-test, e2e-test) + build-and-test-summary.md reflecting real results. Outstanding operational items: Google OAuth prod redirect URI + seed pool publish. Holding at GATE before Operations."
+**Files Generated**:
+- build-instructions.md
+- unit-test-instructions.md
+- integration-test-instructions.md
+- security-test-instructions.md
+- e2e-test-instructions.md
+- build-and-test-summary.md
+**Context**: CONSTRUCTION - Build and Test COMPLETE (GATE before Operations)
+
+---
+
+## New Increment Request — Sensory Enhancement
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "using ai-dlc, add some sound effects, bgm and animation to enhance the whole experience"
+**AI Response**: "Detected existing COMPLETE AI-DLC project (all units + build/test done, deployed, holding at Operations gate). New request is a fresh feature increment against now-existing code (brownfield). Neither restart-fresh nor resume-old-admin cleanly applies. Surfacing to user how to proceed."
+**Context**: INCEPTION - Workspace Detection (existing complete project detected; new increment)
+
+---
+
+## Requirements Analysis — Increment 2 (clarifications issued)
+**Timestamp**: 2026-07-11T00:05:00Z
+**User Input**: (AskUserQuestion) increment mode = "New increment (Recommended)"
+**AI Response**: "Updated aidlc-state.md with INCREMENT 2 (Sensory Enhancement) section. Scanned existing codebase (Next.js 15 App Router, Tailwind v4, React 19; zero audio/animation deps; no public/ folder; existing effects seam = RevealCard.tsx + useCardTilt.ts + rarity.ts shouldAnimate()). Wrote 7 clarification questions to aidlc-docs/inception/requirements/increment2-sensory-clarifications.md (scope, BGM, SFX palette, animation ambition, asset source, a11y controls, lib choice). Holding at Requirements gate."
+**Context**: INCREMENT 2 - INCEPTION / Requirements Analysis (GATE: awaiting answers)
+
+---
+
+## Requirements Analysis — Increment 2 (answers received)
+**Timestamp**: 2026-07-11T00:10:00Z
+**User Input**: "done" — clarification answers: Q1=E, Q2=E, Q3=H, Q4=D, Q5=D, Q6=D, Q7=D (all recommended defaults)
+**AI Response**: "Wrote aidlc-docs/inception/requirements/increment2-sensory-requirements.md (FR1-5 scope/BGM/SFX/animation/controls, NFR1-6 assets/deps/perf/resiliency/security/testing, out-of-scope, acceptance criteria). Extensions Security/Resiliency/Property-Based reflected in NFRs. Holding at Requirements approval gate."
+**Context**: INCREMENT 2 - INCEPTION / Requirements Analysis (GATE: awaiting approval)
+
+---
+
+## Application Design — Increment 2
+**Timestamp**: 2026-07-11T00:15:00Z
+**User Input**: "b" (approve Requirements → continue to Application Design)
+**AI Response**: "Read existing files (RevealCard, rarity, PullButton, layout, CardSlot, ProgressBar, play pages). Confirmed play pages are Server Components + no app/play/layout.tsx exists. Wrote aidlc-docs/inception/application-design/increment2-sensory-design.md: new src/features/sound/* (settings, sfx, AudioEngine, bgm, SoundProvider, useSound, SoundControls) + src/features/anim/* (Confetti, CountUp, useReducedMotion, anim.css) + NEW app/play/layout.tsx mount point; integration seam edits to PullButton/RevealCard/CardSlot/ThemeSection; zero new deps; pure-logic cores for property tests. Holding at Application Design gate."
+**Context**: INCREMENT 2 - INCEPTION / Application Design (GATE: awaiting approval)
+
+---
+
+## Code Generation Part 1 (Plan) — Increment 2
+**Timestamp**: 2026-07-11T00:20:00Z
+**User Input**: "b" (approve Application Design → continue to Code Generation)
+**AI Response**: "Wrote aidlc-docs/construction/plans/increment2-sensory-codegen-plan.md with checkboxed phases A(pure cores+tests) B(audio runtime) C(react layer) D(animation) E(integration seams) F(verify). Holding at code-gen plan gate."
+**Context**: INCREMENT 2 - CONSTRUCTION / Code Generation Part 1 (GATE: awaiting plan approval)
+
+---

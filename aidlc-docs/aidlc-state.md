@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: CONSTRUCTION - ALL UNITS COMPLETE (awaiting approval to start Build & Test)
+- **Current Stage**: INCREMENT 2 (Sensory Enhancement) — INCEPTION / Requirements Analysis
+- **Prior Increment**: INCREMENT 1 (Core App) COMPLETE — all 7 units built, 27/27 tests, deployed, held at Operations gate
 
 ## Workspace State
 - **Existing Code**: No
@@ -34,7 +35,16 @@ Order: U1 → {U2, U3} → U4 → {U5, U6} → U7. Per unit: Functional Design �
 - [x] U5 Binder — DONE (D1, D2)
 - [x] U6 Card UI & Effects — DONE (E1,E2,E3,C2 reveal)
 - [x] U7 Admin — DONE (G1, F1; A2 reused)
-- [ ] Build and Test (after all units)
+- [x] Build and Test — build ✅, 27/27 tests ✅, deployed
+
+## INCREMENT 2 — Sensory Enhancement (Sound FX, BGM, Animation)
+Brownfield feature on existing app. Cadence: LIGHT (single increment).
+### 🔵 INCEPTION
+- [ ] Requirements Analysis (in progress — clarification questions issued)
+- [ ] Application Design
+### 🟢 CONSTRUCTION
+- [ ] Code Generation
+- [ ] Build & Test
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
