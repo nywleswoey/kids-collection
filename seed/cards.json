@@ -6,151 +6,175 @@
         {
           "name": "Red Fox",
           "rarity": "common",
-          "eduText": "Red foxes can hear a mouse squeak from over 100 feet away.",
-          "imagePrompt": "a friendly red fox sitting in a meadow"
+          "eduText": "Red foxes have such sharp hearing they can locate small animals moving under snow or soil.",
+          "imagePrompt": "a friendly red fox sitting in a meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red_fox"
         },
         {
           "name": "Sea Otter",
           "rarity": "common",
-          "eduText": "Sea otters hold hands while they sleep so they do not float apart.",
-          "imagePrompt": "a cheerful sea otter floating on its back in calm water"
+          "eduText": "Sea otters often hold hands while resting so they do not drift apart on the water.",
+          "imagePrompt": "a cheerful sea otter floating on its back in calm water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sea_otter"
         },
         {
           "name": "Emperor Penguin",
           "rarity": "common",
-          "eduText": "Emperor penguin dads balance the egg on their feet to keep it warm.",
-          "imagePrompt": "a round emperor penguin standing on ice with a fluffy chick"
+          "eduText": "Emperor penguin dads balance the egg on their feet under a warm flap of skin to keep it cozy.",
+          "imagePrompt": "a round emperor penguin standing on ice with a fluffy chick",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Emperor_penguin"
         },
         {
           "name": "Honey Bee",
           "rarity": "common",
-          "eduText": "Honey bees dance in a figure eight to tell friends where flowers are.",
-          "imagePrompt": "a fuzzy honey bee hovering beside a bright yellow sunflower"
+          "eduText": "Honey bees do a figure-eight 'waggle dance' to tell other bees where to find flowers.",
+          "imagePrompt": "a fuzzy honey bee hovering beside a bright yellow sunflower",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Waggle_dance"
         },
         {
           "name": "Green Tree Frog",
           "rarity": "common",
-          "eduText": "Tree frogs have sticky toe pads that let them climb smooth leaves.",
-          "imagePrompt": "a small bright green tree frog perched on a shiny leaf"
+          "eduText": "Tree frogs have sticky toe pads that let them cling to smooth leaves and climb.",
+          "imagePrompt": "a small bright green tree frog perched on a shiny leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Australian_green_tree_frog"
         },
         {
           "name": "African Elephant",
           "rarity": "common",
-          "eduText": "An elephant's trunk has about 40,000 muscles and can pick up one peanut.",
-          "imagePrompt": "a gentle african elephant with big ears standing in tall grass"
+          "eduText": "An elephant's trunk has tens of thousands of muscles, enough to pick up a single blade of grass.",
+          "imagePrompt": "a gentle african elephant with big ears standing in tall grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/African_bush_elephant"
         },
         {
           "name": "Snowy Owl",
           "rarity": "rare",
-          "eduText": "Snowy owls have feathers on their feet to keep warm in the Arctic.",
-          "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch"
+          "eduText": "Snowy owls have feathers covering their feet to keep warm in the freezing Arctic.",
+          "imagePrompt": "a fluffy snowy owl with big yellow eyes on a snowy branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snowy_owl"
         },
         {
           "name": "Axolotl",
           "rarity": "rare",
-          "eduText": "An axolotl can grow back a lost leg, and even parts of its heart.",
-          "imagePrompt": "a smiling pink axolotl with feathery gills in clear water"
+          "eduText": "An axolotl can regrow lost body parts, including legs and even parts of its heart and brain.",
+          "imagePrompt": "a smiling pink axolotl with feathery gills in clear water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Axolotl"
         },
         {
           "name": "Red Panda",
           "rarity": "rare",
-          "eduText": "Red pandas wrap their bushy tails around themselves like a warm blanket.",
-          "imagePrompt": "a fluffy red panda curled on a mossy tree branch"
+          "eduText": "Red pandas wrap their long bushy tails around themselves like a blanket to stay warm.",
+          "imagePrompt": "a fluffy red panda curled on a mossy tree branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red_panda"
         },
         {
           "name": "Giant Panda",
           "rarity": "epic",
-          "eduText": "Pandas eat bamboo for up to 12 hours every single day.",
-          "imagePrompt": "a happy giant panda munching green bamboo"
+          "eduText": "Giant pandas spend many hours a day eating bamboo, sometimes more than half the day.",
+          "imagePrompt": "a happy giant panda munching green bamboo",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giant_panda"
         },
         {
           "name": "Bengal Tiger",
           "rarity": "epic",
-          "eduText": "Every tiger's stripes are unique, just like our fingerprints.",
-          "imagePrompt": "a calm bengal tiger resting in a sunny jungle clearing"
+          "eduText": "Every tiger's stripe pattern is unique, and the stripes are even on their skin, not just fur.",
+          "imagePrompt": "a calm bengal tiger resting in a sunny jungle clearing",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tiger"
         },
         {
           "name": "Blue Whale",
           "rarity": "legendary",
-          "eduText": "The blue whale is the largest animal that has ever lived on Earth.",
-          "imagePrompt": "a majestic blue whale swimming in deep blue ocean"
+          "eduText": "The blue whale is the largest animal known to have ever lived on Earth.",
+          "imagePrompt": "a majestic blue whale swimming in deep blue ocean",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Blue_whale"
         }
       ]
     },
     {
-      "name": "Superheroes",
+      "name": "Dinosaurs",
       "cards": [
         {
-          "name": "Captain Kindness",
+          "name": "Triceratops",
           "rarity": "common",
-          "eduText": "Her power grows every time someone helps a friend in need.",
-          "imagePrompt": "a smiling young superhero in a yellow cape giving a helping hand"
+          "eduText": "Triceratops had three horns on its face and a large bony frill around the back of its head.",
+          "imagePrompt": "a friendly triceratops with three horns standing in a green prehistoric meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Triceratops"
         },
         {
-          "name": "Bookworm",
+          "name": "Stegosaurus",
           "rarity": "common",
-          "eduText": "He learns a brand new fact every minute, because reading is his superpower.",
-          "imagePrompt": "a cheerful boy hero in glasses and a green cape holding an open book"
+          "eduText": "Stegosaurus had tall bony plates along its back and sharp spikes on its tail for defense.",
+          "imagePrompt": "a gentle stegosaurus with big back plates grazing among ferns",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Stegosaurus"
         },
         {
-          "name": "Sprout",
+          "name": "Ankylosaurus",
           "rarity": "common",
-          "eduText": "Wherever Sprout walks, seeds grow into flowers that clean the air.",
-          "imagePrompt": "a small hero in a leafy green suit with flowers blooming at her feet"
+          "eduText": "Ankylosaurus was covered in bony armor and swung a heavy club on the end of its tail.",
+          "imagePrompt": "a sturdy armored ankylosaurus with a club tail walking in a valley",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ankylosaurus"
         },
         {
-          "name": "Echo",
+          "name": "Parasaurolophus",
           "rarity": "common",
-          "eduText": "Echo listens carefully to everyone, because good friends listen first.",
-          "imagePrompt": "a friendly hero with big headphones and a swirling blue cape"
+          "eduText": "Parasaurolophus had a long hollow head crest that may have let it make trumpet-like calls.",
+          "imagePrompt": "a friendly parasaurolophus with a long curved head crest near a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Parasaurolophus"
         },
         {
-          "name": "Sunbeam",
+          "name": "Iguanodon",
           "rarity": "common",
-          "eduText": "Sunbeam glows warmly, like real sunlight that helps plants make food.",
-          "imagePrompt": "a glowing girl hero with a bright yellow suit and sunny smile"
+          "eduText": "Iguanodon had a spiky thumb that it may have used for defense or to break open plants.",
+          "imagePrompt": "a calm iguanodon standing on two legs reaching for leafy plants",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Iguanodon"
         },
         {
-          "name": "Gearheart",
+          "name": "Gallimimus",
           "rarity": "common",
-          "eduText": "Gearheart builds a helpful invention whenever someone has a tricky problem.",
-          "imagePrompt": "a young inventor hero with goggles and a toolbelt holding a tiny robot"
+          "eduText": "Gallimimus looked a bit like an ostrich and was one of the fastest running dinosaurs.",
+          "imagePrompt": "a slender ostrich-like gallimimus running across an open plain",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gallimimus"
         },
         {
-          "name": "Tidecaller",
+          "name": "Velociraptor",
           "rarity": "rare",
-          "eduText": "Tidecaller keeps the oceans tidy, because clean seas keep the fish healthy.",
-          "imagePrompt": "a hero in a teal wetsuit riding a gentle wave with a happy dolphin"
+          "eduText": "The real Velociraptor was only about the size of a turkey and had feathers.",
+          "imagePrompt": "a small feathered velociraptor perched alertly on a rock",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Velociraptor"
         },
         {
-          "name": "Stormrider",
+          "name": "Brachiosaurus",
           "rarity": "rare",
-          "eduText": "Stormrider races clouds across the sky, then brings rain to thirsty fields.",
-          "imagePrompt": "a hero in a silver cape surfing on a fluffy cloud above a rainbow"
+          "eduText": "Brachiosaurus had front legs longer than its back legs, helping it lift its head high to reach treetops.",
+          "imagePrompt": "a towering gentle brachiosaurus reaching leaves at the top of tall trees",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Brachiosaurus"
         },
         {
-          "name": "Whisker Knight",
+          "name": "Pteranodon",
           "rarity": "rare",
-          "eduText": "Based on a house cat, this hero lands softly and always sees in the dark.",
-          "imagePrompt": "a brave cat-eared hero in a purple cape crouching on a rooftop"
+          "eduText": "Pteranodon was a flying reptile with a huge wingspan — but it was a pterosaur, not a true dinosaur.",
+          "imagePrompt": "a large winged pteranodon with a long head crest gliding over the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pteranodon"
         },
         {
-          "name": "Aurora",
+          "name": "Spinosaurus",
           "rarity": "epic",
-          "eduText": "Aurora paints the sky with colors, like the real northern lights do.",
-          "imagePrompt": "a hero with flowing green and purple light ribbons trailing behind her"
+          "eduText": "Spinosaurus is the longest known meat-eating dinosaur and likely spent much of its time hunting fish in water.",
+          "imagePrompt": "a large spinosaurus with a tall sail on its back wading in a river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spinosaurus"
         },
         {
-          "name": "Terra Guardian",
+          "name": "Allosaurus",
           "rarity": "epic",
-          "eduText": "Terra Guardian protects forests, because trees give us the air we breathe.",
-          "imagePrompt": "a tall gentle hero made of stone and moss standing among giant trees"
+          "eduText": "Allosaurus was a powerful Jurassic hunter with saw-edged teeth built for slicing meat.",
+          "imagePrompt": "a strong allosaurus standing over a rocky Jurassic landscape",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Allosaurus"
         },
         {
-          "name": "Starweaver",
+          "name": "Tyrannosaurus rex",
           "rarity": "legendary",
-          "eduText": "Starweaver connects the stars into pictures, the way sailors once found their way.",
-          "imagePrompt": "a glowing hero drawing bright constellations across a night sky"
+          "eduText": "Tyrannosaurus rex had one of the most powerful bites of any land animal that has ever lived.",
+          "imagePrompt": "a mighty tyrannosaurus rex roaring in a misty prehistoric forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tyrannosaurus"
         }
       ]
     },
@@ -160,74 +184,86 @@
         {
           "name": "Griffin",
           "rarity": "common",
-          "eduText": "Told of in ancient Greece, the griffin has an eagle's head and a lion's body.",
-          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill"
+          "eduText": "Told of in the ancient Near East and Greece, the griffin has an eagle's head and a lion's body.",
+          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Griffin"
         },
         {
           "name": "Pegasus",
           "rarity": "common",
-          "eduText": "Pegasus is a winged horse from Greek stories who could gallop through clouds.",
-          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky"
+          "eduText": "Pegasus is a winged horse from ancient Greek myths who was said to gallop through the sky.",
+          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus"
         },
         {
           "name": "Kappa",
           "rarity": "common",
-          "eduText": "In Japanese folklore, the kappa is a polite river creature who loves cucumbers.",
-          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber"
+          "eduText": "In Japanese folklore, the kappa is a mischievous river creature said to love cucumbers.",
+          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kappa_(folklore)"
         },
         {
           "name": "Selkie",
           "rarity": "common",
-          "eduText": "Scottish stories say selkies are seals who can step ashore as people.",
-          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak"
+          "eduText": "Scottish and Irish folklore tells of selkies, seals who could shed their skin to walk on land as people.",
+          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Selkie"
         },
         {
           "name": "Fenghuang",
           "rarity": "common",
-          "eduText": "The fenghuang is a Chinese bird of peace whose arrival means good times ahead.",
-          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch"
+          "eduText": "The fenghuang is a bird from Chinese mythology, long seen as a symbol of peace and good fortune.",
+          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fenghuang"
         },
         {
           "name": "Brownie",
           "rarity": "common",
-          "eduText": "British folklore says brownies tidy the house at night, asking only for cream.",
-          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom"
+          "eduText": "In British and Scottish folklore, brownies are helpful house spirits who tidy up in exchange for treats.",
+          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Brownie_(folklore)"
         },
         {
           "name": "Unicorn",
           "rarity": "rare",
-          "eduText": "Stories from many lands say a unicorn's horn can turn muddy water clean.",
-          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers"
+          "eduText": "Legends across many cultures describe the unicorn, a horse-like creature with a single spiraling horn.",
+          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Unicorn"
         },
         {
           "name": "Kirin",
           "rarity": "rare",
-          "eduText": "The kirin of East Asian legend walks so softly it never bends a blade of grass.",
-          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers"
+          "eduText": "The qilin (kirin) of East Asian legend is a gentle mythical creature whose appearance was seen as a good omen.",
+          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Qilin"
         },
         {
           "name": "Thunderbird",
           "rarity": "rare",
-          "eduText": "Many Indigenous peoples of North America tell of a great bird who brings the rain.",
-          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills"
+          "eduText": "Many Indigenous peoples of North America tell of the thunderbird, a great bird linked to storms and rain.",
+          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thunderbird_(mythology)"
         },
         {
           "name": "Sky Dragon",
           "rarity": "epic",
-          "eduText": "In Chinese legend, dragons are wise and kind, and they look after the rivers.",
-          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds"
+          "eduText": "In Chinese mythology, dragons are wise, benevolent beings often connected with water and rain.",
+          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_dragon"
         },
         {
           "name": "Phoenix",
           "rarity": "epic",
-          "eduText": "The phoenix is reborn from its own ashes, a very old symbol of starting again.",
-          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight"
+          "eduText": "The phoenix is a mythical bird said to be reborn from its own ashes, an ancient symbol of renewal.",
+          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phoenix_(mythology)"
         },
         {
           "name": "World Turtle",
           "rarity": "legendary",
-          "eduText": "Many old stories picture the whole world resting on a giant turtle's back.",
-          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell"
+          "eduText": "The World Turtle appears in myths from several cultures, picturing the world resting on a giant turtle's back.",
+          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell",
+          "sourceUrl": "https://en.wikipedia.org/wiki/World_Turtle"
         }
       ]
     }
