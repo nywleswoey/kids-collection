@@ -804,3 +804,11 @@
 **Context**: INCEPTION / Requirements Analysis — clarification gate.
 
 ---
+
+## Increment 6 — Requirements Drafted
+**Timestamp**: 2026-07-11T15:12:00Z
+**User Input**: "commit and approve" (answers: 1=~1%, 2=mixed epic/legendary, 3=any epic+ dupes ok, 4=stays spent, 5=name only, 6=full-screen fireworks on pick, 7=both)
+**AI Response**: "Committed questions. Drafted increment6-easter-egg-requirements.md: FR1 locked-slot names, FR2 ~1% server-side egg → refund token, sign HMAC offer {childId,cardIds,exp}, 5 epic+ choices, claim action verifies sig/exp/child/chosen∈offer + atomic spend → net 1 token/card (no double-spend, no free cards), FR3 Fireworks effect. NFR1 security (server RNG, signed offer, atomic spend, ~120s expiry bounds replay), NFR2 economy integrity/no regression, NFR3 a11y/zero-dep. Extension: Security enforced, Resiliency reuse refund/atomic, PBT on pickEasterEggChoices + offer sign/verify. Presented approval gate."
+**Context**: INCEPTION / Requirements Analysis — approval gate (Security applicable).
+
+---
