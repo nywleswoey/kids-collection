@@ -1025,3 +1025,11 @@
 **Context**: INCREMENT 10 Build & Test — instructions written; automated checks pass.
 
 ---
+
+## INCREMENT 11 — Requirements Analysis: Questions (parallel w/ Inc10 seed review)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "i am running the review, meanwhile can start on the next increment"
+**AI Response**: "Inc10 held at Operations gate (user running pnpm seed --review; seed --sync + deploy pending). Started INC 11 (Educational Quizzes). Most scope pre-captured (D1-D11). Read children schema (needs new quiz_completions table for daily cap + admin log). Wrote increment11-quizzes-questions.md — 8 open questions: Q1 generation approach (static bank/pre-gen/live-API/hybrid — resolves D7), Q2 topic list, Q3 daily-cap SGT reset, Q4 replay-for-tickets, Q5 lesson authoring depth, Q6 wrong-answer flow, Q7 admin view, Q8 migration ack. Awaiting answers."
+**Context**: INCREMENT 11 Requirements Analysis — questions posed (parallel work).
+
+---
