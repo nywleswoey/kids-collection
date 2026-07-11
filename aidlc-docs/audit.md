@@ -612,3 +612,19 @@
 **Context**: INCEPTION / Requirements Analysis — clarification gate.
 
 ---
+
+## Increment 3 — Requirements Drafted
+**Timestamp**: 2026-07-11T11:08:00Z
+**User Input**: "proceed"
+**AI Response**: "Drafted increment3-branding-requirements.md (Standard depth) from answers: Star Catchers / Discover / My Galaxy / planet+rocket icons / full galaxy re-theme / occasional asteroids / avatar fix+planet framing / play-area-only scope / keep rarity names. FRs (rename+reterm copy-only, icon swap, full re-theme, asteroids, avatar fix), NFRs (a11y reduced-motion, perf zero-deps, no regression, consistency), extension compliance (Security N/A, Resiliency light, PBT minimal), acceptance criteria. Presented approval gate."
+**Context**: INCEPTION / Requirements Analysis — approval gate.
+
+---
+
+## Increment 3 — Requirements Approved, Application Design Drafted
+**Timestamp**: 2026-07-11T11:14:00Z
+**User Input**: "a" (approve requirements)
+**AI Response**: "Requirements approved. Drafted increment3-branding-design.md (LIGHT, single doc per Inc2 precedent): new src/lib/brand.ts (pure constants) + src/features/anim/Asteroids.tsx; edits to globals.css (galaxy tokens + backdrop layers + hero-avatar stacking fix), anim.css (asteroid keyframe), app/layout metadata title, app/play/layout (mount Asteroids), and copy/icon swaps across signin/home/pull/binder/card-detail/PullButton/RevealCard. Routes + data-testids frozen. Avatar fix = CSS-only stacking (isolation + ::before z-index:-1). Extension compliance Security N/A, Resiliency light, PBT minimal. Presented approval gate."
+**Context**: INCEPTION / Application Design — approval gate.
+
+---

@@ -51,8 +51,10 @@ New modules: src/features/sound/* (settings, sfx, AudioEngine, bgm, SoundProvide
 ## INCREMENT 3 — Branding & Visual Overhaul (Naming, Galaxy Theme, Avatar Fix)
 Brownfield enhancement + bug fix on existing app. Cadence: LIGHT (single increment).
 Scope from request: punchier name/terms · drop poker-card icons for child-friendly motif · galaxy theme with periodic asteroids · fix invisible avatar (regression: `.hero-avatar::before` dark disc covers bare-text emoji on play-home hero).
+Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Galaxy, 4=Planet/Rocket, 5=Full re-theme, 6=Occasional asteroids, 7=Fix+planet framing, 8=Play area only, 9=Keep rarity names.
 ### 🔵 INCEPTION
-- [ ] Requirements Analysis — questions in increment3-branding-questions.md, awaiting answers
+- [x] Requirements Analysis — APPROVED (increment3-branding-requirements.md)
+- [~] Application Design — drafted (increment3-branding-design.md), AWAITING APPROVAL
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
