@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 4 (Admin Gate, Preview & Content) COMPLETE — held at Operations gate (placeholder). typecheck clean, 42/42 tests, build ✅, zero new deps, no client-bundle secret leak. Post-merge user actions: `pnpm db:migrate`, `pnpm seed --sync` (delta; supersedes `--reset --publish`), set `ADMIN_PASSCODE`. Deployed to Vercel production 2026-07-11.
+- **Current Stage**: INCREMENT 5 (Card Expand & Rarity Clarity) — INCEPTION / Requirements Analysis (questions issued, awaiting answers)
+- **Prior Increment**: INCREMENT 4 (Admin Gate, Preview & Content) COMPLETE — held at Operations gate. 42/42 tests, deployed to Vercel prod. Post-merge: `pnpm db:migrate`, `pnpm seed --sync`, set `ADMIN_PASSCODE`.
 - **Prior Increment**: INCREMENT 3 (Branding & Galaxy Theme) COMPLETE — Star Catchers rebrand, galaxy theme, asteroids, avatar fix; verified live
 - **Prior Increment**: INCREMENT 2 (Sensory) COMPLETE — sound/BGM/animation, 33/33 tests, build ✅
 - **Prior Increment**: INCREMENT 1 (Core App) COMPLETE — all 7 units built, 27/27 tests, deployed, held at Operations gate
