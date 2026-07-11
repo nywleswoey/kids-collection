@@ -812,3 +812,11 @@
 **Context**: INCEPTION / Requirements Analysis — approval gate (Security applicable).
 
 ---
+
+## Increment 6 — Requirements Approved (+ roulette), Design Next
+**Timestamp**: 2026-07-11T15:18:00Z
+**User Input**: "a" (keep refund-on-abandon design; approve) + "when they select a card, show an animation of 'cycling' through the cards before landing on a card, do it for a few seconds so it builds up on the anticipation"
+**AI Response**: "Confirmed refund-on-abandon (override of Q4=A). Added FR3 pick roulette (2.5–3s cycling/decelerating animation landing on the chosen card, reduced-motion skips) and renumbered fireworks to FR4 (fires on landing). Updated acceptance criteria. Requirements approved → proceeding to Application Design."
+**Context**: INCEPTION / Requirements Analysis approved → Application Design.
+
+---

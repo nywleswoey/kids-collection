@@ -14,7 +14,7 @@ Show kids the names of cards they haven't collected yet, and add a very rare "ja
 | 1 | Egg odds | **~1%** per discover (1 in 100), server-side |
 | 2 | 5-card rarity | **Mixed epic + legendary** (each drawn from the epic+ pool) |
 | 3 | Dedup | **Any epic+** — duplicates allowed (they stack) |
-| 4 | Unclaimed offer | **Token stays spent, no card** — offer is signed + short-lived |
+| 4 | Unclaimed offer | **Refund on abandon** (confirmed override of Q4=A): token refunded at trigger, re-spent only on claim → abandoned egg costs nothing |
 | 5 | Locked-slot spoiler | **Name only** (art stays hidden until collected) |
 | 6 | Fireworks | **Full-screen burst on the pick screen**, reduced-motion aware |
 | 7 | Scope | Both features together |
@@ -33,10 +33,14 @@ Show kids the names of cards they haven't collected yet, and add a very rare "ja
   - Verify the offer signature + not expired + `childId` == active child; verify `chosenCardId` ∈ the offered ids (server-enforced — can't pick an un-offered card).
   - **Atomically spend 1 token** (the cost of this discover; no-double-spend, out-of-tokens safe) and upsert the chosen card's collection count. Return the normal `PullResult` (card + isDuplicate + newBalance).
 - **Net economy**: exactly **1 token per claimed egg card** — identical to a normal discover. No free cards, no double-spend.
-- **Client**: `PullButton` detects the `easterEgg` outcome → shows the 5-card picker + full-screen **fireworks**; picking calls `claimEasterEgg`; on success shows the chosen card (reveal). If abandoned, the token was refunded at trigger and re-spent only on claim, so an unclaimed egg costs nothing beyond the original discover attempt (kid can just discover again). *(Chosen over "token lost" — cleaner and still tamper-proof.)*
+- **Client**: `PullButton` detects the `easterEgg` outcome → shows the 5-card picker; picking calls `claimEasterEgg`, then plays the **roulette** (FR3) landing on the chosen card, then **fireworks** (FR4) + reveal. If abandoned, the token was refunded at trigger and re-spent only on claim, so an unclaimed egg costs nothing beyond the original discover attempt (kid can just discover again). *(Chosen over "token lost" — cleaner and still tamper-proof.)*
 
-### FR3 — Fireworks celebration
-- New `Fireworks` effect (distinct from confetti): full-screen bursts on the easter-egg pick screen. Transform/opacity only; disabled under `prefers-reduced-motion`.
+### FR3 — Pick roulette (anticipation build-up)
+- When the kid selects one of the 5, do **not** reveal immediately. Play a **cycling/roulette animation** that rapidly flips through the candidate cards for **a few seconds** (~2.5–3s), **decelerating** and **landing on the kid's chosen card**. Then fireworks + the card reveal.
+- Purely visual — the winner is already decided (the kid's pick); the animation just builds suspense. Under `prefers-reduced-motion`, skip the cycle and show the chosen card immediately.
+
+### FR4 — Fireworks celebration
+- New `Fireworks` effect (distinct from confetti): full-screen bursts when the roulette **lands** on the chosen card. Transform/opacity only; disabled under `prefers-reduced-motion`.
 
 ## Non-Functional Requirements
 
@@ -63,7 +67,7 @@ Show kids the names of cards they haven't collected yet, and add a very rare "ja
 
 ## Acceptance Criteria
 1. Locked binder slots show the card name (art hidden).
-2. ~1% of discovers trigger the egg: a 5-card epic+ picker with fireworks; picking grants that card and costs exactly one token overall.
+2. ~1% of discovers trigger the egg: a 5-card epic+ picker; picking plays a ~2.5–3s roulette that lands on the chosen card, then fireworks + reveal; the card is granted and costs exactly one token overall.
 3. The egg cannot be forced from the client; claim rejects forged/expired/un-offered picks; no double-spend.
-4. Non-egg discovers unchanged; reduced-motion disables fireworks.
+4. Non-egg discovers unchanged; reduced-motion skips the roulette (immediate result) and disables fireworks.
 5. `pnpm typecheck` clean, `pnpm build` succeeds, tests green (≥45 + new PBT), zero new deps, no `data-testid` regressions.
