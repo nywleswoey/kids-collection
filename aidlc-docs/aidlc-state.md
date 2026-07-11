@@ -56,7 +56,8 @@ Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Ga
 - [x] Requirements Analysis — APPROVED (increment3-branding-requirements.md)
 - [x] Application Design — APPROVED (increment3-branding-design.md)
 ### 🟢 CONSTRUCTION
-- [~] Code Generation — plan drafted (increment3-branding-code-generation-plan.md), AWAITING PLAN APPROVAL
+- [x] Code Generation — DONE (code-summary.md); typecheck clean, 33/33 tests, build ✅, zero new deps. 2 new files (brand.ts, Asteroids.tsx) + 11 edits. Avatar regression fixed (CSS stacking).
+- [ ] Build & Test — pending gate
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
