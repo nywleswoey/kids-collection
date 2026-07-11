@@ -32,12 +32,8 @@ export default async function ProfilePickerPage() {
       )}
 
       <div className="flex gap-4 text-sm opacity-80">
-        <Link
-          href="/admin/profiles"
-          data-testid="manage-profiles-link"
-          className="underline"
-        >
-          Manage profiles
+        <Link href="/admin" data-testid="admin-link" className="underline">
+          Parent admin
         </Link>
         <form action={signOutAction}>
           <button
