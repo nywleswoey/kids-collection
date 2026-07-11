@@ -40,11 +40,12 @@ Order: U1 → {U2, U3} → U4 → {U5, U6} → U7. Per unit: Functional Design �
 ## INCREMENT 2 — Sensory Enhancement (Sound FX, BGM, Animation)
 Brownfield feature on existing app. Cadence: LIGHT (single increment).
 ### 🔵 INCEPTION
-- [ ] Requirements Analysis (in progress — clarification questions issued)
-- [ ] Application Design
+- [x] Requirements Analysis
+- [x] Application Design
 ### 🟢 CONSTRUCTION
-- [ ] Code Generation
-- [ ] Build & Test
+- [x] Code Generation — typecheck clean, 33/33 tests, build ✅, zero new deps
+- [ ] Build & Test (instruction docs) — pending
+New modules: src/features/sound/* (settings, sfx, AudioEngine, bgm, SoundProvider, useSound, SoundControls), src/features/anim/* (Confetti, CountUp, useReducedMotion, anim.css), app/play/layout.tsx (NEW), public/bgm/. Seams: PullButton, RevealCard, CardSlot, ThemeSection, SetCompleteCelebration.
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
