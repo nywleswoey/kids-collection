@@ -4,6 +4,7 @@ import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import { getCardDetail } from "@/features/binder/service";
 import { Card } from "@/features/card/Card";
+import { SacrificePanel } from "@/features/pull/SacrificePanel";
 
 export default async function CardDetailPage({
   params,
@@ -26,6 +27,9 @@ export default async function CardDetailPage({
       <Card card={detail.card} interactive size="lg" count={detail.count} />
       {detail.count > 1 ? (
         <p className="pill pill--gold">📚 You own {detail.count} of these</p>
+      ) : null}
+      {detail.count >= 3 ? (
+        <SacrificePanel cardId={detail.card.id} count={detail.count} />
       ) : null}
       <Link href="/play/binder" className="link-soft text-sm">
         ← Back to My Galaxy

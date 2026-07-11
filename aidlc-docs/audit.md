@@ -922,3 +922,11 @@
 **Context**: INCREMENT 8 Requirements Analysis — answers + approval to continue.
 
 ---
+
+## INCREMENT 8 — Code Generation
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "commit and continue"
+**AI Response**: "Implemented 4 items. NEW: sacrifice.ts (pure), SacrificePanel.tsx, sacrifice.pbt.test.ts. EDITS: easter-egg.ts (pickCommonRareChoices), pull-service.ts (second egg + makeEggOutcome + sacrifice + themeId + claim gate relaxed), actions.ts (pullAction themeId, sacrificeAction), PullButton+pull page (category select), card detail page (SacrificePanel), profiles/service.ts + admin/service.ts (lower(name) order — getAdminOverview was the real grant-reshuffle culprit). typecheck clean, 57/57 tests, build ✅, zero new deps, no secret leak. Wrote code-summary, updated state. Committing."
+**Context**: INCREMENT 8 Construction — Code Generation complete.
+
+---

@@ -10,10 +10,27 @@ import type { Rng } from "@/lib/logic";
 export const EGG_CHANCE = 0.01;
 
 const EPIC_PLUS: readonly Rarity[] = ["epic", "legendary"];
+const COMMON_RARE: readonly Rarity[] = ["common", "rare"];
 
 /** True with probability EGG_CHANCE. */
 export function rollEasterEgg(rng: Rng = Math.random): boolean {
   return rng() < EGG_CHANCE;
+}
+
+/** Pick up to `n` distinct random cards whose rarity is in `tiers`. */
+function pickChoicesByTier(
+  pool: Card[],
+  tiers: readonly Rarity[],
+  n: number,
+  rng: Rng,
+): Card[] {
+  const eligible = pool.filter((c) => tiers.includes(c.rarity));
+  // Fisher–Yates on a copy.
+  for (let i = eligible.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [eligible[i], eligible[j]] = [eligible[j], eligible[i]];
+  }
+  return eligible.slice(0, Math.min(n, eligible.length));
 }
 
 /**
@@ -25,11 +42,17 @@ export function pickEasterEggChoices(
   n = 5,
   rng: Rng = Math.random,
 ): Card[] {
-  const epicPlus = pool.filter((c) => EPIC_PLUS.includes(c.rarity));
-  // Fisher–Yates on a copy.
-  for (let i = epicPlus.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [epicPlus[i], epicPlus[j]] = [epicPlus[j], epicPlus[i]];
-  }
-  return epicPlus.slice(0, Math.min(n, epicPlus.length));
+  return pickChoicesByTier(pool, EPIC_PLUS, n, rng);
+}
+
+/**
+ * Pick up to `n` distinct common/rare cards at random (Inc8 FR1 second egg,
+ * owned allowed). Fewer than `n` in the pool → returns as many as exist.
+ */
+export function pickCommonRareChoices(
+  pool: Card[],
+  n = 5,
+  rng: Rng = Math.random,
+): Card[] {
+  return pickChoicesByTier(pool, COMMON_RARE, n, rng);
 }

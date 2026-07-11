@@ -4,6 +4,7 @@ import {
   EGG_CHANCE,
   rollEasterEgg,
   pickEasterEggChoices,
+  pickCommonRareChoices,
 } from "@/features/pull/easter-egg";
 import { RARITIES, type Card } from "@/lib/types";
 
@@ -40,6 +41,20 @@ describe("easter egg (U6-FR2)", () => {
         );
         expect(picks.length).toBe(Math.min(n, epicPlus.length));
         expect(picks.every((c) => c.rarity === "epic" || c.rarity === "legendary")).toBe(true);
+        expect(new Set(picks.map((c) => c.id)).size).toBe(picks.length);
+      }),
+    );
+  });
+
+  it("pickCommonRareChoices returns only common/rare, at most n, distinct (Inc8 FR1)", () => {
+    fc.assert(
+      fc.property(poolArb, fc.integer({ min: 1, max: 6 }), (pool, n) => {
+        const picks = pickCommonRareChoices(pool, n);
+        const commonRare = pool.filter(
+          (c) => c.rarity === "common" || c.rarity === "rare",
+        );
+        expect(picks.length).toBe(Math.min(n, commonRare.length));
+        expect(picks.every((c) => c.rarity === "common" || c.rarity === "rare")).toBe(true);
         expect(new Set(picks.map((c) => c.id)).size).toBe(picks.length);
       }),
     );

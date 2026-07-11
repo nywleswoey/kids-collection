@@ -1,5 +1,5 @@
 import "server-only";
-import { asc, eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
 import { children } from "@/db/schema";
@@ -22,11 +22,14 @@ function toChild(row: typeof children.$inferSelect): Child {
 }
 
 /**
- * All child profiles, ordered by name (FR4). Stable order so a token grant
- * (which UPDATEs a row) never re-shuffles the list.
+ * All child profiles, ordered case-insensitively by name (Inc8 FR4). Stable
+ * order so a token grant (an UPDATE) never re-shuffles the list.
  */
 export async function listChildren(): Promise<Child[]> {
-  const rows = await db.select().from(children).orderBy(asc(children.name));
+  const rows = await db
+    .select()
+    .from(children)
+    .orderBy(sql`lower(${children.name})`);
   return rows.map(toChild);
 }
 

@@ -4,7 +4,7 @@ import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import { getBalance } from "@/features/pull/token-service";
 import { PullButton } from "@/features/pull/PullButton";
-import { listCards } from "@/features/pool/service";
+import { listCards, listThemes } from "@/features/pool/service";
 
 export default async function PullPage() {
   await requireParent();
@@ -12,8 +12,9 @@ export default async function PullPage() {
   if (!child) redirect("/play");
 
   const balance = await getBalance(child.id);
+  const [allCards, themes] = await Promise.all([listCards(), listThemes()]);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
-  const flashPool = (await listCards()).map((c) => ({
+  const flashPool = allCards.map((c) => ({
     id: c.id,
     imageUrl: c.imageUrl,
     rarity: c.rarity,
@@ -30,7 +31,11 @@ export default async function PullPage() {
           Ready, <span className="title-pop">{child.name}</span>?
         </h1>
       </div>
-      <PullButton initialBalance={balance} flashPool={flashPool} />
+      <PullButton
+        initialBalance={balance}
+        flashPool={flashPool}
+        themes={themes.map((t) => ({ id: t.id, name: t.name }))}
+      />
       <div className="flex gap-3 text-sm">
         <Link
           href="/play/binder"

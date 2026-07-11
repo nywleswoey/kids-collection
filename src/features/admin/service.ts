@@ -10,7 +10,9 @@ export async function getAdminOverview(): Promise<AdminOverview> {
   await requireParent();
 
   const [kids, [cardCount], [themeCount]] = await Promise.all([
-    db.select().from(children),
+    // Case-insensitive name order (Inc8 FR4) — stops the list reshuffling after
+    // a grant UPDATE (was unordered heap order).
+    db.select().from(children).orderBy(sql`lower(${children.name})`),
     db.select({ n: sql<number>`count(*)::int` }).from(cards),
     db.select({ n: sql<number>`count(*)::int` }).from(themes),
   ]);

@@ -3,14 +3,20 @@
 import { revalidatePath } from "next/cache";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
-import { pull, claimEasterEgg, type PullOutcome } from "./pull-service";
+import {
+  pull,
+  claimEasterEgg,
+  sacrifice,
+  type PullOutcome,
+  type SacrificeResult,
+} from "./pull-service";
 import { grant } from "./token-service";
 
-/** Pull for the current active child (C1). */
-export async function pullAction(): Promise<PullOutcome> {
+/** Pull for the current active child (C1). Optional category (Inc8 FR3). */
+export async function pullAction(themeId?: string): Promise<PullOutcome> {
   const child = await getActiveChild();
   if (!child) throw new Error("No active profile");
-  const outcome = await pull(child.id);
+  const outcome = await pull(child.id, themeId);
   revalidatePath("/play/pull");
   revalidatePath("/play/binder");
   return outcome;
@@ -27,6 +33,19 @@ export async function claimEasterEggAction(
   revalidatePath("/play/pull");
   revalidatePath("/play/binder");
   return outcome;
+}
+
+/** Sacrifice 3 copies of a card for a random upgrade (Inc8 FR2). */
+export async function sacrificeAction(
+  cardId: string,
+): Promise<SacrificeResult> {
+  const child = await getActiveChild();
+  if (!child) throw new Error("No active profile");
+  const result = await sacrifice(child.id, cardId);
+  revalidatePath("/play/binder");
+  revalidatePath(`/play/binder/${cardId}`);
+  revalidatePath(`/play/binder/${result.card.id}`);
+  return result;
 }
 
 /** Parent grants tokens to a child (F1). */
