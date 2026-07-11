@@ -903,3 +903,22 @@
 **Context**: OPERATIONS — production deploy; increment closed.
 
 ---
+
+## Session Resume — New Increment Request (INCREMENT 8 candidate)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "- add another easter egg to allow them to choose any of the common or rare card. same 1% chance
+- easter egg 3, when they hit 3 copies of the same card, can sacrifice the extra copies to random a card of the equivalent or 1 tier higher card
+- allow them to choose the category before pulling (can also choose random which is the default)
+- the profile still seems to shift, just order by alphabetical order"
+**AI Response**: "Prior increment (7) COMPLETE + deployed. New request = 4 items → INCREMENT 8. Investigated item 4: listChildren already orderBy(asc(name)) — likely case-sensitivity making order look wrong. Read easter-egg/offer/pull-service/drawCard/themes/collections to scope items 1-3. Wrote clarifying questions; presented Welcome-back A/B."
+**Context**: Session resume; new increment scoping.
+
+---
+
+## INCREMENT 8 — Requirements Analysis: Answers
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "Q1-Q10 all A" + "commit and continue"
+**AI Response**: "All recommended. Q1 independent 1% common/rare egg (rolls after epic+ miss); Q2 pick-1-of-5; Q3 sacrifice consumes exactly 3 copies; Q4 50/50 same-vs-+1 tier (legendary caps); Q5 free, result random-in-tier prefer-unowned; Q6 on card detail page (count>=3); Q7 category scopes normal draw only, eggs global; Q8 resets to Random each visit; Q9 order getAdminOverview + listChildren by lower(name); Q10 ship all as INCREMENT 8 LIGHT. Writing requirements + design, committing, implementing."
+**Context**: INCREMENT 8 Requirements Analysis — answers + approval to continue.
+
+---
