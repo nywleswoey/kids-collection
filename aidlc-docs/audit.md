@@ -676,3 +676,19 @@
 **Context**: INCEPTION / Requirements Analysis — clarification gate.
 
 ---
+
+## Increment 4 — Requirements Drafted
+**Timestamp**: 2026-07-11T12:30:00Z
+**User Input**: "i modified some of the answer, amend the commit then proceed" (Q7 → all cards sourced; fictional cite myth/legend origin)
+**AI Response**: "Amended questions commit. Drafted increment4-admin-content-requirements.md: FR1 admin passcode gate (env ADMIN_PASSCODE, server-side constant-time compare, signed httpOnly cookie, gate all /admin/*), FR2 full-catalog preview binder, FR3 effect trigger panel (all SFX/reveal/confetti/set-complete/BGM/asteroid), FR4 dinosaurs replace superheroes (12, 6/3/2/1, wipe+reseed), FR5 eduText fact + new sourceUrl on ALL cards (real=true fact+source, fictional=myth origin+source), admin-only link. NFRs: security (no secrets in bundle/logs, constant-time, signed cookie), additive migration, no regression, content quality. Extension compliance: Security APPLICABLE+enforced, Resiliency light, PBT for gate-token/mapper. Presented approval gate."
+**Context**: INCEPTION / Requirements Analysis — approval gate (Security extension applicable).
+
+---
+
+## Increment 4 — Requirements Approved, Design Drafted
+**Timestamp**: 2026-07-11T12:40:00Z
+**User Input**: "a" (approve requirements)
+**AI Response**: "Requirements approved. Inspected auth (middleware+guard), seed pipeline (loader/writer/schema, insertCardIfNew skips existing), binder mapper. Drafted increment4-admin-content-design.md: FR1 passcode gate — env ADMIN_PASSCODE + AUTH_SECRET-signed HMAC cookie, gate-token.ts (pure, PBT), constant-time verifyPasscode, middleware redirect + admin layout requireAdminGate (defense-in-depth), /admin/unlock flow. FR2 catalog.ts full-catalog preview (pure buildCatalog mapper). FR3 EffectTriggerPanel wrapped in own SoundProvider+Asteroids. FR4 dinosaurs replace superheroes (roster listed) + resetPool() wipe. FR5 cards.sourceUrl (text notNull default ''), seed-schema url validation, admin-only showSource prop on Card/CardSlot. Security compliance enumerated; PBT targets gate-token + buildCatalog. Presented approval gate."
+**Context**: INCEPTION / Application Design — approval gate.
+
+---
