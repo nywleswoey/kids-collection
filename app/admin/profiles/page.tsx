@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
 import { listChildren } from "@/features/profiles/service";
-import { avatarEmoji } from "@/lib/avatars";
 import { ProfileForm } from "@/features/profiles/ProfileForm";
-import { RemoveProfileButton } from "@/features/profiles/RemoveProfileButton";
+import { ProfileRow } from "@/features/profiles/ProfileRow";
 import { requireAdminGate } from "@/features/admin/gate";
 
 export default async function ProfileManagerPage() {
@@ -22,20 +21,13 @@ export default async function ProfileManagerPage() {
 
       <ul className="flex flex-col gap-3">
         {kids.map((c) => (
-          <li
+          <ProfileRow
             key={c.id}
-            className="panel flex items-center justify-between p-3"
-            data-testid={`profile-row-${c.id}`}
-          >
-            <span className="flex items-center gap-3">
-              <span className="hero-avatar h-11 w-11 text-xl" aria-hidden>
-                {avatarEmoji(c.avatar)}
-              </span>
-              <span className="display font-semibold">{c.name}</span>
-              <span className="pill text-xs">🎟️ {c.pullTokens}</span>
-            </span>
-            <RemoveProfileButton id={c.id} name={c.name} />
-          </li>
+            id={c.id}
+            name={c.name}
+            avatar={c.avatar}
+            pullTokens={c.pullTokens}
+          />
         ))}
         {kids.length === 0 ? (
           <li className="text-[color:var(--ink-mute)]">

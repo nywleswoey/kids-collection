@@ -5,12 +5,20 @@ import type { PullOutcome } from "./pull-service";
 import { pullAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
+import { CardRoulette, type FlashCard } from "./CardRoulette";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 
-export function PullButton({ initialBalance }: { initialBalance: number }) {
+export function PullButton({
+  initialBalance,
+  flashPool = [],
+}: {
+  initialBalance: number;
+  flashPool?: FlashCard[];
+}) {
   const [balance, setBalance] = useState(initialBalance);
   const [outcome, setOutcome] = useState<PullOutcome | null>(null);
+  const [cycling, setCycling] = useState(false);
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
@@ -28,6 +36,7 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
   function doPull() {
     play("click");
     play("packOpen");
+    setOutcome(null);
     startTransition(async () => {
       const res = await pullAction();
       setOutcome(res);
@@ -36,7 +45,12 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
       } else {
         // Egg refunds the token (re-spent on claim); balance reflects that.
         setBalance(res.newBalance);
-        if (res.easterEgg) play("setComplete");
+        if (res.easterEgg) {
+          play("setComplete");
+        } else {
+          // Normal pull: run the slot-machine build-up before the reveal (FR1).
+          setCycling(true);
+        }
       }
     });
   }
@@ -74,14 +88,23 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
           onDone={(r) => setBalance(r.newBalance)}
         />
       ) : outcome && !outcome.outOfTokens && !outcome.easterEgg ? (
-        <div className="flex flex-col items-center gap-3" data-testid="pull-result">
-          <RevealCard key={outcome.card.id + balance} card={outcome.card} />
-          {outcome.isDuplicate ? (
-            <span data-testid="duplicate-badge" className="pill">
-              ➕ Duplicate — nice, it stacks!
-            </span>
-          ) : null}
-        </div>
+        cycling ? (
+          <CardRoulette
+            key={outcome.card.id + "-roulette"}
+            finalCard={outcome.card}
+            pool={flashPool}
+            onDone={() => setCycling(false)}
+          />
+        ) : (
+          <div className="flex flex-col items-center gap-3" data-testid="pull-result">
+            <RevealCard key={outcome.card.id + balance} card={outcome.card} />
+            {outcome.isDuplicate ? (
+              <span data-testid="duplicate-badge" className="pill">
+                ➕ Duplicate — nice, it stacks!
+              </span>
+            ) : null}
+          </div>
+        )
       ) : null}
     </div>
   );

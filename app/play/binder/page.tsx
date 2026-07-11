@@ -17,10 +17,19 @@ export default async function BinderPage() {
       className="mx-auto flex max-w-3xl flex-col gap-6 p-6"
       data-testid="binder-page"
     >
-      <header className="panel flex flex-wrap items-center justify-between gap-3 p-5">
-        <h1 className="text-2xl font-bold">
-          <span className="title-pop">{child.name}</span>&apos;s Galaxy
-        </h1>
+      <header className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/play/home"
+            data-testid="binder-back-home"
+            className="btn btn--ghost text-sm"
+          >
+            ← Home
+          </Link>
+          <h1 className="text-2xl font-bold">
+            <span className="title-pop">{child.name}</span>&apos;s Galaxy
+          </h1>
+        </div>
         <span className="pill pill--gold">
           ⭐ {binder.totalOwned} / {binder.totalCards} stars
         </span>
@@ -46,10 +55,6 @@ export default async function BinderPage() {
           <ThemeSection key={section.theme.id} section={section} />
         ))
       )}
-
-      <Link href="/play/home" className="link-soft self-start text-sm">
-        ← Home
-      </Link>
     </main>
   );
 }

@@ -6,8 +6,11 @@ import { createProfileAction, updateProfileAction } from "./actions";
 
 export function ProfileForm({
   initial,
+  onDone,
 }: {
   initial?: { id: string; name: string; avatar: string };
+  /** Fired on submit — lets an inline editor collapse back to the read row (FR3). */
+  onDone?: () => void;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
   const [avatar, setAvatar] = useState(initial?.avatar ?? AVATAR_PRESETS[0].key);
@@ -17,6 +20,7 @@ export function ProfileForm({
   return (
     <form
       action={action}
+      onSubmit={() => onDone?.()}
       className="panel flex flex-col gap-4 p-5"
       data-testid="profile-form"
     >
