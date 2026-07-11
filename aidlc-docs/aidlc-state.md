@@ -90,3 +90,18 @@ Security findings: none blocking (passcode server-only, constant-time compare, s
 | Security Baseline | Yes | Requirements Analysis |
 | Resiliency Baseline | Yes | Requirements Analysis |
 | Property-Based Testing | Yes | Requirements Analysis |
+
+## INCREMENT 10 — Ticket Fixes, Buttons & New Categories
+Brownfield fixes + content. Cadence: LIGHT (single increment). No schema migration.
+Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket pill on landing (A1=C, fixes "0 tickets" bug); FR2 hide ask-parent unless ALL ticket types 0, else show special buttons + greyed Discover (B1=A/B2=B); FR3 convert all link-soft text links → buttons (C1=A); FR4 new Country theme 30 cards, iconic item per country, rarity-by-fame (E2/E3=A); FR5 new Famous People theme 30 cards, global + few SG figures (E4/E5=A); FR6 gen ~60 images via seed (F2=A). 4→6 themes, 120→180 cards.
+### 🔵 INCEPTION
+- [ ] Requirements Analysis — doc written (increment10-fixes-categories-requirements.md); AWAITING APPROVAL
+### 🟢 CONSTRUCTION
+- [ ] Application Design
+- [ ] Code Generation
+- [ ] Build & Test
+### 🟡 OPERATIONS
+- [ ] Operations gate
+
+## INCREMENT 11 — Educational Quizzes (DEFERRED, not started)
+Item 4. Answers pre-captured in increment10-quiz-categories-questions.md: D1=A both math+grammar (SG lower-primary); D2=B 5 Q; D3=A 1 lesson card teach-first; D4=A reward 1 lucky ticket; D5=B no retry; D6=D daily cap 3 quiz tickets; D7 OPEN (dynamic/API gen — proposed Claude API haiku-generated bank, resolve at Inc 11 scoping); D8=B random N from bank; D9=A "🧠 Play & Learn" home button; D10=A auto-grant; D11=A admin quiz-activity summary.
