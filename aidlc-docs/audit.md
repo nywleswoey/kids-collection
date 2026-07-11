@@ -660,3 +660,19 @@
 **Context**: OPERATIONS — increment closed.
 
 ---
+
+## Session Resume — Increment 4 Request
+**Timestamp**: 2026-07-11T12:05:00Z
+**User Input**: "admin need passcode to access / admin should have a full binder for preview and should be able to trigger the effects/animation with button clicks / replace superhero with dinosaur category / each card should have a fun fact that is true. show me the link to the source in the admin view so i can fact-check"
+**AI Response**: "Resumed. Increment 3 COMPLETE. Loaded schema (cards lack source/fact-URL field), seed categories (Animals/Superheroes/Mythic — Superheroes is replacement target), auth (Google allowlist, no admin passcode). Rendered Welcome-back proposing Increment 4 (Admin Gate, Preview & Content) with 4 features. Awaiting A/B."
+**Context**: Session continuity — Increment 3 complete; new increment requested.
+
+---
+
+## Increment 4 — Requirements Analysis Start
+**Timestamp**: 2026-07-11T12:20:00Z
+**User Input**: "leave it, then b" → then "i already reviewed all 3." (proceed to start Increment 4)
+**AI Response**: "Left Nova test profile (DB-delete denied as shared/prod resource). User reviewed prior increments; starting Increment 4. Inspected Superheroes roster (12 cards: 6c/3r/2e/1L, eduText=blurb) and schema (no sourceUrl field). Flagged that 'true fact + source' is impossible for fictional themes (Superheroes/Mythic). Wrote 10 clarification questions to increment4-admin-content-questions.md (passcode mechanism/scope, preview contents+effect triggers, dino roster, superhero-owner migration, fact/source scope+model+placement, overall scope). Updated state to Increment 4 Requirements Analysis. Awaiting answers."
+**Context**: INCEPTION / Requirements Analysis — clarification gate.
+
+---
