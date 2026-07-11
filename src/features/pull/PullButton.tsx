@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
 import { pullAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
+import { EasterEggPicker } from "./EasterEggPicker";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 
@@ -33,7 +34,9 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
       if (res.outOfTokens) {
         play("denied");
       } else {
+        // Egg refunds the token (re-spent on claim); balance reflects that.
         setBalance(res.newBalance);
+        if (res.easterEgg) play("setComplete");
       }
     });
   }
@@ -63,7 +66,14 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
         </button>
       )}
 
-      {outcome && !outcome.outOfTokens ? (
+      {outcome && !outcome.outOfTokens && outcome.easterEgg ? (
+        <EasterEggPicker
+          key={outcome.offer}
+          choices={outcome.choices}
+          offer={outcome.offer}
+          onDone={(r) => setBalance(r.newBalance)}
+        />
+      ) : outcome && !outcome.outOfTokens && !outcome.easterEgg ? (
         <div className="flex flex-col items-center gap-3" data-testid="pull-result">
           <RevealCard key={outcome.card.id + balance} card={outcome.card} />
           {outcome.isDuplicate ? (
