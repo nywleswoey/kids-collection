@@ -13,12 +13,15 @@ export default async function ProfilePickerPage() {
       className="flex min-h-screen flex-col items-center justify-center gap-8 p-8"
       data-testid="profile-picker"
     >
-      <h1 className="text-3xl font-bold">Who&apos;s playing?</h1>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <span className="pill pill--gold">✨ Choose your player</span>
+        <h1 className="title-pop text-4xl font-bold">Who&apos;s playing?</h1>
+      </div>
 
       {kids.length === 0 ? (
-        <p className="opacity-80">
+        <p className="panel px-6 py-4 text-[color:var(--ink-soft)]">
           No profiles yet.{" "}
-          <Link href="/admin/profiles" className="underline">
+          <Link href="/admin/profiles" className="link-soft">
             Add one
           </Link>
           .
@@ -31,15 +34,15 @@ export default async function ProfilePickerPage() {
         </div>
       )}
 
-      <div className="flex gap-4 text-sm opacity-80">
-        <Link href="/admin" data-testid="admin-link" className="underline">
-          Parent admin
+      <div className="flex items-center gap-3 text-sm">
+        <Link href="/admin" data-testid="admin-link" className="btn btn--ghost">
+          🛠️ Parent admin
         </Link>
         <form action={signOutAction}>
           <button
             type="submit"
             data-testid="sign-out-button"
-            className="underline"
+            className="btn btn--ghost"
           >
             Sign out
           </button>

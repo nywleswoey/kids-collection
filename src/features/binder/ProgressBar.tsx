@@ -12,13 +12,13 @@ export function ProgressBar({
   const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
   return (
     <div className="flex items-center gap-2" data-testid={`theme-progress-${themeId}`}>
-      <div className="h-2 w-32 overflow-hidden rounded-full bg-white/15">
+      <div className="h-2.5 w-32 overflow-hidden rounded-full bg-black/30 ring-1 ring-inset ring-white/10">
         <div
-          className="h-full rounded-full bg-emerald-400 transition-all"
+          className="h-full rounded-full bg-[linear-gradient(90deg,var(--brand-4),var(--brand-1))] shadow-[0_0_10px_rgba(67,230,200,0.6)] transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-sm tabular-nums opacity-80">
+      <span className="text-sm font-bold tabular-nums text-[color:var(--ink-soft)]">
         {owned} / {total}
       </span>
       {complete ? <span aria-label="complete">✅</span> : null}

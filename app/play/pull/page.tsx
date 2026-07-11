@@ -17,13 +17,24 @@ export default async function PullPage() {
       className="flex min-h-screen flex-col items-center justify-center gap-8 p-8"
       data-testid="pull-screen"
     >
-      <h1 className="text-2xl font-bold">Hi, {child.name}! Pull a card 🃏</h1>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <span className="pill pill--gold">🃏 Pack time</span>
+        <h1 className="text-3xl font-bold">
+          Ready, <span className="title-pop">{child.name}</span>?
+        </h1>
+      </div>
       <PullButton initialBalance={balance} />
-      <div className="flex gap-4 text-sm underline opacity-80">
-        <Link href="/play/binder" data-testid="go-binder-link">
-          My binder
+      <div className="flex gap-3 text-sm">
+        <Link
+          href="/play/binder"
+          data-testid="go-binder-link"
+          className="btn btn--ghost"
+        >
+          📖 My binder
         </Link>
-        <Link href="/play/home">Home</Link>
+        <Link href="/play/home" className="btn btn--ghost">
+          🏠 Home
+        </Link>
       </div>
     </main>
   );

@@ -9,10 +9,10 @@ export function ChildAdminRow({ row }: { row: Row }) {
   return (
     <li
       data-testid={`admin-child-${child.id}`}
-      className="flex flex-col gap-3 rounded-2xl bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
+      className="panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="flex items-center gap-3">
-        <span className="text-3xl" aria-hidden>
+        <span className="hero-avatar h-12 w-12 text-2xl" aria-hidden>
           {avatarEmoji(child.avatar)}
         </span>
         <div className="flex flex-col">

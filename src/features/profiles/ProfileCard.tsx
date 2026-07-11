@@ -16,12 +16,15 @@ export function ProfileCard({
       <button
         type="submit"
         data-testid={`profile-card-${id}`}
-        className="flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-3xl bg-white/10 p-4 text-center shadow-lg transition hover:scale-105 hover:bg-white/20 active:scale-95"
+        className="panel group flex h-44 w-40 flex-col items-center justify-center gap-3 p-4 text-center transition duration-200 hover:-translate-y-1.5 hover:[box-shadow:var(--shadow-soft),var(--shadow-glow)] focus-visible:outline-none focus-visible:[box-shadow:var(--ring-focus)] active:scale-95"
       >
-        <span className="text-6xl" aria-hidden>
+        <span
+          className="hero-avatar h-20 w-20 text-4xl transition group-hover:scale-105"
+          aria-hidden
+        >
           {avatarEmoji(avatar)}
         </span>
-        <span className="text-xl font-semibold">{name}</span>
+        <span className="display text-xl font-semibold">{name}</span>
       </button>
     </form>
   );

@@ -15,25 +15,26 @@ export default async function PlayHomePage() {
       className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center"
       data-testid="play-home"
     >
-      <div className="text-7xl" aria-hidden>
+      <div className="hero-avatar h-32 w-32 text-6xl float" aria-hidden>
         {avatarEmoji(child.avatar)}
       </div>
-      <h1 className="text-3xl font-bold">Hi, {child.name}!</h1>
-      <p className="opacity-80" data-testid="token-balance">
-        You have {child.pullTokens} pull{child.pullTokens === 1 ? "" : "s"}.
-      </p>
-      <div className="flex gap-4">
+      <div className="flex flex-col items-center gap-3">
+        <h1 className="text-4xl font-bold">
+          Hi, <span className="title-pop">{child.name}</span>!
+        </h1>
+        <p className="pill pill--gold" data-testid="token-balance">
+          🎟️ {child.pullTokens} pull{child.pullTokens === 1 ? "" : "s"} ready
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-4">
         <Link
           href="/play/pull"
           data-testid="go-pull-link"
-          className="rounded-xl bg-gradient-to-br from-amber-300 to-pink-400 px-6 py-3 font-bold text-gray-900 transition hover:scale-105"
+          className="btn btn--primary btn--lg"
         >
           ✨ Pull a card
         </Link>
-        <Link
-          href="/play/binder"
-          className="rounded-xl bg-white/10 px-6 py-3 font-semibold transition hover:bg-white/20"
-        >
+        <Link href="/play/binder" className="btn btn--ghost btn--lg">
           📖 My binder
         </Link>
       </div>
@@ -41,9 +42,9 @@ export default async function PlayHomePage() {
         <button
           type="submit"
           data-testid="switch-profile-button"
-          className="rounded-xl bg-white/10 px-5 py-2 transition hover:bg-white/20"
+          className="btn btn--ghost"
         >
-          Switch profile
+          🔄 Switch profile
         </button>
       </form>
     </main>

@@ -25,9 +25,9 @@ export default async function CardDetailPage({
     >
       <Card card={detail.card} interactive size="lg" count={detail.count} />
       {detail.count > 1 ? (
-        <p className="opacity-80">You own {detail.count} of these.</p>
+        <p className="pill pill--gold">📚 You own {detail.count} of these</p>
       ) : null}
-      <Link href="/play/binder" className="text-sm underline opacity-80">
+      <Link href="/play/binder" className="link-soft text-sm">
         ← Back to binder
       </Link>
     </main>

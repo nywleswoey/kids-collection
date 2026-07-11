@@ -45,14 +45,14 @@ export function Card({
         priority={interactive}
       />
 
-      <div className="flex flex-col gap-1 p-3">
-        <div className="flex items-center justify-between">
-          <span className="font-bold">{card.name}</span>
-          <span className="text-xs uppercase opacity-80">
+      <div className="flex flex-col gap-1.5 bg-black/35 p-3.5 backdrop-blur-sm">
+        <div className="flex items-center justify-between gap-2">
+          <span className="display text-base font-bold">{card.name}</span>
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-[color:var(--ink-soft)]">
             {RARITY_LABEL[card.rarity]}
           </span>
         </div>
-        <p className="text-sm opacity-85">{card.eduText}</p>
+        <p className="text-sm text-[color:var(--ink-soft)]">{card.eduText}</p>
       </div>
     </div>
   );

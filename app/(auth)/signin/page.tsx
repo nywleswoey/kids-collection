@@ -13,20 +13,29 @@ export default async function SignInPage() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center"
+      className="flex min-h-screen flex-col items-center justify-center gap-8 p-8 text-center"
       data-testid="signin-page"
     >
-      <h1 className="text-4xl font-bold">🃏 Card Collection</h1>
-      <p className="max-w-sm opacity-80">Parents sign in to start playing.</p>
-      <form action={signInAction}>
-        <button
-          type="submit"
-          data-testid="signin-google-button"
-          className="rounded-xl bg-white px-6 py-3 text-lg font-semibold text-gray-900 shadow-lg transition hover:scale-105"
-        >
-          Sign in with Google
-        </button>
-      </form>
+      <div className="panel panel--glow flex max-w-sm flex-col items-center gap-6 p-10">
+        <div className="text-7xl float" aria-hidden>
+          🃏
+        </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="title-pop text-5xl font-bold">Card Collection</h1>
+          <p className="text-[color:var(--ink-soft)]">
+            Parents sign in to start the magic.
+          </p>
+        </div>
+        <form action={signInAction} className="w-full">
+          <button
+            type="submit"
+            data-testid="signin-google-button"
+            className="btn btn--primary btn--lg w-full"
+          >
+            Sign in with Google
+          </button>
+        </form>
+      </div>
     </main>
   );
 }
