@@ -930,3 +930,11 @@
 **Context**: INCREMENT 8 Construction — Code Generation complete.
 
 ---
+
+## INCREMENT 8 — Operations gate (deploy)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "yes deploy"
+**AI Response**: "Pushed main (c6b3975..c8fe363), deployed to Vercel production — READY (dpl_Aog3CFUwB9TNfRCVaUpsiUpVqwtK, kids-collection.vercel.app). INCREMENT 8 COMPLETE."
+**Context**: OPERATIONS — production deploy; increment closed.
+
+---
