@@ -867,3 +867,23 @@
 **Context**: OPERATIONS — post-increment visual QA + production deploy.
 
 ---
+
+## Session Resume — New Increment Request (INCREMENT 7 candidate)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "- when they pull a card, show an animation of 'cycling' through the cards before landing on a card, do it afor a few seconds so it builds up on the anticipation
+- add a cat icon for the profile selection
+- allow profile to change name/icon
+- when granting, the profiles keep re-ordering, this is not good ux
+- the back from the galaxy page is not accessible since it is at the bottom of the screen and i need to scroll all the way down"
+**AI Response**: "Read aidlc-state.md. Prior increment (6) COMPLETE at Operations gate, deployed to prod. New request = 5 UX/feature items → new brownfield increment (INCREMENT 7). Presented Welcome-back continuity prompt with next-step options A/B."
+**Context**: Session resume; new increment scoping.
+
+---
+
+## INCREMENT 7 — Requirements Analysis: Answers
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "Q1: the cat icon is not explicit enough, increase the size of the avatar; Q2: A; Q3: B; Q4: A; Q5: B; Q6: A; Q7: A" + "commit and continue"
+**AI Response**: "Recorded answers. Q1→enlarge avatar in profile picker (cat preset already exists). Q2→slot-machine of real card fronts. Q3→~2.5s cycle, reduced-motion skips. Q4→admin Manage-Profiles edit per row (parent+passcode gated). Q5→order profiles by name A→Z (no migration). Q6→move galaxy back link into sticky top header. Q7→ship all 5 as INCREMENT 7 (LIGHT). Writing requirements + design docs, committing."
+**Context**: INCREMENT 7 Requirements Analysis — answers + approval to continue.
+
+---
