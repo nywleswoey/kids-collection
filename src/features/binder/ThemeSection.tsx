@@ -1,6 +1,7 @@
 import type { ThemeSection as ThemeSectionData } from "@/lib/types";
 import { ProgressBar } from "./ProgressBar";
 import { CardSlot } from "./CardSlot";
+import { SetCompleteCelebration } from "./SetCompleteCelebration";
 
 export function ThemeSection({ section }: { section: ThemeSectionData }) {
   return (
@@ -22,6 +23,9 @@ export function ThemeSection({ section }: { section: ThemeSectionData }) {
           <CardSlot key={entry.card.id} entry={entry} />
         ))}
       </div>
+      {section.progress.complete ? (
+        <SetCompleteCelebration themeId={section.theme.id} />
+      ) : null}
     </section>
   );
 }
