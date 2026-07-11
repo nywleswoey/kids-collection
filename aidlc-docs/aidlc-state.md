@@ -103,5 +103,17 @@ Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket p
 ### 🟡 OPERATIONS
 - [ ] Operations gate
 
-## INCREMENT 11 — Educational Quizzes (DEFERRED, not started)
+## INCREMENT 11 — Educational Quizzes
+Brownfield feature. Cadence: LIGHT-MEDIUM. Migration 0003 (quiz_completions). Independent of Inc10.
+Answers: Q1=D hybrid (math procedural in-app / grammar static bank); Q2=B 6 topics (Add-within-20, Sub-within-20, Number-bonds-10 | Nouns-vs-Verbs, A/An/The, Singular-vs-Plural); Q3=A cap resets midnight SGT; Q4=B 1 ticket/topic/day; Q5=A authored lessons; Q6=A friendly no-retry; Q7=A admin recent+totals; Q8=A migration. Reward 1 lucky/all-correct, server-authoritative re-score, global cap 3/day.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED? pending (increment11-quizzes-requirements.md)
+### 🟢 CONSTRUCTION
+- [ ] Application Design
+- [ ] Code Generation
+- [ ] Build & Test
+### 🟡 OPERATIONS
+- [ ] Operations gate
+
+## INCREMENT 11 — Pre-captured answer archive (superseded by section above)
 Item 4. Answers pre-captured in increment10-quiz-categories-questions.md: D1=A both math+grammar (SG lower-primary); D2=B 5 Q; D3=A 1 lesson card teach-first; D4=A reward 1 lucky ticket; D5=B no retry; D6=D daily cap 3 quiz tickets; D7 OPEN (dynamic/API gen — proposed Claude API haiku-generated bank, resolve at Inc 11 scoping); D8=B random N from bank; D9=A "🧠 Play & Learn" home button; D10=A auto-grant; D11=A admin quiz-activity summary.

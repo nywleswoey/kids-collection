@@ -1033,3 +1033,11 @@
 **Context**: INCREMENT 11 Requirements Analysis — questions posed (parallel work).
 
 ---
+
+## INCREMENT 11 — Requirements Analysis: Answers
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "answered" (Q1=D, Q2=B, Q3=A, Q4=B, Q5=A, Q6=A, Q7=A, Q8=A)
+**AI Response**: "Wrote increment11-quizzes-requirements.md. FR1 Play&Learn home button → /play/learn; FR2 picker 6 topics; FR3 topics (3 math procedural, 3 grammar static bank per Q1=D); FR4 authored 1-card lesson; FR5 5 Q/attempt (math computed, grammar random-5-of-bank); FR6 all-correct→1 lucky, server-authoritative re-score (signed served-questions like egg offer), no retry; FR7 caps: 1 ticket/topic/day (Q4=B) + global 3/day (D6=D), reset midnight SGT (Q3=A); FR8 admin recent+totals; FR9 quiz_completions table → migration 0003. No new deps, no API secret. Presenting requirements gate."
+**Context**: INCREMENT 11 Requirements Analysis — doc written; approval gate.
+
+---

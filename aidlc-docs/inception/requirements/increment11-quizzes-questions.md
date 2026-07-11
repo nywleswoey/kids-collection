@@ -15,7 +15,7 @@ Rewards depend on **correct answer keys** — a wrong key rewards a wrong answer
 - C) **Live Claude API per attempt**: fresh questions each play via API call. Most variety, but adds latency, per-play cost, an API key secret, and requires runtime answer-validation — riskiest for correctness.
 - D) **Hybrid**: math = procedurally generated in-app (e.g. random `a + b` with computed answer — safe, infinite variety); grammar = static curated bank.
 
-[Answer]:
+[Answer]: D
 
 ## Q2. Launch topics (the concrete list). Suggested 4 (2 math, 2 grammar), SG lower-primary:
 - Math: **Addition within 20**, **Subtraction within 20**
@@ -26,35 +26,35 @@ Rewards depend on **correct answer keys** — a wrong key rewards a wrong answer
 - C) Different set — I'll specify in notes
 - D) Other
 
-[Answer]:
+[Answer]: B
 
 ## Q3. Daily cap mechanics (D6=D, cap 3 quiz tickets/day)
 - A) Max **3 lucky tickets per child per day** from quizzes; after the cap they can still play + see "Great job! Come back tomorrow for more tickets" but earn none. Resets at **midnight Singapore time (SGT)** (recommended).
 - B) Cap 3/day but reset on a rolling 24h from first earn
 - C) Different cap/reset — notes
 
-[Answer]:
+[Answer]: A
 
 ## Q4. Can a child replay the same topic for more tickets (within the daily cap)?
 - A) Yes — each all-correct completion earns 1 lucky ticket until the daily cap of 3 is hit, regardless of topic (recommended; simple)
 - B) No — max 1 ticket per topic per day (so needs ≥3 topics to hit the cap)
 - C) Other
 
-[Answer]:
+[Answer]: B
 
 ## Q5. Lesson ("teach first") content — who authors, how deep?
 - A) I author a short lesson per topic (2–4 kid-friendly sentences + 1 worked example), stored alongside the question bank (recommended)
 - B) Minimal — just 1 example, very brief
 - C) Richer — a couple of examples + a tip; more teaching
 
-[Answer]:
+[Answer]: A
 
 ## Q6. Wrong-answer flow detail (D5=B no retry)
 - A) Show a friendly "Not quite! Review the lesson and try again later 🌟", reveal which were wrong, no reward, return to quiz picker (recommended)
 - B) End immediately on first wrong answer (harsher)
 - C) Let them finish all 5, then show score + which wrong, no reward, no immediate retry
 
-[Answer]:
+[Answer]: A
 
 ## Q7. Admin quiz activity (D11=A) — what to show per child?
 - A) Recent completions (topic, date, pass/fail) + total quiz tickets earned today / all-time (recommended)
@@ -62,11 +62,11 @@ Rewards depend on **correct answer keys** — a wrong key rewards a wrong answer
 - C) Full attempt history
 - D) Other
 
-[Answer]:
+[Answer]: A
 
 ## Q8. New DB table for tracking (daily cap + admin log) — acknowledge a migration?
 Needs a `quiz_completions` table (child, topic, correct-count, awarded, timestamp) to enforce the daily cap and power the admin view. This is a schema migration (0003).
 - A) Yes, add the table / migration (recommended)
 - B) Track without a new table (notes)
 
-[Answer]:
+[Answer]: A
