@@ -27,6 +27,12 @@ export async function listChildren(): Promise<Child[]> {
   return rows.map(toChild);
 }
 
+/** Single child profile, or null. */
+export async function getChild(id: string): Promise<Child | null> {
+  const row = await db.query.children.findFirst({ where: eq(children.id, id) });
+  return row ? toChild(row) : null;
+}
+
 export async function createChild(input: {
   name: string;
   avatar: string;

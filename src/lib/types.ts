@@ -69,3 +69,17 @@ export interface BinderView {
   totalOwned: number;
   totalCards: number;
 }
+
+/** Admin oversight (U7). */
+export interface AdminChildRow {
+  child: Child;
+  balance: number;
+  owned: number;
+  total: number;
+}
+
+export interface AdminOverview {
+  children: AdminChildRow[];
+  themes: number;
+  cards: number;
+}
