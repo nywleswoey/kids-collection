@@ -740,3 +740,11 @@
 **Context**: INCEPTION / Requirements Analysis — clarification gate.
 
 ---
+
+## Increment 5 — Requirements Drafted
+**Timestamp**: 2026-07-11T14:10:00Z
+**User Input**: "commit and continue" (answers: 1=modal, 2=full interactive, 3=frame+glow+badge, 4=both grids, 5=locked neutral)
+**AI Response**: "Committed questions. Drafted increment5-expand-rarity-requirements.md: FR1 admin click-to-expand modal (interactive Card + rarity + fact + source, Esc/backdrop/✕ close, focus-managed), FR2 obvious rarity in binder (colored frame + epic/legendary glow + corner badge/label, kid+admin grids, locked neutral). NFRs a11y (label not color-only, reduced-motion), no regression (testids/42 tests), consistency/zero-dep. Extension: Security N/A, Resiliency light, PBT minimal. Presented approval gate."
+**Context**: INCEPTION / Requirements Analysis — approval gate.
+
+---
