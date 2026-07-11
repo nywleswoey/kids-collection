@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 4 (Admin Gate, Preview & Content) COMPLETE — held at Operations gate (placeholder). typecheck clean, 42/42 tests, build ✅, zero new deps, no client-bundle secret leak. Post-merge user actions: `pnpm db:migrate`, `pnpm seed --reset --publish`, set `ADMIN_PASSCODE`.
+- **Current Stage**: INCREMENT 4 (Admin Gate, Preview & Content) COMPLETE — held at Operations gate (placeholder). typecheck clean, 42/42 tests, build ✅, zero new deps, no client-bundle secret leak. Post-merge user actions: `pnpm db:migrate`, `pnpm seed --sync` (delta; supersedes `--reset --publish`), set `ADMIN_PASSCODE`. Deployed to Vercel production 2026-07-11.
 - **Prior Increment**: INCREMENT 3 (Branding & Galaxy Theme) COMPLETE — Star Catchers rebrand, galaxy theme, asteroids, avatar fix; verified live
 - **Prior Increment**: INCREMENT 2 (Sensory) COMPLETE — sound/BGM/animation, 33/33 tests, build ✅
 - **Prior Increment**: INCREMENT 1 (Core App) COMPLETE — all 7 units built, 27/27 tests, deployed, held at Operations gate
@@ -61,6 +61,23 @@ Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Ga
 - [x] Build & Test — instruction doc written (increment3-branding-build-and-test.md); typecheck clean, 33/33 tests, build ✅, zero new deps.
 ### 🟡 OPERATIONS
 - [x] Operations gate — user approved (2026-07-11). Placeholder stage; increment COMPLETE.
+
+## INCREMENT 4 — Admin Gate, Preview & Content
+Brownfield enhancement + security + content. Cadence: LIGHT (single increment). Security extension APPLICABLE + enforced (passcode).
+Scope from request: admin passcode gate · full-catalog admin preview with effect-trigger buttons · replace Superheroes with Dinosaurs · true fun fact + admin source link per card.
+Answers (increment4-admin-content-questions.md): 1=env ADMIN_PASSCODE, 2=gate all /admin/* via signed cookie, 3=full catalog, 4=all effects, 5=12 dinos same mix, 6=wipe test data, 7=all cards sourced (fictional→myth/legend origin), 8=reuse eduText + add sourceUrl, 9=admin-only link, 10=all four together.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED (increment4-admin-content-requirements.md)
+- [x] Application Design — APPROVED (increment4-admin-content-design.md); gate cookie reuses AUTH_SECRET
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment4-admin-content/code-summary.md); typecheck clean, 42/42 tests, build ✅, zero new deps, no client-bundle secret leak. New: cards.sourceUrl (migration 0001), gate-token/gate, unlock flow, catalog preview, EffectTriggerPanel, admin-only source links; seed --sync delta mode.
+- [x] Build & Test — instruction doc (increment4-admin-content-build-and-test.md); 42/42 tests, build ✅.
+### 🟡 OPERATIONS
+- [x] Operations gate — user approved (2026-07-11). Placeholder; increment COMPLETE. Deployed to Vercel prod.
+Security findings: none blocking (passcode server-only, constant-time compare, signed httpOnly HMAC cookie, secrets absent from client bundle).
+
+## Post-Increment Content Work (not a gated increment)
+- Expanded every category to 30 cards; restored Superheroes (kids collecting) → 4 themes × 30 = **120 cards**, uniform 15 common / 8 rare / 5 epic / 2 legendary. Each card has a true fact (real subjects) or legend/concept source (fictional). Applied via `pnpm seed --sync` (delta: new images only, existing updated in place, kids' collections preserved).
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
