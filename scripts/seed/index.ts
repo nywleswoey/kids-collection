@@ -1,10 +1,15 @@
 /**
  * Offline seed CLI — builds the card pool. NOT in the request path.
  *
- *   pnpm seed --review     generate images to seed/review/ (no DB/Blob writes)
- *   pnpm seed --publish    generate -> upload to Blob -> insert cards (idempotent)
+ *   pnpm seed --review            generate images to seed/review/ (no DB/Blob writes)
+ *   pnpm seed --publish           generate -> upload to Blob -> insert NEW cards (idempotent)
+ *   pnpm seed --publish --reset   wipe the whole pool first, then republish everything
+ *   pnpm seed --sync              DELTA: image-generate only NEW cards, update text
+ *                                 (eduText/sourceUrl) on existing ones, and prune
+ *                                 themes/cards dropped from the seed. No image regen
+ *                                 for unchanged cards.
  *
- * Requires DATABASE_URL and (for --publish) BLOB_READ_WRITE_TOKEN in env.
+ * Requires DATABASE_URL and (for --publish/--sync) BLOB_READ_WRITE_TOKEN in env.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -16,6 +21,9 @@ import {
   insertCardIfNew,
   cardExists,
   resetPool,
+  updateCardMeta,
+  deleteThemesNotIn,
+  deleteCardsNotIn,
 } from "@/features/pool/writer";
 import type { Rarity } from "@/lib/types";
 
@@ -29,30 +37,60 @@ const CONCURRENCY = intEnv("SEED_CONCURRENCY", 2);
 const THROTTLE_MS = intEnv("SEED_THROTTLE_MS", 3000);
 const RETRIES = intEnv("SEED_RETRIES", 5);
 
-type Mode = "review" | "publish";
+type Mode = "review" | "publish" | "sync";
 
 async function main() {
-  const mode: Mode = process.argv.includes("--publish") ? "publish" : "review";
+  const mode: Mode = process.argv.includes("--sync")
+    ? "sync"
+    : process.argv.includes("--publish")
+      ? "publish"
+      : "review";
   const seed = loadSeed(SEED_PATH); // fail-fast validation
   if (mode === "review") mkdirSync(REVIEW_DIR, { recursive: true });
 
-  // --reset wipes the existing pool first (Superheroes→Dinosaurs swap, U4-FR4).
+  // --reset wipes the existing pool first (full rebuild, U4-FR4).
   if (mode === "publish" && process.argv.includes("--reset")) {
     console.log("--reset: wiping existing pool (collections, cards, themes)…");
     await resetPool();
   }
 
-  const report = { inserted: 0, skipped: 0, failed: 0, reviewed: 0 };
+  const report = {
+    inserted: 0,
+    updated: 0,
+    skipped: 0,
+    failed: 0,
+    reviewed: 0,
+    prunedThemes: 0,
+    prunedCards: 0,
+  };
 
   for (const theme of seed.themes) {
-    const themeId = mode === "publish" ? await upsertTheme(theme.name) : "(review)";
+    const themeId =
+      mode === "review" ? "(review)" : await upsertTheme(theme.name);
 
     await runPool(theme.cards, CONCURRENCY, async (card) => {
       try {
-        if (mode === "publish" && (await cardExists(themeId, card.name))) {
+        const exists =
+          mode !== "review" && (await cardExists(themeId, card.name));
+
+        // Sync: existing card → update text only (no image regeneration).
+        if (mode === "sync" && exists) {
+          await updateCardMeta({
+            themeId,
+            name: card.name,
+            eduText: card.eduText,
+            sourceUrl: card.sourceUrl,
+          });
+          report.updated++;
+          return;
+        }
+
+        // Publish (non-reset): existing card is left untouched.
+        if (mode === "publish" && exists) {
           report.skipped++;
           return;
         }
+
         await throttle(); // space request starts to stay under the rate limit
         const bytes = await generateImage(buildPrompt(card), { retries: RETRIES }); // retried internally
         const key = slug(`${theme.name}-${card.name}`);
@@ -78,6 +116,19 @@ async function main() {
         console.error(`✗ ${theme.name} / ${card.name}: ${String(err)}`);
       }
     });
+
+    // Sync: prune cards removed from this theme in the seed.
+    if (mode === "sync") {
+      report.prunedCards += await deleteCardsNotIn(
+        themeId,
+        theme.cards.map((c) => c.name),
+      );
+    }
+  }
+
+  // Sync: prune whole themes dropped from the seed (e.g. Superheroes).
+  if (mode === "sync") {
+    report.prunedThemes = await deleteThemesNotIn(seed.themes.map((t) => t.name));
   }
 
   console.log(`\nSeed (${mode}) complete:`, report);
