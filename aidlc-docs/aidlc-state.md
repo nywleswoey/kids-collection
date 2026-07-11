@@ -107,9 +107,9 @@ Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket p
 Brownfield feature. Cadence: LIGHT-MEDIUM. Migration 0003 (quiz_completions). Independent of Inc10.
 Answers: Q1=D hybrid (math procedural in-app / grammar static bank); Q2=B 6 topics (Add-within-20, Sub-within-20, Number-bonds-10 | Nouns-vs-Verbs, A/An/The, Singular-vs-Plural); Q3=A cap resets midnight SGT; Q4=B 1 ticket/topic/day; Q5=A authored lessons; Q6=A friendly no-retry; Q7=A admin recent+totals; Q8=A migration. Reward 1 lucky/all-correct, server-authoritative re-score, global cap 3/day.
 ### 🔵 INCEPTION
-- [x] Requirements Analysis — APPROVED? pending (increment11-quizzes-requirements.md)
+- [x] Requirements Analysis — APPROVED (increment11-quizzes-requirements.md)
 ### 🟢 CONSTRUCTION
-- [ ] Application Design
+- [x] Application Design — DONE (increment11-quizzes-design.md); module src/features/quiz/*, migration 0003 quiz_completions, signed quiz-offer (server re-score), SGT dayKey caps, math-gen procedural + grammar-bank
 - [ ] Code Generation
 - [ ] Build & Test
 ### 🟡 OPERATIONS

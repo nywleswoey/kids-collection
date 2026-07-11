@@ -1041,3 +1041,11 @@
 **Context**: INCREMENT 11 Requirements Analysis — doc written; approval gate.
 
 ---
+
+## INCREMENT 11 — Application Design
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "b" (approve requirements → design)
+**AI Response**: "Wrote increment11-quizzes-design.md. Module src/features/quiz/{types,topics,grammar-bank,math-gen,quiz-offer,cap,quiz-service,actions}.ts + QuizFlow.tsx. Migration 0003 quiz_completions(childId,topic,correct,total,passed,awarded,createdAt). Security: correct keys only in HMAC-signed offer, server re-scores (mirrors egg offer); internal grant bypasses requireParent, guarded by signed offer + active-child. Caps: SGT dayKey = floor((now+8h)/86.4M); decideAward(passed, globalToday<3, !topicDoneToday). UI: home Play&Learn button, /play/learn picker, /play/learn/[topicId] lesson→quiz→result. Admin getQuizActivity. PBT for math-gen/cap/offer/scoring. No new deps. Presenting design gate."
+**Context**: INCREMENT 11 Application Design — doc written; approval gate.
+
+---
