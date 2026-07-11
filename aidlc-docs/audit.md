@@ -756,3 +756,11 @@
 **Context**: INCEPTION / Application Design — approval gate.
 
 ---
+
+## Increment 5 — Design Approved, Code-Gen Plan Drafted
+**Timestamp**: 2026-07-11T14:20:00Z
+**User Input**: "commit and a" (approve design; 1Password signer flaking, doc committed --no-gpg-sign)
+**AI Response**: "Design approved. Wrote increment5-expand-rarity-code-generation-plan.md — 8 steps: RARITY_META, rarity-slot.css, kid CardSlot rarity signals, CardModal dialog, AdminCardSlot clickable, rarity PBT/unit test, verify, summary. 3 new files + css + test, ~2 edits, presentational, zero deps. Presented Part 1 plan-approval gate."
+**Context**: CONSTRUCTION / Code Generation — Part 1 plan approval gate.
+
+---
