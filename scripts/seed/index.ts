@@ -48,6 +48,25 @@ async function main() {
   const seed = loadSeed(SEED_PATH); // fail-fast validation
   if (mode === "review") mkdirSync(REVIEW_DIR, { recursive: true });
 
+  const totalCards = seed.themes.reduce((n, t) => n + t.cards.length, 0);
+  console.log(
+    `Seed starting — mode=${mode}, ${seed.themes.length} themes, ${totalCards} cards.`,
+  );
+
+  // Clear, early guardrails (better than a deep getter throw at import time).
+  if (mode !== "review") {
+    if (!process.env.DATABASE_URL) {
+      throw new Error(
+        "DATABASE_URL is not set. Run with your env loaded, e.g. `tsx --env-file=.env.local scripts/seed/index.ts` (or `pnpm seed --sync`).",
+      );
+    }
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.warn(
+        "⚠️  BLOB_READ_WRITE_TOKEN not set — image uploads for new cards will fail.",
+      );
+    }
+  }
+
   // --reset wipes the existing pool first (full rebuild, U4-FR4).
   if (mode === "publish" && process.argv.includes("--reset")) {
     console.log("--reset: wiping existing pool (collections, cards, themes)…");
@@ -82,6 +101,7 @@ async function main() {
             sourceUrl: card.sourceUrl,
           });
           report.updated++;
+          console.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
           return;
         }
 
@@ -91,6 +111,7 @@ async function main() {
           return;
         }
 
+        console.log(`🖼️  generating image: ${theme.name} / ${card.name}…`);
         await throttle(); // space request starts to stay under the rate limit
         const bytes = await generateImage(buildPrompt(card), { retries: RETRIES }); // retried internally
         const key = slug(`${theme.name}-${card.name}`);
@@ -110,7 +131,12 @@ async function main() {
           eduText: card.eduText,
           sourceUrl: card.sourceUrl,
         });
-        res === "inserted" ? report.inserted++ : report.skipped++;
+        if (res === "inserted") {
+          report.inserted++;
+          console.log(`✓ inserted ${theme.name} / ${card.name}`);
+        } else {
+          report.skipped++;
+        }
       } catch (err) {
         report.failed++;
         console.error(`✗ ${theme.name} / ${card.name}: ${String(err)}`);
@@ -119,16 +145,21 @@ async function main() {
 
     // Sync: prune cards removed from this theme in the seed.
     if (mode === "sync") {
-      report.prunedCards += await deleteCardsNotIn(
+      const n = await deleteCardsNotIn(
         themeId,
         theme.cards.map((c) => c.name),
       );
+      report.prunedCards += n;
+      if (n > 0) console.log(`🗑️  pruned ${n} card(s) from ${theme.name}`);
     }
   }
 
   // Sync: prune whole themes dropped from the seed (e.g. Superheroes).
   if (mode === "sync") {
     report.prunedThemes = await deleteThemesNotIn(seed.themes.map((t) => t.name));
+    if (report.prunedThemes > 0) {
+      console.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
+    }
   }
 
   console.log(`\nSeed (${mode}) complete:`, report);
