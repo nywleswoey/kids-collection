@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
+import { RARITY_META } from "@/features/card/rarity";
+import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
+import "./rarity-slot.css";
 
 /** Owned card thumbnail (tappable → detail) or a locked silhouette.
- *  In `admin` mode: no play link; shows name + an admin-only source link for
- *  fact-checking (U4-FR5, U4-FR9). */
+ *  Owned slots show rarity via a colored frame + glow + corner badge (U5-FR2).
+ *  In `admin` mode the slot is clickable to expand (AdminCardSlot). */
 export function CardSlot({
   entry,
   admin = false,
@@ -13,6 +16,7 @@ export function CardSlot({
   admin?: boolean;
 }) {
   if (!entry.owned) {
+    // Locked stays neutral — no rarity hint (U5-Q5).
     return (
       <div
         data-testid={`card-locked-${entry.card.id}`}
@@ -24,13 +28,24 @@ export function CardSlot({
     );
   }
 
-  const thumb = (
-    <>
+  if (admin) {
+    return <AdminCardSlot entry={entry} />;
+  }
+
+  const meta = RARITY_META[entry.card.rarity];
+
+  return (
+    <Link
+      href={`/play/binder/${entry.card.id}`}
+      data-testid={`card-slot-${entry.card.id}`}
+      className={`slot-pop rslot rslot--${entry.card.rarity} relative block overflow-hidden rounded-xl bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105`}
+    >
       {entry.count > 1 ? (
         <span className="absolute right-1 top-1 z-10 rounded-full bg-black/70 px-1.5 text-xs font-bold">
           x{entry.count}
         </span>
       ) : null}
+      <span className="rarity-badge">{meta.label}</span>
       <Image
         src={entry.card.imageUrl}
         alt={entry.card.name}
@@ -39,41 +54,6 @@ export function CardSlot({
         loading="lazy"
         className="aspect-square w-full object-cover"
       />
-    </>
-  );
-
-  if (admin) {
-    return (
-      <div
-        data-testid={`admin-card-${entry.card.id}`}
-        className="flex flex-col gap-1"
-      >
-        <div className="relative overflow-hidden rounded-xl border border-white/15 bg-white/10 shadow-[var(--shadow-soft)]">
-          {thumb}
-        </div>
-        <span className="truncate text-xs font-semibold">{entry.card.name}</span>
-        {entry.card.sourceUrl ? (
-          <a
-            href={entry.card.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid={`card-source-${entry.card.id}`}
-            className="link-soft truncate text-[0.7rem]"
-          >
-            🔗 Source
-          </a>
-        ) : null}
-      </div>
-    );
-  }
-
-  return (
-    <Link
-      href={`/play/binder/${entry.card.id}`}
-      data-testid={`card-slot-${entry.card.id}`}
-      className="slot-pop relative block overflow-hidden rounded-xl border border-white/15 bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105 hover:border-white/40"
-    >
-      {thumb}
     </Link>
   );
 }
