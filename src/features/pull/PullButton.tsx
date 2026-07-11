@@ -1,29 +1,47 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
 import { pullAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
+import { useSound } from "@/features/sound/useSound";
+import { CountUp } from "@/features/anim/CountUp";
 
 export function PullButton({ initialBalance }: { initialBalance: number }) {
   const [balance, setBalance] = useState(initialBalance);
   const [outcome, setOutcome] = useState<PullOutcome | null>(null);
   const [pending, startTransition] = useTransition();
+  const { play } = useSound();
+  const prevBalance = useRef(initialBalance);
 
   const outOfTokens = balance < 1;
 
+  // Soft chime as the token counter rolls after a pull.
+  useEffect(() => {
+    if (balance !== prevBalance.current) {
+      prevBalance.current = balance;
+      play("tokenChime");
+    }
+  }, [balance, play]);
+
   function doPull() {
+    play("click");
+    play("packOpen");
     startTransition(async () => {
       const res = await pullAction();
       setOutcome(res);
-      if (!res.outOfTokens) setBalance(res.newBalance);
+      if (res.outOfTokens) {
+        play("denied");
+      } else {
+        setBalance(res.newBalance);
+      }
     });
   }
 
   return (
     <div className="flex flex-col items-center gap-6">
       <p data-testid="token-balance" className="pill pill--gold text-base">
-        🎟️ {balance} pull{balance === 1 ? "" : "s"} left
+        🎟️ <CountUp value={balance} className="count-pulse" /> pull{balance === 1 ? "" : "s"} left
       </p>
 
       {outOfTokens ? (
@@ -39,7 +57,7 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
           onClick={doPull}
           disabled={pending}
           data-testid="pull-button"
-          className="btn btn--primary btn--xl font-extrabold"
+          className="btn btn--primary btn--xl press font-extrabold"
         >
           {pending ? "Opening…" : "✨ Pull a card ✨"}
         </button>

@@ -4,31 +4,54 @@ import { useEffect, useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { Card } from "./Card";
 import { shouldAnimate } from "./rarity";
+import { useSound } from "@/features/sound/useSound";
+import { Confetti } from "@/features/anim/Confetti";
+import { isBigReveal } from "@/features/sound/sfx";
 import "./card.css";
 
 /**
  * Pack-open reveal: card back → flip → interactive front (C2).
  * Reduced motion skips the flip and shows the card immediately.
+ * Adds a flip whoosh, rarity-scaled reveal sting, and confetti for epic/legendary.
  */
 export function RevealCard({ card }: { card: CardType }) {
   const [flipped, setFlipped] = useState(false);
   const [done, setDone] = useState(false);
+  const [burst, setBurst] = useState(0);
+  const { play } = useSound();
 
   useEffect(() => {
-    if (!shouldAnimate()) {
+    const finish = () => {
       setDone(true);
+      play("reveal", card.rarity);
+      if (isBigReveal(card.rarity)) setBurst((n) => n + 1);
+    };
+
+    if (!shouldAnimate()) {
+      finish();
       return;
     }
-    const t1 = setTimeout(() => setFlipped(true), 250);
-    const t2 = setTimeout(() => setDone(true), 1000);
+    const t1 = setTimeout(() => {
+      setFlipped(true);
+      play("flip");
+    }, 250);
+    const t2 = setTimeout(finish, 1000);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [card.id]);
 
   if (done) {
-    return <Card card={card} interactive size="lg" />;
+    return (
+      <>
+        <Card card={card} interactive size="lg" />
+        {isBigReveal(card.rarity) ? (
+          <Confetti fire={burst} count={card.rarity === "legendary" ? 80 : 55} />
+        ) : null}
+      </>
+    );
   }
 
   return (
