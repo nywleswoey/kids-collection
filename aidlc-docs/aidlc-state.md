@@ -117,3 +117,9 @@ Answers: Q1=D hybrid (math procedural in-app / grammar static bank); Q2=B 6 topi
 
 ## INCREMENT 11 — Pre-captured answer archive (superseded by section above)
 Item 4. Answers pre-captured in increment10-quiz-categories-questions.md: D1=A both math+grammar (SG lower-primary); D2=B 5 Q; D3=A 1 lesson card teach-first; D4=A reward 1 lucky ticket; D5=B no retry; D6=D daily cap 3 quiz tickets; D7 OPEN (dynamic/API gen — proposed Claude API haiku-generated bank, resolve at Inc 11 scoping); D8=B random N from bank; D9=A "🧠 Play & Learn" home button; D10=A auto-grant; D11=A admin quiz-activity summary.
+
+## INCREMENT 12 — Harder Quiz Topics
+Brownfield content change inside Inc11 quiz module. Cadence: LIGHT. No schema/migration/seed.
+Request: math → multiplication & division within 100, number bonds to 100; grammar → verb tenses (past/present/past-continuous), pronouns vs proper nouns, + more advanced topics.
+### 🔵 INCEPTION
+- [ ] Requirements Analysis — questions posed (increment12-harder-quizzes-questions.md); AWAITING ANSWERS

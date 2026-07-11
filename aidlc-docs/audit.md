@@ -1081,3 +1081,11 @@
 **Context**: OPERATIONS — prod migrate + deploy; both increments closed.
 
 ---
+
+## INCREMENT 12 — Requirements Analysis: Questions
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "the math quizzes are too easy. change to multiplication and division within 100 and number bond to 100. english use past-present-past-continuous tenses, pronouns-proper nouns and some other more advanced topics"
+**AI Response**: "New request = INCREMENT 12 (harder quiz content in Inc11 module; no schema/migration/seed). Read current topics. Wrote increment12-harder-quizzes-questions.md — Q1 replace vs keep, Q2 math set (mult/div-within-100, bonds-100), Q3 bonds-100 difficulty, Q4 advanced grammar picks (named 2 + choose extras), Q5 total count, Q6 difficulty labelling. Awaiting answers."
+**Context**: INCREMENT 12 Requirements Analysis — questions posed.
+
+---
