@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fredoka, Nunito } from "next/font/google";
+import { APP_NAME } from "@/lib/brand";
 import "./globals.css";
 
 // Self-hosted at build time; exposed as CSS vars consumed in globals.css.
@@ -17,8 +18,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Card Collection",
-  description: "A collectible card binder for kids.",
+  title: APP_NAME,
+  description: "A galaxy of collectible cards for kids.",
 };
 
 export const viewport: Viewport = {

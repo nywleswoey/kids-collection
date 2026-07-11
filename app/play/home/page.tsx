@@ -23,7 +23,7 @@ export default async function PlayHomePage() {
           Hi, <span className="title-pop">{child.name}</span>!
         </h1>
         <p className="pill pill--gold" data-testid="token-balance">
-          🎟️ {child.pullTokens} pull{child.pullTokens === 1 ? "" : "s"} ready
+          🎟️ {child.pullTokens} ticket{child.pullTokens === 1 ? "" : "s"} ready
         </p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-4">
@@ -32,10 +32,10 @@ export default async function PlayHomePage() {
           data-testid="go-pull-link"
           className="btn btn--primary btn--lg"
         >
-          ✨ Pull a card
+          🚀 Discover a card
         </Link>
         <Link href="/play/binder" className="btn btn--ghost btn--lg">
-          📖 My binder
+          🪐 My Galaxy
         </Link>
       </div>
       <form action={switchProfileAction}>

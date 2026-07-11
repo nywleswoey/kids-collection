@@ -83,18 +83,69 @@
   }
 }
 
+/* Asteroid — periodic streak across the play-area backdrop (Increment 3).
+   One at a time; sits behind content, non-interactive. Transform/opacity only. */
+.asteroid-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* behind app content, above the star backdrop */
+  overflow: hidden;
+}
+.asteroid {
+  position: absolute;
+  left: -12vw;
+  font-size: 1.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 212, 94, 0.75));
+  will-change: transform, opacity;
+  animation-name: asteroid-streak;
+  animation-timing-function: cubic-bezier(0.3, 0.5, 0.5, 1);
+  animation-fill-mode: both;
+}
+/* Faint ion trail behind the rock. */
+.asteroid::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 9rem;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 212, 94, 0.55));
+  border-radius: 2px;
+}
+@keyframes asteroid-streak {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -8vh, 0) rotate(8deg);
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(124vw, 46vh, 0) rotate(8deg);
+  }
+}
+
 /* Honor reduced motion: kill all of the above. */
 @media (prefers-reduced-motion: reduce) {
   .page-enter,
   .slot-pop,
   .count-pulse,
-  .confetti-piece {
+  .confetti-piece,
+  .asteroid {
     animation: none !important;
   }
   .press:active {
     transform: none;
   }
-  .confetti-layer {
+  .confetti-layer,
+  .asteroid-layer {
     display: none;
   }
 }

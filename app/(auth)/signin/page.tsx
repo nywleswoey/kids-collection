@@ -18,12 +18,12 @@ export default async function SignInPage() {
     >
       <div className="panel panel--glow flex max-w-sm flex-col items-center gap-6 p-10">
         <div className="text-7xl float" aria-hidden>
-          🃏
+          🚀
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="title-pop text-5xl font-bold">Card Collection</h1>
+          <h1 className="title-pop text-5xl font-bold">Star Catchers</h1>
           <p className="text-[color:var(--ink-soft)]">
-            Parents sign in to start the magic.
+            Parents sign in to launch the adventure.
           </p>
         </div>
         <form action={signInAction} className="w-full">

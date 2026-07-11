@@ -28,7 +28,7 @@ export default async function CardDetailPage({
         <p className="pill pill--gold">📚 You own {detail.count} of these</p>
       ) : null}
       <Link href="/play/binder" className="link-soft text-sm">
-        ← Back to binder
+        ← Back to My Galaxy
       </Link>
     </main>
   );

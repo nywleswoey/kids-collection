@@ -41,7 +41,7 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
   return (
     <div className="flex flex-col items-center gap-6">
       <p data-testid="token-balance" className="pill pill--gold text-base">
-        🎟️ <CountUp value={balance} className="count-pulse" /> pull{balance === 1 ? "" : "s"} left
+        🎟️ <CountUp value={balance} className="count-pulse" /> ticket{balance === 1 ? "" : "s"} left
       </p>
 
       {outOfTokens ? (
@@ -49,7 +49,7 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
           data-testid="out-of-tokens-message"
           className="panel max-w-xs px-6 py-4 text-center text-[color:var(--ink-soft)]"
         >
-          You&apos;re out of pulls! Ask your parent for more. 🎟️
+          You&apos;re out of tickets! Ask your parent for more. 🎟️
         </p>
       ) : (
         <button
@@ -59,7 +59,7 @@ export function PullButton({ initialBalance }: { initialBalance: number }) {
           data-testid="pull-button"
           className="btn btn--primary btn--xl press font-extrabold"
         >
-          {pending ? "Opening…" : "✨ Pull a card ✨"}
+          {pending ? "Launching…" : "🚀 Discover a card"}
         </button>
       )}
 

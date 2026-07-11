@@ -18,7 +18,7 @@ export default async function PullPage() {
       data-testid="pull-screen"
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <span className="pill pill--gold">🃏 Pack time</span>
+        <span className="pill pill--gold">🚀 Launch time</span>
         <h1 className="text-3xl font-bold">
           Ready, <span className="title-pop">{child.name}</span>?
         </h1>
@@ -30,7 +30,7 @@ export default async function PullPage() {
           data-testid="go-binder-link"
           className="btn btn--ghost"
         >
-          📖 My binder
+          🪐 My Galaxy
         </Link>
         <Link href="/play/home" className="btn btn--ghost">
           🏠 Home

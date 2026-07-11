@@ -19,10 +19,10 @@ export default async function BinderPage() {
     >
       <header className="panel flex flex-wrap items-center justify-between gap-3 p-5">
         <h1 className="text-2xl font-bold">
-          <span className="title-pop">{child.name}</span>&apos;s Binder
+          <span className="title-pop">{child.name}</span>&apos;s Galaxy
         </h1>
         <span className="pill pill--gold">
-          🗂️ {binder.totalOwned} / {binder.totalCards} cards
+          ⭐ {binder.totalOwned} / {binder.totalCards} stars
         </span>
       </header>
 
@@ -32,11 +32,13 @@ export default async function BinderPage() {
           className="panel flex flex-col items-center gap-4 p-10 text-center"
         >
           <div className="text-6xl float" aria-hidden>
-            🎴
+            🪐
           </div>
-          <p className="display text-lg">No cards yet — go pull your first! ✨</p>
+          <p className="display text-lg">
+            Your galaxy is empty — go discover your first card! ✨
+          </p>
           <Link href="/play/pull" className="btn btn--primary btn--lg">
-            ✨ Pull a card
+            🚀 Discover a card
           </Link>
         </div>
       ) : (
