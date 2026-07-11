@@ -692,3 +692,11 @@
 **Context**: INCEPTION / Application Design — approval gate.
 
 ---
+
+## Increment 4 — Design Approved, Code-Gen Plan Drafted
+**Timestamp**: 2026-07-11T12:48:00Z
+**User Input**: "a and reuse" (approve design; reuse AUTH_SECRET for gate cookie signing)
+**AI Response**: "Design approved. Wrote increment4-admin-content-code-generation-plan.md — 11 steps: (1) schema+migration cards.sourceUrl, (2) seed-schema+writer+resetPool, (3) seed content dinosaurs+facts+sources, (4) gate-token pure + gate.ts constant-time+cookie, (5) admin layout + unlock flow + middleware + .env.example, (6) catalog preview service+page, (7) EffectTriggerPanel, (8) admin-only showSource on Card/CardSlot, (9) PBT gate-token + catalog tests, (10) verify, (11) summary. ~8 new files, ~8 edits, 1 migration, seed rewrite. Presented Part 1 plan-approval gate."
+**Context**: CONSTRUCTION / Code Generation — Part 1 plan approval gate.
+
+---
