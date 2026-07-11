@@ -820,3 +820,10 @@
 **Context**: INCEPTION / Requirements Analysis approved → Application Design.
 
 ---
+
+## Increment 6 — Application Design Drafted
+**Timestamp**: 2026-07-11T15:24:00Z
+**AI Response**: "Drafted increment6-easter-egg-design.md: pure easter-egg.ts (EGG_CHANCE 0.01, rollEasterEgg, pickEasterEggChoices) + offer.ts (HMAC sign/verify like gate-token); pull-service egg branch (spend→roll→refund+signed offer) + claimEasterEgg (verify offer/child/chosen∈offer/epic+ → atomic spend → upsert); claimEasterEggAction; EasterEggPicker (5 choices→claim→roulette FR3→fireworks FR4→reveal); Fireworks.tsx; CardSlot locked name (FR1); anim.css roulette+fireworks keyframes. Security enforced (server RNG, signed offer, atomic spend, chosen∈offer+epic+, 120s expiry). PBT on pickEasterEggChoices + offer. Presented approval gate."
+**Context**: INCEPTION / Application Design — approval gate.
+
+---
