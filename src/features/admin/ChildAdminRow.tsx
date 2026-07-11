@@ -27,7 +27,12 @@ export function ChildAdminRow({ row }: { row: Row }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <GrantControl childId={child.id} initialBalance={row.balance} />
+        <GrantControl
+          childId={child.id}
+          initialBalance={row.balance}
+          initialEpic={row.epicTickets}
+          initialLucky={row.luckyTickets}
+        />
         <Link
           href={`/admin/child/${child.id}/binder`}
           data-testid={`admin-binder-${child.id}`}

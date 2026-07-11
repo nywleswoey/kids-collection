@@ -7,13 +7,22 @@ import type { AdminChildRow } from "@/lib/types";
  * Mirrors getAdminOverview's mapping without the DB.
  */
 function buildRow(
-  child: { id: string; name: string; avatar: string; pullTokens: number },
+  child: {
+    id: string;
+    name: string;
+    avatar: string;
+    pullTokens: number;
+    epicTickets: number;
+    luckyTickets: number;
+  },
   ownedDistinct: number,
   poolTotal: number,
 ): AdminChildRow {
   return {
     child,
     balance: child.pullTokens,
+    epicTickets: child.epicTickets,
+    luckyTickets: child.luckyTickets,
     owned: ownedDistinct,
     total: poolTotal,
   };
@@ -29,7 +38,14 @@ describe("admin overview row (G1)", () => {
         (tokens, owned, total) => {
           const clampedOwned = Math.min(owned, total);
           const row = buildRow(
-            { id: "c", name: "K", avatar: "fox", pullTokens: tokens },
+            {
+              id: "c",
+              name: "K",
+              avatar: "fox",
+              pullTokens: tokens,
+              epicTickets: 0,
+              luckyTickets: 0,
+            },
             clampedOwned,
             total,
           );

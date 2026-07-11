@@ -56,8 +56,15 @@ export const children = pgTable(
     name: text("name").notNull(),
     avatar: text("avatar").notNull(),
     pullTokens: integer("pull_tokens").notNull().default(3),
+    // Special egg tickets (Inc9 FR4): guaranteed pick-1-of-5 per egg type.
+    epicTickets: integer("epic_tickets").notNull().default(0),
+    luckyTickets: integer("lucky_tickets").notNull().default(0),
   },
-  (t) => [check("pull_tokens_non_negative", sql`${t.pullTokens} >= 0`)], // BR5
+  (t) => [
+    check("pull_tokens_non_negative", sql`${t.pullTokens} >= 0`), // BR5
+    check("epic_tickets_non_negative", sql`${t.epicTickets} >= 0`),
+    check("lucky_tickets_non_negative", sql`${t.luckyTickets} >= 0`),
+  ],
 );
 
 /** Collection — one row per (child, card); count = owned quantity (BR8/BR9). */

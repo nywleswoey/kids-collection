@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import { getBinder } from "@/features/binder/service";
-import { ThemeSection } from "@/features/binder/ThemeSection";
+import { GalaxyView } from "@/features/binder/GalaxyView";
 
 export default async function BinderPage() {
   await requireParent();
@@ -51,9 +51,7 @@ export default async function BinderPage() {
           </Link>
         </div>
       ) : (
-        binder.themes.map((section) => (
-          <ThemeSection key={section.theme.id} section={section} />
-        ))
+        <GalaxyView sections={binder.themes} />
       )}
     </main>
   );

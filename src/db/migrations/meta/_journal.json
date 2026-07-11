@@ -15,6 +15,13 @@
       "when": 1783742576057,
       "tag": "0001_gray_gabe_jones",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783760370941,
+      "tag": "0002_lazy_bulldozer",
+      "breakpoints": true
     }
   ]
 }

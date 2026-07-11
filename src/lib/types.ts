@@ -32,7 +32,12 @@ export interface Child {
   name: string;
   avatar: string; // preset avatar key
   pullTokens: number; // >= 0
+  epicTickets: number; // special epic+ egg tickets (Inc9 FR4), >= 0
+  luckyTickets: number; // special common/rare egg tickets (Inc9 FR4), >= 0
 }
+
+/** Special egg ticket kinds (Inc9 FR4). */
+export type EggTicket = "epic" | "lucky";
 
 /** One row per (childId, cardId); duplicates increment count (BR8/BR9). */
 export interface CollectionEntry {
@@ -76,6 +81,8 @@ export interface BinderView {
 export interface AdminChildRow {
   child: Child;
   balance: number;
+  epicTickets: number;
+  luckyTickets: number;
   owned: number;
   total: number;
 }

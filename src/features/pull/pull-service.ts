@@ -16,7 +16,7 @@ import {
 } from "./sacrifice";
 import { makeOffer, verifyOffer } from "./offer";
 import { requireParent } from "@/features/auth/guard";
-import type { Card, PullResult, Rarity } from "@/lib/types";
+import type { Card, PullResult, Rarity, EggTicket } from "@/lib/types";
 
 /** Rare pick-1-of-5 easter egg: server offers epic+ choices, claimed later. */
 export interface EasterEggOutcome {
@@ -139,10 +139,58 @@ export async function pull(
 }
 
 /**
+ * Guaranteed easter egg via a special ticket (Inc9 FR4). Offers the pick-1-of-5
+ * for the ticket's tier from the FULL pool. The special ticket is NOT spent here
+ * — it's spent atomically at claim (single-use), and the offer pins the kind.
+ */
+export async function pullSpecialEgg(
+  childId: string,
+  kind: EggTicket,
+): Promise<PullOutcome> {
+  const col = kind === "epic" ? children.epicTickets : children.luckyTickets;
+  const [row] = await db
+    .select({ n: col })
+    .from(children)
+    .where(eq(children.id, childId));
+  if (!row || row.n < 1) return { outOfTokens: true };
+
+  const pool = await listCards();
+  const choices =
+    kind === "epic"
+      ? pickEasterEggChoices(pool, 5)
+      : pickCommonRareChoices(pool, 5);
+  if (choices.length === 0) throw new Error("pullSpecialEgg: no eligible cards");
+
+  const offer = await makeOffer(
+    {
+      childId,
+      cardIds: choices.map((c) => c.id),
+      exp: Date.now() + OFFER_TTL_MS,
+      ticket: kind,
+    },
+    authSecret(),
+  );
+
+  // Special egg costs no normal token; balance unchanged until claim.
+  const balRow = await db.query.children.findFirst({
+    where: eq(children.id, childId),
+    columns: { pullTokens: true },
+  });
+  return {
+    outOfTokens: false,
+    easterEgg: true,
+    choices,
+    offer,
+    newBalance: balRow?.pullTokens ?? 0,
+  };
+}
+
+/**
  * Claim the card the child picked from an easter-egg offer (U6-FR2). Verifies
- * the signed offer (signature + expiry + child), that the pick was among the
- * offered cards, and that it's epic+, then spends exactly one token atomically
- * and grants the card. Net cost: one token — same as any discover.
+ * the signed offer (signature + expiry + child) and that the pick was among the
+ * offered cards, then spends exactly one ticket atomically and grants the card.
+ * A special-ticket offer (Inc9 FR4) spends that special ticket instead of a
+ * normal token; the atomic spend makes the signed offer single-use.
  */
 export async function claimEasterEgg(
   childId: string,
@@ -162,15 +210,28 @@ export async function claimEasterEgg(
   const card = await getCard(chosenCardId);
   if (!card) throw new Error("claimEasterEgg: card not found");
 
-  // Atomic spend — the single token cost for this discover (no double-spend).
-  const spent = await db
-    .update(children)
-    .set({ pullTokens: sql`${children.pullTokens} - 1` })
-    .where(and(eq(children.id, childId), gte(children.pullTokens, 1)))
-    .returning({ balance: children.pullTokens });
-
-  if (spent.length === 0) return { outOfTokens: true };
-  const newBalance = spent[0].balance;
+  // Atomic spend — one ticket (special or normal). Makes the offer single-use.
+  let newBalance: number;
+  if (payload.ticket) {
+    // Special egg: spend the pinned special ticket, not a normal token.
+    const col =
+      payload.ticket === "epic" ? children.epicTickets : children.luckyTickets;
+    const spent = await db
+      .update(children)
+      .set({ [payload.ticket === "epic" ? "epicTickets" : "luckyTickets"]: sql`${col} - 1` })
+      .where(and(eq(children.id, childId), gte(col, 1)))
+      .returning({ pullTokens: children.pullTokens });
+    if (spent.length === 0) return { outOfTokens: true };
+    newBalance = spent[0].pullTokens; // normal balance unchanged
+  } else {
+    const spent = await db
+      .update(children)
+      .set({ pullTokens: sql`${children.pullTokens} - 1` })
+      .where(and(eq(children.id, childId), gte(children.pullTokens, 1)))
+      .returning({ balance: children.pullTokens });
+    if (spent.length === 0) return { outOfTokens: true };
+    newBalance = spent[0].balance;
+  }
 
   const [entry] = await db
     .insert(collections)

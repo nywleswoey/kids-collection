@@ -18,6 +18,8 @@ function toChild(row: typeof children.$inferSelect): Child {
     name: row.name,
     avatar: row.avatar,
     pullTokens: row.pullTokens,
+    epicTickets: row.epicTickets,
+    luckyTickets: row.luckyTickets,
   };
 }
 

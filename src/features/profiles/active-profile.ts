@@ -48,5 +48,7 @@ export async function getActiveChild(): Promise<Child | null> {
     name: row.name,
     avatar: row.avatar,
     pullTokens: row.pullTokens,
+    epicTickets: row.epicTickets,
+    luckyTickets: row.luckyTickets,
   };
 }

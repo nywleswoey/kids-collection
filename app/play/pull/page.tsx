@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
-import { getBalance } from "@/features/pull/token-service";
+import { getBalance, getSpecialBalances } from "@/features/pull/token-service";
 import { PullButton } from "@/features/pull/PullButton";
 import { listCards, listThemes } from "@/features/pool/service";
 
@@ -12,7 +12,11 @@ export default async function PullPage() {
   if (!child) redirect("/play");
 
   const balance = await getBalance(child.id);
-  const [allCards, themes] = await Promise.all([listCards(), listThemes()]);
+  const [allCards, themes, special] = await Promise.all([
+    listCards(),
+    listThemes(),
+    getSpecialBalances(child.id),
+  ]);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
   const flashPool = allCards.map((c) => ({
     id: c.id,
@@ -35,6 +39,8 @@ export default async function PullPage() {
         initialBalance={balance}
         flashPool={flashPool}
         themes={themes.map((t) => ({ id: t.id, name: t.name }))}
+        epicTickets={special.epic}
+        luckyTickets={special.lucky}
       />
       <div className="flex gap-3 text-sm">
         <Link

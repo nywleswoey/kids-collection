@@ -26,8 +26,17 @@ export async function getAdminOverview(): Promise<AdminOverview> {
         .from(collections)
         .where(eq(collections.childId, c.id));
       return {
-        child: { id: c.id, name: c.name, avatar: c.avatar, pullTokens: c.pullTokens },
+        child: {
+          id: c.id,
+          name: c.name,
+          avatar: c.avatar,
+          pullTokens: c.pullTokens,
+          epicTickets: c.epicTickets,
+          luckyTickets: c.luckyTickets,
+        },
         balance: c.pullTokens,
+        epicTickets: c.epicTickets,
+        luckyTickets: c.luckyTickets,
         owned: owned?.n ?? 0,
         total,
       };

@@ -9,6 +9,8 @@ export interface OfferPayload {
   childId: string;
   cardIds: string[];
   exp: number; // epoch ms
+  /** Special egg ticket kind (Inc9 FR4); absent for the random ~1% eggs. */
+  ticket?: "epic" | "lucky";
 }
 
 function b64urlEncode(bytes: Uint8Array): string {
