@@ -101,7 +101,7 @@ Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket p
 - [x] Code Generation — DONE (increment10-fixes-categories/code-summary.md); typecheck clean, 61/61 tests (stable x3), build ✅, zero deps, no migration, no secret leak. NEW ticket-display.ts (PBT); FR1 home special pill; FR2 PullButton greyed-Discover; FR3 5 links→buttons; FR4/FR5 seed Country+Famous People (180 cards); incidental pickUpgradeCard clamp. ⚠️ images not yet generated (pnpm seed --sync required).
 - [x] Build & Test — instruction doc (increment10-fixes-categories-build-and-test.md); typecheck clean, 61/61 tests, build ✅, seed validated (6 themes/180 cards). ⚠️ pnpm seed --sync (local + prod) still needed to publish 60 new-category images.
 ### 🟡 OPERATIONS
-- [ ] Operations gate
+- [ ] Operations gate — user ran pnpm seed --sync (prod DB verified: Country=30, Famous People=30, 6 themes/180 cards). Pending git push→Vercel deploy.
 
 ## INCREMENT 11 — Educational Quizzes
 Brownfield feature. Cadence: LIGHT-MEDIUM. Migration 0003 (quiz_completions). Independent of Inc10.
