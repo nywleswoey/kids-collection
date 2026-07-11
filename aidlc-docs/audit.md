@@ -1001,3 +1001,11 @@
 **Context**: INCREMENT 10 Requirements Analysis — doc written; approval gate.
 
 ---
+
+## INCREMENT 10 — Application Design
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "/commit and a" (approve requirements → continue)
+**AI Response**: "Committed requirements approval (d85fd81). Wrote increment10-fixes-categories-design.md. Locked edit sites: FR1 home special pill (getSpecialBalances); FR2 PullButton hasAnyTicket gate + greyed Discover + shouldShowAskParent PBT helper; FR3 5 link-soft→button sites (binder-back, picker, admin×2, CardModal source); FR4/FR5 two seed themes with full 30+30 rosters (Country iconic-item rarity-by-fame; Famous People global + 3 SG: LKY/Schooling/Yusof Ishak); FR6 pnpm seed --sync ~60 images; no migration, zero deps. Presenting design gate."
+**Context**: INCREMENT 10 Application Design — doc written; approval gate.
+
+---

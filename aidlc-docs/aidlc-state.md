@@ -95,9 +95,9 @@ Security findings: none blocking (passcode server-only, constant-time compare, s
 Brownfield fixes + content. Cadence: LIGHT (single increment). No schema migration.
 Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket pill on landing (A1=C, fixes "0 tickets" bug); FR2 hide ask-parent unless ALL ticket types 0, else show special buttons + greyed Discover (B1=A/B2=B); FR3 convert all link-soft text links → buttons (C1=A); FR4 new Country theme 30 cards, iconic item per country, rarity-by-fame (E2/E3=A); FR5 new Famous People theme 30 cards, global + few SG figures (E4/E5=A); FR6 gen ~60 images via seed (F2=A). 4→6 themes, 120→180 cards.
 ### 🔵 INCEPTION
-- [ ] Requirements Analysis — doc written (increment10-fixes-categories-requirements.md); AWAITING APPROVAL
+- [x] Requirements Analysis — APPROVED (increment10-fixes-categories-requirements.md)
 ### 🟢 CONSTRUCTION
-- [ ] Application Design
+- [x] Application Design — DONE (increment10-fixes-categories-design.md); rosters locked (30 Country + 30 Famous People incl 3 SG)
 - [ ] Code Generation
 - [ ] Build & Test
 ### 🟡 OPERATIONS
