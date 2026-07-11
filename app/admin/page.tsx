@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getAdminOverview } from "@/features/admin/service";
 import { ChildAdminRow } from "@/features/admin/ChildAdminRow";
+import { requireAdminGate } from "@/features/admin/gate";
 
 export default async function AdminDashboardPage() {
+  await requireAdminGate(); // U4-FR1 passcode gate (defense in depth)
   const overview = await getAdminOverview(); // requireParent inside
 
   return (
@@ -15,6 +17,13 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
         <nav className="flex gap-2 text-sm">
+          <Link
+            href="/admin/preview"
+            data-testid="admin-preview-link"
+            className="btn btn--ghost"
+          >
+            Preview
+          </Link>
           <Link
             href="/admin/profiles"
             data-testid="admin-profiles-link"

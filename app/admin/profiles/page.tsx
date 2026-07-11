@@ -4,9 +4,11 @@ import { listChildren } from "@/features/profiles/service";
 import { avatarEmoji } from "@/lib/avatars";
 import { ProfileForm } from "@/features/profiles/ProfileForm";
 import { RemoveProfileButton } from "@/features/profiles/RemoveProfileButton";
+import { requireAdminGate } from "@/features/admin/gate";
 
 export default async function ProfileManagerPage() {
   await requireParent(); // parent-only (U2-BR5)
+  await requireAdminGate(); // U4-FR1 passcode gate
   const kids = await listChildren();
 
   return (
