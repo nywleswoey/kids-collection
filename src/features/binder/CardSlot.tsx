@@ -16,14 +16,19 @@ export function CardSlot({
   admin?: boolean;
 }) {
   if (!entry.owned) {
-    // Locked stays neutral — no rarity hint (U5-Q5).
+    // Locked stays neutral — no rarity hint (U5-Q5) — but shows the name (U6-FR1).
     return (
       <div
         data-testid={`card-locked-${entry.card.id}`}
-        aria-label="Not collected yet"
-        className="flex aspect-square items-center justify-center rounded-xl border border-dashed border-white/15 bg-black/20 text-3xl opacity-45"
+        aria-label={`Not collected yet: ${entry.card.name}`}
+        className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-white/15 bg-black/20 p-1 text-center"
       >
-        ❔
+        <span className="text-3xl opacity-45" aria-hidden>
+          ❔
+        </span>
+        <span className="line-clamp-2 text-[0.65rem] font-semibold leading-tight text-[color:var(--ink-mute)]">
+          {entry.card.name}
+        </span>
       </div>
     );
   }
