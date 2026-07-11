@@ -972,3 +972,24 @@
 **Context**: OPERATIONS — prod migration + deploy; increment closed.
 
 ---
+
+## Session Resume — INCREMENT 10 scoping
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "- when there are special tickets, it doesn't reflect on the landing page for a child, only see 0 tickets
+- shouldn't show request tickets if there are any tickets (normal or special)
+- always use buttons instead of link text (e.g binder)
+- i want to let them play some educational quizzes within the app. (lower primary school math and simple english grammer, both in sg context), if they get all right, they get a special ticket. before they attempt any quiz, should have something simple to teach them the relevant content first.
+- add a new category for country. the cards should be an iconic item of the country
+- add a new category for famous people"
+**AI Response**: "INCREMENT 9 COMPLETE + deployed to prod. New request = 6 items → INCREMENT 10 (2 bug/UX fixes on landing tickets, 1 UX consistency buttons-not-links, 1 new feature educational quizzes w/ teach-then-quiz → special ticket reward, 2 new content categories Country + Famous People). Loaded aidlc-state + audit tail + session-continuity template. Presented Welcome-back A/B."
+**Context**: Session resume; new increment scoping (INCREMENT 10).
+
+---
+
+## INCREMENT 10 — Requirements Analysis: Questions
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "a" (Start INCREMENT 10 Requirements Analysis)
+**AI Response**: "Read landing (play/home shows only pullTokens — bug src), pull page + PullButton (out-of-tokens 'ask parent' msg, special buttons), text links (link-soft in profile-picker + card-detail back), seed/cards.json (4 themes × 30, 15/8/5/2 mix, imagePrompt+eduText+sourceUrl). Wrote 22 clarifying questions across A–F (ticket display, ask-parent prompt, buttons-not-links, quizzes D1-D11, Country/Famous-People categories, sequencing + image-gen ack) to increment10-quiz-categories-questions.md. Awaiting answers."
+**Context**: INCREMENT 10 Requirements Analysis — questions posed.
+
+---
