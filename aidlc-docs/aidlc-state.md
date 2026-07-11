@@ -126,4 +126,4 @@ Request: math → multiplication & division within 100, number bonds to 100; gra
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment12-harder-quizzes-code-summary.md); 9 topics (3 math procedural mult/div/bonds-100, 6 grammar banks), typecheck clean, 77/77 tests, build ✅, no schema/migration/seed.
 ### 🟡 OPERATIONS
-- [ ] Operations gate — redeploy only (git push→Vercel); no migrate/seed. PENDING.
+- [x] Operations gate — DEPLOYED to Vercel prod (kids-collection-q22mkb2jp, READY 39s). Redeploy only. INCREMENT 12 COMPLETE.
