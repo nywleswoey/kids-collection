@@ -44,7 +44,7 @@ Brownfield feature on existing app. Cadence: LIGHT (single increment).
 - [x] Application Design
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — typecheck clean, 33/33 tests, build ✅, zero new deps
-- [ ] Build & Test (instruction docs) — pending
+- [x] Build & Test — instruction doc written (increment2-sensory-build-and-test.md); build ✅, 33/33 tests
 New modules: src/features/sound/* (settings, sfx, AudioEngine, bgm, SoundProvider, useSound, SoundControls), src/features/anim/* (Confetti, CountUp, useReducedMotion, anim.css), app/play/layout.tsx (NEW), public/bgm/. Seams: PullButton, RevealCard, CardSlot, ThemeSection, SetCompleteCelebration.
 
 ## Extension Configuration

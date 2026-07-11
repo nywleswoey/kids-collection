@@ -576,3 +576,17 @@
 **Context**: INCREMENT 2 - CONSTRUCTION / Code Generation COMPLETE (GATE before Build & Test)
 
 ---
+
+## Build and Test — Increment 2
+**Timestamp**: 2026-07-11T00:35:00Z
+**User Input**: "b" (approve Code Generation → continue to Build & Test)
+**AI Response**: "Wrote aidlc-docs/construction/build-and-test/increment2-sensory-build-and-test.md (build cmds, unit/property test coverage, 12-step manual browser checklist, a11y/resiliency/security checks, outstanding op item = supply real BGM file). Build ✅, 33/33 tests. Increment 2 construction complete; holding at Operations gate."
+**Context**: INCREMENT 2 - CONSTRUCTION / Build & Test COMPLETE (GATE before Operations)
+
+---
+
+## Browser Driven Testing — Increment 2
+**Timestamp**: 2026-07-11T00:45:00Z
+**User Input**: "drive the testing"
+**AI Response**: "Drove Chrome (Personal Claude browser) against localhost:3000. Verified: (1) SoundControls SFX+BGM widget renders in play area; (2) pull fired real Web Audio synthesis — 7 oscillators + 1 noise buffer = click+packOpen+flip+reveal(3)+tokenChime(2); (3) SFX toggle off → pull produced 0 audio nodes (gating works); (4) settings persist to localStorage + aria-pressed; (5) CountUp balance rolled 3→2→1; (6) rarity labels render (RARE/COMMON); (7) all anim keyframes loaded (page-enter, slot-pop, count-pulse, confetti-fall); (8) binder owned slots all carry slot-pop, no stray confetti (no theme complete); (9) admin page has NO SoundControls + NO anim.css (FR1 untouched); (10) zero console errors throughout. Not runtime-tested (needs specific conditions): confetti on epic/legendary reveal (random, didn't roll), set-complete celebration (no set completed), audible BGM (no mp3 file yet — element created detached, graceful). Google OAuth session was already active in the browser."
+**Context**: OPERATIONS - Browser testing of Increment 2 (PASS)
