@@ -1073,3 +1073,11 @@
 **Context**: INCREMENT 10 Operations — seed verified; deploy pending confirm.
 
 ---
+
+## INCREMENTS 10 & 11 — Operations: migrate + deploy
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "go"
+**AI Response**: "Applied migration 0003 to prod (quiz_completions verified, 0 rows). Pushed main (66a63bb..9b50d89) → Vercel auto-deploy. Deployment kids-collection-38jdo0zjn READY (Production, 53s). Both increments live: Inc10 (special-ticket pill, ask-parent gate, links→buttons, Country+Famous People 180 cards) + Inc11 (educational quizzes, /play/learn, admin quiz panel). INCREMENTS 10 & 11 COMPLETE."
+**Context**: OPERATIONS — prod migrate + deploy; both increments closed.
+
+---

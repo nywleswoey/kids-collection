@@ -101,7 +101,7 @@ Scope (F1=B split → quizzes deferred to INC 11): FR1 combined special-ticket p
 - [x] Code Generation — DONE (increment10-fixes-categories/code-summary.md); typecheck clean, 61/61 tests (stable x3), build ✅, zero deps, no migration, no secret leak. NEW ticket-display.ts (PBT); FR1 home special pill; FR2 PullButton greyed-Discover; FR3 5 links→buttons; FR4/FR5 seed Country+Famous People (180 cards); incidental pickUpgradeCard clamp. ⚠️ images not yet generated (pnpm seed --sync required).
 - [x] Build & Test — instruction doc (increment10-fixes-categories-build-and-test.md); typecheck clean, 61/61 tests, build ✅, seed validated (6 themes/180 cards). ⚠️ pnpm seed --sync (local + prod) still needed to publish 60 new-category images.
 ### 🟡 OPERATIONS
-- [ ] Operations gate — user ran pnpm seed --sync (prod DB verified: Country=30, Famous People=30, 6 themes/180 cards). Pending git push→Vercel deploy.
+- [x] Operations gate — DEPLOYED to Vercel prod 2026-07-11 (kids-collection-38jdo0zjn, READY 53s). Seed synced (6 themes/180 cards, Country+Famous People live). INCREMENT 10 COMPLETE.
 
 ## INCREMENT 11 — Educational Quizzes
 Brownfield feature. Cadence: LIGHT-MEDIUM. Migration 0003 (quiz_completions). Independent of Inc10.
@@ -113,7 +113,7 @@ Answers: Q1=D hybrid (math procedural in-app / grammar static bank); Q2=B 6 topi
 - [x] Code Generation — DONE (increment11-quizzes/code-summary.md); typecheck clean, 76/76 tests (stable x3), build ✅, zero deps, migration 0003 (quiz_completions), no secret leak. New src/features/quiz/* module + /play/learn pages + admin quiz panel. Server-authoritative scoring (signed quiz-offer). Incidental: fixed admin Binder link→button (Inc10 FR3 miss). ⚠️ pnpm db:migrate required (local+prod).
 - [x] Build & Test — instruction doc (increment11-quizzes-build-and-test.md); typecheck clean, 76/76 tests, build ✅, no secret leak. ⚠️ pnpm db:migrate (0003) required local+prod; no seed.
 ### 🟡 OPERATIONS
-- [ ] Operations gate
+- [x] Operations gate — migration 0003 applied to prod (quiz_completions verified), pushed main→Vercel prod (kids-collection-38jdo0zjn READY). INCREMENT 11 COMPLETE.
 
 ## INCREMENT 11 — Pre-captured answer archive (superseded by section above)
 Item 4. Answers pre-captured in increment10-quiz-categories-questions.md: D1=A both math+grammar (SG lower-primary); D2=B 5 Q; D3=A 1 lesson card teach-first; D4=A reward 1 lucky ticket; D5=B no retry; D6=D daily cap 3 quiz tickets; D7 OPEN (dynamic/API gen — proposed Claude API haiku-generated bank, resolve at Inc 11 scoping); D8=B random N from bank; D9=A "🧠 Play & Learn" home button; D10=A auto-grant; D11=A admin quiz-activity summary.
