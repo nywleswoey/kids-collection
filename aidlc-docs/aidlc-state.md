@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 2 (Sensory Enhancement) — INCEPTION / Requirements Analysis
+- **Current Stage**: INCREMENT 3 (Branding & Visual Overhaul) — INCEPTION / Requirements Analysis (questions issued, awaiting answers)
+- **Prior Increment**: INCREMENT 2 (Sensory) COMPLETE — sound/BGM/animation, 33/33 tests, build ✅
 - **Prior Increment**: INCREMENT 1 (Core App) COMPLETE — all 7 units built, 27/27 tests, deployed, held at Operations gate
 
 ## Workspace State
@@ -46,6 +47,12 @@ Brownfield feature on existing app. Cadence: LIGHT (single increment).
 - [x] Code Generation — typecheck clean, 33/33 tests, build ✅, zero new deps
 - [x] Build & Test — instruction doc written (increment2-sensory-build-and-test.md); build ✅, 33/33 tests
 New modules: src/features/sound/* (settings, sfx, AudioEngine, bgm, SoundProvider, useSound, SoundControls), src/features/anim/* (Confetti, CountUp, useReducedMotion, anim.css), app/play/layout.tsx (NEW), public/bgm/. Seams: PullButton, RevealCard, CardSlot, ThemeSection, SetCompleteCelebration.
+
+## INCREMENT 3 — Branding & Visual Overhaul (Naming, Galaxy Theme, Avatar Fix)
+Brownfield enhancement + bug fix on existing app. Cadence: LIGHT (single increment).
+Scope from request: punchier name/terms · drop poker-card icons for child-friendly motif · galaxy theme with periodic asteroids · fix invisible avatar (regression: `.hero-avatar::before` dark disc covers bare-text emoji on play-home hero).
+### 🔵 INCEPTION
+- [ ] Requirements Analysis — questions in increment3-branding-questions.md, awaiting answers
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |

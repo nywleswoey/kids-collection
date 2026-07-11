@@ -596,3 +596,19 @@
 **User Input**: "i could hear the sound effects but no bgm"
 **AI Response**: "Root cause: /bgm/playful-loop.mp3 = 404 (no file), BGM silent by design. Fix: added src/features/sound/MusicEngine.ts — synthesized looping C-pentatonic arpeggio + soft pad via Web Audio (no file needed); exposed acquireContext() from AudioEngine. Rewired bgm.ts to play synth by default and upgrade to a real mp3 if present (canplaythrough → stopMusic + play file). Verified live: Music ON → oscillators climb ~3.5/sec (matches 0.28s scheduler step) = audible loop; Music OFF → oscillators freeze + persist; clean reload, zero console errors. (Transient webpack '__webpack_modules__ is not a function' was stale-HMR from live-editing modules; cleared by dev server restart.) typecheck clean, 33/33 tests, build ✅."
 **Context**: OPERATIONS - Increment 2 BGM fix (PASS)
+
+## Session Resume — Increment 3 Request
+**Timestamp**: 2026-07-11T10:58:00Z
+**User Input**: "the name and terms used need more punch. don't use poker cards as icons. use something more child friendly. the overall design also needs more work. maybe a galaxy theme with period asteroids flashing by. the user avatar can no longer be seen."
+**AI Response**: "Resumed workflow. Increment 2 (Sensory) fully complete. Parsed state; loaded increment2 requirements + design context and current UI knowledge. Rendered Welcome-back prompt proposing new Increment 3 (Branding & Visual Overhaul). Awaiting A/B choice."
+**Context**: Session continuity — state at INCREMENT 2 complete; new increment requested.
+
+---
+
+## Increment 3 — Requirements Analysis Start
+**Timestamp**: 2026-07-11T11:02:00Z
+**User Input**: "a" (chose option A — start Increment 3)
+**AI Response**: "Intent analysis: Enhancement + Bug Fix, multiple-component scope, moderate complexity → Standard depth. Diagnosed avatar regression (hero-avatar ::before dark disc covers bare-text emoji on play-home hero; ProfileCard wraps in span so unaffected). Wrote 9 clarification questions to increment3-branding-questions.md (name, pull-verb, binder-term, icon motif, theme depth, asteroid behavior, avatar treatment, scope, rarity naming). Updated aidlc-state.md to Increment 3 Requirements Analysis. Awaiting answers."
+**Context**: INCEPTION / Requirements Analysis — clarification gate.
+
+---
