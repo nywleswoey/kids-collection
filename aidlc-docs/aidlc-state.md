@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 6 (Missing-Card Names & Easter-Egg Pick) — INCEPTION / Application Design (drafted, AWAITING APPROVAL). Reqs APPROVED (refund-on-abandon + pick roulette).
+- **Current Stage**: INCREMENT 6 (Missing-Card Names & Easter-Egg Pick) — CONSTRUCTION / Code Generation (plan drafted, AWAITING PLAN APPROVAL). Reqs + Design APPROVED.
 - **Prior Increment**: INCREMENT 5 (Card Expand & Rarity Clarity) COMPLETE — admin expand modal + binder rarity; 45/45 tests, deployed to prod.
 - **Prior Increment**: INCREMENT 4 (Admin Gate, Preview & Content) COMPLETE — held at Operations gate. 42/42 tests, deployed to Vercel prod. Post-merge: `pnpm db:migrate`, `pnpm seed --sync`, set `ADMIN_PASSCODE`.
 - **Prior Increment**: INCREMENT 3 (Branding & Galaxy Theme) COMPLETE — Star Catchers rebrand, galaxy theme, asteroids, avatar fix; verified live
