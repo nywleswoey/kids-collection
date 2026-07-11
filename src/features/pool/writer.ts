@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { themes, cards } from "@/db/schema";
+import { themes, cards, collections } from "@/db/schema";
 import type { Rarity } from "@/lib/types";
 
 /** Upsert a theme by name; returns its id (idempotent, U3-BR8). */
@@ -34,9 +34,21 @@ export async function insertCardIfNew(input: {
   rarity: Rarity;
   imageUrl: string;
   eduText: string;
+  sourceUrl: string;
 }): Promise<"inserted" | "skipped"> {
   if (!input.imageUrl) throw new Error("insertCardIfNew: missing imageUrl");
   if (await cardExists(input.themeId, input.name)) return "skipped";
   await db.insert(cards).values(input);
   return "inserted";
+}
+
+/**
+ * Wipe all pool content (and every child's collection that references it) so a
+ * reseed can rebuild from scratch — used for the Superheroes→Dinosaurs swap
+ * (U4-FR4). Deletes in FK order: collections → cards → themes.
+ */
+export async function resetPool(): Promise<void> {
+  await db.delete(collections);
+  await db.delete(cards);
+  await db.delete(themes);
 }

@@ -11,7 +11,12 @@ import { join } from "node:path";
 import { loadSeed } from "@/features/pool/loader";
 import { buildPrompt } from "@/features/pool/prompt";
 import { generateImage, uploadImage } from "@/features/pool/image";
-import { upsertTheme, insertCardIfNew, cardExists } from "@/features/pool/writer";
+import {
+  upsertTheme,
+  insertCardIfNew,
+  cardExists,
+  resetPool,
+} from "@/features/pool/writer";
 import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
@@ -30,6 +35,12 @@ async function main() {
   const mode: Mode = process.argv.includes("--publish") ? "publish" : "review";
   const seed = loadSeed(SEED_PATH); // fail-fast validation
   if (mode === "review") mkdirSync(REVIEW_DIR, { recursive: true });
+
+  // --reset wipes the existing pool first (Superheroes→Dinosaurs swap, U4-FR4).
+  if (mode === "publish" && process.argv.includes("--reset")) {
+    console.log("--reset: wiping existing pool (collections, cards, themes)…");
+    await resetPool();
+  }
 
   const report = { inserted: 0, skipped: 0, failed: 0, reviewed: 0 };
 
@@ -59,6 +70,7 @@ async function main() {
           rarity: card.rarity as Rarity,
           imageUrl,
           eduText: card.eduText,
+          sourceUrl: card.sourceUrl,
         });
         res === "inserted" ? report.inserted++ : report.skipped++;
       } catch (err) {

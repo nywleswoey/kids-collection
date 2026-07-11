@@ -23,6 +23,8 @@ export interface Card {
   rarity: Rarity;
   imageUrl: string;
   eduText: string;
+  /** Source URL backing the fun fact / legend origin. Shown admin-only (U4-FR5). */
+  sourceUrl: string;
 }
 
 export interface Child {

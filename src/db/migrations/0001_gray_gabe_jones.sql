@@ -1,0 +1,1 @@
+ALTER TABLE "cards" ADD COLUMN "source_url" text DEFAULT '' NOT NULL;

@@ -12,6 +12,7 @@ function toCard(row: typeof cards.$inferSelect): Card {
     rarity: row.rarity,
     imageUrl: row.imageUrl,
     eduText: row.eduText,
+    sourceUrl: row.sourceUrl,
   };
 }
 

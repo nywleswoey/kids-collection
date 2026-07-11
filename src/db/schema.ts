@@ -40,6 +40,8 @@ export const cards = pgTable(
     rarity: rarityEnum("rarity").notNull(),
     imageUrl: text("image_url").notNull(),
     eduText: text("edu_text").notNull(),
+    // Admin-verifiable source for the card's fun fact / legend origin (U4-FR5).
+    sourceUrl: text("source_url").notNull().default(""),
   },
   (t) => [index("cards_theme_idx").on(t.themeId)],
 );

@@ -6,6 +6,8 @@ export const seedCardSchema = z.object({
   rarity: z.enum(RARITIES as unknown as [string, ...string[]]),
   eduText: z.string().trim().min(1),
   imagePrompt: z.string().trim().min(1),
+  // Source backing the fact / legend origin — must be a real URL (U4-FR5, NFR4).
+  sourceUrl: z.string().url(),
 });
 
 export const themeSeedSchema = z.object({
