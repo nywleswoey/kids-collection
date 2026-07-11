@@ -700,3 +700,11 @@
 **Context**: CONSTRUCTION / Code Generation — Part 1 plan approval gate.
 
 ---
+
+## Increment 4 — Code Generation Complete
+**Timestamp**: 2026-07-11T13:05:00Z
+**User Input**: "commit and a" (approve code-gen plan)
+**AI Response**: "Implemented all 11 steps. Added cards.sourceUrl (migration 0001), gate-token (pure HMAC), gate.ts (constant-time verifyPasscode + signed httpOnly cookie), unlock flow, middleware admin-gate, admin layout + per-page requireAdminGate, catalog-model/catalog + preview page, EffectTriggerPanel, admin-only source links (ThemeSection/CardSlot showSource), Asteroids trigger prop, seed rewrite (dinosaurs replace superheroes, sourceUrl on all 36 cards, Wikipedia sources), resetPool + --reset. Tests: gate-token PBT (5), catalog (3), seed sourceUrl (1). Verified: typecheck clean, 42/42 tests, build ✅, zero new deps. SECURITY: ADMIN_PASSCODE + AUTH_SECRET confirmed ABSENT from .next/static (client bundle); constant-time compare; signed httpOnly cookie holds only HMAC token; generic error. No blocking security findings. DB migration + reseed + ADMIN_PASSCODE deferred to user (Neon shared/prod; earlier writes denied). Presented completion gate."
+**Context**: CONSTRUCTION / Code Generation — completion gate. Security extension: compliant.
+
+---
