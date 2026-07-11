@@ -54,7 +54,9 @@ Scope from request: punchier name/terms · drop poker-card icons for child-frien
 Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Galaxy, 4=Planet/Rocket, 5=Full re-theme, 6=Occasional asteroids, 7=Fix+planet framing, 8=Play area only, 9=Keep rarity names.
 ### 🔵 INCEPTION
 - [x] Requirements Analysis — APPROVED (increment3-branding-requirements.md)
-- [~] Application Design — drafted (increment3-branding-design.md), AWAITING APPROVAL
+- [x] Application Design — APPROVED (increment3-branding-design.md)
+### 🟢 CONSTRUCTION
+- [~] Code Generation — plan drafted (increment3-branding-code-generation-plan.md), AWAITING PLAN APPROVAL
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
