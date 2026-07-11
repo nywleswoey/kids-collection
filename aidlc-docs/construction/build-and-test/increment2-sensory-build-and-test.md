@@ -54,5 +54,9 @@ Run `npm run dev`, sign in, open the play area.
 - BGM source is app-local (`/bgm/…`) via `BGM_SRC` config.
 - localStorage keys namespaced `kc.snd.*`; no PII.
 
+## BGM
+- Default BGM is **synthesized** (`MusicEngine.ts`, Web Audio loop) — audible with no asset.
+- Optional: drop `public/bgm/playful-loop.mp3` to override the synth with a licensed track.
+
 ## Outstanding (operational)
-- Supply a real royalty-free `public/bgm/playful-loop.mp3` (or point `BGM_SRC` at a licensed URL).
+- (Optional) supply a real royalty-free `public/bgm/playful-loop.mp3` to replace the synth loop.
