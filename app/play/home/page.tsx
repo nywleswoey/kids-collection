@@ -48,6 +48,13 @@ export default async function PlayHomePage() {
         <Link href="/play/binder" className="btn btn--ghost btn--lg">
           🪐 My Galaxy
         </Link>
+        <Link
+          href="/play/learn"
+          data-testid="go-learn-link"
+          className="btn btn--ghost btn--lg"
+        >
+          🧠 Play &amp; Learn
+        </Link>
       </div>
       <form action={switchProfileAction}>
         <button

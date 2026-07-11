@@ -22,6 +22,13 @@
       "when": 1783760370941,
       "tag": "0002_lazy_bulldozer",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783769217922,
+      "tag": "0003_cool_terrax",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,8 @@ import {
   pgEnum,
   text,
   integer,
+  boolean,
+  timestamp,
   primaryKey,
   uniqueIndex,
   index,
@@ -87,7 +89,30 @@ export const collections = pgTable(
   ],
 );
 
+/** Quiz completions (Inc11) — one row per attempt; powers daily caps + admin view. */
+export const quizCompletions = pgTable(
+  "quiz_completions",
+  {
+    id: text("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    topic: text("topic").notNull(),
+    correct: integer("correct").notNull(),
+    total: integer("total").notNull(),
+    passed: boolean("passed").notNull(),
+    awarded: boolean("awarded").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("quiz_completions_child_created_idx").on(t.childId, t.createdAt)],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
 export type CollectionRow = typeof collections.$inferSelect;
+export type QuizCompletionRow = typeof quizCompletions.$inferSelect;

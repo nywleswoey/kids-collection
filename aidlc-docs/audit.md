@@ -1049,3 +1049,11 @@
 **Context**: INCREMENT 11 Application Design — doc written; approval gate.
 
 ---
+
+## INCREMENT 11 — Code Generation
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "B" (approve design → code gen)
+**AI Response**: "Built src/features/quiz/ module: types, cap (sgtDayKey+decideAward), math-gen (3 procedural), grammar-bank (3×16 authored), topics (6+lessons), quiz-offer (HMAC sign/verify), quiz-service (buildQuiz keyless + submitQuiz server re-score+caps+atomic grant), activity, actions, QuizFlow.tsx. Schema quiz_completions + migration 0003. Pages: home Play&Learn button, /play/learn picker (✓ earned today), /play/learn/[topicId]. Admin quiz panel (getQuizActivity per child). Incidental fix: admin Binder text link→button (Inc10 FR3 'e.g binder' miss). typecheck clean, +15 tests → 76/76 stable x3, build ✅, zero deps, no secret leak, answer keys never client-sent. ⚠️ pnpm db:migrate needed. Presenting code-gen gate."
+**Context**: INCREMENT 11 Construction — Code Generation complete.
+
+---

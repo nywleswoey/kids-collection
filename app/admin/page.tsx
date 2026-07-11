@@ -2,10 +2,18 @@ import Link from "next/link";
 import { getAdminOverview } from "@/features/admin/service";
 import { ChildAdminRow } from "@/features/admin/ChildAdminRow";
 import { requireAdminGate } from "@/features/admin/gate";
+import { getQuizActivity } from "@/features/quiz/activity";
 
 export default async function AdminDashboardPage() {
   await requireAdminGate(); // U4-FR1 passcode gate (defense in depth)
   const overview = await getAdminOverview(); // requireParent inside
+  const quizByChild = new Map(
+    await Promise.all(
+      overview.children.map(
+        async (r) => [r.child.id, await getQuizActivity(r.child.id)] as const,
+      ),
+    ),
+  );
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 p-6" data-testid="admin-dashboard">
@@ -47,7 +55,11 @@ export default async function AdminDashboardPage() {
       ) : (
         <ul className="flex flex-col gap-3">
           {overview.children.map((row) => (
-            <ChildAdminRow key={row.child.id} row={row} />
+            <ChildAdminRow
+              key={row.child.id}
+              row={row}
+              quiz={quizByChild.get(row.child.id)}
+            />
           ))}
         </ul>
       )}

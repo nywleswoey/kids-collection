@@ -110,7 +110,7 @@ Answers: Q1=D hybrid (math procedural in-app / grammar static bank); Q2=B 6 topi
 - [x] Requirements Analysis — APPROVED (increment11-quizzes-requirements.md)
 ### 🟢 CONSTRUCTION
 - [x] Application Design — DONE (increment11-quizzes-design.md); module src/features/quiz/*, migration 0003 quiz_completions, signed quiz-offer (server re-score), SGT dayKey caps, math-gen procedural + grammar-bank
-- [ ] Code Generation
+- [x] Code Generation — DONE (increment11-quizzes/code-summary.md); typecheck clean, 76/76 tests (stable x3), build ✅, zero deps, migration 0003 (quiz_completions), no secret leak. New src/features/quiz/* module + /play/learn pages + admin quiz panel. Server-authoritative scoring (signed quiz-offer). Incidental: fixed admin Binder link→button (Inc10 FR3 miss). ⚠️ pnpm db:migrate required (local+prod).
 - [ ] Build & Test
 ### 🟡 OPERATIONS
 - [ ] Operations gate
