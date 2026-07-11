@@ -772,3 +772,19 @@
 **Context**: CONSTRUCTION / Code Generation — completion gate.
 
 ---
+
+## Increment 5 — Build & Test Complete
+**Timestamp**: 2026-07-11T14:33:00Z
+**User Input**: "commit and a" (2-chunk commit; approve code-gen → Build & Test)
+**AI Response**: "Committed feat + docs. Wrote increment5-expand-rarity-build-and-test.md. Final verification: typecheck clean, 45/45 tests, build ✅, zero new deps. Presented Operations gate."
+**Context**: CONSTRUCTION / Build & Test — Operations gate.
+
+---
+
+## Increment 5 — COMPLETE (Operations Gate)
+**Timestamp**: 2026-07-11T14:36:00Z
+**User Input**: "commit and yes" (proceed to Operations)
+**AI Response**: "Increment 5 (Card Expand & Rarity Clarity) marked COMPLETE, held at Operations placeholder gate. Delivered: admin click-to-expand card modal (accessible) and obvious binder rarity (RARITY_META-driven frame + epic/legendary glow + text badge, kid+admin grids, locked neutral). typecheck clean, 45/45 tests, build ✅, zero new deps, testids preserved. Committed feat 87084e2 + docs."
+**Context**: OPERATIONS — increment closed.
+
+---
