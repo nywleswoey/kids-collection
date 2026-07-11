@@ -4,7 +4,7 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 3 (Branding & Visual Overhaul) — INCEPTION / Requirements Analysis (questions issued, awaiting answers)
+- **Current Stage**: INCREMENT 3 (Branding & Galaxy Theme) COMPLETE — held at Operations gate (placeholder)
 - **Prior Increment**: INCREMENT 2 (Sensory) COMPLETE — sound/BGM/animation, 33/33 tests, build ✅
 - **Prior Increment**: INCREMENT 1 (Core App) COMPLETE — all 7 units built, 27/27 tests, deployed, held at Operations gate
 
@@ -57,7 +57,9 @@ Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Ga
 - [x] Application Design — APPROVED (increment3-branding-design.md)
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (code-summary.md); typecheck clean, 33/33 tests, build ✅, zero new deps. 2 new files (brand.ts, Asteroids.tsx) + 11 edits. Avatar regression fixed (CSS stacking).
-- [ ] Build & Test — pending gate
+- [x] Build & Test — instruction doc written (increment3-branding-build-and-test.md); typecheck clean, 33/33 tests, build ✅, zero new deps.
+### 🟡 OPERATIONS
+- [x] Operations gate — user approved (2026-07-11). Placeholder stage; increment COMPLETE.
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |
