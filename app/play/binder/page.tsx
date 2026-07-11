@@ -17,7 +17,10 @@ export default async function BinderPage() {
       className="mx-auto flex max-w-3xl flex-col gap-6 p-6"
       data-testid="binder-page"
     >
-      <header className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5 backdrop-blur">
+      <header
+        className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5"
+        style={{ background: "var(--bg-1)" }}
+      >
         <div className="flex items-center gap-3">
           <Link
             href="/play/home"

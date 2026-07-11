@@ -21,7 +21,8 @@ export function GalaxyView({ sections }: { sections: ThemeSectionData[] }) {
     <div className="flex flex-col gap-6">
       <nav
         data-testid="galaxy-tabs"
-        className="panel sticky top-24 z-[9] flex flex-wrap gap-2 p-3 backdrop-blur"
+        className="sticky top-24 z-[9] flex flex-wrap gap-2 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
+        style={{ background: "var(--bg-1)" }}
       >
         <TabChip
           label="★ All"
