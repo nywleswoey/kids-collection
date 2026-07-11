@@ -964,3 +964,11 @@
 **Context**: INCREMENT 9 Construction — Code Generation complete.
 
 ---
+
+## INCREMENT 9 — Operations gate (migrate + deploy)
+**Timestamp**: 2026-07-11T00:00:00Z
+**User Input**: "yes migrate and deploy to prod"
+**AI Response**: "Ran pnpm db:migrate against prod DB (migration 0002 applied — epic_tickets/lucky_tickets). Pushed main (61181f9), deployed to Vercel production — READY (kids-collection-iwa8b2l2g...). INCREMENT 9 COMPLETE."
+**Context**: OPERATIONS — prod migration + deploy; increment closed.
+
+---
