@@ -23,6 +23,7 @@ export function QuizFlow({
   const [offer, setOffer] = useState("");
   const [idx, setIdx] = useState(0);
   const [picks, setPicks] = useState<string[]>([]);
+  const [answered, setAnswered] = useState<string | null>(null); // Inc13 FR6
   const [outcome, setOutcome] = useState<QuizOutcome | null>(null);
   const [burst, setBurst] = useState(0);
   const [pending, startTransition] = useTransition();
@@ -36,23 +37,32 @@ export function QuizFlow({
       setOffer(quiz.offer);
       setPicks([]);
       setIdx(0);
+      setAnswered(null);
       setPhase("quiz");
     });
   }
 
+  // Inc13 FR6: lock in the answer + show immediate feedback (no advance yet).
   function choose(option: string) {
-    play("click");
+    if (answered !== null) return; // one shot per question
+    const correct = option === questions[idx].correct;
+    play(correct ? "tokenChime" : "denied");
     const nextPicks = [...picks];
     nextPicks[idx] = option;
     setPicks(nextPicks);
+    setAnswered(option);
+  }
 
+  // Advance to the next question, or submit after the last one.
+  function next() {
+    play("click");
     if (idx + 1 < questions.length) {
       setIdx(idx + 1);
+      setAnswered(null);
       return;
     }
-    // Last question → submit.
     startTransition(async () => {
-      const res = await submitQuizAction(offer, nextPicks);
+      const res = await submitQuizAction(offer, picks);
       setOutcome(res);
       setPhase("result");
       if (res.awarded) {
@@ -91,6 +101,8 @@ export function QuizFlow({
   if (phase === "quiz") {
     const q = questions[idx];
     if (!q) return null;
+    const isCorrect = answered === q.correct;
+    const isLast = idx + 1 >= questions.length;
     return (
       <div className="panel flex max-w-md flex-col items-center gap-5 p-6 text-center" data-testid="quiz-question">
         <span className="pill pill--gold">
@@ -98,19 +110,59 @@ export function QuizFlow({
         </span>
         <p className="text-2xl font-bold">{q.prompt}</p>
         <div className="flex w-full flex-col gap-3">
-          {q.options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => choose(opt)}
-              disabled={pending}
-              data-testid={`quiz-option-${opt}`}
-              className="btn btn--ghost btn--lg press"
-            >
-              {opt}
-            </button>
-          ))}
+          {q.options.map((opt) => {
+            // Inc13 FR6: after answering, mark the correct option green and a
+            // wrong pick red; lock all buttons.
+            let state = "";
+            if (answered !== null) {
+              if (opt === q.correct)
+                state = "ring-2 ring-green-400 bg-green-500/20";
+              else if (opt === answered)
+                state = "ring-2 ring-red-400 bg-red-500/20";
+            }
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => choose(opt)}
+                disabled={answered !== null || pending}
+                data-testid={`quiz-option-${opt}`}
+                className={`btn btn--ghost btn--lg press ${state}`}
+              >
+                {opt}
+              </button>
+            );
+          })}
         </div>
+
+        {answered !== null ? (
+          <div
+            className="flex w-full flex-col items-center gap-3"
+            data-testid="quiz-feedback"
+          >
+            {isCorrect ? (
+              <p className="pill pill--gold" data-testid="quiz-feedback-correct">
+                ✅ Correct!
+              </p>
+            ) : (
+              <p className="pill" data-testid="quiz-feedback-wrong">
+                ❌ Not quite — the answer is <strong>{q.correct}</strong>
+              </p>
+            )}
+            <p className="text-sm text-[color:var(--ink-soft)]" data-testid="quiz-explanation">
+              💡 {q.explanation}
+            </p>
+            <button
+              type="button"
+              onClick={next}
+              disabled={pending}
+              data-testid="quiz-next"
+              className="btn btn--primary btn--lg press font-bold"
+            >
+              {pending ? "Checking…" : isLast ? "See results 🎉" : "Next →"}
+            </button>
+          </div>
+        ) : null}
       </div>
     );
   }

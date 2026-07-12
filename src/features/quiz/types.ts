@@ -2,18 +2,24 @@
 
 export type QuizSubject = "math" | "grammar";
 
-/** A single multiple-choice question served to the child. `correct` is the
- * correct option string; it is stripped before sending to the client and lives
- * only inside the signed offer (server-authoritative scoring). */
+/** A single multiple-choice question. `correct` is the correct option string;
+ * `explanation` is a one-line "why" shown as immediate feedback (Inc13 FR6).
+ *
+ * Inc13 FR6: `correct`/`explanation` ARE sent to the client so feedback shows
+ * instantly with no round-trip. Reward integrity is unaffected — the award is
+ * still re-scored server-side against the signed offer (the client key only
+ * drives display). */
 export interface QuizQuestion {
   id: string;
   prompt: string;
   options: string[];
   correct: string;
+  explanation: string;
 }
 
-/** Question as sent to the client — no answer key. */
-export type ClientQuestion = Omit<QuizQuestion, "correct">;
+/** Question as sent to the client. Inc13 FR6: carries the answer key +
+ * explanation for immediate per-question feedback. */
+export type ClientQuestion = QuizQuestion;
 
 export interface Lesson {
   intro: string;

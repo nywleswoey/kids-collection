@@ -48,7 +48,8 @@ export interface BuiltQuiz {
   offer: string;
 }
 
-/** Assemble a quiz + signed offer. Correct keys live only in the offer. */
+/** Assemble a quiz + signed offer. The offer holds the authoritative answer
+ * keys for scoring; the client copy also carries keys for feedback (Inc13 FR6). */
 export async function buildQuiz(
   childId: string,
   topicId: string,
@@ -66,7 +67,10 @@ export async function buildQuiz(
     },
     authSecret(),
   );
-  const client: ClientQuestion[] = questions.map(({ correct: _c, ...rest }) => rest);
+  // Inc13 FR6: send the answer key + explanation to the client for immediate
+  // per-question feedback. Award stays server-authoritative (re-scored against
+  // the signed offer in submitQuiz); the client key only drives display.
+  const client: ClientQuestion[] = questions;
   return { topic: topicId, questions: client, offer };
 }
 

@@ -19,6 +19,7 @@ describe("grammar banks (Inc11)", () => {
         expect(q.options).toContain(q.correct);
         expect(q.options.length).toBeGreaterThanOrEqual(2);
         expect(new Set(q.options).size).toBe(q.options.length); // no dup options
+        expect(q.explanation.length).toBeGreaterThan(0); // Inc13 FR6 — every Q has a "why"
         expect(ids.has(q.id)).toBe(false);
         ids.add(q.id);
       }

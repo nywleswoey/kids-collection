@@ -38,6 +38,9 @@ describe("math-gen (Inc11 Q1=D)", () => {
             expect(Number.isInteger(n)).toBe(true);
             expect(n).toBeGreaterThanOrEqual(0);
             expect(n).toBeLessThanOrEqual(100);
+            // Inc13 FR6 — explanation fills the answer into the prompt's blank.
+            expect(q.explanation).toContain(q.correct);
+            expect(q.explanation).not.toContain("?");
           }
         },
       ),

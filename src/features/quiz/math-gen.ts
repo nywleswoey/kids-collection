@@ -44,7 +44,16 @@ function q(
   rng: Rng,
   spread: number[] = [],
 ): QuizQuestion {
-  return { id, prompt, options: options(answer, rng, spread), correct: String(answer) };
+  // Inc13 FR6: derive a "why" by filling the answer into the prompt's blank,
+  // e.g. "3 × 4 = ?" → "3 × 4 = 12", "? + 5 = 100" → "95 + 5 = 100".
+  const explanation = prompt.replace("?", String(answer));
+  return {
+    id,
+    prompt,
+    options: options(answer, rng, spread),
+    correct: String(answer),
+    explanation,
+  };
 }
 
 /** a × b, factors 2–10, product <= 100. */

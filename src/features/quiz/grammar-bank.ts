@@ -10,8 +10,17 @@ function mc(
   prompt: string,
   correct: string,
   distractors: string[],
+  explanation?: string,
 ): QuizQuestion {
-  return { id, prompt, options: [correct, ...distractors], correct };
+  // Inc13 FR6: every question ships a one-line "why". A generic fallback covers
+  // items without an authored explanation so feedback is never blank.
+  return {
+    id,
+    prompt,
+    options: [correct, ...distractors],
+    correct,
+    explanation: explanation ?? `The correct answer is "${correct}".`,
+  };
 }
 
 /** Verb Tenses — past / present / past-continuous. */
