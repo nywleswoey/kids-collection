@@ -1232,3 +1232,18 @@
 **Context**: Operations gate, prod deploy
 
 ---
+
+## Session Resume — INCREMENT 15 Intent Capture
+**Timestamp**: 2026-07-12T02:20:00Z
+**User Input**: "- parent login session cut down to 20s\n- sound effects when getting legendary or epic cards\n- sound effects when getting easter egg"
+**AI Response**: "Inc14 COMPLETE (deployed). Loaded auth/config.ts (NextAuth, NO explicit session maxAge → 30d default), sound/sfx.ts (8 SFX, revealIntensity/isBigReveal; reveal fires in RevealCard scaled by rarity; egg fires setComplete in PullButton). Rendered Welcome-back for INCREMENT 15 (session TTL + reward SFX). Flagged 20s likely means 20min. Awaiting A/B."
+**Context**: Session resume, new increment scoping
+
+---
+
+## Requirements Analysis — INCREMENT 15 Questions Posed
+**Timestamp**: 2026-07-12T02:25:00Z
+**AI Response**: "Wrote increment15-questions.md (Item1 session duration/idle/scope incl 20s-vs-20min flag; Item2 epic/legendary SFX one-vs-two, layer, scope; Item3 easter-egg SFX + priority; cadence). Awaiting answers."
+**Context**: Requirements Analysis, clarifying questions
+
+---
