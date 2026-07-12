@@ -139,3 +139,14 @@ Brownfield polish. Cadence: LIGHT (single increment). No migration/seed. Answers
 - [x] Build & Test — instruction doc (increment13-polish-build-and-test.md); typecheck clean, 85/85 tests (stable), build ✅, no migration/seed
 ### 🟡 OPERATIONS
 - [x] Operations gate — DEPLOYED to Vercel prod 2026-07-12 (kids-collection-f85udfnvs, READY). No migration/seed. INCREMENT 13 COMPLETE.
+
+## INCREMENT 14 — Kid-to-Kid Card Trading
+Brownfield feature. Cadence: LIGHT (single increment). No migration/seed. Answers: all A (increment14-trading-questions.md) — two-sided same-rarity swap, giver-dup-only, self-serve, instant atomic, /play/trade flow, confirm.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED (increment14-trading-requirements.md)
+- [x] Application Design — APPROVED (increment14-trading-design.md); atomic swap via db.batch (neon-http), dup-only backstopped by count>=1 CHECK
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment14-trading/code-summary.md); typecheck clean, 90/90 tests (85+5), build ✅, zero deps, no migration/seed, no secret leak. NEW src/features/trade/* (logic PBT, service atomic batch swap, actions, TradeFlow) + /play/trade + home link.
+- [ ] Build & Test — instruction doc pending
+### 🟡 OPERATIONS
+- [ ] Operations gate — awaiting deploy
