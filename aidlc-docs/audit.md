@@ -1255,3 +1255,11 @@
 **Context**: Requirements draft, approval gate
 
 ---
+
+## Application Design — INCREMENT 15 Draft
+**Timestamp**: 2026-07-12T02:45:00Z
+**User Input**: "a" (approve requirements)
+**AI Response**: "Drafted increment15-design.md. FR1: gate.ts TTL→20s + middleware slides cookie on valid /admin/* via makeToken+NextResponse.next. FR2: +epicFanfare/legendaryFanfare SFX + rewardFanfare(rarity) helper, layered at 4 reveal seams (RevealCard/EasterEggPicker/SacrificePanel/TradeFlow). FR3: +easterEgg SFX on picker-appear in PullButton, layered fanfare on jackpot. Zero deps, no migration. Awaiting approval before Code Gen."
+**Context**: Application Design, approval gate
+
+---
