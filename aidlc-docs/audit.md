@@ -1195,3 +1195,10 @@
 **Context**: Requirements draft, approval gate
 
 ---
+
+## Application Design — INCREMENT 14 Draft
+**Timestamp**: 2026-07-12T01:30:00Z
+**AI Response**: "Drafted increment14-trading-design.md. Key call: neon-http has no interactive tx → use db.batch() (atomic); dup-only enforced by existing count>=1 CHECK (non-dup decrement rolls back whole batch). New src/features/trade/* (logic PBT, service atomic swap, actions, TradeFlow) + /play/trade + home link. No migration. Awaiting approval before Code Generation."
+**Context**: Application Design, approval gate
+
+---
