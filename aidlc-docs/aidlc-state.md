@@ -151,3 +151,14 @@ Brownfield feature. Cadence: LIGHT (single increment). No migration/seed. Answer
 - [x] Build & Test — instruction doc (increment14-trading-build-and-test.md); typecheck clean, 90/90 tests (stable), build ✅, no migration/seed
 ### 🟡 OPERATIONS
 - [x] Operations gate — DEPLOYED to Vercel prod 2026-07-12 (kids-collection-angqs24i0, READY). No migration/seed. INCREMENT 14 COMPLETE.
+
+## INCREMENT 15 — Admin Gate TTL + Reward SFX
+Brownfield security + sensory. Cadence: LIGHT. No migration/seed/deps. Answers (increment15-questions.md): Q1.1=B(20s literal),Q1.2=A(sliding),Q1.3=B(admin gate only, not Google session),Q2.1=B(2 fanfares),Q2.2=A(layer),Q2.3=A(all reveals),Q3.1=A(dedicated),Q3.2=B(picker-appear),Q3.3=B(layer),Q4=A.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED (increment15-requirements.md)
+- [x] Application Design — APPROVED (increment15-design.md)
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment15/code-summary.md); typecheck clean, 92/92 tests (90+2), build ✅, zero deps, no migration/seed, no secret leak. FR1 gate 20s sliding via middleware; FR2 epic/legendary fanfares layered at 4 reveal seams; FR3 easterEgg SFX on picker-appear.
+- [x] Build & Test — instruction doc (increment15-build-and-test.md); typecheck clean, 92/92, build ✅, no migration/seed.
+### 🟡 OPERATIONS
+- [ ] Operations gate — awaiting deploy
