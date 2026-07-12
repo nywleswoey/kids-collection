@@ -1126,3 +1126,18 @@
 **Context**: Requirements Analysis, clarifying questions
 
 ---
+
+## Requirements Analysis — INCREMENT 13 Answers + Draft
+**Timestamp**: 2026-07-12T00:15:00Z
+**User Input**: "commit and start" + inline answers in increment13-polish-questions.md (Q1.1=D,Q1.2=A,Q2.1=manage-profile+child-landing,Q3.1=B,Q3.2=A,Q3.3=A,Q4.1=A,Q4.2=A,Q4.3=B,Q5.1=A,Q6.1=B,Q6.2=A,Q7=B,Q8=A)
+**AI Response**: "Committed scoping docs (docs(inc13)). Drafted increment13-polish-requirements.md (FR1-FR6, no migration, LIGHT single increment). Awaiting approval before Application Design."
+**Context**: Requirements Analysis draft complete, approval gate
+
+---
+
+## Application Design — INCREMENT 13 Draft
+**Timestamp**: 2026-07-12T00:25:00Z
+**AI Response**: "Drafted increment13-polish-design.md — FR1-FR6 mapped to modules. Key design calls: (a) rarity-filter.ts pure helper for FR1/2; (b) FR6 sends quiz answer key+explanation to client for immediate feedback, reward stays server-authoritative via signed offer (documented tradeoff); (c) math explanation derived via prompt.replace, grammar gets explanation field+fallback; (d) FR4 localStorage helper + SacrificeHintModal on isDuplicate. Awaiting approval before Code Generation."
+**Context**: Application Design, approval gate
+
+---
