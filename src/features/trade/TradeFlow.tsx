@@ -7,6 +7,7 @@ import type { Card as CardType } from "@/lib/types";
 import { RARITY_META } from "@/features/card/rarity";
 import { avatarEmoji } from "@/lib/avatars";
 import { useSound } from "@/features/sound/useSound";
+import { rewardFanfare } from "@/features/sound/sfx";
 import { getMatchesAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
 
@@ -75,6 +76,9 @@ export function TradeFlow({
       const res = await executeTradeAction(mine!.card.id, friend!.id, theirs!.card.id);
       if (res.ok) {
         play("setComplete");
+        // Inc15 FR2: layer the reward fanfare when the card you got is epic/legendary.
+        const fanfare = rewardFanfare(res.got.rarity);
+        if (fanfare) play(fanfare);
         setResult({ gave: res.gave, got: res.got });
         setPhase("done");
       } else {

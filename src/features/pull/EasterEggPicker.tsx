@@ -6,6 +6,8 @@ import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
 import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
+import { useSound } from "@/features/sound/useSound";
+import { rewardFanfare } from "@/features/sound/sfx";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
 import "@/features/anim/anim.css";
@@ -32,6 +34,7 @@ export function EasterEggPicker({
   const [won, setWon] = useState<CardType | null>(null);
   const [fire, setFire] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { play } = useSound();
 
   async function pick(index: number) {
     if (phase !== "choosing") return;
@@ -53,6 +56,9 @@ export function EasterEggPicker({
     setWon(result.card);
     setFire((n) => n + 1);
     setPhase("revealed");
+    // Inc15 FR2/FR3.3: layer the reward fanfare on the jackpot when epic/legendary.
+    const fanfare = rewardFanfare(result.card.rarity);
+    if (fanfare) play(fanfare);
     onDone(result);
   }
 

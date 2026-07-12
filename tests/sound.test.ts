@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import fc from "fast-check";
 import { RARITIES } from "@/lib/types";
-import { sfxSpec, revealIntensity, isBigReveal, type SfxName } from "@/features/sound/sfx";
+import { sfxSpec, revealIntensity, isBigReveal, rewardFanfare, type SfxName } from "@/features/sound/sfx";
 import {
   getSfxEnabled,
   getBgmEnabled,
@@ -18,6 +18,9 @@ const ALL_SFX: SfxName[] = [
   "denied",
   "slotFill",
   "setComplete",
+  "epicFanfare",
+  "legendaryFanfare",
+  "easterEgg",
 ];
 
 describe("sfxSpec", () => {
@@ -29,6 +32,22 @@ describe("sfxSpec", () => {
       expect(spec.gain).toBeGreaterThan(0);
       expect(spec.gain).toBeLessThanOrEqual(1);
     }
+  });
+});
+
+describe("reward fanfares (Inc15 FR2)", () => {
+  it("legendary fanfare is bigger than epic (longer, more notes)", () => {
+    const epic = sfxSpec("epicFanfare");
+    const leg = sfxSpec("legendaryFanfare");
+    expect(leg.durationMs).toBeGreaterThanOrEqual(epic.durationMs);
+    expect(leg.freqs.length).toBeGreaterThanOrEqual(epic.freqs.length);
+  });
+
+  it("rewardFanfare maps only epic/legendary to a fanfare", () => {
+    expect(rewardFanfare("legendary")).toBe("legendaryFanfare");
+    expect(rewardFanfare("epic")).toBe("epicFanfare");
+    expect(rewardFanfare("rare")).toBeNull();
+    expect(rewardFanfare("common")).toBeNull();
   });
 });
 

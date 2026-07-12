@@ -6,6 +6,7 @@ import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
+import { rewardFanfare } from "@/features/sound/sfx";
 import { sacrificeAction } from "./actions";
 
 /**
@@ -36,6 +37,9 @@ export function SacrificePanel({
         const res = await sacrificeAction(cardId);
         setResult(res);
         play("setComplete");
+        // Inc15 FR2: layer the reward fanfare when the upgrade is epic/legendary.
+        const fanfare = rewardFanfare(res.card.rarity);
+        if (fanfare) play(fanfare);
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
         play("denied");

@@ -12,7 +12,12 @@ export type SfxName =
   | "tokenChime"
   | "denied"
   | "slotFill"
-  | "setComplete";
+  | "setComplete"
+  // Inc15: reward stings layered on top of `reveal` for the top tiers, plus a
+  // dedicated easter-egg sound.
+  | "epicFanfare"
+  | "legendaryFanfare"
+  | "easterEgg";
 
 export type SfxWave = "sine" | "triangle" | "square" | "sawtooth" | "noise";
 
@@ -48,7 +53,26 @@ export function sfxSpec(name: SfxName): SfxSpec {
       return { wave: "triangle", freqs: [740, 988], durationMs: 220, gain: 0.26 };
     case "setComplete":
       return { wave: "sine", freqs: [523, 659, 784, 1047], durationMs: 640, gain: 0.34 };
+    // Inc15 FR2: epic gets a bright rising fanfare; legendary is bigger — more
+    // notes, longer, a higher top note (must read as grander than epic).
+    case "epicFanfare":
+      return { wave: "sine", freqs: [659, 880, 1047], durationMs: 620, gain: 0.34 };
+    case "legendaryFanfare":
+      return { wave: "sine", freqs: [659, 880, 1047, 1319, 1568], durationMs: 900, gain: 0.36 };
+    // Inc15 FR3: sparkly easter-egg cue, distinct from setComplete.
+    case "easterEgg":
+      return { wave: "triangle", freqs: [988, 1319, 1760], durationMs: 520, gain: 0.32, sweepTo: 2093 };
   }
+}
+
+/**
+ * Inc15 FR2: which fanfare (if any) layers on top of the reveal sting for a
+ * given rarity. Epic/legendary only. Pure → testable.
+ */
+export function rewardFanfare(rarity: Rarity): SfxName | null {
+  if (rarity === "legendary") return "legendaryFanfare";
+  if (rarity === "epic") return "epicFanfare";
+  return null;
 }
 
 const RARITY_INTENSITY: Record<Rarity, number> = {
