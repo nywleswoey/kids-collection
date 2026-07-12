@@ -4,19 +4,19 @@ import Image from "next/image";
 import { useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
-import { RARITY_META, shouldAnimate } from "@/features/card/rarity";
+import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
 import "@/features/anim/anim.css";
 
-type Phase = "choosing" | "spinning" | "revealed";
+type Phase = "choosing" | "revealed";
 
 /**
  * Rare pick-1-of-5 easter egg (U6-FR2/FR3/FR4). Kid picks a card; the server
- * claim decides/records it; a decelerating roulette builds suspense and lands
- * on the pick, then fireworks + the revealed card. Reduced motion skips straight
- * to the reveal. Uses the static Card (no confetti — fireworks only).
+ * claim decides/records it, then straight to fireworks + the revealed card.
+ * Inc13 FR5: the post-pick roulette spin is removed — the child already chose,
+ * so the suspense spin added nothing. Uses the static Card (fireworks only).
  */
 export function EasterEggPicker({
   choices,
@@ -35,7 +35,6 @@ export function EasterEggPicker({
 
   async function pick(index: number) {
     if (phase !== "choosing") return;
-    setPhase("spinning");
 
     let result: PullOutcome;
     try {
@@ -49,33 +48,12 @@ export function EasterEggPicker({
       return;
     }
 
-    const finish = () => {
-      setActive(index);
-      setWon(result.card);
-      setFire((n) => n + 1);
-      setPhase("revealed");
-      onDone(result);
-    };
-
-    if (!shouldAnimate()) {
-      finish();
-      return;
-    }
-
-    // Decelerating roulette: ~24 steps from 70ms → ~340ms (~2.7s total).
-    const steps = 24;
-    let i = 0;
-    const tick = () => {
-      setActive(i % choices.length);
-      i++;
-      if (i <= steps) {
-        const delay = 70 + (i / steps) * 270;
-        setTimeout(tick, delay);
-      } else {
-        finish();
-      }
-    };
-    tick();
+    // Inc13 FR5: no roulette — reveal the chosen card immediately.
+    setActive(index);
+    setWon(result.card);
+    setFire((n) => n + 1);
+    setPhase("revealed");
+    onDone(result);
   }
 
   if (phase === "revealed" && won) {
@@ -92,9 +70,7 @@ export function EasterEggPicker({
     <div className="flex flex-col items-center gap-5" data-testid="easter-egg-picker">
       <div className="flex flex-col items-center gap-1 text-center">
         <span className="pill pill--gold text-base">✨ Lucky Star! ✨</span>
-        <p className="display text-lg">
-          {phase === "spinning" ? "Spinning…" : "Pick one special card!"}
-        </p>
+        <p className="display text-lg">Pick one special card!</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
