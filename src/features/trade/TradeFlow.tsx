@@ -1,0 +1,256 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useTransition } from "react";
+import type { Card as CardType } from "@/lib/types";
+import { RARITY_META } from "@/features/card/rarity";
+import { avatarEmoji } from "@/lib/avatars";
+import { useSound } from "@/features/sound/useSound";
+import { getMatchesAction, executeTradeAction } from "./actions";
+import type { TradableCard } from "./trade-logic";
+
+type Friend = { id: string; name: string; avatar: string };
+type Phase = "pick-mine" | "pick-friend" | "pick-theirs" | "confirm" | "done";
+
+/**
+ * Kid-to-kid trade flow (Inc14). Pick your duplicate → pick a friend → pick
+ * their same-rarity duplicate → confirm → swap. Server re-validates + commits
+ * atomically; the child A is the server-side active profile.
+ */
+export function TradeFlow({
+  myCards,
+  friends,
+}: {
+  myCards: TradableCard[];
+  friends: Friend[];
+}) {
+  const [phase, setPhase] = useState<Phase>("pick-mine");
+  const [mine, setMine] = useState<TradableCard | null>(null);
+  const [friend, setFriend] = useState<Friend | null>(null);
+  const [theirCards, setTheirCards] = useState<TradableCard[]>([]);
+  const [theirs, setTheirs] = useState<TradableCard | null>(null);
+  const [result, setResult] = useState<{ gave: CardType; got: CardType } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const { play } = useSound();
+
+  function reset() {
+    setPhase("pick-mine");
+    setMine(null);
+    setFriend(null);
+    setTheirCards([]);
+    setTheirs(null);
+    setResult(null);
+    setError(null);
+  }
+
+  function chooseMine(t: TradableCard) {
+    play("click");
+    setMine(t);
+    setPhase("pick-friend");
+  }
+
+  function chooseFriend(f: Friend) {
+    play("click");
+    setFriend(f);
+    setError(null);
+    startTransition(async () => {
+      const matches = await getMatchesAction(f.id, mine!.card.rarity);
+      setTheirCards(matches);
+      setPhase("pick-theirs");
+    });
+  }
+
+  function chooseTheirs(t: TradableCard) {
+    play("click");
+    setTheirs(t);
+    setPhase("confirm");
+  }
+
+  function commit() {
+    play("click");
+    setError(null);
+    startTransition(async () => {
+      const res = await executeTradeAction(mine!.card.id, friend!.id, theirs!.card.id);
+      if (res.ok) {
+        play("setComplete");
+        setResult({ gave: res.gave, got: res.got });
+        setPhase("done");
+      } else {
+        play("denied");
+        setError(res.reason);
+        setPhase("pick-mine");
+      }
+    });
+  }
+
+  // ---- Result ----
+  if (phase === "done" && result) {
+    return (
+      <div className="panel flex max-w-md flex-col items-center gap-4 p-6 text-center" data-testid="trade-done">
+        <h1 className="text-2xl font-bold title-pop">Trade complete! 🎉</h1>
+        <div className="flex items-center justify-center gap-4">
+          <CardMini card={result.gave} label="You gave" />
+          <span className="text-2xl">🔄</span>
+          <CardMini card={result.got} label="You got" />
+        </div>
+        <div className="flex gap-3">
+          <button type="button" onClick={reset} data-testid="trade-again" className="btn btn--primary">
+            Trade again
+          </button>
+          <Link href="/play/binder" className="btn btn--ghost">
+            🪐 My Galaxy
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full max-w-2xl flex-col items-center gap-5">
+      {error ? (
+        <p data-testid="trade-error" className="panel px-5 py-3 text-center text-sm text-red-300">
+          {error}
+        </p>
+      ) : null}
+
+      {/* Step 1 — pick your duplicate */}
+      {phase === "pick-mine" ? (
+        <section className="flex w-full flex-col items-center gap-3" data-testid="trade-pick-mine">
+          <h2 className="text-xl font-bold">1. Pick your double to trade</h2>
+          {myCards.length === 0 ? (
+            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
+              You have no doubles yet — collect a duplicate first! ➕
+            </p>
+          ) : (
+            <CardGrid cards={myCards} onPick={chooseMine} testid="mine" />
+          )}
+        </section>
+      ) : null}
+
+      {/* Step 2 — pick a friend */}
+      {phase === "pick-friend" ? (
+        <section className="flex w-full flex-col items-center gap-3" data-testid="trade-pick-friend">
+          <h2 className="text-xl font-bold">2. Trade with which friend?</h2>
+          {friends.length === 0 ? (
+            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
+              No other players yet — ask a parent to add one.
+            </p>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-3">
+              {friends.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => chooseFriend(f)}
+                  disabled={pending}
+                  data-testid={`trade-friend-${f.id}`}
+                  className="panel flex items-center gap-2 px-4 py-3 transition hover:bg-white/10 disabled:opacity-50"
+                >
+                  <span className="hero-avatar h-9 w-9 text-lg" aria-hidden>
+                    {avatarEmoji(f.avatar)}
+                  </span>
+                  <span className="font-semibold">{f.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {/* Step 3 — pick their same-rarity duplicate */}
+      {phase === "pick-theirs" && mine && friend ? (
+        <section className="flex w-full flex-col items-center gap-3" data-testid="trade-pick-theirs">
+          <h2 className="text-xl font-bold">
+            3. Pick {friend.name}&apos;s {RARITY_META[mine.card.rarity].label} double
+          </h2>
+          {theirCards.length === 0 ? (
+            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
+              {friend.name} has no {RARITY_META[mine.card.rarity].label} doubles to swap.
+            </p>
+          ) : (
+            <CardGrid cards={theirCards} onPick={chooseTheirs} testid="theirs" />
+          )}
+        </section>
+      ) : null}
+
+      {/* Step 4 — confirm */}
+      {phase === "confirm" && mine && theirs ? (
+        <section className="panel flex flex-col items-center gap-4 p-6 text-center" data-testid="trade-confirm">
+          <h2 className="text-xl font-bold">Ready to trade?</h2>
+          <div className="flex items-center justify-center gap-4">
+            <CardMini card={mine.card} label="You give" />
+            <span className="text-2xl">🔄</span>
+            <CardMini card={theirs.card} label="You get" />
+          </div>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={commit}
+              disabled={pending}
+              data-testid="trade-confirm-button"
+              className="btn btn--primary btn--lg press font-bold"
+            >
+              {pending ? "Trading…" : "Confirm trade 🤝"}
+            </button>
+            <button type="button" onClick={reset} disabled={pending} className="btn btn--ghost">
+              Cancel
+            </button>
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function CardGrid({
+  cards,
+  onPick,
+  testid,
+}: {
+  cards: TradableCard[];
+  onPick: (t: TradableCard) => void;
+  testid: string;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+      {cards.map((t) => {
+        const meta = RARITY_META[t.card.rarity];
+        return (
+          <button
+            key={t.card.id}
+            type="button"
+            onClick={() => onPick(t)}
+            data-testid={`trade-${testid}-${t.card.id}`}
+            className="relative overflow-hidden rounded-xl border-2 bg-white/10 transition hover:scale-105"
+            style={{ borderColor: meta.frame }}
+          >
+            <span className="rarity-badge">{meta.label}</span>
+            <Image
+              src={t.card.imageUrl}
+              alt={t.card.name}
+              width={200}
+              height={200}
+              className="aspect-square w-full object-cover"
+            />
+            <span className="pill absolute bottom-1 right-1 text-xs">×{t.count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function CardMini({ card, label }: { card: CardType; label: string }) {
+  const meta = RARITY_META[card.rarity];
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <span className="text-xs text-[color:var(--ink-soft)]">{label}</span>
+      <div className="relative overflow-hidden rounded-xl border-2" style={{ borderColor: meta.frame }}>
+        <Image src={card.imageUrl} alt={card.name} width={110} height={110} className="aspect-square w-[110px] object-cover" />
+      </div>
+      <span className="text-xs font-semibold">{meta.label}</span>
+    </div>
+  );
+}
