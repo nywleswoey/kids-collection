@@ -1105,3 +1105,24 @@
 **Context**: OPERATIONS — prod deploy; increment closed.
 
 ---
+
+## Session Resume — INCREMENT 13 Intent Capture
+**Timestamp**: 2026-07-12T00:00:00Z
+**User Input**: "add the following:
+- show count of card by rarity
+- parent portal should be able to see count of all ticket types
+- when child receives a duplicate for the first time, prompt them that about the sacrifice easter egg, but use terms that they can understand
+- all them to filter by rarity in their galaxy (maybe a button showing the count on top that they can use to filter?)
+- remove the lukcy pick roulette since they can choose
+- when they answer wrongly in quizzes, give them immediate feedback"
+**AI Response**: "Resumed workflow. INCREMENT 12 COMPLETE. Rendered Welcome-back continuity prompt for new INCREMENT 13 (6 items). Awaiting user choice A/B before advancing to Requirements Analysis."
+**Context**: Session resume, new increment scoping
+
+---
+
+## Requirements Analysis — INCREMENT 13 Questions Posed
+**Timestamp**: 2026-07-12T00:05:00Z
+**AI Response**: "Wrote increment13-polish-questions.md (8 question groups covering 6 items + migration/cadence). Awaiting user answers before drafting requirements."
+**Context**: Requirements Analysis, clarifying questions
+
+---
