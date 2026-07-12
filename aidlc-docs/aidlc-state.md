@@ -136,6 +136,6 @@ Brownfield polish. Cadence: LIGHT (single increment). No migration/seed. Answers
 - [x] Application Design — APPROVED (increment13-polish-design.md)
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment13-polish/code-summary.md); typecheck clean, 85/85 tests, build ✅, zero deps, no migration/seed, no secret leak. NEW rarity-filter.ts (PBT), sacrifice-hint.ts, SacrificeHintModal.tsx. FR1/2 galaxy rarity chips; FR3 ticket counts; FR4 first-dup modal (localStorage); FR5 drop easter-egg spin; FR6 per-question quiz feedback (client answer key, server-authoritative reward).
-- [ ] Build & Test — instruction doc pending
+- [x] Build & Test — instruction doc (increment13-polish-build-and-test.md); typecheck clean, 85/85 tests (stable), build ✅, no migration/seed
 ### 🟡 OPERATIONS
 - [ ] Operations gate — awaiting deploy
