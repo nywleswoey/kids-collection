@@ -36,6 +36,7 @@ export default async function PullPage() {
         </h1>
       </div>
       <PullButton
+        childId={child.id}
         initialBalance={balance}
         flashPool={flashPool}
         themes={themes.map((t) => ({ id: t.id, name: t.name }))}

@@ -6,18 +6,22 @@ import { pullAction, pullSpecialEggAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
+import { SacrificeHintModal } from "./SacrificeHintModal";
+import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 import { shouldShowAskParent } from "./ticket-display";
 import type { EggTicket } from "@/lib/types";
 
 export function PullButton({
+  childId,
   initialBalance,
   flashPool = [],
   themes = [],
   epicTickets = 0,
   luckyTickets = 0,
 }: {
+  childId: string;
   initialBalance: number;
   flashPool?: FlashCard[];
   themes?: { id: string; name: string }[];
@@ -30,6 +34,7 @@ export function PullButton({
   const [outcome, setOutcome] = useState<PullOutcome | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
+  const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [pending, startTransition] = useTransition();
   const activeTicket = useRef<EggTicket | null>(null);
   const { play } = useSound();
@@ -41,6 +46,18 @@ export function PullButton({
   // but greyed so they know a normal ticket is needed for it (B2=B).
   const askParent = shouldShowAskParent(balance, epic, lucky);
   const hasSpecial = epic > 0 || lucky > 0;
+
+  // First-duplicate sacrifice hint (Inc13 FR4). Fire once the reveal is on
+  // screen (after any roulette) for a normal-pull duplicate the child hasn't
+  // been taught about yet.
+  useEffect(() => {
+    if (cycling) return;
+    if (!outcome || outcome.outOfTokens || outcome.easterEgg) return;
+    if (!outcome.isDuplicate) return;
+    if (hasSeenSacrificeHint(childId)) return;
+    markSacrificeHintSeen(childId);
+    setHintCardId(outcome.card.id);
+  }, [outcome, cycling, childId]);
 
   // Soft chime as the token counter rolls after a pull.
   useEffect(() => {
@@ -213,6 +230,12 @@ export function PullButton({
           </div>
         )
       ) : null}
+
+      <SacrificeHintModal
+        open={hintCardId !== null}
+        cardId={hintCardId ?? ""}
+        onClose={() => setHintCardId(null)}
+      />
     </div>
   );
 }
