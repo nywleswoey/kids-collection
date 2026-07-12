@@ -147,6 +147,6 @@ Brownfield feature. Cadence: LIGHT (single increment). No migration/seed. Answer
 - [x] Application Design — APPROVED (increment14-trading-design.md); atomic swap via db.batch (neon-http), dup-only backstopped by count>=1 CHECK
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment14-trading/code-summary.md); typecheck clean, 90/90 tests (85+5), build ✅, zero deps, no migration/seed, no secret leak. NEW src/features/trade/* (logic PBT, service atomic batch swap, actions, TradeFlow) + /play/trade + home link.
-- [ ] Build & Test — instruction doc pending
+- [x] Build & Test — instruction doc (increment14-trading-build-and-test.md); typecheck clean, 90/90 tests (stable), build ✅, no migration/seed
 ### 🟡 OPERATIONS
 - [ ] Operations gate — awaiting deploy
