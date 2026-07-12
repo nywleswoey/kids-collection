@@ -55,6 +55,13 @@ export default async function PlayHomePage() {
           🪐 My Galaxy
         </Link>
         <Link
+          href="/play/trade"
+          data-testid="go-trade-link"
+          className="btn btn--ghost btn--lg"
+        >
+          🤝 Trade cards
+        </Link>
+        <Link
           href="/play/learn"
           data-testid="go-learn-link"
           className="btn btn--ghost btn--lg"
