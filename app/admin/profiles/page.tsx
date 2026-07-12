@@ -27,6 +27,8 @@ export default async function ProfileManagerPage() {
             name={c.name}
             avatar={c.avatar}
             pullTokens={c.pullTokens}
+            epicTickets={c.epicTickets}
+            luckyTickets={c.luckyTickets}
           />
         ))}
         {kids.length === 0 ? (

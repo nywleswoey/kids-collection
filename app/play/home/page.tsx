@@ -12,9 +12,9 @@ export default async function PlayHomePage() {
   if (!child) redirect("/play"); // U2-SEC-7: invalid/missing profile → picker
 
   // FR1 (Inc10): surface special-egg tickets on the landing page so they don't
-  // silently read as "0 tickets".
+  // silently read as "0 tickets". Inc13 FR3: show every ticket type explicitly
+  // (normal / epic / lucky) so the child sees all their counts at a glance.
   const { epic, lucky } = await getSpecialBalances(child.id);
-  const specialTotal = epic + lucky;
 
   return (
     <main
@@ -28,14 +28,20 @@ export default async function PlayHomePage() {
         <h1 className="text-4xl font-bold">
           Hi, <span className="title-pop">{child.name}</span>!
         </h1>
-        <p className="pill pill--gold" data-testid="token-balance">
-          🎟️ {child.pullTokens} ticket{child.pullTokens === 1 ? "" : "s"} ready
-        </p>
-        {specialTotal > 0 ? (
-          <p className="pill pill--gold" data-testid="special-balance">
-            ✨ {specialTotal} special ticket{specialTotal === 1 ? "" : "s"}
-          </p>
-        ) : null}
+        <div
+          className="flex flex-wrap items-center justify-center gap-2"
+          data-testid="ticket-counts"
+        >
+          <span className="pill pill--gold" data-testid="token-balance">
+            🎟️ {child.pullTokens} ticket{child.pullTokens === 1 ? "" : "s"}
+          </span>
+          <span className="pill pill--gold" data-testid="epic-balance">
+            ✨ {epic} epic
+          </span>
+          <span className="pill pill--gold" data-testid="lucky-balance">
+            🍀 {lucky} lucky
+          </span>
+        </div>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Link

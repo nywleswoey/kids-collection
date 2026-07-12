@@ -14,11 +14,15 @@ export function ProfileRow({
   name,
   avatar,
   pullTokens,
+  epicTickets = 0,
+  luckyTickets = 0,
 }: {
   id: string;
   name: string;
   avatar: string;
   pullTokens: number;
+  epicTickets?: number;
+  luckyTickets?: number;
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -51,7 +55,12 @@ export function ProfileRow({
           {avatarEmoji(avatar)}
         </span>
         <span className="display font-semibold">{name}</span>
-        <span className="pill text-xs">🎟️ {pullTokens}</span>
+        <span
+          className="pill text-xs"
+          data-testid={`profile-tickets-${id}`}
+        >
+          🎟️ {pullTokens} · ✨ {epicTickets} · 🍀 {luckyTickets}
+        </span>
       </span>
       <span className="flex items-center gap-2">
         <button
