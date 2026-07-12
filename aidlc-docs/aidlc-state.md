@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 9 (Galaxy Nav, Prominent Pick & Special Egg Tickets) COMPLETE — migration 0002 applied to prod, deployed to Vercel production 2026-07-11 (kids-collection.vercel.app). typecheck clean, 57/57 tests, build ✅, zero new npm deps, **migration 0002** (epic_tickets/lucky_tickets on children). FR1 sticky galaxy category tab bar (GalaxyView; ★ All default, filters to one theme); FR2 prominent pull category chips (Random default, replaces <select>); FR3 chips persist + stay on result view for next-pull switching; FR4 special egg tickets (✨ epic+ / 🍀 lucky) — parent grants on admin dashboard, guaranteed pick-1-of-5, cost 1 special ticket only (spent atomically at claim → offer single-use; kind pinned in signed offer).
+- **Current Stage**: INCREMENT 13 (UX Polish) — Code Generation DONE, at Operations gate (awaiting deploy). typecheck clean, 85/85 tests, build ✅, zero new deps, NO migration/seed, no secret in client bundle. FR1/2 galaxy rarity chip row (owned counts + tap-to-filter, AND-combines with category, filtered view keeps locked cards); FR3 all ticket types (🎟️/✨/🍀) on Manage-Profiles rows + child landing; FR4 first-duplicate sacrifice-hint modal via per-child localStorage (no migration); FR5 removed EasterEggPicker post-pick roulette spin; FR6 per-question quiz feedback (✅/❌ + correct answer + 💡 why + Next) — answer keys sent client-side for feedback, award stays server-authoritative via signed offer.
+- **Prior Increment**: INCREMENT 9 (Galaxy Nav, Prominent Pick & Special Egg Tickets) COMPLETE — migration 0002 applied to prod, deployed to Vercel production 2026-07-11 (kids-collection.vercel.app). typecheck clean, 57/57 tests, build ✅, zero new npm deps, **migration 0002** (epic_tickets/lucky_tickets on children). FR1 sticky galaxy category tab bar (GalaxyView; ★ All default, filters to one theme); FR2 prominent pull category chips (Random default, replaces <select>); FR3 chips persist + stay on result view for next-pull switching; FR4 special egg tickets (✨ epic+ / 🍀 lucky) — parent grants on admin dashboard, guaranteed pick-1-of-5, cost 1 special ticket only (spent atomically at claim → offer single-use; kind pinned in signed offer).
 - **Prior Increment**: INCREMENT 8 (New Eggs, Category Pick & Sort Fix) COMPLETE — deployed to Vercel prod 2026-07-11 (dpl_Aog3CFUwB…). common/rare egg, sacrifice-to-upgrade, category pick, true sort fix (getAdminOverview).
 - **Prior Increment**: INCREMENT 7 (UX Polish & Fixes) COMPLETE — deployed to Vercel prod 2026-07-11 (dpl_d6UcHei5…). CardRoulette slot-machine, larger picker avatar, admin edit-profile, listChildren name-sort, sticky galaxy back.
 - **Prior Increment**: INCREMENT 6 (Missing-Card Names & Easter-Egg Pick) COMPLETE — held at Operations gate (placeholder). typecheck clean, 52/52 tests, build ✅, zero new deps, AUTH_SECRET absent from client bundle. Missing-card names + ~1% pick-1-of-5 epic+ easter egg (signed offer, atomic claim) with roulette + fireworks. Forced-egg visual QA PASSED (trigger→5 epic+ picker→roulette→land on Legendary→jackpot; token refund-then-spend net 1 verified; locked-slot names confirmed). Deployed to Vercel production 2026-07-11.
@@ -127,3 +128,14 @@ Request: math → multiplication & division within 100, number bonds to 100; gra
 - [x] Code Generation — DONE (increment12-harder-quizzes-code-summary.md); 9 topics (3 math procedural mult/div/bonds-100, 6 grammar banks), typecheck clean, 77/77 tests, build ✅, no schema/migration/seed.
 ### 🟡 OPERATIONS
 - [x] Operations gate — DEPLOYED to Vercel prod (kids-collection-q22mkb2jp, READY 39s). Redeploy only. INCREMENT 12 COMPLETE.
+
+## INCREMENT 13 — UX Polish (Rarity Counts/Filter, Ticket Visibility, Sacrifice Hint, Quiz Feedback)
+Brownfield polish. Cadence: LIGHT (single increment). No migration/seed. Answers: Q1.1=D,Q1.2=A,Q2.1=manage-profile+child-landing,Q3.1=B,Q3.2=A,Q3.3=A,Q4.1=A,Q4.2=A,Q4.3=B,Q5.1=A,Q6.1=B,Q6.2=A,Q7=B,Q8=A.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED (increment13-polish-requirements.md)
+- [x] Application Design — APPROVED (increment13-polish-design.md)
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment13-polish/code-summary.md); typecheck clean, 85/85 tests, build ✅, zero deps, no migration/seed, no secret leak. NEW rarity-filter.ts (PBT), sacrifice-hint.ts, SacrificeHintModal.tsx. FR1/2 galaxy rarity chips; FR3 ticket counts; FR4 first-dup modal (localStorage); FR5 drop easter-egg spin; FR6 per-question quiz feedback (client answer key, server-authoritative reward).
+- [ ] Build & Test — instruction doc pending
+### 🟡 OPERATIONS
+- [ ] Operations gate — awaiting deploy
