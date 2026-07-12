@@ -80,7 +80,7 @@ export function PullButton({
       } else {
         setBalance(res.newBalance);
         if (res.easterEgg) {
-          play("setComplete");
+          play("easterEgg"); // Inc15 FR3: picker-appear cue
         } else {
           // Normal pull: slot-machine build-up before the reveal (Inc7 FR1).
           setCycling(true);
@@ -101,7 +101,7 @@ export function PullButton({
         play("denied");
       } else {
         setBalance(res.newBalance);
-        play("setComplete");
+        play("easterEgg"); // Inc15 FR3: special-ticket picker-appear cue
       }
     });
   }
