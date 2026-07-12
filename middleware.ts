@@ -1,7 +1,11 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/auth/config";
-import { verifyToken } from "@/features/admin/gate-token";
+import { makeToken, verifyToken } from "@/features/admin/gate-token";
 
 const GATE_COOKIE = "kc.admin.gate";
+// Inc15 FR1: 20s idle window, slid on each valid /admin/* request. Mirrors
+// GATE_TTL_MS in gate.ts (that module is server-only, can't import here).
+const GATE_TTL_MS = 20_000;
 
 /**
  * Gate protected routes. Non-allowlisted users never get a session
@@ -20,11 +24,23 @@ export default auth(async (req) => {
   // Admin passcode gate (U4-FR1): /admin/* except the unlock page needs a valid
   // gate cookie. First layer; admin pages re-check via requireAdminGate().
   if (path.startsWith("/admin") && !path.startsWith("/admin/unlock")) {
+    const secret = process.env.AUTH_SECRET ?? "";
     const token = req.cookies.get(GATE_COOKIE)?.value;
-    const ok = await verifyToken(token, process.env.AUTH_SECRET ?? "", Date.now());
+    const ok = await verifyToken(token, secret, Date.now());
     if (!ok) {
       return Response.redirect(new URL("/admin/unlock", req.nextUrl.origin));
     }
+    // Inc15 FR1: slide the 20s window — re-issue the cookie on this valid
+    // request so the gate closes only after 20s of no admin activity.
+    const res = NextResponse.next();
+    res.cookies.set(GATE_COOKIE, await makeToken(Date.now() + GATE_TTL_MS, secret), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: Math.floor(GATE_TTL_MS / 1000),
+    });
+    return res;
   }
 });
 

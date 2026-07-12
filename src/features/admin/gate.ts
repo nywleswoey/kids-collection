@@ -11,7 +11,11 @@ import { makeToken, verifyToken } from "./gate-token";
  */
 
 export const GATE_COOKIE = "kc.admin.gate";
-const TTL_MS = 8 * 60 * 60 * 1000; // 8h
+// Inc15 FR1: 20s idle window. middleware.ts slides it (re-issues the cookie on
+// each valid /admin/* request), so the gate closes after 20s of no admin
+// activity. Keep in sync with GATE_TTL_MS in middleware.ts.
+export const GATE_TTL_MS = 20_000; // 20s
+const TTL_MS = GATE_TTL_MS;
 
 function secret(): string {
   return process.env.AUTH_SECRET ?? "";
