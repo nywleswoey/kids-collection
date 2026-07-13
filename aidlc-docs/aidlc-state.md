@@ -171,6 +171,6 @@ Brownfield gameplay + schema. Cadence: LIGHT-MEDIUM. Migration 0004 (4 pick-tick
 - [x] Application Design — APPROVED (increment16-design.md)
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment16/code-summary.md); typecheck clean, 99/99 tests (92+7), build ✅, zero deps, no secret leak. Migration 0004 GENERATED. FR1 sacrifice->rarity-pick ticket; FR2 pullRarityPick redeem; FR3 admin grant; FR4 egg 🆕/➕×N; FR5 collection-completion reward (race-safe insert-before-grant + cascade + pending modal). ⚠️ pnpm db:migrate (0004) NOT YET APPLIED — needs auth.
-- [ ] Build & Test — pending (blocked on migration apply)
+- [x] Build & Test — instruction doc (increment16-build-and-test.md); migration 0004 APPLIED to Neon DB; typecheck clean, 99/99, build ✅
 ### 🟡 OPERATIONS
 - [ ] Operations gate — awaiting migration + deploy
