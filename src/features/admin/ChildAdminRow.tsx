@@ -34,6 +34,7 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
             initialBalance={row.balance}
             initialEpic={row.epicTickets}
             initialLucky={row.luckyTickets}
+            initialPicks={child.pickTickets}
           />
           <Link
             href={`/admin/child/${child.id}/binder`}

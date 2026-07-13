@@ -2,8 +2,6 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import type { Card as CardType } from "@/lib/types";
-import { Card } from "@/features/card/Card";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
 import { rewardFanfare } from "@/features/sound/sfx";
@@ -21,9 +19,7 @@ export function SacrificePanel({
   count: number;
 }) {
   const [result, setResult] = useState<{
-    card: CardType;
-    isDuplicate: boolean;
-    resultRarity: string;
+    ticketRarity: string;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -35,10 +31,10 @@ export function SacrificePanel({
     startTransition(async () => {
       try {
         const res = await sacrificeAction(cardId);
-        setResult(res);
+        setResult({ ticketRarity: res.ticketRarity });
         play("setComplete");
-        // Inc15 FR2: layer the reward fanfare when the upgrade is epic/legendary.
-        const fanfare = rewardFanfare(res.card.rarity);
+        // Inc15/16: fanfare for an epic/legendary pick ticket earned.
+        const fanfare = rewardFanfare(res.ticketRarity);
         if (fanfare) play(fanfare);
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
@@ -53,15 +49,14 @@ export function SacrificePanel({
         className="panel flex flex-col items-center gap-3 p-5"
         data-testid="sacrifice-result"
       >
-        <p className="pill pill--gold">✨ Upgrade! {RARITY_LABEL[result.card.rarity]}</p>
-        <Card card={result.card} interactive size="lg" />
-        {result.isDuplicate ? (
-          <span className="pill text-xs">➕ Duplicate — it stacks!</span>
-        ) : (
-          <span className="pill text-xs">🆕 New card!</span>
-        )}
-        <Link href="/play/binder" className="btn btn--primary">
-          🪐 Back to My Galaxy
+        <p className="pill pill--gold text-base">
+          🎯 You earned a {RARITY_LABEL[result.ticketRarity as keyof typeof RARITY_LABEL]} Pick ticket!
+        </p>
+        <p className="text-center text-sm text-[color:var(--ink-soft)]">
+          Redeem it on the Discover screen to pick a {RARITY_LABEL[result.ticketRarity as keyof typeof RARITY_LABEL]} card. ✨
+        </p>
+        <Link href="/play/pull" className="btn btn--primary" data-testid="sacrifice-go-redeem">
+          🚀 Go redeem
         </Link>
       </div>
     );

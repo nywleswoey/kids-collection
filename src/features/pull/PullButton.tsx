@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
-import { pullAction, pullSpecialEggAction } from "./actions";
+import { pullAction, pullSpecialEggAction, pullRarityPickAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
@@ -11,7 +11,10 @@ import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 import { shouldShowAskParent } from "./ticket-display";
-import type { EggTicket } from "@/lib/types";
+import { RARITY_META } from "@/features/card/rarity";
+import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
+
+const ZERO_PICKS: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
 
 export function PullButton({
   childId,
@@ -20,6 +23,7 @@ export function PullButton({
   themes = [],
   epicTickets = 0,
   luckyTickets = 0,
+  pickTickets = ZERO_PICKS,
 }: {
   childId: string;
   initialBalance: number;
@@ -27,16 +31,19 @@ export function PullButton({
   themes?: { id: string; name: string }[];
   epicTickets?: number;
   luckyTickets?: number;
+  pickTickets?: Record<Rarity, number>;
 }) {
   const [balance, setBalance] = useState(initialBalance);
   const [epic, setEpic] = useState(epicTickets);
   const [lucky, setLucky] = useState(luckyTickets);
+  const [picks, setPicks] = useState<Record<Rarity, number>>(pickTickets);
   const [outcome, setOutcome] = useState<PullOutcome | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [pending, startTransition] = useTransition();
   const activeTicket = useRef<EggTicket | null>(null);
+  const activePick = useRef<Rarity | null>(null); // Inc16: which rarity-pick is redeeming
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
 
@@ -72,6 +79,7 @@ export function PullButton({
     play("packOpen");
     setOutcome(null);
     activeTicket.current = null;
+    activePick.current = null;
     startTransition(async () => {
       const res = await pullAction(themeId || undefined);
       setOutcome(res);
@@ -94,6 +102,7 @@ export function PullButton({
     play("packOpen");
     setOutcome(null);
     activeTicket.current = kind;
+    activePick.current = null;
     startTransition(async () => {
       const res = await pullSpecialEggAction(kind);
       setOutcome(res);
@@ -106,11 +115,35 @@ export function PullButton({
     });
   }
 
-  // On a successful egg claim, decrement the ticket that was spent (FR4).
+  // Inc16 FR2: redeem a rarity-pick ticket → pick-1-of-5 of that rarity.
+  function doRarityPick(rarity: Rarity) {
+    play("click");
+    play("packOpen");
+    setOutcome(null);
+    activeTicket.current = null;
+    activePick.current = rarity;
+    startTransition(async () => {
+      const res = await pullRarityPickAction(rarity);
+      setOutcome(res);
+      if (res.outOfTokens) {
+        play("denied");
+      } else {
+        setBalance(res.newBalance);
+        play("easterEgg");
+      }
+    });
+  }
+
+  // On a successful egg claim, decrement the ticket that was spent (FR4/Inc16).
   function onEggClaimed(newBalance: number) {
     setBalance(newBalance);
     if (activeTicket.current === "epic") setEpic((n) => Math.max(0, n - 1));
     else if (activeTicket.current === "lucky") setLucky((n) => Math.max(0, n - 1));
+    else if (activePick.current) {
+      const r = activePick.current;
+      setPicks((p) => ({ ...p, [r]: Math.max(0, p[r] - 1) }));
+    }
+    activePick.current = null;
   }
 
   return (
@@ -204,10 +237,30 @@ export function PullButton({
         </div>
       ) : null}
 
+      {/* Rarity-pick tickets (Inc16 FR2) — pick-1-of-5 of that exact rarity. */}
+      {RARITIES.some((r) => picks[r] > 0) ? (
+        <div className="flex flex-wrap justify-center gap-3" data-testid="pick-tickets">
+          {RARITIES.filter((r) => picks[r] > 0).map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => doRarityPick(r)}
+              disabled={pending}
+              data-testid={`pick-${r}-button`}
+              className="btn btn--primary press font-bold"
+              style={{ borderColor: RARITY_META[r].frame }}
+            >
+              🎯 {RARITY_META[r].label} Pick ({picks[r]})
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       {outcome && !outcome.outOfTokens && outcome.easterEgg ? (
         <EasterEggPicker
           key={outcome.offer}
           choices={outcome.choices}
+          ownedCounts={outcome.ownedCounts}
           offer={outcome.offer}
           onDone={(r) => onEggClaimed(r.newBalance)}
         />

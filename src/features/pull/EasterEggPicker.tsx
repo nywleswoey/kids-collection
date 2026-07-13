@@ -22,10 +22,13 @@ type Phase = "choosing" | "revealed";
  */
 export function EasterEggPicker({
   choices,
+  ownedCounts = {},
   offer,
   onDone,
 }: {
   choices: CardType[];
+  /** Inc16 FR4: active child's owned count per choice card (0 = new). */
+  ownedCounts?: Record<string, number>;
   offer: string;
   onDone: (result: Extract<PullOutcome, { outOfTokens: false }>) => void;
 }) {
@@ -82,6 +85,7 @@ export function EasterEggPicker({
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {choices.map((c, i) => {
           const meta = RARITY_META[c.rarity];
+          const owned = ownedCounts[c.id] ?? 0; // Inc16 FR4
           return (
             <button
               key={c.id}
@@ -93,6 +97,21 @@ export function EasterEggPicker({
               style={{ borderColor: meta.frame }}
             >
               <span className="rarity-badge">{meta.label}</span>
+              {owned === 0 ? (
+                <span
+                  data-testid={`easter-egg-new-${i}`}
+                  className="pill pill--gold absolute right-1 top-1 text-[10px] font-bold"
+                >
+                  🆕 New
+                </span>
+              ) : (
+                <span
+                  data-testid={`easter-egg-dup-${i}`}
+                  className="pill absolute right-1 top-1 text-[10px] font-bold"
+                >
+                  ➕ ×{owned}
+                </span>
+              )}
               <Image
                 src={c.imageUrl}
                 alt={c.name}

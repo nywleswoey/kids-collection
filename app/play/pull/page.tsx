@@ -42,6 +42,7 @@ export default async function PullPage() {
         themes={themes.map((t) => ({ id: t.id, name: t.name }))}
         epicTickets={special.epic}
         luckyTickets={special.lucky}
+        pickTickets={child.pickTickets}
       />
       <div className="flex gap-3 text-sm">
         <Link
