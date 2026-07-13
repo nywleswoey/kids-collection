@@ -1301,3 +1301,10 @@
 **Context**: Requirements draft, approval gate
 
 ---
+
+## Application Design — INCREMENT 16 Draft
+**Timestamp**: 2026-07-13T00:25:00Z
+**AI Response**: "Drafted increment16-design.md. Migration 0004 (4 pick-ticket cols + collection_rewards table UNIQUE(child,theme,rarity)). FR1 sacrifice->ticket via rollUpgradeTier; FR2 pullRarityPick + offer.pickRarity + claim spend; FR3 GrantControl grant action; FR4 ownedCounts on all egg outcomes + 🆕/➕×N badges; FR5 collection-reward pure detector + service (insert-before-grant race-safe, cascade bounded by UNIQUE) + pending-record CollectionRewardModal on binder view. Awaiting approval before Code Gen."
+**Context**: Application Design, approval gate
+
+---
