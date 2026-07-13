@@ -29,6 +29,13 @@
       "when": 1783769217922,
       "tag": "0003_cool_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783946622172,
+      "tag": "0004_little_leper_queen",
+      "breakpoints": true
     }
   ]
 }
