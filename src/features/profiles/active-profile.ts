@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
+import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
 import type { Child } from "@/lib/types";
 
 const COOKIE = "activeChildId";
@@ -50,5 +51,6 @@ export async function getActiveChild(): Promise<Child | null> {
     pullTokens: row.pullTokens,
     epicTickets: row.epicTickets,
     luckyTickets: row.luckyTickets,
+    pickTickets: pickTicketsFromRow(row),
   };
 }

@@ -34,10 +34,15 @@ export interface Child {
   pullTokens: number; // >= 0
   epicTickets: number; // special epic+ egg tickets (Inc9 FR4), >= 0
   luckyTickets: number; // special common/rare egg tickets (Inc9 FR4), >= 0
+  // Rarity-pick tickets (Inc16 FR2): pick-1-of-5 of a specific rarity, >= 0.
+  pickTickets: Record<Rarity, number>;
 }
 
 /** Special egg ticket kinds (Inc9 FR4). */
 export type EggTicket = "epic" | "lucky";
+
+/** Rarity a pick ticket unlocks (Inc16 FR2). */
+export type PickRarity = Rarity;
 
 /** One row per (childId, cardId); duplicates increment count (BR8/BR9). */
 export interface CollectionEntry {

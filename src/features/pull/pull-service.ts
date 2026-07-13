@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, gte, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { children, collections } from "@/db/schema";
 import { drawCard } from "@/lib/logic";
@@ -8,21 +8,39 @@ import {
   rollEasterEgg,
   pickEasterEggChoices,
   pickCommonRareChoices,
+  pickRarityChoices,
 } from "./easter-egg";
-import {
-  rollUpgradeTier,
-  pickUpgradeCard,
-  SACRIFICE_COST,
-} from "./sacrifice";
+import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
+import { pickTicketColumn } from "./pick-tickets";
 import { makeOffer, verifyOffer } from "./offer";
+import { grantCompletionRewards } from "@/features/rewards/service";
 import { requireParent } from "@/features/auth/guard";
 import type { Card, PullResult, Rarity, EggTicket } from "@/lib/types";
+
+/** Active child's current owned count for each of the given card ids (0 if none).
+ * Inc16 FR4: annotates egg choices with 🆕 / ➕×N. */
+async function ownedCountsFor(
+  childId: string,
+  cardIds: string[],
+): Promise<Record<string, number>> {
+  if (cardIds.length === 0) return {};
+  const rows = await db
+    .select({ cardId: collections.cardId, count: collections.count })
+    .from(collections)
+    .where(and(eq(collections.childId, childId), inArray(collections.cardId, cardIds)));
+  const counts: Record<string, number> = {};
+  for (const id of cardIds) counts[id] = 0;
+  for (const r of rows) counts[r.cardId] = r.count;
+  return counts;
+}
 
 /** Rare pick-1-of-5 easter egg: server offers epic+ choices, claimed later. */
 export interface EasterEggOutcome {
   outOfTokens: false;
   easterEgg: true;
   choices: Card[];
+  /** Inc16 FR4: active child's current owned count per choice card (0 = new). */
+  ownedCounts: Record<string, number>;
   offer: string;
   newBalance: number;
 }
@@ -55,6 +73,7 @@ async function makeEggOutcome(
     },
     authSecret(),
   );
+  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
   await db
     .update(children)
     .set({ pullTokens: sql`${children.pullTokens} + 1` })
@@ -63,6 +82,7 @@ async function makeEggOutcome(
     outOfTokens: false,
     easterEgg: true,
     choices,
+    ownedCounts,
     offer,
     newBalance: newBalance + 1,
   };
@@ -118,6 +138,9 @@ export async function pull(
       })
       .returning({ count: collections.count });
 
+    // Inc16 FR5: adding this card may complete a (theme, rarity) set → bonus.
+    await grantCompletionRewards(childId, [card.id]);
+
     return {
       outOfTokens: false,
       card,
@@ -171,6 +194,7 @@ export async function pullSpecialEgg(
     authSecret(),
   );
 
+  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
   // Special egg costs no normal token; balance unchanged until claim.
   const balRow = await db.query.children.findFirst({
     where: eq(children.id, childId),
@@ -180,6 +204,52 @@ export async function pullSpecialEgg(
     outOfTokens: false,
     easterEgg: true,
     choices,
+    ownedCounts,
+    offer,
+    newBalance: balRow?.pullTokens ?? 0,
+  };
+}
+
+/**
+ * Redeem a rarity-pick ticket (Inc16 FR2): offer pick-1-of-5 of that exact
+ * rarity from the FULL pool. The pick ticket is NOT spent here — spent atomically
+ * at claim (single-use), and the offer pins the rarity via `pickRarity`.
+ */
+export async function pullRarityPick(
+  childId: string,
+  rarity: Rarity,
+): Promise<PullOutcome> {
+  const col = children[pickTicketColumn(rarity)];
+  const [row] = await db
+    .select({ n: col })
+    .from(children)
+    .where(eq(children.id, childId));
+  if (!row || row.n < 1) return { outOfTokens: true };
+
+  const pool = await listCards();
+  const choices = pickRarityChoices(pool, rarity, 5);
+  if (choices.length === 0) throw new Error("pullRarityPick: no eligible cards");
+
+  const offer = await makeOffer(
+    {
+      childId,
+      cardIds: choices.map((c) => c.id),
+      exp: Date.now() + OFFER_TTL_MS,
+      pickRarity: rarity,
+    },
+    authSecret(),
+  );
+
+  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
+  const balRow = await db.query.children.findFirst({
+    where: eq(children.id, childId),
+    columns: { pullTokens: true },
+  });
+  return {
+    outOfTokens: false,
+    easterEgg: true,
+    choices,
+    ownedCounts,
     offer,
     newBalance: balRow?.pullTokens ?? 0,
   };
@@ -210,9 +280,20 @@ export async function claimEasterEgg(
   const card = await getCard(chosenCardId);
   if (!card) throw new Error("claimEasterEgg: card not found");
 
-  // Atomic spend — one ticket (special or normal). Makes the offer single-use.
+  // Atomic spend — one ticket (special, rarity-pick, or normal). Single-use.
   let newBalance: number;
-  if (payload.ticket) {
+  if (payload.pickRarity) {
+    // Rarity-pick ticket (Inc16 FR2): spend the matching {rarity}_pick_tickets.
+    const key = pickTicketColumn(payload.pickRarity);
+    const col = children[key];
+    const spent = await db
+      .update(children)
+      .set({ [key]: sql`${col} - 1` })
+      .where(and(eq(children.id, childId), gte(col, 1)))
+      .returning({ pullTokens: children.pullTokens });
+    if (spent.length === 0) return { outOfTokens: true };
+    newBalance = spent[0].pullTokens; // normal balance unchanged
+  } else if (payload.ticket) {
     // Special egg: spend the pinned special ticket, not a normal token.
     const col =
       payload.ticket === "epic" ? children.epicTickets : children.luckyTickets;
@@ -242,6 +323,9 @@ export async function claimEasterEgg(
     })
     .returning({ count: collections.count });
 
+  // Inc16 FR5: claimed card may complete a (theme, rarity) set → bonus.
+  await grantCompletionRewards(childId, [card.id]);
+
   return {
     outOfTokens: false,
     card,
@@ -251,16 +335,16 @@ export async function claimEasterEgg(
 }
 
 export interface SacrificeResult {
-  card: Card;
-  isDuplicate: boolean;
+  /** Rarity of the pick ticket earned (Inc16 FR1): 50/50 same tier or one up. */
+  ticketRarity: Rarity;
   sourceRarity: Rarity;
-  resultRarity: Rarity;
 }
 
 /**
- * Sacrifice SACRIFICE_COST copies of a card for a random upgraded card (Inc8
- * FR2). Free (spends copies, not tokens). Atomic guarded decrement prevents
- * over-spending copies; result is same-or-one-tier-higher, preferring unowned.
+ * Sacrifice SACRIFICE_COST copies of a card for a rarity-pick ticket (Inc16
+ * FR1, replaces the Inc8 direct card grant). Free (spends copies, not tokens).
+ * Atomic guarded decrement prevents over-spending; the ticket's rarity is
+ * same-or-one-tier-higher (50/50). The child redeems it later on the pull screen.
  */
 export async function sacrifice(
   childId: string,
@@ -288,33 +372,12 @@ export async function sacrifice(
     throw new Error("sacrifice: not enough copies");
   }
 
-  // Owned set AFTER the burn, so a card fully consumed no longer counts as owned.
-  const ownedRows = await db
-    .select({ cardId: collections.cardId })
-    .from(collections)
-    .where(and(eq(collections.childId, childId), gte(collections.count, 1)));
-  const ownedIds = new Set(ownedRows.map((r) => r.cardId));
+  const ticketRarity = rollUpgradeTier(source.rarity); // 50/50 same / one up
+  const key = pickTicketColumn(ticketRarity);
+  await db
+    .update(children)
+    .set({ [key]: sql`${children[key]} + 1` })
+    .where(eq(children.id, childId));
 
-  const pool = await listCards();
-  const tier = rollUpgradeTier(source.rarity);
-  const result =
-    pickUpgradeCard(pool, tier, ownedIds) ??
-    pickUpgradeCard(pool, source.rarity, ownedIds);
-  if (!result) throw new Error("sacrifice: no upgrade card available");
-
-  const [entry] = await db
-    .insert(collections)
-    .values({ childId, cardId: result.id, count: 1 })
-    .onConflictDoUpdate({
-      target: [collections.childId, collections.cardId],
-      set: { count: sql`${collections.count} + 1` },
-    })
-    .returning({ count: collections.count });
-
-  return {
-    card: result,
-    isDuplicate: entry.count > 1,
-    sourceRarity: source.rarity,
-    resultRarity: result.rarity,
-  };
+  return { ticketRarity, sourceRarity: source.rarity };
 }

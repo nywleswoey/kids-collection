@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
+import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
 import { AVATAR_KEYS } from "@/lib/avatars";
 import type { Child } from "@/lib/types";
 
@@ -20,6 +21,7 @@ function toChild(row: typeof children.$inferSelect): Child {
     pullTokens: row.pullTokens,
     epicTickets: row.epicTickets,
     luckyTickets: row.luckyTickets,
+    pickTickets: pickTicketsFromRow(row),
   };
 }
 

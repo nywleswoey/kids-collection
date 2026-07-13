@@ -61,11 +61,20 @@ export const children = pgTable(
     // Special egg tickets (Inc9 FR4): guaranteed pick-1-of-5 per egg type.
     epicTickets: integer("epic_tickets").notNull().default(0),
     luckyTickets: integer("lucky_tickets").notNull().default(0),
+    // Rarity-pick tickets (Inc16 FR2): pick-1-of-5 of a specific rarity.
+    commonPickTickets: integer("common_pick_tickets").notNull().default(0),
+    rarePickTickets: integer("rare_pick_tickets").notNull().default(0),
+    epicPickTickets: integer("epic_pick_tickets").notNull().default(0),
+    legendaryPickTickets: integer("legendary_pick_tickets").notNull().default(0),
   },
   (t) => [
     check("pull_tokens_non_negative", sql`${t.pullTokens} >= 0`), // BR5
     check("epic_tickets_non_negative", sql`${t.epicTickets} >= 0`),
     check("lucky_tickets_non_negative", sql`${t.luckyTickets} >= 0`),
+    check("common_pick_tickets_non_negative", sql`${t.commonPickTickets} >= 0`),
+    check("rare_pick_tickets_non_negative", sql`${t.rarePickTickets} >= 0`),
+    check("epic_pick_tickets_non_negative", sql`${t.epicPickTickets} >= 0`),
+    check("legendary_pick_tickets_non_negative", sql`${t.legendaryPickTickets} >= 0`),
   ],
 );
 
@@ -111,8 +120,45 @@ export const quizCompletions = pgTable(
   (t) => [index("quiz_completions_child_created_idx").on(t.childId, t.createdAt)],
 );
 
+/**
+ * Collection-completion rewards (Inc16 FR5). One row per rewarded
+ * (child, theme, rarity) set — UNIQUE guarantees a set is rewarded exactly once
+ * (dedup + race backstop). `shownAt` null = the celebratory modal is still pending.
+ */
+export const collectionRewards = pgTable(
+  "collection_rewards",
+  {
+    id: text("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    themeId: text("theme_id")
+      .notNull()
+      .references(() => themes.id, { onDelete: "cascade" }),
+    rarity: rarityEnum("rarity").notNull(),
+    cardId: text("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    shownAt: timestamp("shown_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("collection_rewards_child_theme_rarity_idx").on(
+      t.childId,
+      t.themeId,
+      t.rarity,
+    ),
+    index("collection_rewards_child_idx").on(t.childId),
+  ],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
 export type CollectionRow = typeof collections.$inferSelect;
 export type QuizCompletionRow = typeof quizCompletions.$inferSelect;
+export type CollectionRewardRow = typeof collectionRewards.$inferSelect;

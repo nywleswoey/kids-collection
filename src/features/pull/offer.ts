@@ -11,6 +11,8 @@ export interface OfferPayload {
   exp: number; // epoch ms
   /** Special egg ticket kind (Inc9 FR4); absent for the random ~1% eggs. */
   ticket?: "epic" | "lucky";
+  /** Rarity-pick ticket (Inc16 FR2); spends the matching {rarity}_pick_tickets. */
+  pickRarity?: "common" | "rare" | "epic" | "legendary";
 }
 
 function b64urlEncode(bytes: Uint8Array): string {

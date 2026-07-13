@@ -3,7 +3,8 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
-import type { EggTicket } from "@/lib/types";
+import { pickTicketColumn } from "./pick-tickets";
+import type { EggTicket, Rarity } from "@/lib/types";
 
 const TICKET_COL = {
   epic: children.epicTickets,
@@ -50,6 +51,30 @@ export async function grantSpecial(
     .returning({ balance: col });
 
   if (!row) throw new Error("grantSpecial: child not found");
+  return row.balance;
+}
+
+/**
+ * Grant/adjust a rarity-pick ticket (Inc16 FR3). Parent-only, clamped >= 0.
+ * Returns the new count for that rarity.
+ */
+export async function grantPickTicket(
+  childId: string,
+  rarity: Rarity,
+  delta: number,
+): Promise<number> {
+  await requireParent();
+  if (!Number.isInteger(delta)) throw new Error("grantPickTicket: delta must be an integer");
+
+  const key = pickTicketColumn(rarity);
+  const col = children[key];
+  const [row] = await db
+    .update(children)
+    .set({ [key]: sql`GREATEST(0, ${col} + ${delta})` })
+    .where(eq(children.id, childId))
+    .returning({ balance: col });
+
+  if (!row) throw new Error("grantPickTicket: child not found");
   return row.balance;
 }
 

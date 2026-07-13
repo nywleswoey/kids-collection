@@ -56,3 +56,16 @@ export function pickCommonRareChoices(
 ): Card[] {
   return pickChoicesByTier(pool, COMMON_RARE, n, rng);
 }
+
+/**
+ * Pick up to `n` distinct cards of ONE exact rarity (Inc16 FR2 rarity-pick
+ * ticket redemption). Owned allowed. Fewer than `n` in that tier → as many as exist.
+ */
+export function pickRarityChoices(
+  pool: Card[],
+  rarity: Rarity,
+  n = 5,
+  rng: Rng = Math.random,
+): Card[] {
+  return pickChoicesByTier(pool, [rarity], n, rng);
+}
