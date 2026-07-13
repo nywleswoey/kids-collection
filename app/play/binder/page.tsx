@@ -4,19 +4,25 @@ import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import { getBinder } from "@/features/binder/service";
 import { GalaxyView } from "@/features/binder/GalaxyView";
+import { getPendingRewards } from "@/features/rewards/service";
+import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage() {
   await requireParent();
   const child = await getActiveChild();
   if (!child) redirect("/play");
 
-  const binder = await getBinder(child.id);
+  const [binder, pendingRewards] = await Promise.all([
+    getBinder(child.id),
+    getPendingRewards(child.id),
+  ]);
 
   return (
     <main
       className="mx-auto flex max-w-3xl flex-col gap-6 p-6"
       data-testid="binder-page"
     >
+      <CollectionRewardModal rewards={pendingRewards} />
       <header
         className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5"
         style={{ background: "var(--bg-1)" }}

@@ -3,6 +3,7 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
 import { listCards, getCard } from "@/features/pool/service";
+import { grantCompletionRewards } from "@/features/rewards/service";
 import type { Card, Rarity } from "@/lib/types";
 import { validateTrade, type TradableCard, type TradeSide } from "./trade-logic";
 
@@ -104,6 +105,10 @@ export async function executeTrade(input: {
   } catch {
     return { ok: false, reason: "That trade is no longer valid — try again." };
   }
+
+  // Inc16 FR5: each side received a card — either may complete a set.
+  await grantCompletionRewards(aChildId, [bCardId]);
+  await grantCompletionRewards(bChildId, [aCardId]);
 
   return { ok: true, gave: aCard, got: bCard };
 }
