@@ -163,3 +163,14 @@ Brownfield security + sensory. Cadence: LIGHT. No migration/seed/deps. Answers (
 - [x] Build & Test — instruction doc (increment15-build-and-test.md); typecheck clean, 92/92, build ✅, no migration/seed.
 ### 🟡 OPERATIONS
 - [x] Operations gate — DEPLOYED to Vercel prod 2026-07-12 (kids-collection-42kdz7ep4, READY). No migration/seed. INCREMENT 15 COMPLETE.
+
+## INCREMENT 16 — Sacrifice Ticket, Egg Draw Clarity, Collection Reward
+Brownfield gameplay + schema. Cadence: LIGHT-MEDIUM. Migration 0004 (4 pick-ticket cols + collection_rewards). Answers: Q1.1=B,Q1.2=B,Q1.3=A,Q1.4=A,Q1.5=A,Q1.6=A,Q2.1=A,Q2.2=A,Q2.3=A,Q4.1=A+modal,Q4.2=A,Q4.3=A,Q4.4=A,Q4.5=A,Q5=A,Q6=A.
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED (increment16-requirements.md)
+- [x] Application Design — APPROVED (increment16-design.md)
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment16/code-summary.md); typecheck clean, 99/99 tests (92+7), build ✅, zero deps, no secret leak. Migration 0004 GENERATED. FR1 sacrifice->rarity-pick ticket; FR2 pullRarityPick redeem; FR3 admin grant; FR4 egg 🆕/➕×N; FR5 collection-completion reward (race-safe insert-before-grant + cascade + pending modal). ⚠️ pnpm db:migrate (0004) NOT YET APPLIED — needs auth.
+- [ ] Build & Test — pending (blocked on migration apply)
+### 🟡 OPERATIONS
+- [ ] Operations gate — awaiting migration + deploy

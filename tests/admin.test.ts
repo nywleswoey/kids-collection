@@ -19,7 +19,7 @@ function buildRow(
   poolTotal: number,
 ): AdminChildRow {
   return {
-    child,
+    child: { ...child, pickTickets: { common: 0, rare: 0, epic: 0, legendary: 0 } },
     balance: child.pullTokens,
     epicTickets: child.epicTickets,
     luckyTickets: child.luckyTickets,
