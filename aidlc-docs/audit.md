@@ -1278,3 +1278,18 @@
 **Context**: Operations gate, prod deploy
 
 ---
+
+## Session Resume — INCREMENT 16 Intent Capture
+**Timestamp**: 2026-07-13T00:00:00Z
+**User Input**: "sacrifice should grant a special ticket that lets the child choose from any card of the same rarity. Allow admin to grant such tickets.\nnew cards should show clearly in the easter egg draws. similarly, duplicate card count should show prominently in the easter egg draws. when child completes all cards of a particular rarity for a particular category, grant a random card of that rarity as a collection reward."
+**AI Response**: "Inc15 COMPLETE. Loaded sacrifice.ts (burns 3 -> random same/higher card), ticket model (epicTickets/luckyTickets cols; EggTicket=epic|lucky; epic=pick-1-of-5 epic+, lucky=pick-1-of-5 common/rare), EasterEggPicker (choices show rarity badge only, no new/dup indicator), themeProgress complete detection, GrantControl/grantSpecialTicketAction. Rendered Welcome-back for INCREMENT 16 (4 items; new rarity-pick ticket + migration likely). Awaiting A/B."
+**Context**: Session resume, new increment scoping
+
+---
+
+## Requirements Analysis — INCREMENT 16 Questions Posed
+**Timestamp**: 2026-07-13T00:05:00Z
+**AI Response**: "Wrote increment16-questions.md (Q1.1-1.6 sacrifice rarity-pick ticket + storage + admin grant + redeem; Q2.1-2.3 egg new/dup display; Q4.1-4.5 collection-completion reward + dedup/trigger/surface; Q5 migration 0004; Q6 cadence). Awaiting answers."
+**Context**: Requirements Analysis, clarifying questions
+
+---
