@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 16 (Sacrifice Ticket, Egg Clarity, Collection Reward) COMPLETE — migration 0004 applied, deployed to Vercel prod 2026-07-13 (kids-collection-f7vg3bhik). 99/99 tests. Sacrifice->rarity-pick ticket; pull-screen redeem; admin grant; egg 🆕/➕×N; collection-completion reward (race-safe, cascade, modal).
+- **Current Stage**: INCREMENT 17 (Collection-Reward Modal Bugfix) COMPLETE — deployed to Vercel prod 2026-07-14 (kids-collection-chid52y8e). markRewardsShown ANY->inArray so shownAt persists; modal shows once. 99/99 tests.
+- **Prior Increment**: INCREMENT 16 (Sacrifice Ticket, Egg Clarity, Collection Reward) COMPLETE — migration 0004 applied, deployed to Vercel prod 2026-07-13 (kids-collection-f7vg3bhik). 99/99 tests. Sacrifice->rarity-pick ticket; pull-screen redeem; admin grant; egg 🆕/➕×N; collection-completion reward (race-safe, cascade, modal).
 - **Prior Increment**: INCREMENT 15 (Admin Gate TTL + Reward SFX) COMPLETE — deployed to Vercel prod 2026-07-12 (kids-collection-42kdz7ep4, READY). No migration/seed. 92/92 tests. FR1 admin passcode gate 20s sliding (middleware; Google session untouched); FR2 epic/legendary fanfares layered on all reveals; FR3 dedicated easterEgg SFX on picker-appear.
 - **Prior Increment**: INCREMENT 14 (Kid-to-Kid Trading) COMPLETE — deployed to Vercel prod 2026-07-12 (kids-collection-angqs24i0, READY). No migration/seed. 90/90 tests. Two-sided same-rarity duplicate swap (/play/trade), atomic via db.batch + count>=1 CHECK, giver=server-side active profile.
 - **Prior Increment**: INCREMENT 13 (UX Polish) COMPLETE — deployed to Vercel prod 2026-07-12 (kids-collection-f85udfnvs, READY). typecheck clean, 85/85 tests, build ✅, zero new deps, NO migration/seed, no secret in client bundle. FR1/2 galaxy rarity chip row (owned counts + tap-to-filter, AND-combines with category, filtered view keeps locked cards); FR3 all ticket types (🎟️/✨/🍀) on Manage-Profiles rows + child landing; FR4 first-duplicate sacrifice-hint modal via per-child localStorage (no migration); FR5 removed EasterEggPicker post-pick roulette spin; FR6 per-question quiz feedback (✅/❌ + correct answer + 💡 why + Next) — answer keys sent client-side for feedback, award stays server-authoritative via signed offer.
@@ -182,4 +183,4 @@ Root cause: markRewardsShown used raw `= ANY(${ids})` → JS array mis-bound →
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment17-reward-modal-bugfix.md); one-line fix in rewards/service.ts (inArray). typecheck clean, 99/99 tests, build ✅, no migration/deps.
 ### 🟡 OPERATIONS
-- [ ] Operations gate — awaiting deploy
+- [x] Operations gate — DEPLOYED to Vercel prod 2026-07-14 (kids-collection-chid52y8e, READY). No migration. INCREMENT 17 COMPLETE.
