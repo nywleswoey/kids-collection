@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { collections, collectionRewards } from "@/db/schema";
 import { listCards } from "@/features/pool/service";
@@ -123,6 +123,9 @@ export async function getPendingRewards(childId: string): Promise<PendingReward[
 /** Mark rewards' modal as shown so it doesn't repeat (Inc16 FR5). */
 export async function markRewardsShown(childId: string, ids: string[]): Promise<void> {
   if (ids.length === 0) return;
+  // Inc17 fix: use inArray (proper array binding). The old raw `= ANY(${ids})`
+  // bound the JS array as one param and matched nothing, so shownAt never got
+  // set — the completion modal re-appeared on every galaxy visit.
   await db
     .update(collectionRewards)
     .set({ shownAt: new Date() })
@@ -130,7 +133,7 @@ export async function markRewardsShown(childId: string, ids: string[]): Promise<
       and(
         eq(collectionRewards.childId, childId),
         isNull(collectionRewards.shownAt),
-        sql`${collectionRewards.id} = ANY(${ids})`,
+        inArray(collectionRewards.id, ids),
       ),
     );
 }

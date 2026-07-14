@@ -175,3 +175,11 @@ Brownfield gameplay + schema. Cadence: LIGHT-MEDIUM. Migration 0004 (4 pick-tick
 - [x] Build & Test — instruction doc (increment16-build-and-test.md); migration 0004 APPLIED to Neon DB; typecheck clean, 99/99, build ✅
 ### 🟡 OPERATIONS
 - [x] Operations gate — migration 0004 applied, DEPLOYED to Vercel prod 2026-07-13 (kids-collection-f7vg3bhik, READY). INCREMENT 16 COMPLETE.
+
+## INCREMENT 17 — Collection-Reward Modal Re-appears (Bugfix)
+Bugfix on Inc16 FR5. Cadence: LIGHT. No migration/seed/deps.
+Root cause: markRewardsShown used raw `= ANY(${ids})` → JS array mis-bound → matched 0 rows → shownAt never set → modal re-popped every galaxy visit. Fix: drizzle `inArray`.
+### 🟢 CONSTRUCTION
+- [x] Code Generation — DONE (increment17-reward-modal-bugfix.md); one-line fix in rewards/service.ts (inArray). typecheck clean, 99/99 tests, build ✅, no migration/deps.
+### 🟡 OPERATIONS
+- [ ] Operations gate — awaiting deploy

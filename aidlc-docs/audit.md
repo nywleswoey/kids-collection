@@ -1323,3 +1323,11 @@
 **Context**: Operations gate, prod deploy
 
 ---
+
+## INCREMENT 17 — Bugfix Scoped + Fixed
+**Timestamp**: 2026-07-14T00:00:00Z
+**User Input**: "the completion dialog should only appear once. now it appears everytime the child returns to the my galaxy page" + "ok"
+**AI Response**: "Scoped INC17 bugfix. Root cause: markRewardsShown raw ANY(${ids}) mis-bound JS array → 0 rows updated → shownAt never set. Fixed with drizzle inArray. typecheck clean, 99/99, build OK. Awaiting deploy approval."
+**Context**: Bugfix, deploy gate
+
+---
