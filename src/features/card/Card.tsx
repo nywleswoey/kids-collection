@@ -31,9 +31,7 @@ export function Card({
     >
       <div className="card__holo" />
       {count && count > 1 ? (
-        <span className="absolute right-2 top-2 z-10 rounded-full bg-black/70 px-2 py-0.5 text-xs font-bold">
-          x{count}
-        </span>
+        <span className="badge-count absolute right-2 top-2">x{count}</span>
       ) : null}
 
       <Image

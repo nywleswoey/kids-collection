@@ -1339,3 +1339,19 @@
 **Context**: Operations gate, prod deploy
 
 ---
+
+## INCREMENT 18 — Badge Visibility + Galaxy Modal Viewport
+**Timestamp**: 2026-07-15T00:00:00Z
+**User Input**: "the current new and count view on the card is not very visible. need to enhance the ui. at the same time, the modal on the my galaxy page is aligned to the center and therefore appears way down on the page since the page is very long. need to shift it to appear within the viewport"
+**AI Response**: Explored via 2 Explore agents. Root causes: badges = tiny low-contrast corner pills (EasterEggPicker text-[10px], Card/CardSlot bg-black/70 text-xs); modal = CollectionRewardModal `fixed inset-0` trapped by `.page-enter` transform ancestor (transform => containing block for fixed). User (AskUserQuestion) confirmed enhance all 3 badge surfaces. Plan approved via ExitPlanMode.
+**Context**: Requirements Analysis + Plan approval
+
+---
+
+## INCREMENT 18 — Code Generation
+**Timestamp**: 2026-07-15T00:05:00Z
+**User Input**: (plan approved)
+**AI Response**: Added shared `.badge-new`/`.badge-count` in app/globals.css; applied to EasterEggPicker.tsx (🆕/➕×N), Card.tsx (x{count}), CardSlot.tsx (x{count}). Portaled CollectionRewardModal.tsx to document.body via createPortal with mounted-flag SSR guard. typecheck clean, 99/99 tests, build ✅. No migration, no new deps. Browser verify pending (interactive Google auth).
+**Context**: Construction — Code Generation
+
+---

@@ -46,9 +46,7 @@ export function CardSlot({
       className={`slot-pop rslot rslot--${entry.card.rarity} relative block overflow-hidden rounded-xl bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105`}
     >
       {entry.count > 1 ? (
-        <span className="absolute right-1 top-1 z-10 rounded-full bg-black/70 px-1.5 text-xs font-bold">
-          x{entry.count}
-        </span>
+        <span className="badge-count absolute right-1 top-1">x{entry.count}</span>
       ) : null}
       <span className="rarity-badge">{meta.label}</span>
       <Image

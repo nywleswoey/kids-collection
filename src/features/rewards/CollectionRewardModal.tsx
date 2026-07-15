@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Card } from "@/features/card/Card";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
@@ -18,7 +19,13 @@ import "@/features/anim/anim.css";
 export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] }) {
   const [idx, setIdx] = useState(0);
   const [fire, setFire] = useState(0);
+  // Portal to <body> so the overlay escapes the transformed `.page-enter`
+  // ancestor (a non-`none` transform becomes the containing block for our
+  // `fixed inset-0`, otherwise centering it deep down the tall galaxy page).
+  const [mounted, setMounted] = useState(false);
   const { play } = useSound();
+
+  useEffect(() => setMounted(true), []);
 
   // Mark all shown once (on mount) so a refresh doesn't re-pop; the UI still
   // steps through them client-side.
@@ -32,7 +39,7 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (rewards.length === 0 || idx >= rewards.length) return null;
+  if (rewards.length === 0 || idx >= rewards.length || !mounted) return null;
   const r = rewards[idx];
 
   function next() {
@@ -46,7 +53,7 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
     setIdx(n);
   }
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       role="dialog"
@@ -70,6 +77,7 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
           {idx + 1 < rewards.length ? "Next 🎁" : "Awesome! 🎉"}
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

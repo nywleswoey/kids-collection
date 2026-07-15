@@ -100,14 +100,14 @@ export function EasterEggPicker({
               {owned === 0 ? (
                 <span
                   data-testid={`easter-egg-new-${i}`}
-                  className="pill pill--gold absolute right-1 top-1 text-[10px] font-bold"
+                  className="badge-new absolute right-1 top-1"
                 >
                   🆕 New
                 </span>
               ) : (
                 <span
                   data-testid={`easter-egg-dup-${i}`}
-                  className="pill absolute right-1 top-1 text-[10px] font-bold"
+                  className="badge-count absolute right-1 top-1"
                 >
                   ➕ ×{owned}
                 </span>
