@@ -34,6 +34,16 @@ export async function clearActiveProfile(): Promise<void> {
   store.delete(COOKIE);
 }
 
+/**
+ * Resolve the active child, throwing if none is selected. Shared guard for
+ * server actions that require an active player.
+ */
+export async function requireActiveChild(): Promise<Child> {
+  const child = await getActiveChild();
+  if (!child) throw new Error("No active profile");
+  return child;
+}
+
 /** Resolve the active child from the cookie, validated against the DB. */
 export async function getActiveChild(): Promise<Child | null> {
   const store = await cookies();
