@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
-import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
+import { toChild } from "./child-mapper";
 import type { Child } from "@/lib/types";
 
 const COOKIE = "activeChildId";
@@ -54,13 +54,5 @@ export async function getActiveChild(): Promise<Child | null> {
     where: eq(children.id, childId),
   });
   if (!row) return null;
-  return {
-    id: row.id,
-    name: row.name,
-    avatar: row.avatar,
-    pullTokens: row.pullTokens,
-    epicTickets: row.epicTickets,
-    luckyTickets: row.luckyTickets,
-    pickTickets: pickTicketsFromRow(row),
-  };
+  return toChild(row);
 }

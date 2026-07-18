@@ -4,7 +4,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
-import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
+import { toChild } from "./child-mapper";
 import { AVATAR_KEYS } from "@/lib/avatars";
 import type { Child } from "@/lib/types";
 
@@ -12,18 +12,6 @@ const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(40),
   avatar: z.enum(AVATAR_KEYS as [string, ...string[]]),
 });
-
-function toChild(row: typeof children.$inferSelect): Child {
-  return {
-    id: row.id,
-    name: row.name,
-    avatar: row.avatar,
-    pullTokens: row.pullTokens,
-    epicTickets: row.epicTickets,
-    luckyTickets: row.luckyTickets,
-    pickTickets: pickTicketsFromRow(row),
-  };
-}
 
 /**
  * All child profiles, ordered case-insensitively by name (Inc8 FR4). Stable
