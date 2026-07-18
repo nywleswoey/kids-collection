@@ -6,6 +6,7 @@ import type { Card as CardType } from "@/lib/types";
 import { CardImage } from "@/features/card/CardImage";
 import { RARITY_META } from "@/features/card/rarity";
 import { AvatarBadge } from "@/features/ui/AvatarBadge";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { useSound } from "@/features/sound/useSound";
 import { playFanfare } from "@/features/sound/sfx";
 import { getMatchesAction, executeTradeAction } from "./actions";
@@ -108,11 +109,7 @@ export function TradeFlow({
 
   return (
     <div className="flex w-full max-w-2xl flex-col items-center gap-5">
-      {error ? (
-        <p data-testid="trade-error" className="panel px-5 py-3 text-center text-sm text-red-300">
-          {error}
-        </p>
-      ) : null}
+      <ErrorBanner testId="trade-error" message={error} />
 
       {/* Step 1 — pick your duplicate */}
       {phase === "pick-mine" ? (

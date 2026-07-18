@@ -6,6 +6,7 @@ import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
 import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { useSound } from "@/features/sound/useSound";
 import { playFanfare } from "@/features/sound/sfx";
 import { claimEasterEggAction } from "./actions";
@@ -117,11 +118,7 @@ export function EasterEggPicker({
         })}
       </div>
 
-      {error ? (
-        <p data-testid="easter-egg-error" className="panel px-5 py-3 text-center text-sm text-red-300">
-          {error}
-        </p>
-      ) : null}
+      <ErrorBanner testId="easter-egg-error" message={error} />
     </div>
   );
 }

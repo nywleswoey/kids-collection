@@ -5,6 +5,7 @@ import Link from "next/link";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
 import { playFanfare } from "@/features/sound/sfx";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { sacrificeAction } from "./actions";
 
 /**
@@ -75,11 +76,11 @@ export function SacrificePanel({
       <p className="text-xs text-[color:var(--ink-mute)]">
         Burns 3 copies for a random card of the same or higher tier.
       </p>
-      {error ? (
-        <p data-testid="sacrifice-error" className="text-sm text-red-300">
-          {error}
-        </p>
-      ) : null}
+      <ErrorBanner
+        testId="sacrifice-error"
+        message={error}
+        className="text-sm text-red-300"
+      />
     </div>
   );
 }
