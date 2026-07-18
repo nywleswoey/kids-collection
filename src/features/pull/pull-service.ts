@@ -58,6 +58,34 @@ function authSecret(): string {
 }
 
 /**
+ * Assemble a pick-1-of-N easter-egg outcome: sign the offer (pure crypto,
+ * always FIRST so a caller's later side-effect can't double-fire on failure),
+ * annotate owned counts, and return with the given normal-token balance.
+ * `offerExtra` pins the claim column (special/rarity ticket) when present.
+ */
+async function eggOutcome(
+  childId: string,
+  choices: Card[],
+  newBalance: number,
+  offerExtra: Partial<OfferPayload> = {},
+): Promise<EasterEggOutcome> {
+  const cardIds = choices.map((c) => c.id);
+  const offer = await makeOffer(
+    { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, ...offerExtra },
+    authSecret(),
+  );
+  const ownedCounts = await ownedCountsFor(childId, cardIds);
+  return {
+    outOfTokens: false,
+    easterEgg: true,
+    choices,
+    ownedCounts,
+    offer,
+    newBalance,
+  };
+}
+
+/**
  * Build a signed pick-1-of-N easter-egg offer, refund the token (re-spent on
  * claim), and return the outcome. Sign FIRST (pure crypto) so a failure can't
  * double-refund. Shared by both eggs (epic+ and common/rare).
@@ -67,27 +95,12 @@ async function makeEggOutcome(
   choices: Card[],
   newBalance: number,
 ): Promise<EasterEggOutcome> {
-  const offer = await makeOffer(
-    {
-      childId,
-      cardIds: choices.map((c) => c.id),
-      exp: Date.now() + OFFER_TTL_MS,
-    },
-    authSecret(),
-  );
-  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
+  const outcome = await eggOutcome(childId, choices, newBalance + 1);
   await db
     .update(children)
     .set({ pullTokens: sql`${children.pullTokens} + 1` })
     .where(eq(children.id, childId));
-  return {
-    outOfTokens: false,
-    easterEgg: true,
-    choices,
-    ownedCounts,
-    offer,
-    newBalance: newBalance + 1,
-  };
+  return outcome;
 }
 
 /**
@@ -183,24 +196,11 @@ async function makeTicketEggOutcome(
   choices: Card[],
   offerExtra: Partial<OfferPayload>,
 ): Promise<EasterEggOutcome> {
-  const cardIds = choices.map((c) => c.id);
-  const offer = await makeOffer(
-    { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, ...offerExtra },
-    authSecret(),
-  );
-  const ownedCounts = await ownedCountsFor(childId, cardIds);
   const balRow = await db.query.children.findFirst({
     where: eq(children.id, childId),
     columns: { pullTokens: true },
   });
-  return {
-    outOfTokens: false,
-    easterEgg: true,
-    choices,
-    ownedCounts,
-    offer,
-    newBalance: balRow?.pullTokens ?? 0,
-  };
+  return eggOutcome(childId, choices, balRow?.pullTokens ?? 0, offerExtra);
 }
 
 /**
