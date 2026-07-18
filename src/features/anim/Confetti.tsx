@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useReducedMotion } from "./useReducedMotion";
+import { useMemo } from "react";
+import { useOneShotBurst } from "./useOneShotBurst";
 
 const COLORS = ["#43e6c8", "#ffd45e", "#ff6ba6", "#8b7bff", "#5ee0ff"];
 const MAX_PARTICLES = 80;
@@ -39,19 +39,11 @@ function build(count: number, seed: number): Particle[] {
  * `count` scales the burst (capped). Renders nothing under reduced motion.
  */
 export function Confetti({ fire, count = 60 }: { fire: number; count?: number }) {
-  const reduced = useReducedMotion();
-  const [active, setActive] = useState(false);
   const n = Math.min(MAX_PARTICLES, Math.max(0, count));
   const particles = useMemo(() => build(n, fire), [n, fire]);
+  const visible = useOneShotBurst(fire, 1800);
 
-  useEffect(() => {
-    if (!fire || reduced) return;
-    setActive(true);
-    const t = setTimeout(() => setActive(false), 1800);
-    return () => clearTimeout(t);
-  }, [fire, reduced]);
-
-  if (!active || reduced) return null;
+  if (!visible) return null;
 
   return (
     <div className="confetti-layer" aria-hidden data-testid="confetti">

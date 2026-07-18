@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useReducedMotion } from "./useReducedMotion";
+import { useMemo } from "react";
+import { useOneShotBurst } from "./useOneShotBurst";
 
 /**
  * Full-screen fireworks bursts (U6-FR4) — distinct from confetti. Bump `fire`
@@ -47,18 +47,10 @@ function build(seed: number): Spark[] {
 }
 
 export function Fireworks({ fire }: { fire: number }) {
-  const reduced = useReducedMotion();
-  const [active, setActive] = useState(false);
   const sparks = useMemo(() => build(fire), [fire]);
+  const visible = useOneShotBurst(fire, 2200);
 
-  useEffect(() => {
-    if (!fire || reduced) return;
-    setActive(true);
-    const t = setTimeout(() => setActive(false), 2200);
-    return () => clearTimeout(t);
-  }, [fire, reduced]);
-
-  if (!active || reduced) return null;
+  if (!visible) return null;
 
   return (
     <div className="fireworks-layer" aria-hidden>
