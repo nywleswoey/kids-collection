@@ -1,8 +1,10 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
+import { requireParent } from "@/features/auth/guard";
 import { toChild } from "./child-mapper";
 import type { Child } from "@/lib/types";
 
@@ -41,6 +43,17 @@ export async function clearActiveProfile(): Promise<void> {
 export async function requireActiveChild(): Promise<Child> {
   const child = await getActiveChild();
   if (!child) throw new Error("No active profile");
+  return child;
+}
+
+/**
+ * Page-level guard for every /play/* screen: enforce parent access, then resolve
+ * the active child, redirecting to the picker when none is selected (U2-SEC-7).
+ */
+export async function requireActivePlayer(): Promise<Child> {
+  await requireParent();
+  const child = await getActiveChild();
+  if (!child) redirect("/play");
   return child;
 }
 

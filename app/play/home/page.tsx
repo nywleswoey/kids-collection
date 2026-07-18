@@ -1,15 +1,11 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getSpecialBalances } from "@/features/pull/token-service";
 import { avatarEmoji } from "@/lib/avatars";
 import { switchProfileAction } from "@/features/profiles/actions";
 
 export default async function PlayHomePage() {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play"); // U2-SEC-7: invalid/missing profile → picker
+  const child = await requireActivePlayer();
 
   // FR1 (Inc10): surface special-egg tickets on the landing page so they don't
   // silently read as "0 tickets". Inc13 FR3: show every ticket type explicitly
