@@ -1,5 +1,6 @@
 import type { Card, Rarity } from "@/lib/types";
 import type { Rng } from "@/lib/logic";
+import { sample } from "@/lib/rng";
 
 /**
  * Easter-egg logic (U6-FR2). PURE — server-side trigger + choice selection,
@@ -25,12 +26,7 @@ function pickChoicesByTier(
   rng: Rng,
 ): Card[] {
   const eligible = pool.filter((c) => tiers.includes(c.rarity));
-  // Fisher–Yates on a copy.
-  for (let i = eligible.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [eligible[i], eligible[j]] = [eligible[j], eligible[i]];
-  }
-  return eligible.slice(0, Math.min(n, eligible.length));
+  return sample(eligible, n, rng);
 }
 
 /**

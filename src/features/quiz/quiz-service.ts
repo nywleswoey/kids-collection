@@ -7,6 +7,7 @@ import { generateMathQuestions, isMathTopic } from "./math-gen";
 import { GRAMMAR_BANKS, isGrammarTopic } from "./grammar-bank";
 import { makeQuizOffer, verifyQuizOffer } from "./quiz-offer";
 import { sgtDayKey, decideAward } from "./cap";
+import { sample } from "@/lib/rng";
 import {
   QUIZ_LENGTH,
   type ClientQuestion,
@@ -18,16 +19,6 @@ const OFFER_TTL_MS = 10 * 60_000; // 10 min
 
 function authSecret(): string {
   return process.env.AUTH_SECRET ?? "";
-}
-
-/** Pick `n` random items from `arr` (Fisher-Yates prefix). */
-function sample<T>(arr: T[], n: number, rng: () => number): T[] {
-  const a = [...arr];
-  for (let i = 0; i < Math.min(n, a.length); i++) {
-    const j = i + Math.min(a.length - 1 - i, Math.floor(rng() * (a.length - i)));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a.slice(0, n);
 }
 
 function buildQuestions(topicId: string, rng: () => number): QuizQuestion[] {
