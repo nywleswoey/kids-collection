@@ -3,7 +3,7 @@ import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { children, collections } from "@/db/schema";
-import { addCardCopy } from "@/db/collection-writes";
+import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
 import { drawCard } from "@/lib/logic";
 import { listCards, getCard } from "@/features/pool/service";
 import {
@@ -350,16 +350,7 @@ export async function sacrifice(
   if (!source) throw new Error("sacrifice: card not found");
 
   // Atomic CAS: only succeeds if the child still holds enough copies.
-  const burned = await db
-    .update(collections)
-    .set({ count: sql`${collections.count} - ${SACRIFICE_COST}` })
-    .where(
-      and(
-        eq(collections.childId, childId),
-        eq(collections.cardId, cardId),
-        gte(collections.count, SACRIFICE_COST),
-      ),
-    )
+  const burned = await removeCardCopy(childId, cardId, SACRIFICE_COST, SACRIFICE_COST)
     .returning({ count: collections.count });
 
   if (burned.length === 0) {

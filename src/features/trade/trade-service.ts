@@ -1,8 +1,8 @@
 import "server-only";
-import { and, eq, gte, sql } from "drizzle-orm";
+import { and, eq, gte } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
-import { addCardCopy } from "@/db/collection-writes";
+import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
 import { listCards, getCard } from "@/features/pool/service";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import type { Card, Rarity } from "@/lib/types";
@@ -77,17 +77,11 @@ export async function executeTrade(input: {
   try {
     await db.batch([
       // A gives aCard. `count >= 2` guard + CHECK(count>=1) → non-dup rolls back.
-      db
-        .update(collections)
-        .set({ count: sql`${collections.count} - 1` })
-        .where(and(eq(collections.childId, aChildId), eq(collections.cardId, aCardId), gte(collections.count, 2))),
+      removeCardCopy(aChildId, aCardId),
       // A receives bCard.
       addCardCopy(aChildId, bCardId),
       // B gives bCard.
-      db
-        .update(collections)
-        .set({ count: sql`${collections.count} - 1` })
-        .where(and(eq(collections.childId, bChildId), eq(collections.cardId, bCardId), gte(collections.count, 2))),
+      removeCardCopy(bChildId, bCardId),
       // B receives aCard.
       addCardCopy(bChildId, aCardId),
     ]);
