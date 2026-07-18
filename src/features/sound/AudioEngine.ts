@@ -66,6 +66,27 @@ export function acquireContext(): AudioContext | null {
 }
 
 /**
+ * Create a gain node with a standard attack/decay envelope (rise to `peak` over
+ * `attack`, decay to silence at `at + dur`), wired to `dest`. Shared by the SFX
+ * and music engines. Returns the gain node so the caller can feed a source into it.
+ */
+export function gainEnvelope(
+  ctx: AudioContext,
+  dest: AudioNode,
+  at: number,
+  peak: number,
+  dur: number,
+  attack: number,
+): GainNode {
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(peak, at + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  g.connect(dest);
+  return g;
+}
+
+/**
  * Play a synthesized SFX. `intensity` (0..1) scales loudness; `attenuate`
  * softens output under reduced-motion. Never throws.
  */
@@ -88,11 +109,7 @@ export function play(
 
     // Envelope helper for one voice.
     const voice = (freq: number, startAt: number, wave = spec.wave) => {
-      const g = c.createGain();
-      g.gain.setValueAtTime(0.0001, startAt);
-      g.gain.exponentialRampToValueAtTime(peak, startAt + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.0001, startAt + dur);
-      g.connect(master);
+      const g = gainEnvelope(c, master, startAt, peak, dur, 0.012);
 
       if (wave === "noise") {
         const src = c.createBufferSource();
