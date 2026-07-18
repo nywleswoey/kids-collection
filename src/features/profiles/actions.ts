@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signOut as authSignOut } from "@/auth/config";
 import { requireParent } from "@/features/auth/guard";
+import { field } from "@/lib/form";
 import {
   createChild,
   updateChild,
@@ -16,7 +17,7 @@ import {
 
 /** Select a child profile, then go to the play home. */
 export async function selectProfileAction(formData: FormData): Promise<void> {
-  const childId = String(formData.get("childId") ?? "");
+  const childId = field(formData, "childId");
   await setActiveProfile(childId);
   redirect("/play/home");
 }
@@ -30,8 +31,8 @@ export async function switchProfileAction(): Promise<void> {
 export async function createProfileAction(formData: FormData): Promise<void> {
   await requireParent();
   await createChild({
-    name: String(formData.get("name") ?? ""),
-    avatar: String(formData.get("avatar") ?? ""),
+    name: field(formData, "name"),
+    avatar: field(formData, "avatar"),
   });
   revalidatePath("/admin/profiles");
   revalidatePath("/play");
@@ -39,9 +40,9 @@ export async function createProfileAction(formData: FormData): Promise<void> {
 
 export async function updateProfileAction(formData: FormData): Promise<void> {
   await requireParent();
-  await updateChild(String(formData.get("id") ?? ""), {
-    name: String(formData.get("name") ?? ""),
-    avatar: String(formData.get("avatar") ?? ""),
+  await updateChild(field(formData, "id"), {
+    name: field(formData, "name"),
+    avatar: field(formData, "avatar"),
   });
   revalidatePath("/admin/profiles");
   revalidatePath("/play");
@@ -49,7 +50,7 @@ export async function updateProfileAction(formData: FormData): Promise<void> {
 
 export async function removeProfileAction(formData: FormData): Promise<void> {
   await requireParent();
-  await removeChild(String(formData.get("id") ?? ""));
+  await removeChild(field(formData, "id"));
   revalidatePath("/admin/profiles");
   revalidatePath("/play");
 }
