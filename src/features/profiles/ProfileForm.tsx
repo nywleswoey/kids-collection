@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AVATAR_PRESETS } from "@/lib/avatars";
+import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
 import { createProfileAction, updateProfileAction } from "./actions";
 
 export function ProfileForm({
@@ -32,7 +33,7 @@ export function ProfileForm({
         onChange={(e) => setName(e.target.value)}
         placeholder="Name"
         data-testid="profile-name-input"
-        className="rounded-xl border border-white/15 bg-black/25 px-4 py-2.5 text-[color:var(--ink)] outline-none transition focus:border-[color:var(--brand-1)] focus:ring-2 focus:ring-[color:var(--brand-1)]/40"
+        className={TEXT_INPUT_CLASS}
       />
 
       <input type="hidden" name="avatar" value={avatar} />
