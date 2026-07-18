@@ -3,6 +3,7 @@ import { and, eq, gte } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
 import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
+import { getCardCount } from "@/db/collection-reads";
 import { listCards, getCard } from "@/features/pool/service";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import type { Card, Rarity } from "@/lib/types";
@@ -40,12 +41,7 @@ export async function listMatchesForRarity(
 }
 
 /** Read one collection entry's count for (child, card), 0 if absent. */
-async function ownedCount(childId: string, cardId: string): Promise<number> {
-  const row = await db.query.collections.findFirst({
-    where: and(eq(collections.childId, childId), eq(collections.cardId, cardId)),
-  });
-  return row?.count ?? 0;
-}
+const ownedCount = getCardCount;
 
 /**
  * Atomic two-sided swap (FR4). Re-validates server-side, then commits 4 writes
