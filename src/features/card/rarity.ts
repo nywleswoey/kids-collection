@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from "@/lib/motion";
 import type { Rarity } from "@/lib/types";
 
 /** Per-rarity CSS class (frame + effect intensity). Pure → testable. */
@@ -35,6 +36,5 @@ export const RARITY_META: Record<Rarity, RarityMeta> = {
 
 /** True if motion effects should run (respects reduced-motion). Browser-only. */
 export function shouldAnimate(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return !prefersReducedMotion();
 }
