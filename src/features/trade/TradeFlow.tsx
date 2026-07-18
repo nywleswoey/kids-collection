@@ -94,11 +94,7 @@ export function TradeFlow({
     return (
       <div className="panel flex max-w-md flex-col items-center gap-4 p-6 text-center" data-testid="trade-done">
         <h1 className="text-2xl font-bold title-pop">Trade complete! 🎉</h1>
-        <div className="flex items-center justify-center gap-4">
-          <CardMini card={result.gave} label="You gave" />
-          <span className="text-2xl">🔄</span>
-          <CardMini card={result.got} label="You got" />
-        </div>
+        <SwapRow give={result.gave} giveLabel="You gave" get={result.got} getLabel="You got" />
         <div className="flex gap-3">
           <button type="button" onClick={reset} data-testid="trade-again" className="btn btn--primary">
             Trade again
@@ -124,9 +120,7 @@ export function TradeFlow({
         <section className="flex w-full flex-col items-center gap-3" data-testid="trade-pick-mine">
           <h2 className="text-xl font-bold">1. Pick your double to trade</h2>
           {myCards.length === 0 ? (
-            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
-              You have no doubles yet — collect a duplicate first! ➕
-            </p>
+            <Hint>You have no doubles yet — collect a duplicate first! ➕</Hint>
           ) : (
             <CardGrid cards={myCards} onPick={chooseMine} testid="mine" />
           )}
@@ -138,9 +132,7 @@ export function TradeFlow({
         <section className="flex w-full flex-col items-center gap-3" data-testid="trade-pick-friend">
           <h2 className="text-xl font-bold">2. Trade with which friend?</h2>
           {friends.length === 0 ? (
-            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
-              No other players yet — ask a parent to add one.
-            </p>
+            <Hint>No other players yet — ask a parent to add one.</Hint>
           ) : (
             <div className="flex flex-wrap justify-center gap-3">
               {friends.map((f) => (
@@ -170,9 +162,9 @@ export function TradeFlow({
             3. Pick {friend.name}&apos;s {RARITY_META[mine.card.rarity].label} double
           </h2>
           {theirCards.length === 0 ? (
-            <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">
+            <Hint>
               {friend.name} has no {RARITY_META[mine.card.rarity].label} doubles to swap.
-            </p>
+            </Hint>
           ) : (
             <CardGrid cards={theirCards} onPick={chooseTheirs} testid="theirs" />
           )}
@@ -183,11 +175,7 @@ export function TradeFlow({
       {phase === "confirm" && mine && theirs ? (
         <section className="panel flex flex-col items-center gap-4 p-6 text-center" data-testid="trade-confirm">
           <h2 className="text-xl font-bold">Ready to trade?</h2>
-          <div className="flex items-center justify-center gap-4">
-            <CardMini card={mine.card} label="You give" />
-            <span className="text-2xl">🔄</span>
-            <CardMini card={theirs.card} label="You get" />
-          </div>
+          <SwapRow give={mine.card} giveLabel="You give" get={theirs.card} getLabel="You get" />
           <div className="flex gap-3">
             <button
               type="button"
@@ -204,6 +192,32 @@ export function TradeFlow({
           </div>
         </section>
       ) : null}
+    </div>
+  );
+}
+
+function Hint({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="panel px-5 py-3 text-center text-sm text-[color:var(--ink-soft)]">{children}</p>
+  );
+}
+
+function SwapRow({
+  give,
+  giveLabel,
+  get,
+  getLabel,
+}: {
+  give: CardType;
+  giveLabel: string;
+  get: CardType;
+  getLabel: string;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <CardMini card={give} label={giveLabel} />
+      <span className="text-2xl">🔄</span>
+      <CardMini card={get} label={getLabel} />
     </div>
   );
 }
