@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { RARITY_META } from "@/features/card/rarity";
-import { avatarEmoji } from "@/lib/avatars";
+import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { useSound } from "@/features/sound/useSound";
 import { playFanfare } from "@/features/sound/sfx";
 import { getMatchesAction, executeTradeAction } from "./actions";
@@ -143,9 +143,7 @@ export function TradeFlow({
                   data-testid={`trade-friend-${f.id}`}
                   className="panel flex items-center gap-2 px-4 py-3 transition hover:bg-white/10 disabled:opacity-50"
                 >
-                  <span className="hero-avatar h-9 w-9 text-lg" aria-hidden>
-                    {avatarEmoji(f.avatar)}
-                  </span>
+                  <AvatarBadge avatar={f.avatar} className="h-9 w-9 text-lg" />
                   <span className="font-semibold">{f.name}</span>
                 </button>
               ))}
