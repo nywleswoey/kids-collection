@@ -1,7 +1,26 @@
-import { and, eq, notInArray } from "drizzle-orm";
+import { and, eq, notInArray, type SQL } from "drizzle-orm";
+import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { themes, cards, collections } from "@/db/schema";
 import type { Rarity } from "@/lib/types";
+
+/**
+ * Delete rows from `table` whose `nameCol` is not in `keepNames`, optionally
+ * scoped by `base`. An empty `keepNames` deletes every (scoped) row. Returns the
+ * number of rows deleted. Shared by the theme/card delta-sync pruners.
+ */
+async function pruneNotIn(
+  table: PgTable,
+  nameCol: PgColumn,
+  idCol: PgColumn,
+  keepNames: string[],
+  base?: SQL,
+): Promise<number> {
+  const keep = keepNames.length === 0 ? undefined : notInArray(nameCol, keepNames);
+  const where = base && keep ? and(base, keep) : (base ?? keep);
+  const deleted = await db.delete(table).where(where).returning({ id: idCol });
+  return deleted.length;
+}
 
 /** Upsert a theme by name; returns its id (idempotent, U3-BR8). */
 export async function upsertTheme(name: string): Promise<string> {
@@ -80,14 +99,7 @@ export async function updateCardMeta(input: {
  * Returns the number of themes deleted.
  */
 export async function deleteThemesNotIn(keepNames: string[]): Promise<number> {
-  const deleted =
-    keepNames.length === 0
-      ? await db.delete(themes).returning({ id: themes.id })
-      : await db
-          .delete(themes)
-          .where(notInArray(themes.name, keepNames))
-          .returning({ id: themes.id });
-  return deleted.length;
+  return pruneNotIn(themes, themes.name, themes.id, keepNames);
 }
 
 /**
@@ -98,13 +110,5 @@ export async function deleteCardsNotIn(
   themeId: string,
   keepNames: string[],
 ): Promise<number> {
-  const base = eq(cards.themeId, themeId);
-  const deleted =
-    keepNames.length === 0
-      ? await db.delete(cards).where(base).returning({ id: cards.id })
-      : await db
-          .delete(cards)
-          .where(and(base, notInArray(cards.name, keepNames)))
-          .returning({ id: cards.id });
-  return deleted.length;
+  return pruneNotIn(cards, cards.name, cards.id, keepNames, eq(cards.themeId, themeId));
 }
