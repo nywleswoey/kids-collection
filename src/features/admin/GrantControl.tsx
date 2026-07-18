@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type CSSProperties, type ReactNode } from "react";
 import {
   grantTokensAction,
   grantSpecialTicketAction,
@@ -10,6 +10,53 @@ import { RARITY_META } from "@/features/card/rarity";
 import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
 
 const ZERO_PICKS: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
+
+/** A counter display with +1 / −1 grant buttons; −1 is disabled at zero. */
+function Stepper({
+  id,
+  childId,
+  count,
+  pending,
+  label,
+  style,
+  onInc,
+  onDec,
+}: {
+  id: string;
+  childId: string;
+  count: number;
+  pending: boolean;
+  label: ReactNode;
+  style?: CSSProperties;
+  onInc: () => void;
+  onDec: () => void;
+}) {
+  return (
+    <span className="flex items-center gap-1">
+      <span data-testid={`${id}-balance-${childId}`} className="tabular-nums" style={style}>
+        {label}
+      </span>
+      <button
+        type="button"
+        onClick={onInc}
+        disabled={pending}
+        data-testid={`grant-${id}-plus1-${childId}`}
+        className="rounded bg-white/15 px-2 py-0.5 hover:bg-white/25 disabled:opacity-50"
+      >
+        +1
+      </button>
+      <button
+        type="button"
+        onClick={onDec}
+        disabled={pending || count < 1}
+        data-testid={`grant-${id}-minus1-${childId}`}
+        className="rounded bg-white/10 px-2 py-0.5 hover:bg-white/20 disabled:opacity-50"
+      >
+        −1
+      </button>
+    </span>
+  );
+}
 
 export function GrantControl({
   childId,
@@ -98,84 +145,44 @@ export function GrantControl({
       </div>
 
       <div className="flex flex-wrap items-center gap-3 text-sm">
-        <span className="flex items-center gap-1">
-          <span data-testid={`epic-balance-${childId}`} className="tabular-nums">
-            ✨ {epic}
-          </span>
-          <button
-            type="button"
-            onClick={() => grantTicket("epic", 1)}
-            disabled={pending}
-            data-testid={`grant-epic-plus1-${childId}`}
-            className="rounded bg-white/15 px-2 py-0.5 hover:bg-white/25 disabled:opacity-50"
-          >
-            +1
-          </button>
-          <button
-            type="button"
-            onClick={() => grantTicket("epic", -1)}
-            disabled={pending || epic < 1}
-            data-testid={`grant-epic-minus1-${childId}`}
-            className="rounded bg-white/10 px-2 py-0.5 hover:bg-white/20 disabled:opacity-50"
-          >
-            −1
-          </button>
-        </span>
-        <span className="flex items-center gap-1">
-          <span data-testid={`lucky-balance-${childId}`} className="tabular-nums">
-            🍀 {lucky}
-          </span>
-          <button
-            type="button"
-            onClick={() => grantTicket("lucky", 1)}
-            disabled={pending}
-            data-testid={`grant-lucky-plus1-${childId}`}
-            className="rounded bg-white/15 px-2 py-0.5 hover:bg-white/25 disabled:opacity-50"
-          >
-            +1
-          </button>
-          <button
-            type="button"
-            onClick={() => grantTicket("lucky", -1)}
-            disabled={pending || lucky < 1}
-            data-testid={`grant-lucky-minus1-${childId}`}
-            className="rounded bg-white/10 px-2 py-0.5 hover:bg-white/20 disabled:opacity-50"
-          >
-            −1
-          </button>
-        </span>
+        <Stepper
+          id="epic"
+          childId={childId}
+          count={epic}
+          pending={pending}
+          label={<>✨ {epic}</>}
+          onInc={() => grantTicket("epic", 1)}
+          onDec={() => grantTicket("epic", -1)}
+        />
+        <Stepper
+          id="lucky"
+          childId={childId}
+          count={lucky}
+          pending={pending}
+          label={<>🍀 {lucky}</>}
+          onInc={() => grantTicket("lucky", 1)}
+          onDec={() => grantTicket("lucky", -1)}
+        />
       </div>
 
       {/* Rarity-pick tickets (Inc16 FR3). */}
       <div className="flex flex-wrap items-center gap-3 text-sm">
         {RARITIES.map((r) => (
-          <span key={r} className="flex items-center gap-1">
-            <span
-              data-testid={`pick-${r}-balance-${childId}`}
-              className="tabular-nums"
-              style={{ color: RARITY_META[r].frame }}
-            >
-              🎯{RARITY_META[r].label[0]} {picks[r]}
-            </span>
-            <button
-              type="button"
-              onClick={() => grantPick(r, 1)}
-              disabled={pending}
-              data-testid={`grant-pick-${r}-plus1-${childId}`}
-              className="rounded bg-white/15 px-2 py-0.5 hover:bg-white/25 disabled:opacity-50"
-            >
-              +1
-            </button>
-            <button
-              type="button"
-              onClick={() => grantPick(r, -1)}
-              disabled={pending || picks[r] < 1}
-              data-testid={`grant-pick-${r}-minus1-${childId}`}
-              className="rounded bg-white/10 px-2 py-0.5 hover:bg-white/20 disabled:opacity-50"
-            >
-              −1
-            </button>
-          </span>
+          <Stepper
+            key={r}
+            id={`pick-${r}`}
+            childId={childId}
+            count={picks[r]}
+            pending={pending}
+            style={{ color: RARITY_META[r].frame }}
+            label={
+              <>
+                🎯{RARITY_META[r].label[0]} {picks[r]}
+              </>
+            }
+            onInc={() => grantPick(r, 1)}
+            onDec={() => grantPick(r, -1)}
+          />
         ))}
       </div>
     </div>
