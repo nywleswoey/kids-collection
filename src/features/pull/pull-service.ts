@@ -90,6 +90,36 @@ async function makeEggOutcome(
 }
 
 /**
+ * Grant one copy of a card to the child and return the standard card outcome:
+ * atomically upsert the collection count, apply any (theme, rarity)
+ * set-completion bonus (Inc16 FR5), and return with the duplicate flag plus the
+ * given balance. Shared card-grant tail of pull() and claimEasterEgg().
+ */
+async function grantCardOutcome(
+  childId: string,
+  card: Card,
+  newBalance: number,
+): Promise<PullOutcome> {
+  const [entry] = await db
+    .insert(collections)
+    .values({ childId, cardId: card.id, count: 1 })
+    .onConflictDoUpdate({
+      target: [collections.childId, collections.cardId],
+      set: { count: sql`${collections.count} + 1` },
+    })
+    .returning({ count: collections.count });
+
+  await grantCompletionRewards(childId, [card.id]);
+
+  return {
+    outOfTokens: false,
+    card,
+    isDuplicate: entry.count > 1,
+    newBalance,
+  };
+}
+
+/**
  * Pull one card for a child. Atomic, no double-spend (U4-BR1/BR2).
  * 1) conditional spend, 2) draw, 3) upsert count, 4) refund on write failure.
  * `themeId` (Inc8 FR3) limits the normal draw to one category; eggs stay global.
@@ -129,25 +159,8 @@ export async function pull(
     const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
     const card = drawCard(drawPool.length > 0 ? drawPool : pool);
 
-    // 3) Upsert collection count atomically.
-    const [entry] = await db
-      .insert(collections)
-      .values({ childId, cardId: card.id, count: 1 })
-      .onConflictDoUpdate({
-        target: [collections.childId, collections.cardId],
-        set: { count: sql`${collections.count} + 1` },
-      })
-      .returning({ count: collections.count });
-
-    // Inc16 FR5: adding this card may complete a (theme, rarity) set → bonus.
-    await grantCompletionRewards(childId, [card.id]);
-
-    return {
-      outOfTokens: false,
-      card,
-      isDuplicate: entry.count > 1,
-      newBalance,
-    };
+    // 3) Upsert collection count atomically + apply any set-completion bonus.
+    return await grantCardOutcome(childId, card, newBalance);
   } catch (err) {
     // 4) Best-effort refund (U4-BR6).
     try {
@@ -287,24 +300,7 @@ export async function claimEasterEgg(
   const newBalance = await spendOneColumn(childId, key);
   if (newBalance === null) return { outOfTokens: true };
 
-  const [entry] = await db
-    .insert(collections)
-    .values({ childId, cardId: card.id, count: 1 })
-    .onConflictDoUpdate({
-      target: [collections.childId, collections.cardId],
-      set: { count: sql`${collections.count} + 1` },
-    })
-    .returning({ count: collections.count });
-
-  // Inc16 FR5: claimed card may complete a (theme, rarity) set → bonus.
-  await grantCompletionRewards(childId, [card.id]);
-
-  return {
-    outOfTokens: false,
-    card,
-    isDuplicate: entry.count > 1,
-    newBalance,
-  };
+  return grantCardOutcome(childId, card, newBalance);
 }
 
 /** Children columns that hold a spendable balance (normal token or a ticket). */
