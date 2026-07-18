@@ -1,10 +1,8 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
+import { findChildRow } from "@/db/child-reads";
 import { toChild } from "./child-mapper";
 import type { Child } from "@/lib/types";
 
@@ -16,9 +14,7 @@ const COOKIE = "activeChildId";
  * selection is a post-auth convenience, not a security boundary.
  */
 export async function setActiveProfile(childId: string): Promise<void> {
-  const exists = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-  });
+  const exists = await findChildRow(childId);
   if (!exists) throw new Error("setActiveProfile: unknown child");
 
   const store = await cookies();
@@ -63,9 +59,7 @@ export async function getActiveChild(): Promise<Child | null> {
   const childId = store.get(COOKIE)?.value;
   if (!childId) return null;
 
-  const row = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-  });
+  const row = await findChildRow(childId);
   if (!row) return null;
   return toChild(row);
 }

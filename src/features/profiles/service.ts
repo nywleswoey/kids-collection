@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
+import { findChildRow } from "@/db/child-reads";
 import { toChild } from "./child-mapper";
 import { AVATAR_KEYS } from "@/lib/avatars";
 import type { Child } from "@/lib/types";
@@ -27,7 +28,7 @@ export async function listChildren(): Promise<Child[]> {
 
 /** Single child profile, or null. */
 export async function getChild(id: string): Promise<Child | null> {
-  const row = await db.query.children.findFirst({ where: eq(children.id, id) });
+  const row = await findChildRow(id);
   return row ? toChild(row) : null;
 }
 
