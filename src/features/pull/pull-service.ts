@@ -1,5 +1,6 @@
 import "server-only";
 import { and, eq, gte, inArray, sql } from "drizzle-orm";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { children, collections } from "@/db/schema";
 import { drawCard } from "@/lib/logic";
@@ -194,6 +195,32 @@ async function makeTicketEggOutcome(
 }
 
 /**
+ * Shared body for the ticket-gated egg entry points: guard on the ticket
+ * column (>= 1 held), draw the pick-1-of-5 from the FULL pool, and hand off to
+ * makeTicketEggOutcome. The ticket is NOT spent here — spent atomically at claim
+ * (single-use); `offerExtra` pins which column claim decrements. Returns
+ * out-of-tokens when no ticket is held.
+ */
+async function offerTicketEgg(
+  childId: string,
+  col: AnyPgColumn,
+  offerExtra: Partial<OfferPayload>,
+  chooseFrom: (pool: Card[]) => Card[],
+  label: string,
+): Promise<PullOutcome> {
+  const [row] = await db
+    .select({ n: col })
+    .from(children)
+    .where(eq(children.id, childId));
+  if (!row || row.n < 1) return { outOfTokens: true };
+
+  const choices = chooseFrom(await listCards());
+  if (choices.length === 0) throw new Error(`${label}: no eligible cards`);
+
+  return makeTicketEggOutcome(childId, choices, offerExtra);
+}
+
+/**
  * Guaranteed easter egg via a special ticket (Inc9 FR4). Offers the pick-1-of-5
  * for the ticket's tier from the FULL pool. The special ticket is NOT spent here
  * — it's spent atomically at claim (single-use), and the offer pins the kind.
@@ -203,20 +230,9 @@ export async function pullSpecialEgg(
   kind: EggTicket,
 ): Promise<PullOutcome> {
   const col = kind === "epic" ? children.epicTickets : children.luckyTickets;
-  const [row] = await db
-    .select({ n: col })
-    .from(children)
-    .where(eq(children.id, childId));
-  if (!row || row.n < 1) return { outOfTokens: true };
-
-  const pool = await listCards();
-  const choices =
-    kind === "epic"
-      ? pickEasterEggChoices(pool, 5)
-      : pickCommonRareChoices(pool, 5);
-  if (choices.length === 0) throw new Error("pullSpecialEgg: no eligible cards");
-
-  return makeTicketEggOutcome(childId, choices, { ticket: kind });
+  const chooseFrom = (pool: Card[]) =>
+    kind === "epic" ? pickEasterEggChoices(pool, 5) : pickCommonRareChoices(pool, 5);
+  return offerTicketEgg(childId, col, { ticket: kind }, chooseFrom, "pullSpecialEgg");
 }
 
 /**
@@ -229,17 +245,8 @@ export async function pullRarityPick(
   rarity: Rarity,
 ): Promise<PullOutcome> {
   const col = children[pickTicketColumn(rarity)];
-  const [row] = await db
-    .select({ n: col })
-    .from(children)
-    .where(eq(children.id, childId));
-  if (!row || row.n < 1) return { outOfTokens: true };
-
-  const pool = await listCards();
-  const choices = pickRarityChoices(pool, rarity, 5);
-  if (choices.length === 0) throw new Error("pullRarityPick: no eligible cards");
-
-  return makeTicketEggOutcome(childId, choices, { pickRarity: rarity });
+  const chooseFrom = (pool: Card[]) => pickRarityChoices(pool, rarity, 5);
+  return offerTicketEgg(childId, col, { pickRarity: rarity }, chooseFrom, "pullRarityPick");
 }
 
 /**
