@@ -3,6 +3,7 @@ import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { children, collections } from "@/db/schema";
+import { addCardCopy } from "@/db/collection-writes";
 import { drawCard } from "@/lib/logic";
 import { listCards, getCard } from "@/features/pool/service";
 import {
@@ -100,14 +101,9 @@ async function grantCardOutcome(
   card: Card,
   newBalance: number,
 ): Promise<PullOutcome> {
-  const [entry] = await db
-    .insert(collections)
-    .values({ childId, cardId: card.id, count: 1 })
-    .onConflictDoUpdate({
-      target: [collections.childId, collections.cardId],
-      set: { count: sql`${collections.count} + 1` },
-    })
-    .returning({ count: collections.count });
+  const [entry] = await addCardCopy(childId, card.id).returning({
+    count: collections.count,
+  });
 
   await grantCompletionRewards(childId, [card.id]);
 

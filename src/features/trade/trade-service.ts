@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
+import { addCardCopy } from "@/db/collection-writes";
 import { listCards, getCard } from "@/features/pool/service";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import type { Card, Rarity } from "@/lib/types";
@@ -81,26 +82,14 @@ export async function executeTrade(input: {
         .set({ count: sql`${collections.count} - 1` })
         .where(and(eq(collections.childId, aChildId), eq(collections.cardId, aCardId), gte(collections.count, 2))),
       // A receives bCard.
-      db
-        .insert(collections)
-        .values({ childId: aChildId, cardId: bCardId, count: 1 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} + 1` },
-        }),
+      addCardCopy(aChildId, bCardId),
       // B gives bCard.
       db
         .update(collections)
         .set({ count: sql`${collections.count} - 1` })
         .where(and(eq(collections.childId, bChildId), eq(collections.cardId, bCardId), gte(collections.count, 2))),
       // B receives aCard.
-      db
-        .insert(collections)
-        .values({ childId: bChildId, cardId: aCardId, count: 1 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} + 1` },
-        }),
+      addCardCopy(bChildId, aCardId),
     ]);
   } catch {
     return { ok: false, reason: "That trade is no longer valid — try again." };
