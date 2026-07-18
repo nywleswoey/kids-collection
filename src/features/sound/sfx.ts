@@ -85,6 +85,16 @@ export function playFanfare(play: (name: SfxName) => void, rarity: Rarity): void
   if (fanfare) play(fanfare);
 }
 
+/**
+ * Full reward chime: the set-complete cue plus the tier fanfare (if any).
+ * Consolidates the "setComplete + fanfare" pair fired at every reward-commit
+ * site (sacrifice, trade, collection reward).
+ */
+export function playReward(play: (name: SfxName) => void, rarity: Rarity): void {
+  play("setComplete");
+  playFanfare(play, rarity);
+}
+
 const RARITY_INTENSITY: Record<Rarity, number> = {
   common: 0.3,
   rare: 0.55,

@@ -7,7 +7,7 @@ import { RARITY_LABEL } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
 import { useSound } from "@/features/sound/useSound";
 import { CenteredModal } from "@/features/ui/CenteredModal";
-import { playFanfare } from "@/features/sound/sfx";
+import { playFanfare, playReward } from "@/features/sound/sfx";
 import type { PendingReward } from "./service";
 import { markRewardsShownAction } from "./actions";
 import "@/features/anim/anim.css";
@@ -33,9 +33,8 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
   useEffect(() => {
     if (rewards.length === 0) return;
     markRewardsShownAction(rewards.map((r) => r.id));
-    play("setComplete");
     setFire((n) => n + 1);
-    playFanfare(play, rewards[0].rarity);
+    playReward(play, rewards[0].rarity);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

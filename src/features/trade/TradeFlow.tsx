@@ -8,7 +8,7 @@ import { RARITY_META } from "@/features/card/rarity";
 import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { useSound } from "@/features/sound/useSound";
-import { playFanfare } from "@/features/sound/sfx";
+import { playReward } from "@/features/sound/sfx";
 import { getMatchesAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
 
@@ -76,9 +76,8 @@ export function TradeFlow({
     startTransition(async () => {
       const res = await executeTradeAction(mine!.card.id, friend!.id, theirs!.card.id);
       if (res.ok) {
-        play("setComplete");
-        // Inc15 FR2: layer the reward fanfare when the card you got is epic/legendary.
-        playFanfare(play, res.got.rarity);
+        // Inc15 FR2: set-complete cue + fanfare when the card you got is epic/legendary.
+        playReward(play, res.got.rarity);
         setResult({ gave: res.gave, got: res.got });
         setPhase("done");
       } else {

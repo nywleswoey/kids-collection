@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
-import { playFanfare } from "@/features/sound/sfx";
+import { playReward } from "@/features/sound/sfx";
 import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { sacrificeAction } from "./actions";
 
@@ -33,9 +33,8 @@ export function SacrificePanel({
       try {
         const res = await sacrificeAction(cardId);
         setResult({ ticketRarity: res.ticketRarity });
-        play("setComplete");
-        // Inc15/16: fanfare for an epic/legendary pick ticket earned.
-        playFanfare(play, res.ticketRarity);
+        // Inc15/16: set-complete cue + fanfare for an epic/legendary pick ticket.
+        playReward(play, res.ticketRarity);
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
         play("denied");
