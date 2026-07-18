@@ -24,6 +24,18 @@ export function pickTicketColumn(rarity: Rarity): keyof PickTicketRow {
   return COLUMN[rarity];
 }
 
+/**
+ * Children columns that hold a grantable/spendable integer balance: a normal
+ * pull token, either special egg ticket, or one of the four rarity-pick tickets.
+ * Shared by token-service (grant) and pull-service (spend), which drive atomic
+ * per-column updates off the string key.
+ */
+export type BalanceColumn =
+  | "pullTokens"
+  | "epicTickets"
+  | "luckyTickets"
+  | keyof PickTicketRow;
+
 /** Build the `Record<Rarity, number>` view from a children row. */
 export function pickTicketsFromRow(row: PickTicketRow): Record<Rarity, number> {
   return {

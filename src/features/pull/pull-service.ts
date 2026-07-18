@@ -13,7 +13,7 @@ import {
   pickRarityChoices,
 } from "./easter-egg";
 import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
-import { pickTicketColumn } from "./pick-tickets";
+import { pickTicketColumn, type BalanceColumn } from "./pick-tickets";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import { requireParent } from "@/features/auth/guard";
@@ -286,7 +286,7 @@ export async function claimEasterEgg(
   // Atomic spend — one column (rarity-pick, special ticket, or normal token).
   // The pinned offer field picks which; missing both spends a normal token.
   // Single-use: the guarded decrement makes the signed offer un-replayable.
-  const key: SpendableColumn = payload.pickRarity
+  const key: BalanceColumn = payload.pickRarity
     ? pickTicketColumn(payload.pickRarity)
     : payload.ticket
       ? payload.ticket === "epic"
@@ -299,16 +299,6 @@ export async function claimEasterEgg(
   return grantCardOutcome(childId, card, newBalance);
 }
 
-/** Children columns that hold a spendable balance (normal token or a ticket). */
-type SpendableColumn =
-  | "pullTokens"
-  | "epicTickets"
-  | "luckyTickets"
-  | "commonPickTickets"
-  | "rarePickTickets"
-  | "epicPickTickets"
-  | "legendaryPickTickets";
-
 /**
  * Atomic guarded decrement of one spendable column (single-use claim). Returns
  * the child's resulting normal token balance, or null if nothing was spent
@@ -317,7 +307,7 @@ type SpendableColumn =
  */
 async function spendOneColumn(
   childId: string,
-  key: SpendableColumn,
+  key: BalanceColumn,
 ): Promise<number | null> {
   const col = children[key];
   const spent = await db

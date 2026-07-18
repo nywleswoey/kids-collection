@@ -3,18 +3,8 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
-import { pickTicketColumn } from "./pick-tickets";
+import { pickTicketColumn, type BalanceColumn } from "./pick-tickets";
 import type { EggTicket, Rarity } from "@/lib/types";
-
-/** Children columns holding a grantable, clamp-≥0 integer balance. */
-type GrantableColumn =
-  | "pullTokens"
-  | "epicTickets"
-  | "luckyTickets"
-  | "commonPickTickets"
-  | "rarePickTickets"
-  | "epicPickTickets"
-  | "legendaryPickTickets";
 
 /**
  * Parent-only clamped grant/adjust of one integer children column (U4-BR8):
@@ -23,7 +13,7 @@ type GrantableColumn =
  */
 async function grantColumn(
   childId: string,
-  key: GrantableColumn,
+  key: BalanceColumn,
   delta: number,
   label: string,
 ): Promise<number> {
