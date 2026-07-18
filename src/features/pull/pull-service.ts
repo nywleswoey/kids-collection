@@ -15,6 +15,7 @@ import {
 } from "./easter-egg";
 import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
 import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
+import { getBalance } from "./token-service";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import { requireParent } from "@/features/auth/guard";
@@ -197,11 +198,7 @@ async function makeTicketEggOutcome(
   choices: Card[],
   offerExtra: Partial<OfferPayload>,
 ): Promise<EasterEggOutcome> {
-  const balRow = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-    columns: { pullTokens: true },
-  });
-  return eggOutcome(childId, choices, balRow?.pullTokens ?? 0, offerExtra);
+  return eggOutcome(childId, choices, await getBalance(childId), offerExtra);
 }
 
 /**
