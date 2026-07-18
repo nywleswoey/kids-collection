@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { SoundContext } from "@/features/sound/SoundProvider";
 import { useSound } from "@/features/sound/useSound";
 import { Confetti } from "@/features/anim/Confetti";
+import { storageGet, storageSet } from "@/lib/storage";
 
 /**
  * Fires a fanfare + confetti once per session when a theme set is complete,
@@ -17,18 +18,8 @@ export function SetCompleteCelebration({ themeId }: { themeId: string }) {
   useEffect(() => {
     if (!inPlayArea) return; // outside the play area (e.g. admin) → no celebration
     const key = `kc.snd.celebrated.${themeId}`;
-    let already = false;
-    try {
-      already = sessionStorage.getItem(key) === "1";
-    } catch {
-      /* storage blocked — celebrate anyway */
-    }
-    if (already) return;
-    try {
-      sessionStorage.setItem(key, "1");
-    } catch {
-      /* ignore */
-    }
+    if (storageGet("sessionStorage", key) === "1") return;
+    storageSet("sessionStorage", key, "1");
     play("setComplete");
     setFire((n) => n + 1);
   }, [themeId, play, inPlayArea]);
