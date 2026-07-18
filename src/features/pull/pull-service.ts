@@ -57,6 +57,15 @@ function authSecret(): string {
   return process.env.AUTH_SECRET ?? "";
 }
 
+/** Refund one normal pull token (add 1). Shared by the egg re-spend path and
+ * pull()'s best-effort write-failure refund. */
+function refundPullToken(childId: string) {
+  return db
+    .update(children)
+    .set({ pullTokens: sql`${children.pullTokens} + 1` })
+    .where(eq(children.id, childId));
+}
+
 /**
  * Assemble a pick-1-of-N easter-egg outcome: sign the offer (pure crypto,
  * always FIRST so a caller's later side-effect can't double-fire on failure),
@@ -96,10 +105,7 @@ async function makeEggOutcome(
   newBalance: number,
 ): Promise<EasterEggOutcome> {
   const outcome = await eggOutcome(childId, choices, newBalance + 1);
-  await db
-    .update(children)
-    .set({ pullTokens: sql`${children.pullTokens} + 1` })
-    .where(eq(children.id, childId));
+  await refundPullToken(childId);
   return outcome;
 }
 
@@ -173,10 +179,7 @@ export async function pull(
   } catch (err) {
     // 4) Best-effort refund (U4-BR6).
     try {
-      await db
-        .update(children)
-        .set({ pullTokens: sql`${children.pullTokens} + 1` })
-        .where(eq(children.id, childId));
+      await refundPullToken(childId);
     } catch (refundErr) {
       console.error(`pull: refund failed for ${childId}`, refundErr);
     }
