@@ -267,39 +267,18 @@ export async function claimEasterEgg(
   const card = await getCard(chosenCardId);
   if (!card) throw new Error("claimEasterEgg: card not found");
 
-  // Atomic spend — one ticket (special, rarity-pick, or normal). Single-use.
-  let newBalance: number;
-  if (payload.pickRarity) {
-    // Rarity-pick ticket (Inc16 FR2): spend the matching {rarity}_pick_tickets.
-    const key = pickTicketColumn(payload.pickRarity);
-    const col = children[key];
-    const spent = await db
-      .update(children)
-      .set({ [key]: sql`${col} - 1` })
-      .where(and(eq(children.id, childId), gte(col, 1)))
-      .returning({ pullTokens: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].pullTokens; // normal balance unchanged
-  } else if (payload.ticket) {
-    // Special egg: spend the pinned special ticket, not a normal token.
-    const key = payload.ticket === "epic" ? "epicTickets" : "luckyTickets";
-    const col = children[key];
-    const spent = await db
-      .update(children)
-      .set({ [key]: sql`${col} - 1` })
-      .where(and(eq(children.id, childId), gte(col, 1)))
-      .returning({ pullTokens: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].pullTokens; // normal balance unchanged
-  } else {
-    const spent = await db
-      .update(children)
-      .set({ pullTokens: sql`${children.pullTokens} - 1` })
-      .where(and(eq(children.id, childId), gte(children.pullTokens, 1)))
-      .returning({ balance: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].balance;
-  }
+  // Atomic spend — one column (rarity-pick, special ticket, or normal token).
+  // The pinned offer field picks which; missing both spends a normal token.
+  // Single-use: the guarded decrement makes the signed offer un-replayable.
+  const key: SpendableColumn = payload.pickRarity
+    ? pickTicketColumn(payload.pickRarity)
+    : payload.ticket
+      ? payload.ticket === "epic"
+        ? "epicTickets"
+        : "luckyTickets"
+      : "pullTokens";
+  const newBalance = await spendOneColumn(childId, key);
+  if (newBalance === null) return { outOfTokens: true };
 
   const [entry] = await db
     .insert(collections)
@@ -319,6 +298,35 @@ export async function claimEasterEgg(
     isDuplicate: entry.count > 1,
     newBalance,
   };
+}
+
+/** Children columns that hold a spendable balance (normal token or a ticket). */
+type SpendableColumn =
+  | "pullTokens"
+  | "epicTickets"
+  | "luckyTickets"
+  | "commonPickTickets"
+  | "rarePickTickets"
+  | "epicPickTickets"
+  | "legendaryPickTickets";
+
+/**
+ * Atomic guarded decrement of one spendable column (single-use claim). Returns
+ * the child's resulting normal token balance, or null if nothing was spent
+ * (guard failed → no copies left). Decrementing `pullTokens` returns its new
+ * value; decrementing a ticket column leaves `pullTokens` unchanged.
+ */
+async function spendOneColumn(
+  childId: string,
+  key: SpendableColumn,
+): Promise<number | null> {
+  const col = children[key];
+  const spent = await db
+    .update(children)
+    .set({ [key]: sql`${col} - 1` })
+    .where(and(eq(children.id, childId), gte(col, 1)))
+    .returning({ pullTokens: children.pullTokens });
+  return spent.length === 0 ? null : spent[0].pullTokens;
 }
 
 export interface SacrificeResult {
