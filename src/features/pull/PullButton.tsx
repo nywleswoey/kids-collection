@@ -74,64 +74,43 @@ export function PullButton({
     }
   }, [balance, play]);
 
-  function doPull() {
+  // Shared launch flow for every pull kind (normal, special ticket, rarity pick):
+  // sound cues, reset the picker, pin which ticket is redeeming, then dispatch.
+  // On success a normal card pull kicks off the slot-machine build-up (Inc7 FR1);
+  // any easter-egg outcome plays the picker-appear cue instead (Inc15 FR3).
+  function runPull(
+    action: () => Promise<PullOutcome>,
+    redeeming: { ticket: EggTicket | null; pick: Rarity | null },
+  ) {
     play("click");
     play("packOpen");
     setOutcome(null);
-    activeTicket.current = null;
-    activePick.current = null;
+    activeTicket.current = redeeming.ticket;
+    activePick.current = redeeming.pick;
     startTransition(async () => {
-      const res = await pullAction(themeId || undefined);
+      const res = await action();
       setOutcome(res);
       if (res.outOfTokens) {
         play("denied");
-      } else {
-        setBalance(res.newBalance);
-        if (res.easterEgg) {
-          play("easterEgg"); // Inc15 FR3: picker-appear cue
-        } else {
-          // Normal pull: slot-machine build-up before the reveal (Inc7 FR1).
-          setCycling(true);
-        }
+        return;
       }
+      setBalance(res.newBalance);
+      if (res.easterEgg) play("easterEgg");
+      else setCycling(true);
     });
   }
 
+  function doPull() {
+    runPull(() => pullAction(themeId || undefined), { ticket: null, pick: null });
+  }
+
   function doSpecialEgg(kind: EggTicket) {
-    play("click");
-    play("packOpen");
-    setOutcome(null);
-    activeTicket.current = kind;
-    activePick.current = null;
-    startTransition(async () => {
-      const res = await pullSpecialEggAction(kind);
-      setOutcome(res);
-      if (res.outOfTokens) {
-        play("denied");
-      } else {
-        setBalance(res.newBalance);
-        play("easterEgg"); // Inc15 FR3: special-ticket picker-appear cue
-      }
-    });
+    runPull(() => pullSpecialEggAction(kind), { ticket: kind, pick: null });
   }
 
   // Inc16 FR2: redeem a rarity-pick ticket → pick-1-of-5 of that rarity.
   function doRarityPick(rarity: Rarity) {
-    play("click");
-    play("packOpen");
-    setOutcome(null);
-    activeTicket.current = null;
-    activePick.current = rarity;
-    startTransition(async () => {
-      const res = await pullRarityPickAction(rarity);
-      setOutcome(res);
-      if (res.outOfTokens) {
-        play("denied");
-      } else {
-        setBalance(res.newBalance);
-        play("easterEgg");
-      }
-    });
+    runPull(() => pullRarityPickAction(rarity), { ticket: null, pick: rarity });
   }
 
   // On a successful egg claim, decrement the ticket that was spent (FR4/Inc16).
