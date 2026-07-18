@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/features/card/RarityThumb";
 import { CardModal } from "@/features/card/CardModal";
+import { raritySlotClass } from "@/features/binder/rarity-slot";
 import "@/features/binder/rarity-slot.css";
 
 /**
@@ -21,7 +22,7 @@ export function AdminCardSlot({ entry }: { entry: BinderCard }) {
         onClick={() => setOpen(true)}
         data-testid={`admin-card-expand-${entry.card.id}`}
         aria-label={`Expand ${entry.card.name}`}
-        className={`rslot rslot--${entry.card.rarity} relative overflow-hidden rounded-xl bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105`}
+        className={raritySlotClass(entry.card.rarity)}
       >
         <RarityThumb
           entry={entry}
