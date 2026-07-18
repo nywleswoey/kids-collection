@@ -16,6 +16,12 @@ import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
 
 const ZERO_PICKS: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
 
+// Special egg tickets share one button shape, differing only in emoji/label (FR4).
+const SPECIAL_TICKETS: { kind: EggTicket; emoji: string; label: string }[] = [
+  { kind: "epic", emoji: "✨", label: "Epic" },
+  { kind: "lucky", emoji: "🍀", label: "Lucky" },
+];
+
 export function PullButton({
   childId,
   initialBalance,
@@ -53,6 +59,7 @@ export function PullButton({
   // but greyed so they know a normal ticket is needed for it (B2=B).
   const askParent = shouldShowAskParent(balance, epic, lucky);
   const hasSpecial = epic > 0 || lucky > 0;
+  const specialCounts: Record<EggTicket, number> = { epic, lucky };
 
   // First-duplicate sacrifice hint (Inc13 FR4). Fire once the reveal is on
   // screen (after any roulette) for a normal-pull duplicate the child hasn't
@@ -191,28 +198,18 @@ export function PullButton({
       {/* Special egg tickets — guaranteed pick-1-of-5 (FR4). */}
       {epic > 0 || lucky > 0 ? (
         <div className="flex flex-wrap justify-center gap-3" data-testid="special-tickets">
-          {epic > 0 ? (
+          {SPECIAL_TICKETS.filter((t) => specialCounts[t.kind] > 0).map((t) => (
             <button
+              key={t.kind}
               type="button"
-              onClick={() => doSpecialEgg("epic")}
+              onClick={() => doSpecialEgg(t.kind)}
               disabled={pending}
-              data-testid="special-epic-button"
+              data-testid={`special-${t.kind}-button`}
               className="btn btn--primary press font-bold"
             >
-              ✨ Epic Pick ({epic})
+              {t.emoji} {t.label} Pick ({specialCounts[t.kind]})
             </button>
-          ) : null}
-          {lucky > 0 ? (
-            <button
-              type="button"
-              onClick={() => doSpecialEgg("lucky")}
-              disabled={pending}
-              data-testid="special-lucky-button"
-              className="btn btn--primary press font-bold"
-            >
-              🍀 Lucky Pick ({lucky})
-            </button>
-          ) : null}
+          ))}
         </div>
       ) : null}
 
