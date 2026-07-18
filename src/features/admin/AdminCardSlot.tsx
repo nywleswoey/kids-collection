@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import type { BinderCard } from "@/lib/types";
-import { RARITY_META } from "@/features/card/rarity";
+import { RarityThumb } from "@/features/card/RarityThumb";
 import { CardModal } from "@/features/card/CardModal";
 import "@/features/binder/rarity-slot.css";
 
@@ -14,7 +13,6 @@ import "@/features/binder/rarity-slot.css";
  */
 export function AdminCardSlot({ entry }: { entry: BinderCard }) {
   const [open, setOpen] = useState(false);
-  const meta = RARITY_META[entry.card.rarity];
 
   return (
     <div data-testid={`admin-card-${entry.card.id}`} className="flex flex-col gap-1">
@@ -25,19 +23,9 @@ export function AdminCardSlot({ entry }: { entry: BinderCard }) {
         aria-label={`Expand ${entry.card.name}`}
         className={`rslot rslot--${entry.card.rarity} relative overflow-hidden rounded-xl bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105`}
       >
-        {entry.count > 1 ? (
-          <span className="absolute right-1 top-1 z-10 rounded-full bg-black/70 px-1.5 text-xs font-bold">
-            x{entry.count}
-          </span>
-        ) : null}
-        <span className="rarity-badge">{meta.label}</span>
-        <Image
-          src={entry.card.imageUrl}
-          alt={entry.card.name}
-          width={256}
-          height={256}
-          loading="lazy"
-          className="aspect-square w-full object-cover"
+        <RarityThumb
+          entry={entry}
+          countClassName="absolute right-1 top-1 z-10 rounded-full bg-black/70 px-1.5 text-xs font-bold"
         />
       </button>
 
