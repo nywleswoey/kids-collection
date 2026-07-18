@@ -7,7 +7,7 @@ import { Card } from "@/features/card/Card";
 import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
 import { useSound } from "@/features/sound/useSound";
-import { rewardFanfare } from "@/features/sound/sfx";
+import { playFanfare } from "@/features/sound/sfx";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
 import "@/features/anim/anim.css";
@@ -60,8 +60,7 @@ export function EasterEggPicker({
     setFire((n) => n + 1);
     setPhase("revealed");
     // Inc15 FR2/FR3.3: layer the reward fanfare on the jackpot when epic/legendary.
-    const fanfare = rewardFanfare(result.card.rarity);
-    if (fanfare) play(fanfare);
+    playFanfare(play, result.card.rarity);
     onDone(result);
   }
 

@@ -6,7 +6,7 @@ import { Card } from "./Card";
 import { shouldAnimate } from "./rarity";
 import { useSound } from "@/features/sound/useSound";
 import { Confetti } from "@/features/anim/Confetti";
-import { isBigReveal, rewardFanfare } from "@/features/sound/sfx";
+import { isBigReveal, playFanfare } from "@/features/sound/sfx";
 import "./card.css";
 
 /**
@@ -24,8 +24,7 @@ export function RevealCard({ card }: { card: CardType }) {
     const finish = () => {
       setDone(true);
       play("reveal", card.rarity);
-      const fanfare = rewardFanfare(card.rarity); // Inc15 FR2: layer for epic/legendary
-      if (fanfare) play(fanfare);
+      playFanfare(play, card.rarity); // Inc15 FR2: layer for epic/legendary
       if (isBigReveal(card.rarity)) setBurst((n) => n + 1);
     };
 

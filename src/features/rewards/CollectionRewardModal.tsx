@@ -6,7 +6,7 @@ import { Card } from "@/features/card/Card";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
 import { useSound } from "@/features/sound/useSound";
-import { rewardFanfare } from "@/features/sound/sfx";
+import { playFanfare } from "@/features/sound/sfx";
 import type { PendingReward } from "./service";
 import { markRewardsShownAction } from "./actions";
 import "@/features/anim/anim.css";
@@ -34,8 +34,7 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
     markRewardsShownAction(rewards.map((r) => r.id));
     play("setComplete");
     setFire((n) => n + 1);
-    const fanfare = rewardFanfare(rewards[0].rarity);
-    if (fanfare) play(fanfare);
+    playFanfare(play, rewards[0].rarity);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,8 +46,7 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
     const n = idx + 1;
     if (n < rewards.length) {
       setFire((k) => k + 1);
-      const fanfare = rewardFanfare(rewards[n].rarity);
-      if (fanfare) play(fanfare);
+      playFanfare(play, rewards[n].rarity);
     }
     setIdx(n);
   }
