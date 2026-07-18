@@ -3,6 +3,7 @@
  * no audio files. Lazily unlocks the AudioContext on the first user gesture and
  * degrades to a silent no-op if Web Audio is unavailable or blocked (NFR4).
  */
+import { clamp } from "@/lib/math";
 import { sfxSpec, type SfxName } from "./sfx";
 
 type Ctx = AudioContext;
@@ -101,7 +102,7 @@ export function play(
     const spec = sfxSpec(name);
     const now = c.currentTime;
     const dur = spec.durationMs / 1000;
-    const clampedI = Math.max(0, Math.min(1, intensity));
+    const clampedI = clamp(intensity, 0, 1);
     const peak = spec.gain * (0.4 + 0.6 * clampedI) * (attenuate ? 0.4 : 1);
     const master = c.createGain();
     master.gain.value = 1;

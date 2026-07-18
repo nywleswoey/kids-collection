@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { clamp } from "@/lib/math";
 import { useOneShotBurst } from "./useOneShotBurst";
 
 const COLORS = ["#43e6c8", "#ffd45e", "#ff6ba6", "#8b7bff", "#5ee0ff"];
@@ -39,7 +40,7 @@ function build(count: number, seed: number): Particle[] {
  * `count` scales the burst (capped). Renders nothing under reduced motion.
  */
 export function Confetti({ fire, count = 60 }: { fire: number; count?: number }) {
-  const n = Math.min(MAX_PARTICLES, Math.max(0, count));
+  const n = clamp(count, 0, MAX_PARTICLES);
   const particles = useMemo(() => build(n, fire), [n, fire]);
   const visible = useOneShotBurst(fire, 1800);
 
