@@ -15,6 +15,17 @@ import {
   clearActiveProfile,
 } from "./active-profile";
 
+/**
+ * Run a parent-gated profile mutation, revalidating the admin profiles list
+ * and the play picker. Shared body of the create/update/remove entry points.
+ */
+async function parentMutate(run: () => Promise<unknown>): Promise<void> {
+  await requireParent();
+  await run();
+  revalidatePath("/admin/profiles");
+  revalidatePath("/play");
+}
+
 /** Select a child profile, then go to the play home. */
 export async function selectProfileAction(formData: FormData): Promise<void> {
   const childId = field(formData, "childId");
@@ -29,30 +40,25 @@ export async function switchProfileAction(): Promise<void> {
 }
 
 export async function createProfileAction(formData: FormData): Promise<void> {
-  await requireParent();
-  await createChild({
-    name: field(formData, "name"),
-    avatar: field(formData, "avatar"),
-  });
-  revalidatePath("/admin/profiles");
-  revalidatePath("/play");
+  await parentMutate(() =>
+    createChild({
+      name: field(formData, "name"),
+      avatar: field(formData, "avatar"),
+    }),
+  );
 }
 
 export async function updateProfileAction(formData: FormData): Promise<void> {
-  await requireParent();
-  await updateChild(field(formData, "id"), {
-    name: field(formData, "name"),
-    avatar: field(formData, "avatar"),
-  });
-  revalidatePath("/admin/profiles");
-  revalidatePath("/play");
+  await parentMutate(() =>
+    updateChild(field(formData, "id"), {
+      name: field(formData, "name"),
+      avatar: field(formData, "avatar"),
+    }),
+  );
 }
 
 export async function removeProfileAction(formData: FormData): Promise<void> {
-  await requireParent();
-  await removeChild(field(formData, "id"));
-  revalidatePath("/admin/profiles");
-  revalidatePath("/play");
+  await parentMutate(() => removeChild(field(formData, "id")));
 }
 
 export async function signOutAction(): Promise<void> {
