@@ -1,4 +1,4 @@
-import { RARITIES, type Rarity } from "@/lib/types";
+import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
 import type { BinderCard, ThemeSection } from "@/lib/types";
 
 /**
@@ -12,7 +12,7 @@ export type RarityCount = Record<Rarity, number>;
 /** Owned-only tally per rarity across the given sections (respects whatever
  * category filtering the caller already applied — Q4.1 AND-filter, Q4.2=A). */
 export function countOwnedByRarity(sections: ThemeSection[]): RarityCount {
-  const counts: RarityCount = { common: 0, rare: 0, epic: 0, legendary: 0 };
+  const counts: RarityCount = zeroRarityCount();
   for (const section of sections) {
     for (const bc of section.cards) {
       if (bc.owned) counts[bc.card.rarity] += 1;

@@ -3,6 +3,12 @@
 export const RARITIES = ["common", "rare", "epic", "legendary"] as const;
 export type Rarity = (typeof RARITIES)[number];
 
+/** Fresh zeroed count-per-rarity map. Returns a new object each call so callers
+ * that mutate the tally in place don't share module-level state. */
+export function zeroRarityCount(): Record<Rarity, number> {
+  return { common: 0, rare: 0, epic: 0, legendary: 0 };
+}
+
 /** Drop weights for the pull distribution (BR1). Must sum to 100. */
 export const RARITY_WEIGHTS: Record<Rarity, number> = {
   common: 60,

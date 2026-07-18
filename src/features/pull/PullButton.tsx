@@ -12,9 +12,9 @@ import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 import { shouldShowAskParent } from "./ticket-display";
 import { RARITY_META } from "@/features/card/rarity";
-import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
+import { RARITIES, zeroRarityCount, type EggTicket, type Rarity } from "@/lib/types";
 
-const ZERO_PICKS: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
+const ZERO_PICKS: Record<Rarity, number> = zeroRarityCount();
 
 // Special egg tickets share one button shape, differing only in emoji/label (FR4).
 const SPECIAL_TICKETS: { kind: EggTicket; emoji: string; label: string }[] = [

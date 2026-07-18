@@ -7,9 +7,9 @@ import {
   grantRarityPickTicketAction,
 } from "@/features/pull/actions";
 import { RARITY_META } from "@/features/card/rarity";
-import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
+import { RARITIES, zeroRarityCount, type EggTicket, type Rarity } from "@/lib/types";
 
-const ZERO_PICKS: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
+const ZERO_PICKS: Record<Rarity, number> = zeroRarityCount();
 
 /** A counter display with +1 / −1 grant buttons; −1 is disabled at zero. */
 function Stepper({
