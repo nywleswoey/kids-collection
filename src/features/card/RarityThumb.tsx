@@ -1,5 +1,5 @@
-import Image from "next/image";
 import type { BinderCard } from "@/lib/types";
+import { CardImage } from "@/features/card/CardImage";
 import { RARITY_META } from "@/features/card/rarity";
 import "@/features/binder/rarity-slot.css";
 
@@ -21,14 +21,7 @@ export function RarityThumb({
         <span className={countClassName}>x{entry.count}</span>
       ) : null}
       <span className="rarity-badge">{meta.label}</span>
-      <Image
-        src={entry.card.imageUrl}
-        alt={entry.card.name}
-        width={256}
-        height={256}
-        loading="lazy"
-        className="aspect-square w-full object-cover"
-      />
+      <CardImage src={entry.card.imageUrl} alt={entry.card.name} dim={256} loading="lazy" />
     </>
   );
 }

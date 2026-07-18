@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import type { Card as CardType } from "@/lib/types";
+import { CardImage } from "@/features/card/CardImage";
 import { RARITY_META } from "@/features/card/rarity";
 import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { useSound } from "@/features/sound/useSound";
@@ -242,13 +242,7 @@ function CardGrid({
             style={{ borderColor: meta.frame }}
           >
             <span className="rarity-badge">{meta.label}</span>
-            <Image
-              src={t.card.imageUrl}
-              alt={t.card.name}
-              width={200}
-              height={200}
-              className="aspect-square w-full object-cover"
-            />
+            <CardImage src={t.card.imageUrl} alt={t.card.name} dim={200} />
             <span className="pill absolute bottom-1 right-1 text-xs">×{t.count}</span>
           </button>
         );
@@ -263,7 +257,7 @@ function CardMini({ card, label }: { card: CardType; label: string }) {
     <div className="flex flex-col items-center gap-1">
       <span className="text-xs text-[color:var(--ink-soft)]">{label}</span>
       <div className="relative overflow-hidden rounded-xl border-2" style={{ borderColor: meta.frame }}>
-        <Image src={card.imageUrl} alt={card.name} width={110} height={110} className="aspect-square w-[110px] object-cover" />
+        <CardImage src={card.imageUrl} alt={card.name} dim={110} className="aspect-square w-[110px] object-cover" />
       </div>
       <span className="text-xs font-semibold">{meta.label}</span>
     </div>

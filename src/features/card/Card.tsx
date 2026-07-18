@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import type { Card as CardType } from "@/lib/types";
+import { CardImage } from "./CardImage";
 import { rarityClass, RARITY_LABEL } from "./rarity";
 import { useCardTilt } from "./useCardTilt";
 import "./card.css";
@@ -34,14 +34,7 @@ export function Card({
         <span className="badge-count absolute right-2 top-2">x{count}</span>
       ) : null}
 
-      <Image
-        src={card.imageUrl}
-        alt={card.name}
-        width={512}
-        height={512}
-        className="aspect-square w-full object-cover"
-        priority={interactive}
-      />
+      <CardImage src={card.imageUrl} alt={card.name} dim={512} priority={interactive} />
 
       <div className="flex flex-col gap-1.5 bg-black/35 p-3.5 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-2">

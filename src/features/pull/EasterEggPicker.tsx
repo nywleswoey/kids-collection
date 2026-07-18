@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { CardImage } from "@/features/card/CardImage";
 import { useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
@@ -111,13 +111,7 @@ export function EasterEggPicker({
                   ➕ ×{owned}
                 </span>
               )}
-              <Image
-                src={c.imageUrl}
-                alt={c.name}
-                width={200}
-                height={200}
-                className="aspect-square w-full object-cover"
-              />
+              <CardImage src={c.imageUrl} alt={c.name} dim={200} />
             </button>
           );
         })}

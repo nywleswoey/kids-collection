@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { CardImage } from "@/features/card/CardImage";
 import type { Card, Rarity } from "@/lib/types";
 import { shouldAnimate } from "@/features/card/rarity";
 import { rarityClass } from "@/features/card/rarity";
@@ -86,14 +86,7 @@ export function CardRoulette({
       aria-hidden
     >
       <div className="card__holo" />
-      <Image
-        src={shown.imageUrl}
-        alt=""
-        width={512}
-        height={512}
-        className="aspect-square w-full object-cover"
-        priority
-      />
+      <CardImage src={shown.imageUrl} alt="" dim={512} priority />
     </div>
   );
 }
