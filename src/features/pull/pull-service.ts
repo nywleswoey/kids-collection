@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { children, collections } from "@/db/schema";
 import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
 import { drawCard } from "@/lib/logic";
+import { env } from "@/lib/env";
 import { listCards, getCard } from "@/features/pool/service";
 import {
   rollEasterEgg,
@@ -53,9 +54,6 @@ export type PullOutcome =
   | { outOfTokens: true };
 
 const OFFER_TTL_MS = 120_000; // 2 min
-function authSecret(): string {
-  return process.env.AUTH_SECRET ?? "";
-}
 
 /** Refund one normal pull token (add 1). Shared by the egg re-spend path and
  * pull()'s best-effort write-failure refund. */
@@ -81,7 +79,7 @@ async function eggOutcome(
   const cardIds = choices.map((c) => c.id);
   const offer = await makeOffer(
     { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, ...offerExtra },
-    authSecret(),
+    env.authSecret,
   );
   const ownedCounts = await ownedCountsFor(childId, cardIds);
   return {
@@ -273,7 +271,7 @@ export async function claimEasterEgg(
   offer: string,
   chosenCardId: string,
 ): Promise<PullOutcome> {
-  const payload = await verifyOffer(offer, authSecret(), Date.now());
+  const payload = await verifyOffer(offer, env.authSecret, Date.now());
   if (!payload) throw new Error("claimEasterEgg: invalid or expired offer");
   if (payload.childId !== childId) throw new Error("claimEasterEgg: child mismatch");
   if (!payload.cardIds.includes(chosenCardId)) {
