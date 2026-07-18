@@ -13,7 +13,7 @@ import {
   pickRarityChoices,
 } from "./easter-egg";
 import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
-import { pickTicketColumn, type BalanceColumn } from "./pick-tickets";
+import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import { requireParent } from "@/features/auth/guard";
@@ -238,7 +238,7 @@ export async function pullSpecialEgg(
   childId: string,
   kind: EggTicket,
 ): Promise<PullOutcome> {
-  const col = kind === "epic" ? children.epicTickets : children.luckyTickets;
+  const col = children[specialTicketColumn(kind)];
   const chooseFrom = (pool: Card[]) =>
     kind === "epic" ? pickEasterEggChoices(pool, 5) : pickCommonRareChoices(pool, 5);
   return offerTicketEgg(childId, col, { ticket: kind }, chooseFrom, "pullSpecialEgg");
@@ -289,9 +289,7 @@ export async function claimEasterEgg(
   const key: BalanceColumn = payload.pickRarity
     ? pickTicketColumn(payload.pickRarity)
     : payload.ticket
-      ? payload.ticket === "epic"
-        ? "epicTickets"
-        : "luckyTickets"
+      ? specialTicketColumn(payload.ticket)
       : "pullTokens";
   const newBalance = await spendOneColumn(childId, key);
   if (newBalance === null) return { outOfTokens: true };

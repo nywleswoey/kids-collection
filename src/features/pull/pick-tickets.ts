@@ -1,4 +1,4 @@
-import { RARITIES, type Rarity } from "@/lib/types";
+import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
 
 /**
  * Rarity-pick ticket helpers (Inc16 FR2). Maps the four per-rarity columns to a
@@ -22,6 +22,11 @@ const COLUMN: Record<Rarity, keyof PickTicketRow> = {
 /** Drizzle column key for a rarity's pick-ticket counter. */
 export function pickTicketColumn(rarity: Rarity): keyof PickTicketRow {
   return COLUMN[rarity];
+}
+
+/** Drizzle column key for a special egg ticket's counter (Inc9 FR4). */
+export function specialTicketColumn(kind: EggTicket): BalanceColumn {
+  return kind === "epic" ? "epicTickets" : "luckyTickets";
 }
 
 /**

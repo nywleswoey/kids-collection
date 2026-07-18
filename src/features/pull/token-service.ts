@@ -3,7 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
-import { pickTicketColumn, type BalanceColumn } from "./pick-tickets";
+import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
 import type { EggTicket, Rarity } from "@/lib/types";
 
 /**
@@ -60,7 +60,7 @@ export async function grantSpecial(
   kind: EggTicket,
   delta: number,
 ): Promise<number> {
-  return grantColumn(childId, kind === "epic" ? "epicTickets" : "luckyTickets", delta, "grantSpecial");
+  return grantColumn(childId, specialTicketColumn(kind), delta, "grantSpecial");
 }
 
 /**
