@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getBinder } from "@/features/binder/service";
 import { GalaxyView } from "@/features/binder/GalaxyView";
-import { getPendingRewards } from "@/features/rewards/service";
+import { rewardService } from "@/features/rewards/service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage() {
@@ -10,7 +10,7 @@ export default async function BinderPage() {
 
   const [binder, pendingRewards] = await Promise.all([
     getBinder(child.id),
-    getPendingRewards(child.id),
+    rewardService.getPendingRewards(child.id),
   ]);
 
   return (
