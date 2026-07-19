@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
-import { rewardFanfare } from "@/features/sound/sfx";
+import { playReward } from "@/features/sound/sfx";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { sacrificeAction } from "./actions";
 
 /**
@@ -32,10 +33,8 @@ export function SacrificePanel({
       try {
         const res = await sacrificeAction(cardId);
         setResult({ ticketRarity: res.ticketRarity });
-        play("setComplete");
-        // Inc15/16: fanfare for an epic/legendary pick ticket earned.
-        const fanfare = rewardFanfare(res.ticketRarity);
-        if (fanfare) play(fanfare);
+        // Inc15/16: set-complete cue + fanfare for an epic/legendary pick ticket.
+        playReward(play, res.ticketRarity);
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
         play("denied");
@@ -76,11 +75,11 @@ export function SacrificePanel({
       <p className="text-xs text-[color:var(--ink-mute)]">
         Burns 3 copies for a random card of the same or higher tier.
       </p>
-      {error ? (
-        <p data-testid="sacrifice-error" className="text-sm text-red-300">
-          {error}
-        </p>
-      ) : null}
+      <ErrorBanner
+        testId="sacrifice-error"
+        message={error}
+        className="text-sm text-red-300"
+      />
     </div>
   );
 }

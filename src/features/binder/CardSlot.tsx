@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
-import { RARITY_META } from "@/features/card/rarity";
+import { RarityThumb } from "@/features/card/RarityThumb";
 import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
+import { raritySlotClass } from "./rarity-slot";
 import "./rarity-slot.css";
 
 /** Owned card thumbnail (tappable → detail) or a locked silhouette.
@@ -37,26 +37,13 @@ export function CardSlot({
     return <AdminCardSlot entry={entry} />;
   }
 
-  const meta = RARITY_META[entry.card.rarity];
-
   return (
     <Link
       href={`/play/binder/${entry.card.id}`}
       data-testid={`card-slot-${entry.card.id}`}
-      className={`slot-pop rslot rslot--${entry.card.rarity} relative block overflow-hidden rounded-xl bg-white/10 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:scale-105`}
+      className={`slot-pop block ${raritySlotClass(entry.card.rarity)}`}
     >
-      {entry.count > 1 ? (
-        <span className="badge-count absolute right-1 top-1">x{entry.count}</span>
-      ) : null}
-      <span className="rarity-badge">{meta.label}</span>
-      <Image
-        src={entry.card.imageUrl}
-        alt={entry.card.name}
-        width={256}
-        height={256}
-        loading="lazy"
-        className="aspect-square w-full object-cover"
-      />
+      <RarityThumb entry={entry} countClassName="badge-count absolute right-1 top-1" />
     </Link>
   );
 }

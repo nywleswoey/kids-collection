@@ -3,13 +3,33 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { children } from "@/db/schema";
 import { requireParent } from "@/features/auth/guard";
-import { pickTicketColumn } from "./pick-tickets";
+import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
 import type { EggTicket, Rarity } from "@/lib/types";
 
-const TICKET_COL = {
-  epic: children.epicTickets,
-  lucky: children.luckyTickets,
-} as const;
+/**
+ * Parent-only clamped grant/adjust of one integer children column (U4-BR8):
+ * validate the delta, apply GREATEST(0, col + delta) atomically, and return the
+ * new balance. Shared body of grant / grantSpecial / grantPickTicket.
+ */
+async function grantColumn(
+  childId: string,
+  key: BalanceColumn,
+  delta: number,
+  label: string,
+): Promise<number> {
+  await requireParent();
+  if (!Number.isInteger(delta)) throw new Error(`${label}: delta must be an integer`);
+
+  const col = children[key];
+  const [row] = await db
+    .update(children)
+    .set({ [key]: sql`GREATEST(0, ${col} + ${delta})` })
+    .where(eq(children.id, childId))
+    .returning({ balance: col });
+
+  if (!row) throw new Error(`${label}: child not found`);
+  return row.balance;
+}
 
 /** Current pull-token balance (F2). */
 export async function getBalance(childId: string): Promise<number> {
@@ -40,18 +60,7 @@ export async function grantSpecial(
   kind: EggTicket,
   delta: number,
 ): Promise<number> {
-  await requireParent();
-  if (!Number.isInteger(delta)) throw new Error("grantSpecial: delta must be an integer");
-
-  const col = TICKET_COL[kind];
-  const [row] = await db
-    .update(children)
-    .set({ [kind === "epic" ? "epicTickets" : "luckyTickets"]: sql`GREATEST(0, ${col} + ${delta})` })
-    .where(eq(children.id, childId))
-    .returning({ balance: col });
-
-  if (!row) throw new Error("grantSpecial: child not found");
-  return row.balance;
+  return grantColumn(childId, specialTicketColumn(kind), delta, "grantSpecial");
 }
 
 /**
@@ -63,19 +72,7 @@ export async function grantPickTicket(
   rarity: Rarity,
   delta: number,
 ): Promise<number> {
-  await requireParent();
-  if (!Number.isInteger(delta)) throw new Error("grantPickTicket: delta must be an integer");
-
-  const key = pickTicketColumn(rarity);
-  const col = children[key];
-  const [row] = await db
-    .update(children)
-    .set({ [key]: sql`GREATEST(0, ${col} + ${delta})` })
-    .where(eq(children.id, childId))
-    .returning({ balance: col });
-
-  if (!row) throw new Error("grantPickTicket: child not found");
-  return row.balance;
+  return grantColumn(childId, pickTicketColumn(rarity), delta, "grantPickTicket");
 }
 
 /**
@@ -83,15 +80,5 @@ export async function grantPickTicket(
  * Returns the new balance.
  */
 export async function grant(childId: string, delta: number): Promise<number> {
-  await requireParent();
-  if (!Number.isInteger(delta)) throw new Error("grant: delta must be an integer");
-
-  const [row] = await db
-    .update(children)
-    .set({ pullTokens: sql`GREATEST(0, ${children.pullTokens} + ${delta})` })
-    .where(eq(children.id, childId))
-    .returning({ balance: children.pullTokens });
-
-  if (!row) throw new Error("grant: child not found");
-  return row.balance;
+  return grantColumn(childId, "pullTokens", delta, "grant");
 }

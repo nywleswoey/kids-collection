@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { unlockAdminAction } from "./unlock-action";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
+import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
 
 /** Passcode entry for the admin gate (U4-FR1). Generic error on failure. */
 export function UnlockForm() {
@@ -40,17 +42,14 @@ export function UnlockForm() {
         autoFocus
         placeholder="Passcode"
         data-testid="admin-passcode-input"
-        className="rounded-xl border border-white/15 bg-black/25 px-4 py-2.5 text-center text-[color:var(--ink)] outline-none transition focus:border-[color:var(--brand-1)] focus:ring-2 focus:ring-[color:var(--brand-1)]/40"
+        className={`${TEXT_INPUT_CLASS} text-center`}
       />
 
-      {error ? (
-        <p
-          data-testid="admin-passcode-error"
-          className="text-center text-sm text-red-300"
-        >
-          Incorrect passcode.
-        </p>
-      ) : null}
+      <ErrorBanner
+        testId="admin-passcode-error"
+        message={error ? "Incorrect passcode." : null}
+        className="text-center text-sm text-red-300"
+      />
 
       <button
         type="submit"

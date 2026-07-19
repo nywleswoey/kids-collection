@@ -1,7 +1,8 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
+import { getCardCount } from "@/db/collection-reads";
 import { listThemes, listCards } from "@/features/pool/service";
 import { themeProgress } from "@/lib/logic";
 import type { BinderView, CollectionEntry, ThemeSection } from "@/lib/types";
@@ -55,11 +56,9 @@ export async function getCardDetail(
   childId: string,
   cardId: string,
 ): Promise<{ card: import("@/lib/types").Card; count: number } | null> {
-  const row = await db.query.collections.findFirst({
-    where: and(eq(collections.childId, childId), eq(collections.cardId, cardId)),
-  });
-  if (!row || row.count < 1) return null;
+  const count = await getCardCount(childId, cardId);
+  if (count < 1) return null;
   const { getCard } = await import("@/features/pool/service");
   const card = await getCard(cardId);
-  return card ? { card, count: row.count } : null;
+  return card ? { card, count } : null;
 }

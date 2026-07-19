@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { prefersReducedMotion } from "@/lib/motion";
 import type { Rarity } from "@/lib/types";
 import { play as enginePlay, unlock } from "./AudioEngine";
 import { startBgm, stopBgm } from "./bgm";
@@ -29,11 +30,6 @@ export interface SoundContextValue {
 }
 
 export const SoundContext = createContext<SoundContextValue | null>(null);
-
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
 export function SoundProvider({ children }: { children: ReactNode }) {
   // Start from defaults for a stable first render, then hydrate from storage.

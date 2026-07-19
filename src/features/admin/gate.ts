@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { makeToken, verifyToken } from "./gate-token";
+import { env } from "@/lib/env";
 
 /**
  * Admin passcode gate (U4-FR1, Security). The passcode lives only in the
@@ -16,10 +17,6 @@ export const GATE_COOKIE = "kc.admin.gate";
 // activity. Keep in sync with GATE_TTL_MS in middleware.ts.
 export const GATE_TTL_MS = 20_000; // 20s
 const TTL_MS = GATE_TTL_MS;
-
-function secret(): string {
-  return process.env.AUTH_SECRET ?? "";
-}
 
 /** SHA-256 digest of a string (fixed length → safe for constant-time compare). */
 async function sha256(s: string): Promise<Uint8Array> {
@@ -47,7 +44,7 @@ export async function verifyPasscode(input: string): Promise<boolean> {
 
 /** Issue the gate cookie after a successful passcode entry. */
 export async function setGateCookie(): Promise<void> {
-  const token = await makeToken(Date.now() + TTL_MS, secret());
+  const token = await makeToken(Date.now() + TTL_MS, env.authSecret);
   const store = await cookies();
   store.set(GATE_COOKIE, token, {
     httpOnly: true,
@@ -62,7 +59,7 @@ export async function setGateCookie(): Promise<void> {
 export async function hasAdminGate(): Promise<boolean> {
   const store = await cookies();
   const token = store.get(GATE_COOKIE)?.value;
-  return verifyToken(token, secret(), Date.now());
+  return verifyToken(token, env.authSecret, Date.now());
 }
 
 /** Enforce the gate in admin pages/actions; redirect to unlock if missing. */

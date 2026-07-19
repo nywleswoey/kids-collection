@@ -1,15 +1,11 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getBalance, getSpecialBalances } from "@/features/pull/token-service";
 import { PullButton } from "@/features/pull/PullButton";
 import { listCards, listThemes } from "@/features/pool/service";
 
 export default async function PullPage() {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play");
+  const child = await requireActivePlayer();
 
   const balance = await getBalance(child.id);
   const [allCards, themes, special] = await Promise.all([

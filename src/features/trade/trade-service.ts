@@ -1,7 +1,9 @@
 import "server-only";
-import { and, eq, gte, sql } from "drizzle-orm";
+import { and, eq, gte } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
+import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
+import { getCardCount } from "@/db/collection-reads";
 import { listCards, getCard } from "@/features/pool/service";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import type { Card, Rarity } from "@/lib/types";
@@ -39,12 +41,7 @@ export async function listMatchesForRarity(
 }
 
 /** Read one collection entry's count for (child, card), 0 if absent. */
-async function ownedCount(childId: string, cardId: string): Promise<number> {
-  const row = await db.query.collections.findFirst({
-    where: and(eq(collections.childId, childId), eq(collections.cardId, cardId)),
-  });
-  return row?.count ?? 0;
-}
+const ownedCount = getCardCount;
 
 /**
  * Atomic two-sided swap (FR4). Re-validates server-side, then commits 4 writes
@@ -76,31 +73,13 @@ export async function executeTrade(input: {
   try {
     await db.batch([
       // A gives aCard. `count >= 2` guard + CHECK(count>=1) → non-dup rolls back.
-      db
-        .update(collections)
-        .set({ count: sql`${collections.count} - 1` })
-        .where(and(eq(collections.childId, aChildId), eq(collections.cardId, aCardId), gte(collections.count, 2))),
+      removeCardCopy(aChildId, aCardId),
       // A receives bCard.
-      db
-        .insert(collections)
-        .values({ childId: aChildId, cardId: bCardId, count: 1 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} + 1` },
-        }),
+      addCardCopy(aChildId, bCardId),
       // B gives bCard.
-      db
-        .update(collections)
-        .set({ count: sql`${collections.count} - 1` })
-        .where(and(eq(collections.childId, bChildId), eq(collections.cardId, bCardId), gte(collections.count, 2))),
+      removeCardCopy(bChildId, bCardId),
       // B receives aCard.
-      db
-        .insert(collections)
-        .values({ childId: bChildId, cardId: aCardId, count: 1 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} + 1` },
-        }),
+      addCardCopy(bChildId, aCardId),
     ]);
   } catch {
     return { ok: false, reason: "That trade is no longer valid — try again." };

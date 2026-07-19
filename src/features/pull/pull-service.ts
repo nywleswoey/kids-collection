@@ -1,8 +1,11 @@
 import "server-only";
 import { and, eq, gte, inArray, sql } from "drizzle-orm";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { children, collections } from "@/db/schema";
+import { addCardCopy, removeCardCopy } from "@/db/collection-writes";
 import { drawCard } from "@/lib/logic";
+import { env } from "@/lib/env";
 import { listCards, getCard } from "@/features/pool/service";
 import {
   rollEasterEgg,
@@ -11,8 +14,9 @@ import {
   pickRarityChoices,
 } from "./easter-egg";
 import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
-import { pickTicketColumn } from "./pick-tickets";
-import { makeOffer, verifyOffer } from "./offer";
+import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
+import { getBalance } from "./token-service";
+import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 import { grantCompletionRewards } from "@/features/rewards/service";
 import { requireParent } from "@/features/auth/guard";
 import type { Card, PullResult, Rarity, EggTicket } from "@/lib/types";
@@ -51,8 +55,42 @@ export type PullOutcome =
   | { outOfTokens: true };
 
 const OFFER_TTL_MS = 120_000; // 2 min
-function authSecret(): string {
-  return process.env.AUTH_SECRET ?? "";
+
+/** Refund one normal pull token (add 1). Shared by the egg re-spend path and
+ * pull()'s best-effort write-failure refund. */
+function refundPullToken(childId: string) {
+  return db
+    .update(children)
+    .set({ pullTokens: sql`${children.pullTokens} + 1` })
+    .where(eq(children.id, childId));
+}
+
+/**
+ * Assemble a pick-1-of-N easter-egg outcome: sign the offer (pure crypto,
+ * always FIRST so a caller's later side-effect can't double-fire on failure),
+ * annotate owned counts, and return with the given normal-token balance.
+ * `offerExtra` pins the claim column (special/rarity ticket) when present.
+ */
+async function eggOutcome(
+  childId: string,
+  choices: Card[],
+  newBalance: number,
+  offerExtra: Partial<OfferPayload> = {},
+): Promise<EasterEggOutcome> {
+  const cardIds = choices.map((c) => c.id);
+  const offer = await makeOffer(
+    { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, ...offerExtra },
+    env.authSecret,
+  );
+  const ownedCounts = await ownedCountsFor(childId, cardIds);
+  return {
+    outOfTokens: false,
+    easterEgg: true,
+    choices,
+    ownedCounts,
+    offer,
+    newBalance,
+  };
 }
 
 /**
@@ -65,26 +103,33 @@ async function makeEggOutcome(
   choices: Card[],
   newBalance: number,
 ): Promise<EasterEggOutcome> {
-  const offer = await makeOffer(
-    {
-      childId,
-      cardIds: choices.map((c) => c.id),
-      exp: Date.now() + OFFER_TTL_MS,
-    },
-    authSecret(),
-  );
-  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
-  await db
-    .update(children)
-    .set({ pullTokens: sql`${children.pullTokens} + 1` })
-    .where(eq(children.id, childId));
+  const outcome = await eggOutcome(childId, choices, newBalance + 1);
+  await refundPullToken(childId);
+  return outcome;
+}
+
+/**
+ * Grant one copy of a card to the child and return the standard card outcome:
+ * atomically upsert the collection count, apply any (theme, rarity)
+ * set-completion bonus (Inc16 FR5), and return with the duplicate flag plus the
+ * given balance. Shared card-grant tail of pull() and claimEasterEgg().
+ */
+async function grantCardOutcome(
+  childId: string,
+  card: Card,
+  newBalance: number,
+): Promise<PullOutcome> {
+  const [entry] = await addCardCopy(childId, card.id).returning({
+    count: collections.count,
+  });
+
+  await grantCompletionRewards(childId, [card.id]);
+
   return {
     outOfTokens: false,
-    easterEgg: true,
-    choices,
-    ownedCounts,
-    offer,
-    newBalance: newBalance + 1,
+    card,
+    isDuplicate: entry.count > 1,
+    newBalance,
   };
 }
 
@@ -128,37 +173,58 @@ export async function pull(
     const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
     const card = drawCard(drawPool.length > 0 ? drawPool : pool);
 
-    // 3) Upsert collection count atomically.
-    const [entry] = await db
-      .insert(collections)
-      .values({ childId, cardId: card.id, count: 1 })
-      .onConflictDoUpdate({
-        target: [collections.childId, collections.cardId],
-        set: { count: sql`${collections.count} + 1` },
-      })
-      .returning({ count: collections.count });
-
-    // Inc16 FR5: adding this card may complete a (theme, rarity) set → bonus.
-    await grantCompletionRewards(childId, [card.id]);
-
-    return {
-      outOfTokens: false,
-      card,
-      isDuplicate: entry.count > 1,
-      newBalance,
-    };
+    // 3) Upsert collection count atomically + apply any set-completion bonus.
+    return await grantCardOutcome(childId, card, newBalance);
   } catch (err) {
     // 4) Best-effort refund (U4-BR6).
     try {
-      await db
-        .update(children)
-        .set({ pullTokens: sql`${children.pullTokens} + 1` })
-        .where(eq(children.id, childId));
+      await refundPullToken(childId);
     } catch (refundErr) {
       console.error(`pull: refund failed for ${childId}`, refundErr);
     }
     throw err;
   }
+}
+
+/**
+ * Shared tail for ticket-gated eggs (special epic/lucky + rarity-pick): the
+ * ticket is NOT spent here — spent atomically at claim (single-use), and the
+ * offer pins the ticket via `offerExtra`. Builds the signed offer over the given
+ * choices, annotates owned counts, and returns the current (unchanged) normal
+ * token balance.
+ */
+async function makeTicketEggOutcome(
+  childId: string,
+  choices: Card[],
+  offerExtra: Partial<OfferPayload>,
+): Promise<EasterEggOutcome> {
+  return eggOutcome(childId, choices, await getBalance(childId), offerExtra);
+}
+
+/**
+ * Shared body for the ticket-gated egg entry points: guard on the ticket
+ * column (>= 1 held), draw the pick-1-of-5 from the FULL pool, and hand off to
+ * makeTicketEggOutcome. The ticket is NOT spent here — spent atomically at claim
+ * (single-use); `offerExtra` pins which column claim decrements. Returns
+ * out-of-tokens when no ticket is held.
+ */
+async function offerTicketEgg(
+  childId: string,
+  col: AnyPgColumn,
+  offerExtra: Partial<OfferPayload>,
+  chooseFrom: (pool: Card[]) => Card[],
+  label: string,
+): Promise<PullOutcome> {
+  const [row] = await db
+    .select({ n: col })
+    .from(children)
+    .where(eq(children.id, childId));
+  if (!row || row.n < 1) return { outOfTokens: true };
+
+  const choices = chooseFrom(await listCards());
+  if (choices.length === 0) throw new Error(`${label}: no eligible cards`);
+
+  return makeTicketEggOutcome(childId, choices, offerExtra);
 }
 
 /**
@@ -170,44 +236,10 @@ export async function pullSpecialEgg(
   childId: string,
   kind: EggTicket,
 ): Promise<PullOutcome> {
-  const col = kind === "epic" ? children.epicTickets : children.luckyTickets;
-  const [row] = await db
-    .select({ n: col })
-    .from(children)
-    .where(eq(children.id, childId));
-  if (!row || row.n < 1) return { outOfTokens: true };
-
-  const pool = await listCards();
-  const choices =
-    kind === "epic"
-      ? pickEasterEggChoices(pool, 5)
-      : pickCommonRareChoices(pool, 5);
-  if (choices.length === 0) throw new Error("pullSpecialEgg: no eligible cards");
-
-  const offer = await makeOffer(
-    {
-      childId,
-      cardIds: choices.map((c) => c.id),
-      exp: Date.now() + OFFER_TTL_MS,
-      ticket: kind,
-    },
-    authSecret(),
-  );
-
-  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
-  // Special egg costs no normal token; balance unchanged until claim.
-  const balRow = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-    columns: { pullTokens: true },
-  });
-  return {
-    outOfTokens: false,
-    easterEgg: true,
-    choices,
-    ownedCounts,
-    offer,
-    newBalance: balRow?.pullTokens ?? 0,
-  };
+  const col = children[specialTicketColumn(kind)];
+  const chooseFrom = (pool: Card[]) =>
+    kind === "epic" ? pickEasterEggChoices(pool, 5) : pickCommonRareChoices(pool, 5);
+  return offerTicketEgg(childId, col, { ticket: kind }, chooseFrom, "pullSpecialEgg");
 }
 
 /**
@@ -220,39 +252,8 @@ export async function pullRarityPick(
   rarity: Rarity,
 ): Promise<PullOutcome> {
   const col = children[pickTicketColumn(rarity)];
-  const [row] = await db
-    .select({ n: col })
-    .from(children)
-    .where(eq(children.id, childId));
-  if (!row || row.n < 1) return { outOfTokens: true };
-
-  const pool = await listCards();
-  const choices = pickRarityChoices(pool, rarity, 5);
-  if (choices.length === 0) throw new Error("pullRarityPick: no eligible cards");
-
-  const offer = await makeOffer(
-    {
-      childId,
-      cardIds: choices.map((c) => c.id),
-      exp: Date.now() + OFFER_TTL_MS,
-      pickRarity: rarity,
-    },
-    authSecret(),
-  );
-
-  const ownedCounts = await ownedCountsFor(childId, choices.map((c) => c.id));
-  const balRow = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-    columns: { pullTokens: true },
-  });
-  return {
-    outOfTokens: false,
-    easterEgg: true,
-    choices,
-    ownedCounts,
-    offer,
-    newBalance: balRow?.pullTokens ?? 0,
-  };
+  const chooseFrom = (pool: Card[]) => pickRarityChoices(pool, rarity, 5);
+  return offerTicketEgg(childId, col, { pickRarity: rarity }, chooseFrom, "pullRarityPick");
 }
 
 /**
@@ -267,7 +268,7 @@ export async function claimEasterEgg(
   offer: string,
   chosenCardId: string,
 ): Promise<PullOutcome> {
-  const payload = await verifyOffer(offer, authSecret(), Date.now());
+  const payload = await verifyOffer(offer, env.authSecret, Date.now());
   if (!payload) throw new Error("claimEasterEgg: invalid or expired offer");
   if (payload.childId !== childId) throw new Error("claimEasterEgg: child mismatch");
   if (!payload.cardIds.includes(chosenCardId)) {
@@ -280,58 +281,37 @@ export async function claimEasterEgg(
   const card = await getCard(chosenCardId);
   if (!card) throw new Error("claimEasterEgg: card not found");
 
-  // Atomic spend — one ticket (special, rarity-pick, or normal). Single-use.
-  let newBalance: number;
-  if (payload.pickRarity) {
-    // Rarity-pick ticket (Inc16 FR2): spend the matching {rarity}_pick_tickets.
-    const key = pickTicketColumn(payload.pickRarity);
-    const col = children[key];
-    const spent = await db
-      .update(children)
-      .set({ [key]: sql`${col} - 1` })
-      .where(and(eq(children.id, childId), gte(col, 1)))
-      .returning({ pullTokens: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].pullTokens; // normal balance unchanged
-  } else if (payload.ticket) {
-    // Special egg: spend the pinned special ticket, not a normal token.
-    const col =
-      payload.ticket === "epic" ? children.epicTickets : children.luckyTickets;
-    const spent = await db
-      .update(children)
-      .set({ [payload.ticket === "epic" ? "epicTickets" : "luckyTickets"]: sql`${col} - 1` })
-      .where(and(eq(children.id, childId), gte(col, 1)))
-      .returning({ pullTokens: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].pullTokens; // normal balance unchanged
-  } else {
-    const spent = await db
-      .update(children)
-      .set({ pullTokens: sql`${children.pullTokens} - 1` })
-      .where(and(eq(children.id, childId), gte(children.pullTokens, 1)))
-      .returning({ balance: children.pullTokens });
-    if (spent.length === 0) return { outOfTokens: true };
-    newBalance = spent[0].balance;
-  }
+  // Atomic spend — one column (rarity-pick, special ticket, or normal token).
+  // The pinned offer field picks which; missing both spends a normal token.
+  // Single-use: the guarded decrement makes the signed offer un-replayable.
+  const key: BalanceColumn = payload.pickRarity
+    ? pickTicketColumn(payload.pickRarity)
+    : payload.ticket
+      ? specialTicketColumn(payload.ticket)
+      : "pullTokens";
+  const newBalance = await spendOneColumn(childId, key);
+  if (newBalance === null) return { outOfTokens: true };
 
-  const [entry] = await db
-    .insert(collections)
-    .values({ childId, cardId: card.id, count: 1 })
-    .onConflictDoUpdate({
-      target: [collections.childId, collections.cardId],
-      set: { count: sql`${collections.count} + 1` },
-    })
-    .returning({ count: collections.count });
+  return grantCardOutcome(childId, card, newBalance);
+}
 
-  // Inc16 FR5: claimed card may complete a (theme, rarity) set → bonus.
-  await grantCompletionRewards(childId, [card.id]);
-
-  return {
-    outOfTokens: false,
-    card,
-    isDuplicate: entry.count > 1,
-    newBalance,
-  };
+/**
+ * Atomic guarded decrement of one spendable column (single-use claim). Returns
+ * the child's resulting normal token balance, or null if nothing was spent
+ * (guard failed → no copies left). Decrementing `pullTokens` returns its new
+ * value; decrementing a ticket column leaves `pullTokens` unchanged.
+ */
+async function spendOneColumn(
+  childId: string,
+  key: BalanceColumn,
+): Promise<number | null> {
+  const col = children[key];
+  const spent = await db
+    .update(children)
+    .set({ [key]: sql`${col} - 1` })
+    .where(and(eq(children.id, childId), gte(col, 1)))
+    .returning({ pullTokens: children.pullTokens });
+  return spent.length === 0 ? null : spent[0].pullTokens;
 }
 
 export interface SacrificeResult {
@@ -356,16 +336,7 @@ export async function sacrifice(
   if (!source) throw new Error("sacrifice: card not found");
 
   // Atomic CAS: only succeeds if the child still holds enough copies.
-  const burned = await db
-    .update(collections)
-    .set({ count: sql`${collections.count} - ${SACRIFICE_COST}` })
-    .where(
-      and(
-        eq(collections.childId, childId),
-        eq(collections.cardId, cardId),
-        gte(collections.count, SACRIFICE_COST),
-      ),
-    )
+  const burned = await removeCardCopy(childId, cardId, SACRIFICE_COST, SACRIFICE_COST)
     .returning({ count: collections.count });
 
   if (burned.length === 0) {

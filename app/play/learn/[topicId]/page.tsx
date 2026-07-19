@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getTopic } from "@/features/quiz/topics";
 import { QuizFlow } from "@/features/quiz/QuizFlow";
 
@@ -9,9 +8,7 @@ export default async function TopicPage({
 }: {
   params: Promise<{ topicId: string }>;
 }) {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play");
+  const child = await requireActivePlayer();
 
   const { topicId } = await params;
   const topic = getTopic(topicId);

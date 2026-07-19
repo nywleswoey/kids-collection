@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { TOPICS } from "@/features/quiz/topics";
 import { topicsAwardedToday } from "@/features/quiz/activity";
 import type { QuizSubject } from "@/features/quiz/types";
@@ -12,9 +10,7 @@ const GROUPS: { subject: QuizSubject; label: string; emoji: string }[] = [
 ];
 
 export default async function LearnPage() {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play");
+  const child = await requireActivePlayer();
 
   const done = await topicsAwardedToday(child.id);
 

@@ -1,9 +1,9 @@
 import "server-only";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { collections, collectionRewards } from "@/db/schema";
-import { listCards } from "@/features/pool/service";
-import { listThemes } from "@/features/pool/service";
+import { addCardCopy } from "@/db/collection-writes";
+import { listCards, listThemes } from "@/features/pool/service";
 import { pickUpgradeCard } from "@/features/pull/sacrifice";
 import type { Card, Rarity } from "@/lib/types";
 import { isRaritySetComplete, raritySetsFor } from "./collection-reward";
@@ -70,13 +70,7 @@ export async function grantCompletionRewards(
         .returning({ id: collectionRewards.id });
       if (claimed.length === 0) continue; // already rewarded elsewhere
 
-      await db
-        .insert(collections)
-        .values({ childId, cardId: rewardCard.id, count: 1 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} + 1` },
-        });
+      await addCardCopy(childId, rewardCard.id);
 
       owned.add(rewardCard.id);
       granted.push({ themeId, rarity, card: rewardCard });

@@ -6,7 +6,7 @@
  * Look-ahead scheduler: every tick we queue the notes for the next slice of
  * time, so playback stays smooth without a media file.
  */
-import { acquireContext } from "./AudioEngine";
+import { acquireContext, gainEnvelope } from "./AudioEngine";
 
 // C-major pentatonic (warm, no "wrong" notes) across two octaves.
 const ARP = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25];
@@ -22,11 +22,7 @@ let step = 0;
 let running = false;
 
 function noteAt(ctx: AudioContext, freq: number, at: number, dur: number, gain: number, wave: OscillatorType) {
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, at);
-  g.gain.exponentialRampToValueAtTime(gain, at + 0.04);
-  g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-  g.connect(master!);
+  const g = gainEnvelope(ctx, master!, at, gain, dur, 0.04);
   const osc = ctx.createOscillator();
   osc.type = wave;
   osc.frequency.setValueAtTime(freq, at);

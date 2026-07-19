@@ -1,6 +1,7 @@
 "use server";
 
 import { requireParent } from "@/features/auth/guard";
+import { field } from "@/lib/form";
 import { verifyPasscode, setGateCookie } from "./gate";
 import { redirect } from "next/navigation";
 
@@ -13,7 +14,7 @@ export async function unlockAdminAction(
   formData: FormData,
 ): Promise<false | void> {
   await requireParent();
-  const passcode = String(formData.get("passcode") ?? "");
+  const passcode = field(formData, "passcode");
   if (!(await verifyPasscode(passcode))) {
     return false;
   }

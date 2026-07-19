@@ -3,39 +3,19 @@
  * Namespaced localStorage keys; no PII. Defaults: SFX on, BGM off (starts on first tap).
  */
 
+import { storageGet, storageSet } from "@/lib/storage";
+
 export const SFX_KEY = "kc.snd.sfx";
 export const BGM_KEY = "kc.snd.bgm";
 
-function store(): Storage | null {
-  try {
-    // Present in the browser; undefined during SSR / node tests unless stubbed.
-    const ls = (globalThis as { localStorage?: Storage }).localStorage;
-    return ls ?? null;
-  } catch {
-    return null;
-  }
-}
-
 function read(key: string, fallback: boolean): boolean {
-  const ls = store();
-  if (!ls) return fallback;
-  try {
-    const v = ls.getItem(key);
-    if (v === null) return fallback;
-    return v === "1";
-  } catch {
-    return fallback;
-  }
+  const v = storageGet("localStorage", key);
+  if (v === null) return fallback;
+  return v === "1";
 }
 
 function write(key: string, value: boolean): void {
-  const ls = store();
-  if (!ls) return;
-  try {
-    ls.setItem(key, value ? "1" : "0");
-  } catch {
-    /* storage blocked (private mode / quota) — silent, non-fatal */
-  }
+  storageSet("localStorage", key, value ? "1" : "0");
 }
 
 export function getSfxEnabled(): boolean {

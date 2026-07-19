@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { clamp } from "@/lib/math";
 import { shouldAnimate } from "./rarity";
 
 const MAX_TILT = 12; // degrees
@@ -55,8 +56,8 @@ export function useCardTilt(interactive: boolean) {
     const handler = (e: DeviceOrientationEvent) => {
       const gamma = e.gamma ?? 0; // left/right [-90,90]
       const beta = e.beta ?? 0; // front/back
-      const ry = Math.max(-MAX_TILT, Math.min(MAX_TILT, gamma / 4));
-      const rx = Math.max(-MAX_TILT, Math.min(MAX_TILT, (beta - 45) / 4));
+      const ry = clamp(gamma / 4, -MAX_TILT, MAX_TILT);
+      const rx = clamp((beta - 45) / 4, -MAX_TILT, MAX_TILT);
       setVars(rx, ry, 50 + gamma, 50 + (beta - 45));
     };
 

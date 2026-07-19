@@ -1,4 +1,4 @@
-import { RARITIES, type Rarity } from "@/lib/types";
+import { RARITIES, type EggTicket, type Rarity } from "@/lib/types";
 
 /**
  * Rarity-pick ticket helpers (Inc16 FR2). Maps the four per-rarity columns to a
@@ -23,6 +23,23 @@ const COLUMN: Record<Rarity, keyof PickTicketRow> = {
 export function pickTicketColumn(rarity: Rarity): keyof PickTicketRow {
   return COLUMN[rarity];
 }
+
+/** Drizzle column key for a special egg ticket's counter (Inc9 FR4). */
+export function specialTicketColumn(kind: EggTicket): BalanceColumn {
+  return kind === "epic" ? "epicTickets" : "luckyTickets";
+}
+
+/**
+ * Children columns that hold a grantable/spendable integer balance: a normal
+ * pull token, either special egg ticket, or one of the four rarity-pick tickets.
+ * Shared by token-service (grant) and pull-service (spend), which drive atomic
+ * per-column updates off the string key.
+ */
+export type BalanceColumn =
+  | "pullTokens"
+  | "epicTickets"
+  | "luckyTickets"
+  | keyof PickTicketRow;
 
 /** Build the `Record<Rarity, number>` view from a children row. */
 export function pickTicketsFromRow(row: PickTicketRow): Record<Rarity, number> {

@@ -1,16 +1,12 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getBinder } from "@/features/binder/service";
 import { GalaxyView } from "@/features/binder/GalaxyView";
 import { getPendingRewards } from "@/features/rewards/service";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage() {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play");
+  const child = await requireActivePlayer();
 
   const [binder, pendingRewards] = await Promise.all([
     getBinder(child.id),

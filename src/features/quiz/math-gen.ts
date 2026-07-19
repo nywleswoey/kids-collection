@@ -4,23 +4,10 @@
  * computed, never guessed — safe answer keys for a kid.
  */
 
+import type { Rng } from "@/lib/logic";
+import { randInt, shuffle } from "@/lib/rng";
+
 import type { QuizQuestion } from "./types";
-
-type Rng = () => number;
-
-function randInt(rng: Rng, min: number, max: number): number {
-  // inclusive both ends; clamp guards against rng()===1.
-  return min + Math.min(max - min, Math.floor(rng() * (max - min + 1)));
-}
-
-function shuffle<T>(arr: T[], rng: Rng): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = randInt(rng, 0, i);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 /** Build 4 unique options around `answer` (>= 0), shuffled, answer included.
  * `spread` extra near-miss deltas let larger answers get plausible distractors. */

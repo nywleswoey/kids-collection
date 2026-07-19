@@ -1,9 +1,9 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { children } from "@/db/schema";
-import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
+import { redirect } from "next/navigation";
+import { requireParent } from "@/features/auth/guard";
+import { findChildRow } from "@/db/child-reads";
+import { toChild } from "./child-mapper";
 import type { Child } from "@/lib/types";
 
 const COOKIE = "activeChildId";
@@ -14,9 +14,7 @@ const COOKIE = "activeChildId";
  * selection is a post-auth convenience, not a security boundary.
  */
 export async function setActiveProfile(childId: string): Promise<void> {
-  const exists = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-  });
+  const exists = await findChildRow(childId);
   if (!exists) throw new Error("setActiveProfile: unknown child");
 
   const store = await cookies();
@@ -34,23 +32,34 @@ export async function clearActiveProfile(): Promise<void> {
   store.delete(COOKIE);
 }
 
+/**
+ * Resolve the active child, throwing if none is selected. Shared guard for
+ * server actions that require an active player.
+ */
+export async function requireActiveChild(): Promise<Child> {
+  const child = await getActiveChild();
+  if (!child) throw new Error("No active profile");
+  return child;
+}
+
+/**
+ * Page-level guard for every /play/* screen: enforce parent access, then resolve
+ * the active child, redirecting to the picker when none is selected (U2-SEC-7).
+ */
+export async function requireActivePlayer(): Promise<Child> {
+  await requireParent();
+  const child = await getActiveChild();
+  if (!child) redirect("/play");
+  return child;
+}
+
 /** Resolve the active child from the cookie, validated against the DB. */
 export async function getActiveChild(): Promise<Child | null> {
   const store = await cookies();
   const childId = store.get(COOKIE)?.value;
   if (!childId) return null;
 
-  const row = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-  });
+  const row = await findChildRow(childId);
   if (!row) return null;
-  return {
-    id: row.id,
-    name: row.name,
-    avatar: row.avatar,
-    pullTokens: row.pullTokens,
-    epicTickets: row.epicTickets,
-    luckyTickets: row.luckyTickets,
-    pickTickets: pickTicketsFromRow(row),
-  };
+  return toChild(row);
 }

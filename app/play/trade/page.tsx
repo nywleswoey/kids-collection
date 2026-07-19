@@ -1,15 +1,11 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireParent } from "@/features/auth/guard";
-import { getActiveChild } from "@/features/profiles/active-profile";
+import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { listChildren } from "@/features/profiles/service";
 import { listTradableCards } from "@/features/trade/trade-service";
 import { TradeFlow } from "@/features/trade/TradeFlow";
 
 export default async function TradePage() {
-  await requireParent();
-  const child = await getActiveChild();
-  if (!child) redirect("/play"); // U2-SEC-7
+  const child = await requireActivePlayer();
 
   const [myCards, all] = await Promise.all([
     listTradableCards(child.id),

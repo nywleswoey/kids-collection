@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { avatarEmoji } from "@/lib/avatars";
+import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { ProfileForm } from "./ProfileForm";
 import { RemoveProfileButton } from "./RemoveProfileButton";
 
@@ -51,9 +51,7 @@ export function ProfileRow({
       data-testid={`profile-row-${id}`}
     >
       <span className="flex items-center gap-3">
-        <span className="hero-avatar h-11 w-11 text-xl" aria-hidden>
-          {avatarEmoji(avatar)}
-        </span>
+        <AvatarBadge avatar={avatar} className="h-11 w-11 text-xl" />
         <span className="display font-semibold">{name}</span>
         <span
           className="pill text-xs"

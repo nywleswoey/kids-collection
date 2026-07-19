@@ -7,6 +7,8 @@ import { generateMathQuestions, isMathTopic } from "./math-gen";
 import { GRAMMAR_BANKS, isGrammarTopic } from "./grammar-bank";
 import { makeQuizOffer, verifyQuizOffer } from "./quiz-offer";
 import { sgtDayKey, decideAward } from "./cap";
+import { sample } from "@/lib/rng";
+import { env } from "@/lib/env";
 import {
   QUIZ_LENGTH,
   type ClientQuestion,
@@ -15,20 +17,6 @@ import {
 } from "./types";
 
 const OFFER_TTL_MS = 10 * 60_000; // 10 min
-
-function authSecret(): string {
-  return process.env.AUTH_SECRET ?? "";
-}
-
-/** Pick `n` random items from `arr` (Fisher-Yates prefix). */
-function sample<T>(arr: T[], n: number, rng: () => number): T[] {
-  const a = [...arr];
-  for (let i = 0; i < Math.min(n, a.length); i++) {
-    const j = i + Math.min(a.length - 1 - i, Math.floor(rng() * (a.length - i)));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a.slice(0, n);
-}
 
 function buildQuestions(topicId: string, rng: () => number): QuizQuestion[] {
   if (isMathTopic(topicId)) return generateMathQuestions(topicId, QUIZ_LENGTH, rng);
@@ -65,7 +53,7 @@ export async function buildQuiz(
       answers: questions.map((q) => q.correct),
       exp: nowMs + OFFER_TTL_MS,
     },
-    authSecret(),
+    env.authSecret,
   );
   // Inc13 FR6: send the answer key + explanation to the client for immediate
   // per-question feedback. Award stays server-authoritative (re-scored against
@@ -85,7 +73,7 @@ export async function submitQuiz(
   picks: string[],
   nowMs: number = Date.now(),
 ): Promise<QuizOutcome> {
-  const payload = await verifyQuizOffer(offer, authSecret(), nowMs);
+  const payload = await verifyQuizOffer(offer, env.authSecret, nowMs);
   if (!payload) throw new Error("submitQuiz: invalid or expired offer");
   if (payload.childId !== childId) throw new Error("submitQuiz: child mismatch");
 

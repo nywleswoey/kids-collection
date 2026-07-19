@@ -1,13 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { CardImage } from "@/features/card/CardImage";
 import { useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { Card } from "@/features/card/Card";
 import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
+import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { useSound } from "@/features/sound/useSound";
-import { rewardFanfare } from "@/features/sound/sfx";
+import { playFanfare } from "@/features/sound/sfx";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
 import "@/features/anim/anim.css";
@@ -60,8 +61,7 @@ export function EasterEggPicker({
     setFire((n) => n + 1);
     setPhase("revealed");
     // Inc15 FR2/FR3.3: layer the reward fanfare on the jackpot when epic/legendary.
-    const fanfare = rewardFanfare(result.card.rarity);
-    if (fanfare) play(fanfare);
+    playFanfare(play, result.card.rarity);
     onDone(result);
   }
 
@@ -112,23 +112,13 @@ export function EasterEggPicker({
                   ➕ ×{owned}
                 </span>
               )}
-              <Image
-                src={c.imageUrl}
-                alt={c.name}
-                width={200}
-                height={200}
-                className="aspect-square w-full object-cover"
-              />
+              <CardImage src={c.imageUrl} alt={c.name} dim={200} />
             </button>
           );
         })}
       </div>
 
-      {error ? (
-        <p data-testid="easter-egg-error" className="panel px-5 py-3 text-center text-sm text-red-300">
-          {error}
-        </p>
-      ) : null}
+      <ErrorBanner testId="easter-egg-error" message={error} />
     </div>
   );
 }

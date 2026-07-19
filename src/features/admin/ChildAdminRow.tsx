@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { avatarEmoji } from "@/lib/avatars";
+import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { ProgressBar } from "@/features/binder/ProgressBar";
 import { GrantControl } from "./GrantControl";
 import type { AdminChildRow as Row } from "@/lib/types";
@@ -14,9 +14,7 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="hero-avatar h-12 w-12 text-2xl" aria-hidden>
-            {avatarEmoji(child.avatar)}
-          </span>
+          <AvatarBadge avatar={child.avatar} className="h-12 w-12 text-2xl" />
           <div className="flex flex-col">
             <span className="font-semibold">{child.name}</span>
             <ProgressBar
