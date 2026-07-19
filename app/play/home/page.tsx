@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { getSpecialBalances } from "@/features/pull/token-service";
+import { tokenService } from "@/features/pull/token-service.prod";
 import { avatarEmoji } from "@/lib/avatars";
 import { switchProfileAction } from "@/features/profiles/actions";
 
@@ -10,7 +10,7 @@ export default async function PlayHomePage() {
   // FR1 (Inc10): surface special-egg tickets on the landing page so they don't
   // silently read as "0 tickets". Inc13 FR3: show every ticket type explicitly
   // (normal / epic / lucky) so the child sees all their counts at a glance.
-  const { epic, lucky } = await getSpecialBalances(child.id);
+  const { epic, lucky } = await tokenService.getSpecialBalances(child.id);
 
   return (
     <main

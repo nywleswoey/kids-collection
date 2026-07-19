@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { requireParent } from "@/features/auth/guard";
 import { getActiveChild } from "@/features/profiles/active-profile";
 import type { Rarity } from "@/lib/types";
-import { listMatchesForRarity, executeTrade, type TradeResult } from "./trade-service";
+import { tradeService } from "./trade-service.prod";
+import type { TradeResult } from "./trade-service";
 import type { TradableCard } from "./trade-logic";
 
 /** Friend's tradable duplicates of a given rarity (FR5 step 3). */
@@ -13,7 +14,7 @@ export async function getMatchesAction(
   rarity: Rarity,
 ): Promise<TradableCard[]> {
   await requireParent();
-  return listMatchesForRarity(bChildId, rarity);
+  return tradeService.listMatchesForRarity(bChildId, rarity);
 }
 
 /**
@@ -29,7 +30,7 @@ export async function executeTradeAction(
   const active = await getActiveChild();
   if (!active) return { ok: false, reason: "Pick a player first." };
 
-  const result = await executeTrade({
+  const result = await tradeService.executeTrade({
     aChildId: active.id,
     aCardId,
     bChildId,

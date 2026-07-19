@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { getBalance, getSpecialBalances } from "@/features/pull/token-service";
+import { tokenService } from "@/features/pull/token-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
 import { listCards, listThemes } from "@/features/pool/service";
 
 export default async function PullPage() {
   const child = await requireActivePlayer();
 
-  const balance = await getBalance(child.id);
+  const balance = await tokenService.getBalance(child.id);
   const [allCards, themes, special] = await Promise.all([
     listCards(),
     listThemes(),
-    getSpecialBalances(child.id),
+    tokenService.getSpecialBalances(child.id),
   ]);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
   const flashPool = allCards.map((c) => ({

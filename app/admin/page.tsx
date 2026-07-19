@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getAdminOverview } from "@/features/admin/service";
 import { ChildAdminRow } from "@/features/admin/ChildAdminRow";
 import { requireAdminGate } from "@/features/admin/gate";
-import { getQuizActivity } from "@/features/quiz/activity";
+import { quizService } from "@/features/quiz/quiz-service.prod";
 
 export default async function AdminDashboardPage() {
   await requireAdminGate(); // U4-FR1 passcode gate (defense in depth)
@@ -10,7 +10,7 @@ export default async function AdminDashboardPage() {
   const quizByChild = new Map(
     await Promise.all(
       overview.children.map(
-        async (r) => [r.child.id, await getQuizActivity(r.child.id)] as const,
+        async (r) => [r.child.id, await quizService.getQuizActivity(r.child.id)] as const,
       ),
     ),
   );

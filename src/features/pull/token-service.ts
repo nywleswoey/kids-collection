@@ -1,84 +1,63 @@
-import "server-only";
-import { eq, sql } from "drizzle-orm";
-import { db } from "@/db";
-import { children } from "@/db/schema";
-import { requireParent } from "@/features/auth/guard";
+import type { ChildStore } from "@/db/stores/child-store";
 import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
 import type { EggTicket, Rarity } from "@/lib/types";
 
-/**
- * Parent-only clamped grant/adjust of one integer children column (U4-BR8):
- * validate the delta, apply GREATEST(0, col + delta) atomically, and return the
- * new balance. Shared body of grant / grantSpecial / grantPickTicket.
- */
-async function grantColumn(
-  childId: string,
-  key: BalanceColumn,
-  delta: number,
-  label: string,
-): Promise<number> {
-  await requireParent();
-  if (!Number.isInteger(delta)) throw new Error(`${label}: delta must be an integer`);
-
-  const col = children[key];
-  const [row] = await db
-    .update(children)
-    .set({ [key]: sql`GREATEST(0, ${col} + ${delta})` })
-    .where(eq(children.id, childId))
-    .returning({ balance: col });
-
-  if (!row) throw new Error(`${label}: child not found`);
-  return row.balance;
-}
-
-/** Current pull-token balance (F2). */
-export async function getBalance(childId: string): Promise<number> {
-  const row = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-    columns: { pullTokens: true },
-  });
-  return row?.pullTokens ?? 0;
-}
-
-/** Current special egg-ticket balances (Inc9 FR4). */
-export async function getSpecialBalances(
-  childId: string,
-): Promise<{ epic: number; lucky: number }> {
-  const row = await db.query.children.findFirst({
-    where: eq(children.id, childId),
-    columns: { epicTickets: true, luckyTickets: true },
-  });
-  return { epic: row?.epicTickets ?? 0, lucky: row?.luckyTickets ?? 0 };
+export interface TokenDeps {
+  children: ChildStore;
 }
 
 /**
- * Grant/adjust a special egg ticket (Inc9 FR4). Parent-only, clamped >= 0.
- * Returns the new balance for that ticket kind.
+ * Token/ticket balances (U4), parameterized by the ChildStore port. Parent
+ * gating now lives at the action layer; this module only validates the delta and
+ * delegates the atomic clamp to the store. Prod wiring: `token-service.prod.ts`.
  */
-export async function grantSpecial(
-  childId: string,
-  kind: EggTicket,
-  delta: number,
-): Promise<number> {
-  return grantColumn(childId, specialTicketColumn(kind), delta, "grantSpecial");
+export function makeTokenService({ children }: TokenDeps) {
+  /** Clamped grant/adjust of one column; validate the delta, delegate the
+   *  `GREATEST(0, …)` to the store. Shared body of the three grant entry points. */
+  async function grantColumn(
+    childId: string,
+    key: BalanceColumn,
+    delta: number,
+    label: string,
+  ): Promise<number> {
+    if (!Number.isInteger(delta)) throw new Error(`${label}: delta must be an integer`);
+    const balance = await children.clampedGrant(childId, key, delta);
+    if (balance === null) throw new Error(`${label}: child not found`);
+    return balance;
+  }
+
+  /** Current pull-token balance (F2). */
+  function getBalance(childId: string): Promise<number> {
+    return children.readColumn(childId, "pullTokens");
+  }
+
+  /** Current special egg-ticket balances (Inc9 FR4). */
+  async function getSpecialBalances(
+    childId: string,
+  ): Promise<{ epic: number; lucky: number }> {
+    const [epic, lucky] = await Promise.all([
+      children.readColumn(childId, "epicTickets"),
+      children.readColumn(childId, "luckyTickets"),
+    ]);
+    return { epic, lucky };
+  }
+
+  /** Grant/adjust tokens (F1). Balance clamped >= 0 (U4-BR8). */
+  function grant(childId: string, delta: number): Promise<number> {
+    return grantColumn(childId, "pullTokens", delta, "grant");
+  }
+
+  /** Grant/adjust a special egg ticket (Inc9 FR4). Clamped >= 0. */
+  function grantSpecial(childId: string, kind: EggTicket, delta: number): Promise<number> {
+    return grantColumn(childId, specialTicketColumn(kind), delta, "grantSpecial");
+  }
+
+  /** Grant/adjust a rarity-pick ticket (Inc16 FR3). Clamped >= 0. */
+  function grantPickTicket(childId: string, rarity: Rarity, delta: number): Promise<number> {
+    return grantColumn(childId, pickTicketColumn(rarity), delta, "grantPickTicket");
+  }
+
+  return { getBalance, getSpecialBalances, grant, grantSpecial, grantPickTicket };
 }
 
-/**
- * Grant/adjust a rarity-pick ticket (Inc16 FR3). Parent-only, clamped >= 0.
- * Returns the new count for that rarity.
- */
-export async function grantPickTicket(
-  childId: string,
-  rarity: Rarity,
-  delta: number,
-): Promise<number> {
-  return grantColumn(childId, pickTicketColumn(rarity), delta, "grantPickTicket");
-}
-
-/**
- * Grant/adjust tokens (F1). Parent-only. Balance clamped >= 0 (U4-BR8).
- * Returns the new balance.
- */
-export async function grant(childId: string, delta: number): Promise<number> {
-  return grantColumn(childId, "pullTokens", delta, "grant");
-}
+export type TokenService = ReturnType<typeof makeTokenService>;
