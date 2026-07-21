@@ -13,7 +13,7 @@ the code here means *deepening around testability*, not extracting more helpers.
 |---|-----------|----------|--------|
 | 1 | Store seam under the services | Strong | **Done** (5 services + follow-ups) |
 | 2 | Collapse the signed-token cluster | Strong | **Done** |
-| 3 | One action wrapper, not five | Worth exploring | Open |
+| 3 | One action wrapper, not five | Worth exploring | **Done** |
 | 4 | Make the auth decision visible | Worth exploring | Open |
 | 5 | Reverse the shallow extractions | Worth exploring | Open |
 
@@ -213,6 +213,20 @@ only what differs.
 
 **Wins.** Leverage: one interface, N call sites · one failure mode, not four ·
 revalidation policy stops drifting.
+
+### Done (2026-07-21)
+
+- New `features/actions/action.ts` owns the shape: `withParent(run, paths)` and
+  `withActiveChild(run, paths, { parent? })`, where `paths` may be a fixed list or a
+  function of the result (trade revalidates only on a committed swap; sacrifice uses
+  the dynamic `/play/binder/${cardId}`).
+- All five files migrated; `parentMutate` / `activePull` deleted, `parentGrant` kept
+  only its grant-specific int-validation as a thin wrapper over `withParent`.
+- **Unified to strict gating.** The soft/silent no-active-child branches in
+  `trade`/`rewards` guarded states the `/play/*` page guards already prevent
+  (unreachable); they now throw like every other mutation — one failure mode.
+- `sacrificeAction` now goes through the shared wrapper (`{ parent: true }`) instead
+  of hand-inlining. **Status: resolved.** 158 unit tests green.
 
 ## 4 · Make the auth decision visible — **Worth exploring**
 
