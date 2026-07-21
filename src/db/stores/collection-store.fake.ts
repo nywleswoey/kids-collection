@@ -76,6 +76,12 @@ export function inMemoryCollectionStore(seed: CollectionSeed = {}): CollectionSt
       return new Set(row ? row.keys() : []);
     },
 
+    async entries(childId) {
+      const row = state.get(childId);
+      if (!row) return [];
+      return [...row.entries()].map(([cardId, count]) => ({ cardId, count }));
+    },
+
     async tradableDuplicates(childId) {
       const row = state.get(childId);
       if (!row) return [];

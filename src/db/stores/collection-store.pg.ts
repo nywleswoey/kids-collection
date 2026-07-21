@@ -94,6 +94,14 @@ export const pgCollectionStore: CollectionStore = {
     return new Set(rows.map((r) => r.cardId));
   },
 
+  async entries(childId) {
+    const rows = await db
+      .select({ cardId: collections.cardId, count: collections.count })
+      .from(collections)
+      .where(eq(collections.childId, childId));
+    return rows.map((r) => ({ cardId: r.cardId, count: r.count }));
+  },
+
   async tradableDuplicates(childId) {
     const rows = await db
       .select({ cardId: collections.cardId, count: collections.count })

@@ -1,41 +1,45 @@
-import "server-only";
-import { eq, sql } from "drizzle-orm";
-import { db } from "@/db";
-import { children, cards, themes, collections } from "@/db/schema";
-import { requireParent } from "@/features/auth/guard";
+import type { ProfileStore } from "@/db/stores/profile-store";
+import type { CollectionStore } from "@/db/stores/collection-store";
+import type { Catalog } from "@/features/pool/catalog";
 import { toChild } from "@/features/profiles/child-mapper";
 import type { AdminOverview, AdminChildRow } from "@/lib/types";
 
-/** Parent oversight: each child's balance + distinct-owned count, plus pool counts. */
-export async function getAdminOverview(): Promise<AdminOverview> {
-  await requireParent();
+export interface AdminDeps {
+  profiles: ProfileStore;
+  collections: CollectionStore;
+  catalog: Catalog;
+}
 
-  const [kids, [cardCount], [themeCount]] = await Promise.all([
-    // Case-insensitive name order (Inc8 FR4) — stops the list reshuffling after
-    // a grant UPDATE (was unordered heap order).
-    db.select().from(children).orderBy(sql`lower(${children.name})`),
-    db.select({ n: sql<number>`count(*)::int` }).from(cards),
-    db.select({ n: sql<number>`count(*)::int` }).from(themes),
-  ]);
+/**
+ * Parent-oversight read model, parameterized by its ports. Aggregates each
+ * child's balances + distinct-owned count against the pool totals. Parent gating
+ * is the page's responsibility (admin/page.tsx, behind the admin gate). Prod
+ * wiring: `service.prod.ts`.
+ */
+export function makeAdminService({ profiles, collections, catalog }: AdminDeps) {
+  async function getAdminOverview(): Promise<AdminOverview> {
+    const [kids, cards, themes] = await Promise.all([
+      profiles.list(), // stable lower(name) order — no reshuffle after a grant
+      catalog.listCards(),
+      catalog.listThemes(),
+    ]);
+    const total = cards.length;
 
-  const total = cardCount?.n ?? 0;
-
-  const rows: AdminChildRow[] = await Promise.all(
-    kids.map(async (c) => {
-      const [owned] = await db
-        .select({ n: sql<number>`count(*)::int` })
-        .from(collections)
-        .where(eq(collections.childId, c.id));
-      return {
+    const rows: AdminChildRow[] = await Promise.all(
+      kids.map(async (c) => ({
         child: toChild(c),
         balance: c.pullTokens,
         epicTickets: c.epicTickets,
         luckyTickets: c.luckyTickets,
-        owned: owned?.n ?? 0,
+        owned: (await collections.ownedCardIds(c.id)).size,
         total,
-      };
-    }),
-  );
+      })),
+    );
 
-  return { children: rows, themes: themeCount?.n ?? 0, cards: total };
+    return { children: rows, themes: themes.length, cards: total };
+  }
+
+  return { getAdminOverview };
 }
+
+export type AdminService = ReturnType<typeof makeAdminService>;

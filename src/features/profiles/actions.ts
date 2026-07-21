@@ -4,11 +4,7 @@ import { redirect } from "next/navigation";
 import { signOut as authSignOut } from "@/auth/config";
 import { withParent } from "@/features/actions/action";
 import { field } from "@/lib/form";
-import {
-  createChild,
-  updateChild,
-  removeChild,
-} from "./service";
+import { profileService } from "./service.prod";
 import {
   setActiveProfile,
   clearActiveProfile,
@@ -32,7 +28,7 @@ export async function switchProfileAction(): Promise<void> {
 export async function createProfileAction(formData: FormData): Promise<void> {
   await withParent(
     () =>
-      createChild({
+      profileService.createChild({
         name: field(formData, "name"),
         avatar: field(formData, "avatar"),
       }),
@@ -43,7 +39,7 @@ export async function createProfileAction(formData: FormData): Promise<void> {
 export async function updateProfileAction(formData: FormData): Promise<void> {
   await withParent(
     () =>
-      updateChild(field(formData, "id"), {
+      profileService.updateChild(field(formData, "id"), {
         name: field(formData, "name"),
         avatar: field(formData, "avatar"),
       }),
@@ -52,7 +48,7 @@ export async function updateProfileAction(formData: FormData): Promise<void> {
 }
 
 export async function removeProfileAction(formData: FormData): Promise<void> {
-  await withParent(() => removeChild(field(formData, "id")), PROFILE_PATHS);
+  await withParent(() => profileService.removeChild(field(formData, "id")), PROFILE_PATHS);
 }
 
 export async function signOutAction(): Promise<void> {
