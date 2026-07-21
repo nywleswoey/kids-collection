@@ -144,9 +144,22 @@ down to a single copy hits `CHECK(count >= 1)` on `1 → 0` and rolls the whole
       grant (the non-atomic day-bucket logic every bug lived in), now unit-tested
 - [x] pg contract run covers all four stores (Collection/Child/Reward/Quiz)
 
-All five mutating services (`pull`, `trade`, `token`, `quiz`, `rewards`) are behind
-ports. Remaining direct-`db` readers (`binder/service`, `admin/service`,
-`profiles/service`, `pool/*`) are read paths outside the original seam scope.
+**Slice 5–7 — `binder` / `admin` / `profiles` (done, 2026-07-21):**
+- [x] New **ProfileStore** port (children-row CRUD: list/find/create/update/remove)
+      + pg + fake + shared contract (fake **and** pg). Complements ChildStore
+      (atomic spendable-column ops on the same table).
+- [x] `CollectionStore.entries(childId)` added (binder's full collection read).
+- [x] `binder` / `admin` / `profiles` services → factories over their ports +
+      `.prod` wiring; `server-only` sunk to the pg adapters. `profiles` (a mutating
+      service C1 missed) drops its redundant `requireParent` (now via `withParent`);
+      admin's `requireParent` rose to `admin/page.tsx`.
+- [x] Orchestration unit tests for all three (profile validation, binder assembly,
+      admin aggregation); all **five** pg contracts now green (Collection incl
+      `entries`, Child, Reward, Quiz, Profile).
+
+Every non-glue service is now behind the seam. The only remaining direct-`db`
+readers are `pool/service` (the Catalog's own pg source), `pool/writer` (the seed
+importer), and `active-profile` (cookie glue that keeps `child-reads`).
 
 **Remaining:** none — both behaviour-change follow-ups resolved (below).
 
