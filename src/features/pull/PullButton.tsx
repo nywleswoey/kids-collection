@@ -10,7 +10,6 @@ import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
-import { shouldShowAskParent } from "./ticket-display";
 import { RARITY_META } from "@/features/card/rarity";
 import { RARITIES, zeroRarityCount, type EggTicket, type Rarity } from "@/lib/types";
 
@@ -57,7 +56,7 @@ export function PullButton({
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
   // all. If they still hold a special ticket, keep the Discover button visible
   // but greyed so they know a normal ticket is needed for it (B2=B).
-  const askParent = shouldShowAskParent(balance, epic, lucky);
+  const askParent = balance <= 0 && epic <= 0 && lucky <= 0;
   const hasSpecial = epic > 0 || lucky > 0;
   const specialCounts: Record<EggTicket, number> = { epic, lucky };
 

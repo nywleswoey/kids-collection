@@ -3,7 +3,6 @@ import fc from "fast-check";
 import {
   countOwnedByRarity,
   filterCardsByRarity,
-  totalOwned,
 } from "@/features/binder/rarity-filter";
 import { RARITIES, type Rarity } from "@/lib/types";
 import type { BinderCard, ThemeSection } from "@/lib/types";
@@ -53,7 +52,9 @@ describe("countOwnedByRarity (Inc13 FR1, Q4.2=A owned-only)", () => {
     fc.assert(
       fc.property(fc.array(sectionArb, { maxLength: 6 }), (sections) => {
         const ownedCards = sections.flatMap((s) => s.cards).filter((c) => c.owned).length;
-        expect(totalOwned(countOwnedByRarity(sections))).toBe(ownedCards);
+        const counts = countOwnedByRarity(sections);
+        const total = RARITIES.reduce((sum, r) => sum + counts[r], 0);
+        expect(total).toBe(ownedCards);
       }),
     );
   });
