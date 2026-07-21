@@ -14,7 +14,7 @@ the code here means *deepening around testability*, not extracting more helpers.
 | 1 | Store seam under the services | Strong | **Done** (5 services + follow-ups) |
 | 2 | Collapse the signed-token cluster | Strong | **Done** |
 | 3 | One action wrapper, not five | Worth exploring | **Done** |
-| 4 | Make the auth decision visible | Worth exploring | Open |
+| 4 | Make the auth decision visible | Worth exploring | **Done** |
 | 5 | Reverse the shallow extractions | Worth exploring | Open |
 
 ---
@@ -243,6 +243,21 @@ security boundary).
 
 **Wins.** Auth rule visible in one interface · four active-child idioms → one ·
 auth check no longer fused with UX state.
+
+### Done (2026-07-21)
+
+- New `auth/access.ts` holds `isAllowlistedParent(email)` — the single parent
+  decision, previously the `isParentEmail(email, parseAllowlist(env))` expression
+  duplicated in `config.ts` (signIn) and `guard.ts` (getParent). Both now route
+  through it. (Separate module, not `guard.ts`, to avoid a `config → guard → config`
+  cycle and keep `policy.ts` pure.)
+- Its docstring **states the auth model in one place**: session ≈ parent (fail-closed
+  `signIn`), the `requireParent()` calls are defense-in-depth, child selection is not
+  a security boundary.
+- The four active-child idioms were already collapsed to two legitimate ones by
+  candidate 3 (`requireActiveChild` throws for actions, `requireActivePlayer`
+  redirects for pages); the soft/silent variants are gone.
+- Test: `auth-access.test.ts` pins the env binding. **Status: resolved.** 160 green.
 
 ## 5 · Reverse the shallow extractions — **Worth exploring**
 
