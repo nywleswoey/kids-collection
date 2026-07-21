@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth/config";
-import { makeToken, verifyToken } from "@/features/admin/gate-token";
-
-const GATE_COOKIE = "kc.admin.gate";
-// Inc15 FR1: 20s idle window, slid on each valid /admin/* request. Mirrors
-// GATE_TTL_MS in gate.ts (that module is server-only, can't import here).
-const GATE_TTL_MS = 20_000;
+import { GATE_COOKIE, GATE_TTL_MS, makeToken, verifyGateToken } from "@/features/admin/gate-token";
 
 /**
  * Gate protected routes. Non-allowlisted users never get a session
@@ -26,7 +21,7 @@ export default auth(async (req) => {
   if (path.startsWith("/admin") && !path.startsWith("/admin/unlock")) {
     const secret = process.env.AUTH_SECRET ?? "";
     const token = req.cookies.get(GATE_COOKIE)?.value;
-    const ok = await verifyToken(token, secret, Date.now());
+    const ok = await verifyGateToken(token, secret, Date.now());
     if (!ok) {
       return Response.redirect(new URL("/admin/unlock", req.nextUrl.origin));
     }

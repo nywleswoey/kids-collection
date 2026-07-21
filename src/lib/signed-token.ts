@@ -13,6 +13,12 @@ export interface SignedPayload {
   exp: number;
 }
 
+/** Base guard for a payload that carries only an expiry (no extra fields) —
+ *  used by verifyToken callers whose token is nothing more than a signed exp. */
+export function isSignedPayload(p: unknown): p is SignedPayload {
+  return typeof (p as SignedPayload)?.exp === "number";
+}
+
 /** Sign a payload → `base64url(json).base64url(hmac)`. */
 export async function signToken<T extends SignedPayload>(
   payload: T,

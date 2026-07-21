@@ -11,8 +11,8 @@ the code here means *deepening around testability*, not extracting more helpers.
 
 | # | Candidate | Strength | Status |
 |---|-----------|----------|--------|
-| 1 | Store seam under the services | Strong | **Designed — ready to implement** |
-| 2 | Collapse the signed-token cluster | Strong | Open |
+| 1 | Store seam under the services | Strong | **Done** (5 services + follow-ups) |
+| 2 | Collapse the signed-token cluster | Strong | **Done** |
 | 3 | One action wrapper, not five | Worth exploring | Open |
 | 4 | Make the auth decision visible | Worth exploring | Open |
 | 5 | Reverse the shallow extractions | Worth exploring | Open |
@@ -179,6 +179,25 @@ All crypto lands in `webcrypto` + `signed-token`.
 
 **Wins.** One home for constant-time compare · delete two silent duplications ·
 security logic auditable in one module.
+
+### Done (2026-07-21)
+
+- `lib/signed-token` is the one deep module; `offer`/`quiz-offer` were already thin
+  typed adapters over it (unchanged). Added `isSignedPayload` (the base `{exp}`-only
+  guard).
+- `sha256` moved into `lib/webcrypto` — now the single crypto home. `gate.ts`'s local
+  `sha256` + `equalBytes` deleted; `verifyPasscode` uses `webcrypto.sha256` +
+  `webcrypto.timingSafeEqual`. Constant-time compare has exactly one definition.
+- `admin/gate-token` is now a thin edge-safe adapter over `signToken`/`verifyToken`
+  (payload `{exp}`), no re-implemented format. It also **owns the shared gate
+  constants** (`GATE_COOKIE`, `GATE_TTL_MS`); `gate.ts` and `middleware.ts` import
+  them instead of duplicating the "keep in sync" copies.
+- Tests: `signed-token.pbt.test.ts` gives the deep module its own direct coverage
+  (expiry, wrong-secret, forgery, arbitrary payload fields); `gate-token.pbt.test.ts`
+  slimmed to a wrapper smoke test.
+- Behaviour note: the gate-cookie payload format changed (`"<num>"` → `{"exp":<num>}`);
+  live gate cookies invalidate once (20s TTL). **Status: resolved.** All 158 unit
+  tests green.
 
 ## 3 · One action wrapper, not five — **Worth exploring**
 

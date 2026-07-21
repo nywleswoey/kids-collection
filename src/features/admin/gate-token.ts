@@ -1,49 +1,31 @@
 /**
- * Admin gate token (U4-FR1). PURE + isomorphic: uses Web Crypto (available in
- * Node and the Edge/middleware runtime). The token carries only an expiry
- * timestamp plus an HMAC over it — NO passcode or secret material is stored.
+ * Admin gate token + shared gate constants (U4-FR1). Edge-safe (no server-only)
+ * so both middleware.ts (edge) and gate.ts (server) can import it. A thin adapter
+ * over the shared HMAC primitive in lib/signed-token — the token carries only an
+ * expiry, no passcode or secret material.
  *
- * `secret` and `nowMs` are passed in (not read from env/clock) so these
- * functions stay pure and property-testable. gate.ts supplies AUTH_SECRET and
- * Date.now().
+ * `secret` and `nowMs` are passed in (not read from env/clock) so these stay
+ * pure and testable.
  */
 
-import { b64urlDecode, b64urlEncode, hmac, timingSafeEqual } from "@/lib/webcrypto";
+import { signToken, verifyToken, isSignedPayload } from "@/lib/signed-token";
+
+/** Admin gate cookie name (single source of truth for middleware + gate.ts). */
+export const GATE_COOKIE = "kc.admin.gate";
+
+/** Inc15 FR1: 20s idle window, slid on each valid /admin/* request. */
+export const GATE_TTL_MS = 20_000;
 
 /** Build a signed token that expires at `expiresAtMs`. */
-export async function makeToken(
-  expiresAtMs: number,
-  secret: string,
-): Promise<string> {
-  const payload = String(Math.floor(expiresAtMs));
-  const sig = await hmac(payload, secret);
-  return `${b64urlEncode(new TextEncoder().encode(payload))}.${b64urlEncode(sig)}`;
+export function makeToken(expiresAtMs: number, secret: string): Promise<string> {
+  return signToken({ exp: Math.floor(expiresAtMs) }, secret);
 }
 
 /** True iff `token` has a valid signature for `secret` AND has not expired. */
-export async function verifyToken(
+export async function verifyGateToken(
   token: string | undefined | null,
   secret: string,
   nowMs: number,
 ): Promise<boolean> {
-  if (!token || !secret) return false;
-  const dot = token.indexOf(".");
-  if (dot <= 0) return false;
-  const payloadPart = token.slice(0, dot);
-  const sigPart = token.slice(dot + 1);
-
-  let payload: string;
-  let providedSig: Uint8Array;
-  try {
-    payload = new TextDecoder().decode(b64urlDecode(payloadPart));
-    providedSig = b64urlDecode(sigPart);
-  } catch {
-    return false;
-  }
-
-  const expected = await hmac(payload, secret);
-  if (!timingSafeEqual(expected, providedSig)) return false;
-
-  const exp = Number(payload);
-  return Number.isFinite(exp) && exp > nowMs;
+  return (await verifyToken(token, secret, nowMs, isSignedPayload)) !== null;
 }
