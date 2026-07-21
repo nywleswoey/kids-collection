@@ -71,8 +71,8 @@ stops being mirror-modelled.
 
 **Contracts the fake must honour** (= the ports' interface invariants):
 `spendOne` returns `null` iff the guard fails, never negative · `clampedGrant`
-floors at 0 (`GREATEST(0, …)`) · `swapCards` — see the follow-up below; today it is
-NOT truly all-or-nothing.
+floors at 0 (`GREATEST(0, …)`) · `swapCards` is all-or-nothing (unconditional
+decrements + `CHECK(count >= 1)` rollback) · `removeCard` deletes the row at 0.
 
 ### Follow-up bug — `swapCards` partial-apply on a race (found 2026-07-19)
 
@@ -85,13 +85,16 @@ lopsided trade where a child keeps a card *and* receives the counterparty's. The
 `CHECK(count >= 1)` "backstop" the code comments describe is **dead on this path** —
 the `gte` guard (added generically for sacrifice) pre-empts it.
 
-Decision (2026-07-19): the tracer **preserves this behaviour faithfully** — the
-`swapCards` contract and both adapters encode the partial-apply, with a test
-documenting it (`swapCards partial-applies when one side is not a duplicate`). Fixing
-it is a separate behaviour change: make the trade give truly all-or-nothing (drop the
-guard so `1 → 0` hits `CHECK` and rolls the batch back, or use an interactive
-transaction with a pre-check). Natural to land once `pull`/`sacrifice` are also
-behind the seam. **Status: open — behaviour-change follow-up.**
+Decision (2026-07-19): the tracer preserved this behaviour faithfully, then fixed it
+once the seam was in place.
+
+**Fixed.** `swapCards` now does **unconditional** decrements, so a side that raced
+down to a single copy hits `CHECK(count >= 1)` on `1 → 0` and rolls the whole
+`db.batch` back — all-or-nothing. The fake mirrors it (both gives must keep
+`count >= 1`, else nothing applies, returns `false`). `executeTrade` already maps
+`false` to a clean "no longer valid" reason. Contract case:
+`swapCards is all-or-nothing when one side is not a duplicate` (fake + pg).
+**Status: resolved.**
 
 ### Tracer progress
 
@@ -145,17 +148,20 @@ All five mutating services (`pull`, `trade`, `token`, `quiz`, `rewards`) are beh
 ports. Remaining direct-`db` readers (`binder/service`, `admin/service`,
 `profiles/service`, `pool/*`) are read paths outside the original seam scope.
 
-**Remaining:**
-- [ ] Behaviour-change follow-ups (below)
+**Remaining:** none — both behaviour-change follow-ups resolved (below).
 
-### Second follow-up — `sacrifice` of an exact-cost holding throws (found 2026-07-19)
+### Second follow-up — `sacrifice` of an exact-cost holding threw (found 2026-07-19)
 
 `sacrifice` removes `SACRIFICE_COST` (3) copies guarded `count >= 3`. A child holding
-*exactly* 3 passes the guard, so the decrement targets `count = 0`, which violates
-`CHECK(count >= 1)` and throws (the row should be deleted, not zeroed) — instead of a
-clean sacrifice-your-last-set. Pre-existing; preserved faithfully by `removeCard`
-(both adapters throw the CHECK). Natural to fix alongside the `swapCards` follow-up
-once the collection writes own their "delete row at 0" semantics. **Status: open.**
+*exactly* 3 passes the guard, so the decrement targets `count = 0`, which violated
+`CHECK(count >= 1)` and threw — instead of a clean sacrifice-your-last-set.
+
+**Fixed.** `removeCard` now deletes the row when the decrement reaches 0 (0 copies =
+row absence) and returns `{ count: 0 }`. The pg adapter does this atomically with a
+delete-all / decrement-keeping `db.batch` (the count value makes the two mutually
+exclusive); the fake deletes the entry. Contract case: `removeCard to exactly 0
+deletes the row` + orchestration test `succeeds sacrificing an exact-cost holding`
+(fake + pg). **Status: resolved.**
 
 ## 2 · Collapse the signed-token cluster — **Strong**
 

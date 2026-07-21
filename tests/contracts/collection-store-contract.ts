@@ -66,6 +66,15 @@ export function runCollectionStoreContract(
       expect(await store.cardCount("kid", "a")).toBe(2);
     });
 
+    it("removeCard to exactly 0 deletes the row (no CHECK violation)", async () => {
+      const store = await makeStore({ kid: { a: 3 } });
+      // Remove all 3 with minHeld = 3 (the sacrifice shape). Reaching 0 must
+      // succeed by deleting the row, not throw on count >= 1.
+      expect(await store.removeCard("kid", "a", 3, 3)).toEqual({ count: 0 });
+      expect(await store.cardCount("kid", "a")).toBe(0);
+      expect(await store.ownedCardIds("kid")).toEqual(new Set());
+    });
+
     it("swapCards swaps two duplicates cleanly", async () => {
       const store = await makeStore({ A: { x: 2 }, B: { y: 2 } });
       expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(true);
@@ -76,16 +85,15 @@ export function runCollectionStoreContract(
       expect(await store.cardCount("B", "x")).toBe(1);
     });
 
-    it("swapCards partial-applies when one side is not a duplicate (documented bug)", async () => {
-      // A holds only 1 of x (raced away its duplicate). The guarded give no-ops;
-      // the other three writes still apply. Faithful to prod today, NOT
-      // all-or-nothing — see the follow-up in deepening-candidates.md.
+    it("swapCards is all-or-nothing when one side is not a duplicate", async () => {
+      // A holds only 1 of x (raced away its duplicate). The swap cannot commit
+      // atomically → returns false and nothing changes on either side.
       const store = await makeStore({ A: { x: 1 }, B: { y: 2 } });
-      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(true);
-      expect(await store.cardCount("A", "x")).toBe(1); // give no-op: kept its copy
-      expect(await store.cardCount("A", "y")).toBe(1); // still received
-      expect(await store.cardCount("B", "y")).toBe(1); // gave away
-      expect(await store.cardCount("B", "x")).toBe(1); // received A's card anyway
+      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(false);
+      expect(await store.cardCount("A", "x")).toBe(1); // unchanged
+      expect(await store.cardCount("A", "y")).toBe(0); // did NOT receive
+      expect(await store.cardCount("B", "y")).toBe(2); // did NOT give
+      expect(await store.cardCount("B", "x")).toBe(0); // did NOT receive
     });
 
     it.runIf(properties)("property: a grant then a guarded remove round-trips the count", async () => {
