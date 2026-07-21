@@ -15,7 +15,7 @@ the code here means *deepening around testability*, not extracting more helpers.
 | 2 | Collapse the signed-token cluster | Strong | **Done** |
 | 3 | One action wrapper, not five | Worth exploring | **Done** |
 | 4 | Make the auth decision visible | Worth exploring | **Done** |
-| 5 | Reverse the shallow extractions | Worth exploring | Open |
+| 5 | Reverse the shallow extractions | Worth exploring | **Done** |
 
 ---
 
@@ -275,3 +275,27 @@ helpers — `rng`, `storage`, `collection-writes`, `logic`.
 
 **Wins.** Fewer files per concept · delete 1 dead module + 2 dead exports · deletion
 test as the extraction rule.
+
+### Done (2026-07-21) — deletion test applied, not blanket inlining
+
+Re-checked each against the deletion test (does deleting it *concentrate* complexity
+or *disperse* it?), which corrected two of the audit's initial flags:
+
+- **Removed (genuinely shallow / dead):**
+  - `brand.ts` — 3 dead exports (`DISCOVER_LABEL`, `GALAXY_LABEL`, `ICON`) deleted;
+    `APP_NAME` is live (used by `app/layout.tsx`), so the module stays.
+  - `pull/ticket-display.ts` — deleted. `shouldShowAskParent` (1 caller, a trivial
+    `balance<=0 && epic<=0 && lucky<=0`) inlined into `PullButton`; `specialTicketTotal`
+    was dead. Its PBT test deleted.
+  - `rarity-filter.totalOwned` — prod-dead (only its own test used it); removed, the
+    test now sums inline.
+- **Kept (earn their keep — inlining would disperse):**
+  - `child-reads.findChildRow` — 3 callers of the same by-id query; deleting it would
+    copy the query (and `db`/`schema`/`eq` imports) into 3 files. Kept; trimmed the
+    12-line doc-comment (the ceremony was the real smell) to one line.
+  - `binder/rarity-slot.raritySlotClass` — 2 callers sharing one long Tailwind string;
+    a real seam (two adapters), inlining would risk drift. Kept.
+  - `rarity-filter.countOwnedByRarity` / `filterCardsByRarity` — pure, property-tested
+    logic; single caller but legitimately extracted for testability. Kept.
+
+**Status: resolved.** 156 unit tests green.

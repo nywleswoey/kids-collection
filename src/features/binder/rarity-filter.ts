@@ -1,4 +1,4 @@
-import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
+import { zeroRarityCount, type Rarity } from "@/lib/types";
 import type { BinderCard, ThemeSection } from "@/lib/types";
 
 /**
@@ -29,9 +29,4 @@ export function filterCardsByRarity(
 ): BinderCard[] {
   if (rarity === null) return cards;
   return cards.filter((bc) => bc.card.rarity === rarity);
-}
-
-/** Sum of all owned across rarities (for an "All" chip / invariant checks). */
-export function totalOwned(counts: RarityCount): number {
-  return RARITIES.reduce((sum, r) => sum + counts[r], 0);
 }
