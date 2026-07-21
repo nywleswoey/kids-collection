@@ -162,6 +162,17 @@ describe("makePullService.sacrifice", () => {
     expect(await children.readColumn("kid", "rarePickTickets")).toBe(1);
   });
 
+  it("succeeds sacrificing an exact-cost holding (row deleted, not a CHECK error)", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const { service, children, collections } = setup({ kid: {} }, { kid: { c: 3 } }, [card("c", "rare")]);
+
+    const result = await service.sacrifice("kid", "c");
+
+    expect(result).toEqual({ ticketRarity: "rare", sourceRarity: "rare" });
+    expect(await collections.cardCount("kid", "c")).toBe(0); // all 3 gone, no row
+    expect(await children.readColumn("kid", "rarePickTickets")).toBe(1);
+  });
+
   it("throws when the child lacks enough copies", async () => {
     const { service } = setup({ kid: {} }, { kid: { c: 2 } }, [card("c", "rare")]);
     await expect(service.sacrifice("kid", "c")).rejects.toThrow("not enough copies");

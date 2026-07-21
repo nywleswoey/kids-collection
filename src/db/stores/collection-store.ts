@@ -26,8 +26,8 @@ export interface CollectionStore {
    * Guarded decrement of `count` copies, applied only while the child still
    * holds at least `minHeld` (default `count + 1` — never give away the last
    * copy). Returns the new count, or `null` when the guard fails (no rows
-   * changed). Reducing a held row below 1 violates the `count >= 1` invariant
-   * and throws — the row should be absent, not zero.
+   * changed). Decrementing to exactly 0 deletes the row (0 copies = absence,
+   * since `count >= 1` is a CHECK) and returns `{ count: 0 }`.
    */
   removeCard(
     childId: string,
@@ -38,14 +38,9 @@ export interface CollectionStore {
 
   /**
    * Two-sided swap: A gives aCard, B gives bCard, each receives the other's.
-   * Returns `false` only when the underlying store errors.
-   *
-   * NOTE — faithful to today's guarded-batch semantics, which are NOT truly
-   * all-or-nothing: each give is a guarded remove (`held >= 2` → −1, else a
-   * silent no-op), each receive is an unconditional +1. On a race where one
-   * side's duplicate was already traded away, that side's remove no-ops while
-   * the other three writes still apply, producing a lopsided trade. See the
-   * "swapCards partial-apply" follow-up in docs/architecture/deepening-candidates.md.
+   * All-or-nothing — either all four writes apply, or none do. Returns `false`
+   * when the swap could not commit atomically (a side no longer held a duplicate,
+   * or the store errored), leaving state untouched.
    */
   swapCards(input: SwapInput): Promise<boolean>;
 

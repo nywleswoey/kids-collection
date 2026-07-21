@@ -31,11 +31,6 @@ export function inMemoryCollectionStore(seed: CollectionSeed = {}): CollectionSt
     row.set(cardId, n);
   };
 
-  /** One guarded give: −1 only while held as a duplicate (>= 2), else no-op. */
-  const giveOne = (childId: string, cardId: string): void => {
-    if (held(childId, cardId) >= 2) setCount(childId, cardId, held(childId, cardId) - 1);
-  };
-
   return {
     async grantCard(childId, cardId) {
       const n = held(childId, cardId) + 1;
@@ -47,14 +42,21 @@ export function inMemoryCollectionStore(seed: CollectionSeed = {}): CollectionSt
       const h = held(childId, cardId);
       if (h < minHeld) return null; // guard fails → no rows changed
       const n = h - count;
-      setCount(childId, cardId, n); // throws below 1, matching the DB CHECK
+      if (n === 0) {
+        state.get(childId)?.delete(cardId); // 0 copies = row absence (DB CHECK)
+        return { count: 0 };
+      }
+      setCount(childId, cardId, n);
       return { count: n };
     },
 
     async swapCards({ aChildId, aCardId, bChildId, bCardId }) {
-      giveOne(aChildId, aCardId);
+      // All-or-nothing: both gives must keep count >= 1 (held >= 2), else nothing
+      // applies — mirroring the CHECK-rollback of the pg batch.
+      if (held(aChildId, aCardId) < 2 || held(bChildId, bCardId) < 2) return false;
+      setCount(aChildId, aCardId, held(aChildId, aCardId) - 1);
       setCount(aChildId, bCardId, held(aChildId, bCardId) + 1);
-      giveOne(bChildId, bCardId);
+      setCount(bChildId, bCardId, held(bChildId, bCardId) - 1);
       setCount(bChildId, aCardId, held(bChildId, aCardId) + 1);
       return true;
     },
