@@ -1,10 +1,5 @@
-import "server-only";
-import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { db } from "@/db";
-import { children } from "@/db/schema";
-import { requireParent } from "@/features/auth/guard";
-import { findChildRow } from "@/db/child-reads";
+import type { ProfileStore } from "@/db/stores/profile-store";
 import { toChild } from "./child-mapper";
 import { AVATAR_KEYS } from "@/lib/avatars";
 import type { Child } from "@/lib/types";
@@ -14,51 +9,48 @@ const profileSchema = z.object({
   avatar: z.enum(AVATAR_KEYS as [string, ...string[]]),
 });
 
+export interface ProfileDeps {
+  profiles: ProfileStore;
+}
+
 /**
- * All child profiles, ordered case-insensitively by name (Inc8 FR4). Stable
- * order so a token grant (an UPDATE) never re-shuffles the list.
+ * Child-profile service, parameterized by its ProfileStore port. Owns input
+ * validation + row→domain mapping; parent gating now lives at the action layer
+ * (create/update/remove run inside `withParent`). Prod wiring: `service.prod.ts`.
  */
-export async function listChildren(): Promise<Child[]> {
-  const rows = await db
-    .select()
-    .from(children)
-    .orderBy(sql`lower(${children.name})`);
-  return rows.map(toChild);
+export function makeProfileService({ profiles }: ProfileDeps) {
+  /** All child profiles, ordered case-insensitively by name (Inc8 FR4). */
+  async function listChildren(): Promise<Child[]> {
+    return (await profiles.list()).map(toChild);
+  }
+
+  /** Single child profile, or null. */
+  async function getChild(id: string): Promise<Child | null> {
+    const row = await profiles.find(id);
+    return row ? toChild(row) : null;
+  }
+
+  async function createChild(input: { name: string; avatar: string }): Promise<Child> {
+    const data = profileSchema.parse(input);
+    return toChild(await profiles.create(data));
+  }
+
+  async function updateChild(
+    id: string,
+    input: { name: string; avatar: string },
+  ): Promise<Child> {
+    const data = profileSchema.parse(input);
+    const row = await profiles.update(id, data);
+    if (!row) throw new Error("updateChild: not found");
+    return toChild(row);
+  }
+
+  /** Remove a child; cascades to their collection entries (BR14). */
+  async function removeChild(id: string): Promise<void> {
+    await profiles.remove(id);
+  }
+
+  return { listChildren, getChild, createChild, updateChild, removeChild };
 }
 
-/** Single child profile, or null. */
-export async function getChild(id: string): Promise<Child | null> {
-  const row = await findChildRow(id);
-  return row ? toChild(row) : null;
-}
-
-export async function createChild(input: {
-  name: string;
-  avatar: string;
-}): Promise<Child> {
-  await requireParent(); // U2-SEC-5
-  const data = profileSchema.parse(input);
-  const [row] = await db.insert(children).values(data).returning();
-  return toChild(row);
-}
-
-export async function updateChild(
-  id: string,
-  input: { name: string; avatar: string },
-): Promise<Child> {
-  await requireParent();
-  const data = profileSchema.parse(input);
-  const [row] = await db
-    .update(children)
-    .set(data)
-    .where(eq(children.id, id))
-    .returning();
-  if (!row) throw new Error("updateChild: not found");
-  return toChild(row);
-}
-
-/** Remove a child; cascades to their collection entries (BR14). */
-export async function removeChild(id: string): Promise<void> {
-  await requireParent();
-  await db.delete(children).where(eq(children.id, id));
-}
+export type ProfileService = ReturnType<typeof makeProfileService>;

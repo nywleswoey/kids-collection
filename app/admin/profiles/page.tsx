@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
-import { listChildren } from "@/features/profiles/service";
+import { profileService } from "@/features/profiles/service.prod";
 import { ProfileForm } from "@/features/profiles/ProfileForm";
 import { ProfileRow } from "@/features/profiles/ProfileRow";
 import { requireAdminGate } from "@/features/admin/gate";
@@ -8,7 +8,7 @@ import { requireAdminGate } from "@/features/admin/gate";
 export default async function ProfileManagerPage() {
   await requireParent(); // parent-only (U2-BR5)
   await requireAdminGate(); // U4-FR1 passcode gate
-  const kids = await listChildren();
+  const kids = await profileService.listChildren();
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-8" data-testid="profile-manager">

@@ -38,6 +38,16 @@ export function runCollectionStoreContract(
       expect(await store.ownedCardIds("ghost")).toEqual(new Set());
     });
 
+    it("entries returns every owned (cardId, count) row", async () => {
+      const store = await makeStore({ kid: { a: 1, b: 3 } });
+      const entries = (await store.entries("kid")).sort((x, y) => x.cardId.localeCompare(y.cardId));
+      expect(entries).toEqual([
+        { cardId: "a", count: 1 },
+        { cardId: "b", count: 3 },
+      ]);
+      expect(await store.entries("ghost")).toEqual([]);
+    });
+
     it("ownedCounts reports 0 for absent ids", async () => {
       const store = await makeStore({ kid: { a: 3 } });
       expect(await store.ownedCounts("kid", ["a", "b"])).toEqual({ a: 3, b: 0 });

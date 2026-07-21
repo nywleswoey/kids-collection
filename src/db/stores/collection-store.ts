@@ -56,6 +56,9 @@ export interface CollectionStore {
   /** The set of card ids the child owns (count >= 1). */
   ownedCardIds(childId: string): Promise<Set<string>>;
 
+  /** Every owned (cardId, count) row for a child — the binder's full collection. */
+  entries(childId: string): Promise<Array<{ cardId: string; count: number }>>;
+
   /** Cards the child holds as duplicates (count >= 2), as raw (cardId, count). */
   tradableDuplicates(
     childId: string,

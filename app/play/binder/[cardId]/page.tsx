@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { getCardDetail } from "@/features/binder/service";
+import { binderService } from "@/features/binder/service.prod";
 import { Card } from "@/features/card/Card";
 import { SacrificePanel } from "@/features/pull/SacrificePanel";
 
@@ -13,7 +13,7 @@ export default async function CardDetailPage({
   const child = await requireActivePlayer();
 
   const { cardId } = await params;
-  const detail = await getCardDetail(child.id, cardId);
+  const detail = await binderService.getCardDetail(child.id, cardId);
   if (!detail) notFound(); // owned-only (U5-BR4/SEC-2)
 
   return (
