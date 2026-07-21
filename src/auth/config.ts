@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { isParentEmail, parseAllowlist } from "@/features/auth/policy";
+import { isAllowlistedParent } from "@/features/auth/access";
 
 /**
  * Auth.js (NextAuth v5) — Google OAuth, parent allowlist enforced fail-closed.
@@ -11,7 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     // Deny authentication outright for non-allowlisted emails (U2-SEC-2/3, fail-closed).
     signIn({ user }) {
-      return isParentEmail(user.email, parseAllowlist(process.env.PARENT_EMAILS));
+      return isAllowlistedParent(user.email);
     },
   },
   pages: {

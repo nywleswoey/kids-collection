@@ -1,7 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth/config";
-import { isParentEmail, parseAllowlist } from "./policy";
+import { isAllowlistedParent } from "./access";
 
 export interface ParentIdentity {
   email: string;
@@ -11,7 +11,7 @@ export interface ParentIdentity {
 export async function getParent(): Promise<ParentIdentity | null> {
   const session = await auth();
   const email = session?.user?.email;
-  if (email && isParentEmail(email, parseAllowlist(process.env.PARENT_EMAILS))) {
+  if (email && isAllowlistedParent(email)) {
     return { email };
   }
   return null;
