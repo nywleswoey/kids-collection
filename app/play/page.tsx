@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
-import { listChildren } from "@/features/profiles/service";
+import { profileService } from "@/features/profiles/service.prod";
 import { ProfileCard } from "@/features/profiles/ProfileCard";
 import { signOutAction } from "@/features/profiles/actions";
 
 export default async function ProfilePickerPage() {
   await requireParent();
-  const kids = await listChildren();
+  const kids = await profileService.listChildren();
 
   return (
     <main

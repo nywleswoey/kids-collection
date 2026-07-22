@@ -33,6 +33,13 @@ export async function hmac(payload: string, secret: string): Promise<Uint8Array>
   return new Uint8Array(sig);
 }
 
+/** SHA-256 digest of a string, as raw bytes. Fixed length → safe to feed to
+ *  `timingSafeEqual` for a constant-time compare (e.g. passcode checks). */
+export async function sha256(s: string): Promise<Uint8Array> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return new Uint8Array(buf);
+}
+
 /** Constant-time byte comparison (no early return on mismatch). */
 export function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
   if (a.length !== b.length) return false;

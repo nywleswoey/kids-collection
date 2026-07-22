@@ -3,7 +3,7 @@ import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { ProgressBar } from "@/features/binder/ProgressBar";
 import { GrantControl } from "./GrantControl";
 import type { AdminChildRow as Row } from "@/lib/types";
-import type { QuizActivity } from "@/features/quiz/activity";
+import type { QuizActivity } from "@/features/quiz/types";
 
 export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) {
   const { child } = row;

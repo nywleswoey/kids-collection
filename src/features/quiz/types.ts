@@ -48,3 +48,20 @@ export interface QuizOutcome {
   /** Indexes (0-based) of the questions answered wrong. */
   wrongIndexes: number[];
 }
+
+/** One row of the admin quiz-activity view (Inc11 FR8). */
+export interface QuizActivityRow {
+  topic: string;
+  title: string;
+  correct: number;
+  total: number;
+  passed: boolean;
+  awarded: boolean;
+  at: string; // ISO
+}
+
+export interface QuizActivity {
+  recent: QuizActivityRow[];
+  earnedToday: number;
+  earnedAllTime: number;
+}

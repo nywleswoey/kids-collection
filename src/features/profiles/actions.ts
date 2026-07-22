@@ -1,30 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signOut as authSignOut } from "@/auth/config";
-import { requireParent } from "@/features/auth/guard";
+import { withParent } from "@/features/actions/action";
 import { field } from "@/lib/form";
-import {
-  createChild,
-  updateChild,
-  removeChild,
-} from "./service";
+import { profileService } from "./service.prod";
 import {
   setActiveProfile,
   clearActiveProfile,
 } from "./active-profile";
 
-/**
- * Run a parent-gated profile mutation, revalidating the admin profiles list
- * and the play picker. Shared body of the create/update/remove entry points.
- */
-async function parentMutate(run: () => Promise<unknown>): Promise<void> {
-  await requireParent();
-  await run();
-  revalidatePath("/admin/profiles");
-  revalidatePath("/play");
-}
+const PROFILE_PATHS = ["/admin/profiles", "/play"] as const;
 
 /** Select a child profile, then go to the play home. */
 export async function selectProfileAction(formData: FormData): Promise<void> {
@@ -40,25 +26,29 @@ export async function switchProfileAction(): Promise<void> {
 }
 
 export async function createProfileAction(formData: FormData): Promise<void> {
-  await parentMutate(() =>
-    createChild({
-      name: field(formData, "name"),
-      avatar: field(formData, "avatar"),
-    }),
+  await withParent(
+    () =>
+      profileService.createChild({
+        name: field(formData, "name"),
+        avatar: field(formData, "avatar"),
+      }),
+    PROFILE_PATHS,
   );
 }
 
 export async function updateProfileAction(formData: FormData): Promise<void> {
-  await parentMutate(() =>
-    updateChild(field(formData, "id"), {
-      name: field(formData, "name"),
-      avatar: field(formData, "avatar"),
-    }),
+  await withParent(
+    () =>
+      profileService.updateChild(field(formData, "id"), {
+        name: field(formData, "name"),
+        avatar: field(formData, "avatar"),
+      }),
+    PROFILE_PATHS,
   );
 }
 
 export async function removeProfileAction(formData: FormData): Promise<void> {
-  await parentMutate(() => removeChild(field(formData, "id")));
+  await withParent(() => profileService.removeChild(field(formData, "id")), PROFILE_PATHS);
 }
 
 export async function signOutAction(): Promise<void> {

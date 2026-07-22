@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { listChildren } from "@/features/profiles/service";
-import { listTradableCards } from "@/features/trade/trade-service";
+import { profileService } from "@/features/profiles/service.prod";
+import { tradeService } from "@/features/trade/trade-service.prod";
 import { TradeFlow } from "@/features/trade/TradeFlow";
 
 export default async function TradePage() {
   const child = await requireActivePlayer();
 
   const [myCards, all] = await Promise.all([
-    listTradableCards(child.id),
-    listChildren(),
+    tradeService.listTradableCards(child.id),
+    profileService.listChildren(),
   ]);
   const friends = all
     .filter((c) => c.id !== child.id)

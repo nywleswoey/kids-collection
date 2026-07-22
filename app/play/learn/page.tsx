@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { TOPICS } from "@/features/quiz/topics";
-import { topicsAwardedToday } from "@/features/quiz/activity";
+import { quizService } from "@/features/quiz/quiz-service.prod";
 import type { QuizSubject } from "@/features/quiz/types";
 
 const GROUPS: { subject: QuizSubject; label: string; emoji: string }[] = [
@@ -12,7 +12,7 @@ const GROUPS: { subject: QuizSubject; label: string; emoji: string }[] = [
 export default async function LearnPage() {
   const child = await requireActivePlayer();
 
-  const done = await topicsAwardedToday(child.id);
+  const done = await quizService.topicsAwardedToday(child.id);
 
   return (
     <main

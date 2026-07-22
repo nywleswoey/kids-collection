@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { getBinder } from "@/features/binder/service";
+import { binderService } from "@/features/binder/service.prod";
 import { GalaxyView } from "@/features/binder/GalaxyView";
-import { getPendingRewards } from "@/features/rewards/service";
+import { rewardService } from "@/features/rewards/service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage() {
   const child = await requireActivePlayer();
 
   const [binder, pendingRewards] = await Promise.all([
-    getBinder(child.id),
-    getPendingRewards(child.id),
+    binderService.getBinder(child.id),
+    rewardService.getPendingRewards(child.id),
   ]);
 
   return (
