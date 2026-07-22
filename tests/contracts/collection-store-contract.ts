@@ -106,6 +106,17 @@ export function runCollectionStoreContract(
       expect(await store.cardCount("B", "x")).toBe(0); // did NOT receive
     });
 
+    it("swapCards is all-or-nothing when a giver holds none of the card", async () => {
+      // A no longer holds x at all (raced away its last copy). The swap must not
+      // commit a lopsided trade → returns false and nothing changes.
+      const store = await makeStore({ B: { y: 2 } });
+      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(false);
+      expect(await store.cardCount("A", "x")).toBe(0); // still absent
+      expect(await store.cardCount("A", "y")).toBe(0); // did NOT receive
+      expect(await store.cardCount("B", "y")).toBe(2); // did NOT give
+      expect(await store.cardCount("B", "x")).toBe(0); // did NOT receive
+    });
+
     it.runIf(properties)("property: a grant then a guarded remove round-trips the count", async () => {
       await fc.assert(
         fc.asyncProperty(
