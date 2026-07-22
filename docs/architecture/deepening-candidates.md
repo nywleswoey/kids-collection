@@ -11,7 +11,7 @@ the code here means *deepening around testability*, not extracting more helpers.
 
 | # | Candidate | Strength | Status |
 |---|-----------|----------|--------|
-| 1 | Store seam under the services | Strong | **Done** (5 services + follow-ups) |
+| 1 | Store seam under the services | Strong | **Done** (8 services + follow-ups) |
 | 2 | Collapse the signed-token cluster | Strong | **Done** |
 | 3 | One action wrapper, not five | Worth exploring | **Done** |
 | 4 | Make the auth decision visible | Worth exploring | **Done** |

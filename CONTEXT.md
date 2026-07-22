@@ -33,12 +33,14 @@ Terms introduced by the Store-seam design (see
   dependency (rather than importing the `db` singleton). Deep by design: one method
   per atomic unit of persistence; transactions never cross the seam.
 - **Store** — collective name for the ports. Named ports: **`ChildStore`**
-  (token/ticket columns — `spendOne`, `incrementColumn`, `clampedGrant`, `balances`),
+  (token/ticket columns — `spendOne`, `incrementColumn`, `clampedGrant`, `readColumn`),
   **`CollectionStore`** (card copies — `grantCard`, `removeCard`, `swapCards`,
-  `ownedCounts`, `cardCount`, `tradableDuplicates`), **`RewardStore`**,
+  `ownedCounts`, `cardCount`, `ownedCardIds`, `entries`, `tradableDuplicates`),
+  **`ProfileStore`** (child-row CRUD — `list`, `find`, `create`, `update`, `remove`;
+  complements `ChildStore` on the same `children` table), **`RewardStore`**,
   **`QuizStore`**.
 - **Catalog** — the read-only port for the static card/theme pool (`listCards` /
-  `getCard`), injected like a Store so services stay testable.
+  `getCard` / `listThemes`), injected like a Store so services stay testable.
 - **Adapter** — a concrete port implementation. Two per port: the **pg adapter**
   (prod, the only place `import "server-only"` lives) and the **in-memory fake**
   (tests).
