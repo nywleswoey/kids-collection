@@ -45,14 +45,23 @@ export const pgCollectionStore: CollectionStore = {
 
   async swapCards({ aChildId, aCardId, bChildId, bCardId }: SwapInput) {
     // All-or-nothing: a giver must hold >= 2 (keep >= 1 after giving). Model the
-    // decrement as an upsert seeded at 0 so BOTH raced states violate
-    // `CHECK(count >= 1)` and roll the whole batch back — an existing single copy
-    // decrements 1 → 0, and an absent row inserts 0 outright (a plain guarded
-    // update would match zero rows there, silently committing a lopsided trade).
+    // decrement as an upsert whose seed is `held - 1`, so BOTH raced states trip a
+    // constraint and roll the whole batch back. When held >= 2 the seed is >= 1
+    // (passes the CHECK), the (child, card) conflict fires, and DO UPDATE
+    // decrements the real row. When held == 1 the seed is 0 → `CHECK(count >= 1)`
+    // violation; when the row is absent the subquery is NULL → NOT NULL violation
+    // (a plain guarded update would match zero rows there, silently committing a
+    // lopsided trade). Seeding a literal 0 can't work: Postgres evaluates the
+    // INSERT tuple's CHECK before conflict arbitration, so it would reject every
+    // legitimate give too.
     const give = (childId: string, cardId: string) =>
       db
         .insert(collections)
-        .values({ childId, cardId, count: 0 })
+        .values({
+          childId,
+          cardId,
+          count: sql`(select ${collections.count} - 1 from ${collections} where ${at(childId, cardId)})`,
+        })
         .onConflictDoUpdate({
           target: [collections.childId, collections.cardId],
           set: { count: sql`${collections.count} - 1` },
