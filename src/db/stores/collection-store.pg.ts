@@ -44,14 +44,19 @@ export const pgCollectionStore: CollectionStore = {
   },
 
   async swapCards({ aChildId, aCardId, bChildId, bCardId }: SwapInput) {
-    // All-or-nothing: unconditional decrements, so a side that raced down to a
-    // single copy hits `CHECK(count >= 1)` on 1 → 0 and rolls the whole batch
-    // back — no lopsided trade.
+    // All-or-nothing: a giver must hold >= 2 (keep >= 1 after giving). Model the
+    // decrement as an upsert seeded at 0 so BOTH raced states violate
+    // `CHECK(count >= 1)` and roll the whole batch back — an existing single copy
+    // decrements 1 → 0, and an absent row inserts 0 outright (a plain guarded
+    // update would match zero rows there, silently committing a lopsided trade).
     const give = (childId: string, cardId: string) =>
       db
-        .update(collections)
-        .set({ count: sql`${collections.count} - 1` })
-        .where(at(childId, cardId));
+        .insert(collections)
+        .values({ childId, cardId, count: 0 })
+        .onConflictDoUpdate({
+          target: [collections.childId, collections.cardId],
+          set: { count: sql`${collections.count} - 1` },
+        });
     try {
       await db.batch([
         give(aChildId, aCardId),
