@@ -81,9 +81,18 @@ export function makeTradeService({ collections, catalog, rewards }: TradeDeps) {
       return { ok: false, reason: "That trade is no longer valid — try again." };
     }
 
-    // Inc16 FR5: each side received a card — either may complete a set.
-    await rewards.grantCompletionRewards(aChildId, [bCardId]);
-    await rewards.grantCompletionRewards(bChildId, [aCardId]);
+    // Inc16 FR5: each side received a card — either may complete a set. The swap
+    // is already committed and irreversible here, so a failure in the (best-
+    // effort) completion cascade must NOT surface as a failed trade — that would
+    // tell the child their trade broke when their cards already changed hands.
+    // Swallow it: the worst case is a missed bonus card, and `claimReward` is
+    // idempotent, so a later add that re-completes the same set still grants it.
+    try {
+      await rewards.grantCompletionRewards(aChildId, [bCardId]);
+      await rewards.grantCompletionRewards(bChildId, [aCardId]);
+    } catch {
+      // best-effort — the trade stands regardless
+    }
 
     return { ok: true, gave: aCard, got: bCard };
   }
