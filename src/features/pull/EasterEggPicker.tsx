@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { CardImage } from "@/features/card/CardImage";
 import { useState } from "react";
 import type { Card as CardType } from "@/lib/types";
@@ -62,6 +63,10 @@ export function EasterEggPicker({
     setPhase("revealed");
     // Inc15 FR2/FR3.3: layer the reward fanfare on the jackpot when epic/legendary.
     playFanfare(play, result.card.rarity);
+    posthog.capture("easter_egg_picked", {
+      card_rarity: result.card.rarity,
+      is_new_card: (ownedCounts[result.card.id] ?? 0) === 0,
+    });
     onDone(result);
   }
 

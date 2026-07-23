@@ -13,6 +13,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn({ user }) {
       return isAllowlistedParent(user.email);
     },
+    // Copy token.sub (Google's stable user ID) to session so analytics can use it as distinct id.
+    session({ session, token }) {
+      if (token.sub) session.user.id = token.sub;
+      return session;
+    },
   },
   pages: {
     signIn: "/signin",

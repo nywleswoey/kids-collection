@@ -2,6 +2,7 @@
 
 import { requireParent } from "@/features/auth/guard";
 import { field } from "@/lib/form";
+import { getPostHogClient } from "@/lib/posthog-server";
 import { verifyPasscode, setGateCookie } from "./gate";
 import { redirect } from "next/navigation";
 
@@ -13,11 +14,16 @@ import { redirect } from "next/navigation";
 export async function unlockAdminAction(
   formData: FormData,
 ): Promise<false | void> {
-  await requireParent();
+  const parent = await requireParent();
   const passcode = field(formData, "passcode");
   if (!(await verifyPasscode(passcode))) {
     return false;
   }
   await setGateCookie();
+  const posthog = getPostHogClient();
+  if (posthog) {
+    posthog.capture({ distinctId: parent.id, event: "admin_unlocked" });
+    await posthog.flush();
+  }
   redirect("/admin");
 }

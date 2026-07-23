@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
 import { profileService } from "@/features/profiles/service.prod";
 import { ProfileCard } from "@/features/profiles/ProfileCard";
-import { signOutAction } from "@/features/profiles/actions";
+import { SignOutButton } from "@/features/auth/SignOutButton";
 
 export default async function ProfilePickerPage() {
   await requireParent();
@@ -37,15 +37,7 @@ export default async function ProfilePickerPage() {
         <Link href="/admin" data-testid="admin-link" className="btn btn--ghost">
           🛠️ Parent admin
         </Link>
-        <form action={signOutAction}>
-          <button
-            type="submit"
-            data-testid="sign-out-button"
-            className="btn btn--ghost"
-          >
-            Sign out
-          </button>
-        </form>
+        <SignOutButton />
       </div>
     </main>
   );

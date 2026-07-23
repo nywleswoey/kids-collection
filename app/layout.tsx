@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { APP_NAME } from "@/lib/brand";
+import { getParent } from "@/features/auth/guard";
+import { PostHogIdentitySync } from "@/features/auth/PostHogIdentitySync";
 import "./globals.css";
 
 // Self-hosted at build time; exposed as CSS vars consumed in globals.css.
@@ -29,12 +31,22 @@ export const viewport: Viewport = {
   themeColor: "#0d0826",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const parent = await getParent();
   return (
     <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}>
-      <body>{children}</body>
+      <body>
+        {parent && (
+          <PostHogIdentitySync
+            userId={parent.id}
+            email={parent.email}
+            name={parent.name}
+          />
+        )}
+        {children}
+      </body>
     </html>
   );
 }

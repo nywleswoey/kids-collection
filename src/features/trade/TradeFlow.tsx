@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import type { Card as CardType } from "@/lib/types";
@@ -78,6 +79,10 @@ export function TradeFlow({
       if (res.ok) {
         // Inc15 FR2: set-complete cue + fanfare when the card you got is epic/legendary.
         playReward(play, res.got.rarity);
+        posthog.capture("trade_completed", {
+          gave_card_rarity: res.gave.rarity,
+          got_card_rarity: res.got.rarity,
+        });
         setResult({ gave: res.gave, got: res.got });
         setPhase("done");
       } else {

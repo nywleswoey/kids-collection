@@ -4,7 +4,10 @@ import { auth } from "@/auth/config";
 import { isAllowlistedParent } from "./access";
 
 export interface ParentIdentity {
+  /** Stable Google account sub — use as PostHog distinct id. */
+  id: string;
   email: string;
+  name?: string | null;
 }
 
 /** Resolve the authenticated, allowlisted parent — or null. Server-only. */
@@ -12,7 +15,9 @@ export async function getParent(): Promise<ParentIdentity | null> {
   const session = await auth();
   const email = session?.user?.email;
   if (email && isAllowlistedParent(email)) {
-    return { email };
+    const id = session?.user?.id;
+    if (!id) return null;
+    return { id, email, name: session?.user?.name };
   }
   return null;
 }

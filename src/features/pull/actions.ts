@@ -1,6 +1,8 @@
 "use server";
 
 import { withParent, withActiveChild } from "@/features/actions/action";
+import { getParent } from "@/features/auth/guard";
+import { getPostHogClient } from "@/lib/posthog-server";
 import { pullService } from "./pull-service.prod";
 import { tokenService } from "./token-service.prod";
 import type { PullOutcome, SacrificeResult } from "./pull-service";
@@ -69,7 +71,16 @@ export async function grantTokensAction(
   childId: string,
   amount: number,
 ): Promise<number> {
-  return parentGrant(amount, "/admin/profiles", (n) => tokenService.grant(childId, n));
+  const newBalance = await parentGrant(amount, "/admin/profiles", (n) => tokenService.grant(childId, n));
+  const parent = await getParent();
+  if (parent) {
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({ distinctId: parent.id, event: "tokens_granted", properties: { amount: Math.trunc(Number(amount)) } });
+      await posthog.flush();
+    }
+  }
+  return newBalance;
 }
 
 /** Parent grants a special egg ticket to a child (Inc9 FR4). */
@@ -78,7 +89,16 @@ export async function grantSpecialTicketAction(
   kind: EggTicket,
   amount: number,
 ): Promise<number> {
-  return parentGrant(amount, "/admin", (n) => tokenService.grantSpecial(childId, kind, n));
+  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantSpecial(childId, kind, n));
+  const parent = await getParent();
+  if (parent) {
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({ distinctId: parent.id, event: "special_ticket_granted", properties: { ticket_kind: kind, amount: Math.trunc(Number(amount)) } });
+      await posthog.flush();
+    }
+  }
+  return newBalance;
 }
 
 /** Parent grants a rarity-pick ticket to a child (Inc16 FR3). */
@@ -87,5 +107,14 @@ export async function grantRarityPickTicketAction(
   rarity: Rarity,
   amount: number,
 ): Promise<number> {
-  return parentGrant(amount, "/admin", (n) => tokenService.grantPickTicket(childId, rarity, n));
+  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantPickTicket(childId, rarity, n));
+  const parent = await getParent();
+  if (parent) {
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({ distinctId: parent.id, event: "rarity_pick_granted", properties: { rarity, amount: Math.trunc(Number(amount)) } });
+      await posthog.flush();
+    }
+  }
+  return newBalance;
 }
