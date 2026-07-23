@@ -106,6 +106,19 @@ export function runCollectionStoreContract(
       expect(await store.cardCount("B", "x")).toBe(0); // did NOT receive
     });
 
+    it("swapCards rolls the FIRST giver back when the SECOND is short", async () => {
+      // A holds a real duplicate but B raced away theirs. The swap must not
+      // leave A having given a card for nothing — A's decrement must roll back
+      // too. (Guards against a lopsided partial commit: the card that would
+      // otherwise vanish from A's binder.)
+      const store = await makeStore({ A: { x: 2 }, B: { y: 1 } });
+      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(false);
+      expect(await store.cardCount("A", "x")).toBe(2); // NOT decremented
+      expect(await store.cardCount("A", "y")).toBe(0); // did NOT receive
+      expect(await store.cardCount("B", "y")).toBe(1); // unchanged
+      expect(await store.cardCount("B", "x")).toBe(0); // did NOT receive
+    });
+
     it("swapCards is all-or-nothing when a giver holds none of the card", async () => {
       // A no longer holds x at all (raced away its last copy). The swap must not
       // commit a lopsided trade → returns false and nothing changes.

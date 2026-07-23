@@ -44,26 +44,50 @@ export const pgCollectionStore: CollectionStore = {
   },
 
   async swapCards({ aChildId, aCardId, bChildId, bCardId }: SwapInput) {
-    // All-or-nothing: a giver must hold >= 2 (keep >= 1 after giving). Model the
-    // decrement as an upsert seeded at 0 so BOTH raced states violate
-    // `CHECK(count >= 1)` and roll the whole batch back — an existing single copy
-    // decrements 1 → 0, and an absent row inserts 0 outright (a plain guarded
-    // update would match zero rows there, silently committing a lopsided trade).
-    const give = (childId: string, cardId: string) =>
-      db
-        .insert(collections)
-        .values({ childId, cardId, count: 0 })
-        .onConflictDoUpdate({
-          target: [collections.childId, collections.cardId],
-          set: { count: sql`${collections.count} - 1` },
-        });
+    // All-or-nothing in ONE statement (neon-http has no interactive tx, so the
+    // guard can't inspect intermediate results and conditionally roll back). We
+    // can't seed the decrement as an upsert-at-0 either: Postgres evaluates
+    // `CHECK(count >= 1)` on the INSERT *candidate* row before conflict
+    // resolution, so a count=0 candidate throws even when the DO UPDATE would
+    // land at 1 — that broke every trade. Instead: two guarded decrements
+    // (`count >= 2`, keeping the last copy), a `guard` CTE that divides by zero
+    // — hence aborts and rolls back the whole statement — unless BOTH gives
+    // matched exactly one row, and the receiver upserts gated on that guard. A
+    // giver who raced away a copy (or never held one) matches zero rows → guard
+    // fails → nothing commits, so no lopsided trade. The `1 / (CASE ...)` divisor
+    // is column-derived so Postgres can't constant-fold it and pre-throw.
     try {
-      await db.batch([
-        give(aChildId, aCardId),
-        addCardCopy(aChildId, bCardId),
-        give(bChildId, bCardId),
-        addCardCopy(bChildId, aCardId),
-      ]);
+      await db.execute(sql`
+        WITH
+          ga AS (
+            UPDATE collections SET count = count - 1
+            WHERE child_id = ${aChildId} AND card_id = ${aCardId} AND count >= 2
+            RETURNING 1
+          ),
+          gb AS (
+            UPDATE collections SET count = count - 1
+            WHERE child_id = ${bChildId} AND card_id = ${bCardId} AND count >= 2
+            RETURNING 1
+          ),
+          guard AS (
+            SELECT 1 / (CASE
+              WHEN (SELECT count(*) FROM ga) = 1 AND (SELECT count(*) FROM gb) = 1
+              THEN 1 ELSE 0 END) AS ok
+          ),
+          ra AS (
+            INSERT INTO collections (child_id, card_id, count)
+            SELECT ${aChildId}, ${bCardId}, 1 FROM guard WHERE ok = 1
+            ON CONFLICT (child_id, card_id) DO UPDATE SET count = collections.count + 1
+            RETURNING 1
+          ),
+          rb AS (
+            INSERT INTO collections (child_id, card_id, count)
+            SELECT ${bChildId}, ${aCardId}, 1 FROM guard WHERE ok = 1
+            ON CONFLICT (child_id, card_id) DO UPDATE SET count = collections.count + 1
+            RETURNING 1
+          )
+        SELECT ok FROM guard
+      `);
       return true;
     } catch {
       return false;
