@@ -162,15 +162,14 @@ describe("makePullService.sacrifice", () => {
     expect(await children.readColumn("kid", "rarePickTickets")).toBe(1);
   });
 
-  it("succeeds sacrificing an exact-cost holding (row deleted, not a CHECK error)", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0);
+  it("always leaves at least one copy — a holding of exactly SACRIFICE_COST is not enough", async () => {
+    // You burn duplicates, never your only card. Holding exactly 3 (= cost)
+    // would zero the card out, so it must be rejected, not sacrificed.
     const { service, children, collections } = setup({ kid: {} }, { kid: { c: 3 } }, [card("c", "rare")]);
 
-    const result = await service.sacrifice("kid", "c");
-
-    expect(result).toEqual({ ticketRarity: "rare", sourceRarity: "rare" });
-    expect(await collections.cardCount("kid", "c")).toBe(0); // all 3 gone, no row
-    expect(await children.readColumn("kid", "rarePickTickets")).toBe(1);
+    await expect(service.sacrifice("kid", "c")).rejects.toThrow("not enough copies");
+    expect(await collections.cardCount("kid", "c")).toBe(3); // untouched
+    expect(await children.readColumn("kid", "rarePickTickets")).toBe(0);
   });
 
   it("throws when the child lacks enough copies", async () => {

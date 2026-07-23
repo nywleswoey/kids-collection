@@ -4,6 +4,7 @@ import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { binderService } from "@/features/binder/service.prod";
 import { Card } from "@/features/card/Card";
 import { SacrificePanel } from "@/features/pull/SacrificePanel";
+import { SACRIFICE_COST } from "@/features/pull/sacrifice";
 
 export default async function CardDetailPage({
   params,
@@ -25,7 +26,7 @@ export default async function CardDetailPage({
       {detail.count > 1 ? (
         <p className="pill pill--gold">📚 You own {detail.count} of these</p>
       ) : null}
-      {detail.count >= 3 ? (
+      {detail.count > SACRIFICE_COST ? (
         <SacrificePanel cardId={detail.card.id} count={detail.count} />
       ) : null}
       <Link href="/play/binder" className="btn btn--ghost text-sm">

@@ -244,13 +244,18 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
    * Sacrifice SACRIFICE_COST copies of a card for a rarity-pick ticket (Inc16
    * FR1). Free (spends copies, not tokens). Atomic guarded decrement prevents
    * over-spending; the ticket's rarity is same-or-one-tier-higher (50/50).
+   *
+   * A sacrifice always leaves the child at least ONE copy — you burn duplicates,
+   * never your only card. `minHeld = SACRIFICE_COST + 1` enforces that: a holding
+   * of exactly SACRIFICE_COST can't be burned to zero (which is why the binder
+   * only offers the panel at `> SACRIFICE_COST`).
    */
   async function sacrifice(childId: string, cardId: string): Promise<SacrificeResult> {
     const source = await catalog.getCard(cardId);
     if (!source) throw new Error("sacrifice: card not found");
 
-    // Atomic CAS: only succeeds if the child still holds enough copies.
-    const burned = await collections.removeCard(childId, cardId, SACRIFICE_COST, SACRIFICE_COST);
+    // Atomic CAS: only succeeds while the child holds enough to burn AND keep one.
+    const burned = await collections.removeCard(childId, cardId, SACRIFICE_COST, SACRIFICE_COST + 1);
     if (burned === null) throw new Error("sacrifice: not enough copies");
 
     const ticketRarity = rollUpgradeTier(source.rarity); // 50/50 same / one up
