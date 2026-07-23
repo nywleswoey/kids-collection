@@ -17,7 +17,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "seed": "tsx --env-file-if-exists=.env.local scripts/seed/index.ts"
+    "seed": "tsx --env-file-if-exists=.env.local scripts/seed/index.ts",
+    "reconcile": "tsx --env-file-if-exists=.env.local scripts/reconcile/index.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
