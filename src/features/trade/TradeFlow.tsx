@@ -50,6 +50,7 @@ export function TradeFlow({
 
   function chooseMine(t: TradableCard) {
     play("click");
+    posthog.capture("trade_initiated", { card_rarity: t.card.rarity });
     setMine(t);
     setPhase("pick-friend");
   }
