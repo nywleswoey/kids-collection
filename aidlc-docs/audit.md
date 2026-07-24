@@ -1363,3 +1363,27 @@
 **Context**: Operations gate, prod deploy
 
 ---
+
+## INCREMENT 19 — Initial Request
+**Timestamp**: 2026-07-24T16:20:00Z
+**User Input**: "using ai-dlc, i want to collapse all the special tickets into 1 easter egg ticket"
+**AI Response**: Started AI-DLC workflow (skill aidlc:start). Resolved rule-details dir `.aidlc-rule-details/`. Detected existing aidlc-state.md at terminal state (INCREMENT 18 COMPLETE, deployed). Treating as new brownfield increment (INCREMENT 19), not a resume (nothing mid-flight) nor a fresh restart. Extensions already decided (Security/Resiliency/Property-Based all Enabled) — no re-opt-in. Grounded analysis: found 6 special-ticket balances on children table — epic_tickets (✨ pick-1-of-5 epic+), lucky_tickets (🍀 pick-1-of-5 common/rare), and common/rare/epic/legendary_pick_tickets (🎯 pick-1-of-5 of one exact rarity, Inc16). Plus a separate ~1% random easter-egg trigger (rollEasterEgg, not a grantable ticket). Redemption behaviors differ by pool, so unification requires a decision. Created requirements verification questions.
+**Context**: INCEPTION — Workspace Detection (existing project acknowledged) + Requirements Analysis start
+
+---
+
+## INCREMENT 19 — Requirements Answers
+**Timestamp**: 2026-07-24T16:40:00Z
+**User Input**: "done" — increment19-unify-tickets-questions.md answers: Q1="random hit rate of 1 of the current easter egg behaviours" (Option X/custom), Q2=A (sum 1:1), Q3=A (leave ~1% random trigger unchanged, epic+), Q4=A (🥚 "Easter Egg ticket"), Q5=B (one stepper, +1/−1 only), Q6=A (sacrifice 3 dups → 1 easter egg ticket), Q7=A (build, migrate, deploy prod).
+**AI Response**: Q2–Q7 clear. Q1 is ambiguous: user wants redemption to randomly select one of the current easter-egg behaviours, but the SET to randomize over is unspecified (2 egg types? all 6? 4 single-rarity?). Also a reveal-vs-silent UX question. Per question-format-guide ambiguity rule, created increment19-unify-tickets-clarification.md (2 questions) and STOPPED at gate. No requirements.md written yet.
+**Context**: INCEPTION — Requirements Analysis, ambiguity detected on Q1
+
+---
+
+## INCREMENT 19 — Clarification Answers
+**Timestamp**: 2026-07-24T16:50:00Z
+**User Input**: "done" — increment19-unify-tickets-clarification.md: Q1=D (rarity-weighted roll using normal odds → single-rarity pick-1-of-5 of the rolled rarity), Q2=A (surprise-reveal the rolled tier before showing the 5 cards).
+**AI Response**: All ambiguities resolved. Unified redemption = weighted rarity roll (reuse RARITY_WEIGHTS common60/rare25/epic12/legendary3) → pickRarityChoices(rolledRarity) → surprise reveal + pick-1-of-5. Wrote requirements.md (increment19-unify-tickets-requirements.md). Marked Requirements Analysis complete; presenting approval gate. User Stories to be SKIPPED (refactor, single increment — consistent with all prior increments).
+**Context**: INCEPTION — Requirements Analysis complete, approval gate
+
+---

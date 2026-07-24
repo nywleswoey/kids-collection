@@ -4,7 +4,8 @@
 - **Project Type**: Greenfield
 - **Project Name**: kids-collection (Collectible Card Binder for Kids)
 - **Start Date**: 2026-06-30T03:19:42Z
-- **Current Stage**: INCREMENT 18 (Badge Visibility + Galaxy Modal Viewport) COMPLETE — deployed to Vercel prod 2026-07-15 (kids-collection-q33wv4ktj, READY). typecheck clean, 99/99 tests, build ✅. No migration, no new deps. FR1 shared `.badge-new`/`.badge-count` (globals.css) — larger, gradient, border+shadow, z-10 — applied to EasterEggPicker 🆕/➕×N, Card x{count}, CardSlot x{count}. FR2 CollectionRewardModal portaled to document.body (createPortal) to escape `.page-enter` transform containing-block so `fixed inset-0` centers in viewport not tall page.
+- **Current Stage**: INCREMENT 19 (Unify Special Tickets → Easter Egg Ticket) IN PROGRESS — INCEPTION / Requirements Analysis. Awaiting answers in `increment19-unify-tickets-questions.md`. Brownfield refactor: collapse 6 special-ticket balances (epic/lucky/4×rarity-pick) into 1 unified "easter egg" ticket. Schema migration expected.
+- **Prior Increment**: INCREMENT 18 (Badge Visibility + Galaxy Modal Viewport) COMPLETE — deployed to Vercel prod 2026-07-15 (kids-collection-q33wv4ktj, READY). typecheck clean, 99/99 tests, build ✅. No migration, no new deps. FR1 shared `.badge-new`/`.badge-count` (globals.css) — larger, gradient, border+shadow, z-10 — applied to EasterEggPicker 🆕/➕×N, Card x{count}, CardSlot x{count}. FR2 CollectionRewardModal portaled to document.body (createPortal) to escape `.page-enter` transform containing-block so `fixed inset-0` centers in viewport not tall page.
 - **Prior Increment**: INCREMENT 17 (Collection-Reward Modal Bugfix) COMPLETE — deployed to Vercel prod 2026-07-14 (kids-collection-chid52y8e). markRewardsShown ANY->inArray so shownAt persists; modal shows once. 99/99 tests.
 - **Prior Increment**: INCREMENT 16 (Sacrifice Ticket, Egg Clarity, Collection Reward) COMPLETE — migration 0004 applied, deployed to Vercel prod 2026-07-13 (kids-collection-f7vg3bhik). 99/99 tests. Sacrifice->rarity-pick ticket; pull-screen redeem; admin grant; egg 🆕/➕×N; collection-completion reward (race-safe, cascade, modal).
 - **Prior Increment**: INCREMENT 15 (Admin Gate TTL + Reward SFX) COMPLETE — deployed to Vercel prod 2026-07-12 (kids-collection-42kdz7ep4, READY). No migration/seed. 92/92 tests. FR1 admin passcode gate 20s sliding (middleware; Google session untouched); FR2 epic/legendary fanfares layered on all reveals; FR3 dedicated easterEgg SFX on picker-appear.
@@ -185,3 +186,17 @@ Root cause: markRewardsShown used raw `= ANY(${ids})` → JS array mis-bound →
 - [x] Code Generation — DONE (increment17-reward-modal-bugfix.md); one-line fix in rewards/service.ts (inArray). typecheck clean, 99/99 tests, build ✅, no migration/deps.
 ### 🟡 OPERATIONS
 - [x] Operations gate — DEPLOYED to Vercel prod 2026-07-14 (kids-collection-chid52y8e, READY). No migration. INCREMENT 17 COMPLETE.
+
+## INCREMENT 19 — Unify Special Tickets → Easter Egg Ticket
+Brownfield refactor. Cadence: LIGHT-MEDIUM (single increment, schema migration likely). Intent: collapse all special tickets into ONE "easter egg" ticket.
+Current special-ticket surface (6 balances on `children`): `epic_tickets` (✨ pick-1-of-5 epic+), `lucky_tickets` (🍀 pick-1-of-5 common/rare), `common/rare/epic/legendary_pick_tickets` (🎯 pick-1-of-5 one exact rarity, Inc16). Separate ~1% random egg trigger (`rollEasterEgg`) is NOT a grantable ticket.
+Intent Analysis: Request type=Refactoring/Enhancement; Scope=Multiple components (schema, types, stores pg+fake, mappers, admin GrantControl, pull actions/services, offer, EasterEggPicker, SacrificePanel, pick-tickets); Complexity=Moderate; Requirements depth=Standard.
+Answers: Q1=D→clarQ1=D (weighted rarity roll via RARITY_WEIGHTS → single-rarity pick-1-of-5), clarQ2=A (surprise-reveal tier), Q2=A (sum 6 cols 1:1), Q3=A (~1% random egg unchanged/epic+), Q4=A (🥚 "Easter Egg ticket"), Q5=B (one +1/−1 stepper), Q6=A (sacrifice 3 dups→1 egg ticket), Q7=A (build+migrate+deploy prod).
+### 🔵 INCEPTION
+- [x] Requirements Analysis — APPROVED-PENDING (increment19-unify-tickets-requirements.md); FR1–FR9 + NFR1–5. User Stories SKIPPED (refactor, single increment). AWAITING approval at gate.
+### 🟢 CONSTRUCTION
+- [ ] Application Design (conditional — pending answers)
+- [ ] Code Generation
+- [ ] Build & Test
+### 🟡 OPERATIONS
+- [ ] Operations gate
