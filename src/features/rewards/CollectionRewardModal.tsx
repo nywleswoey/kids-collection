@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Card } from "@/features/card/Card";
@@ -35,6 +36,11 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
     markRewardsShownAction(rewards.map((r) => r.id));
     setFire((n) => n + 1);
     playReward(play, rewards[0].rarity);
+    posthog.capture("collection_reward_shown", {
+      reward_count: rewards.length,
+      rarity: rewards[0].rarity,
+      theme_name: rewards[0].themeName,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
