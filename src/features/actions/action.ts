@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { requireParent } from "@/features/auth/guard";
 import { requireActiveChild } from "@/features/profiles/active-profile";
+import { captureServerException } from "@/lib/posthog-server";
 
 /**
  * The one server-action shape: gate → run → revalidate. Every feature's actions
@@ -21,11 +22,20 @@ function revalidateAll<T>(paths: Paths<T> | undefined, result: T): void {
  * Parent-gated action: enforce allowlisted-parent access, run the mutation, then
  * revalidate. The shape behind every parent-only action.
  */
-export async function withParent<T>(run: () => Promise<T>, paths?: Paths<T>): Promise<T> {
-  await requireParent();
-  const result = await run();
-  revalidateAll(paths, result);
-  return result;
+export async function withParent<T>(
+  run: () => Promise<T>,
+  paths?: Paths<T>,
+  label?: string,
+): Promise<T> {
+  const parent = await requireParent();
+  try {
+    const result = await run();
+    revalidateAll(paths, result);
+    return result;
+  } catch (error) {
+    await captureServerException(error, { distinctId: parent.id, action: label });
+    throw error;
+  }
 }
 
 /**
@@ -37,11 +47,16 @@ export async function withParent<T>(run: () => Promise<T>, paths?: Paths<T>): Pr
 export async function withActiveChild<T>(
   run: (childId: string) => Promise<T>,
   paths?: Paths<T>,
-  opts?: { parent?: boolean },
+  opts?: { parent?: boolean; label?: string },
 ): Promise<T> {
   if (opts?.parent) await requireParent();
   const child = await requireActiveChild();
-  const result = await run(child.id);
-  revalidateAll(paths, result);
-  return result;
+  try {
+    const result = await run(child.id);
+    revalidateAll(paths, result);
+    return result;
+  } catch (error) {
+    await captureServerException(error, { distinctId: child.id, action: opts?.label });
+    throw error;
+  }
 }
