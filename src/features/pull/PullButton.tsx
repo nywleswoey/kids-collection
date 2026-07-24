@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
 import { pullAction, pullSpecialEggAction, pullRarityPickAction } from "./actions";
@@ -101,6 +102,19 @@ export function PullButton({
         return;
       }
       setBalance(res.newBalance);
+      const ticketType: string = redeeming.pick ?? redeeming.ticket ?? "normal";
+      posthog.capture("card_pulled", {
+        ticket_type: ticketType,
+        theme_id: themeId || null,
+        is_easter_egg: !!res.easterEgg,
+        ...(res.easterEgg
+          ? {}
+          : {
+              card_rarity: res.card.rarity,
+              is_duplicate: res.isDuplicate,
+              new_balance: res.newBalance,
+            }),
+      });
       if (res.easterEgg) play("easterEgg");
       else setCycling(true);
     });

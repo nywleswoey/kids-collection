@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { startQuizAction, submitQuizAction } from "./actions";
@@ -39,6 +40,7 @@ export function QuizFlow({
       setIdx(0);
       setAnswered(null);
       setPhase("quiz");
+      posthog.capture("quiz_started", { topic_id: topicId });
     });
   }
 
@@ -65,6 +67,13 @@ export function QuizFlow({
       const res = await submitQuizAction(offer, picks);
       setOutcome(res);
       setPhase("result");
+      posthog.capture("quiz_completed", {
+        topic_id: topicId,
+        passed: res.passed,
+        correct_count: res.correct,
+        total_questions: res.total,
+        awarded_ticket: !!res.awarded,
+      });
       if (res.awarded) {
         play("setComplete");
         setBurst((n) => n + 1);

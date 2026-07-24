@@ -29,3 +29,4 @@ next-env.d.ts
 /seed/review/
 .env*
 !.env.example
+.env.local

@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { RARITY_LABEL } from "@/features/card/rarity";
@@ -35,6 +36,10 @@ export function SacrificePanel({
         setResult({ ticketRarity: res.ticketRarity });
         // Inc15/16: set-complete cue + fanfare for an epic/legendary pick ticket.
         playReward(play, res.ticketRarity);
+        posthog.capture("card_sacrificed", {
+          card_id: cardId,
+          ticket_rarity: res.ticketRarity,
+        });
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
         play("denied");

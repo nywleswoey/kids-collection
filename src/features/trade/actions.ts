@@ -11,7 +11,7 @@ export async function getMatchesAction(
   bChildId: string,
   rarity: Rarity,
 ): Promise<TradableCard[]> {
-  return withParent(() => tradeService.listMatchesForRarity(bChildId, rarity));
+  return withParent(() => tradeService.listMatchesForRarity(bChildId, rarity), undefined, "get_trade_matches");
 }
 
 /**
@@ -27,6 +27,6 @@ export async function executeTradeAction(
   return withActiveChild(
     (aChildId) => tradeService.executeTrade({ aChildId, aCardId, bChildId, bCardId }),
     (r) => (r.ok ? ["/play/binder", "/play/home", "/play/trade"] : []),
-    { parent: true },
+    { parent: true, label: "execute_trade" },
   );
 }
