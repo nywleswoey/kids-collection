@@ -1289,6 +1289,436 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Zheng_He"
         }
       ]
+    },
+    {
+      "name": "Weird Insects",
+      "cards": [
+        {
+          "name": "Ladybug",
+          "rarity": "common",
+          "eduText": "A ladybug can eat as many as 5,000 tiny plant-eating aphids in its lifetime.",
+          "imagePrompt": "a cute red ladybug with black spots on a green leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coccinellidae"
+        },
+        {
+          "name": "Praying Mantis",
+          "rarity": "common",
+          "eduText": "A praying mantis can turn its head almost all the way around to watch for prey.",
+          "imagePrompt": "a green praying mantis perched on a twig",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mantis"
+        },
+        {
+          "name": "Dung Beetle",
+          "rarity": "common",
+          "eduText": "Dung beetles can roll a ball of dung many times heavier than their own body.",
+          "imagePrompt": "a shiny dung beetle rolling a small ball",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dung_beetle"
+        },
+        {
+          "name": "Firefly",
+          "rarity": "common",
+          "eduText": "Fireflies make their own light in their bellies using a chemical glow called bioluminescence.",
+          "imagePrompt": "a glowing firefly at dusk in a garden",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Firefly"
+        },
+        {
+          "name": "Water Strider",
+          "rarity": "common",
+          "eduText": "Water striders can walk on top of water without sinking thanks to tiny water-repelling hairs on their legs.",
+          "imagePrompt": "a water strider standing on the surface of a pond",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gerridae"
+        },
+        {
+          "name": "Leaf Insect",
+          "rarity": "common",
+          "eduText": "Leaf insects look so much like real leaves that even their bodies have fake bite marks.",
+          "imagePrompt": "a green leaf insect that looks just like a leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phylliidae"
+        },
+        {
+          "name": "Cicada",
+          "rarity": "common",
+          "eduText": "Some cicadas stay underground for 17 years before coming out to sing.",
+          "imagePrompt": "a cicada with clear wings resting on tree bark",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cicada"
+        },
+        {
+          "name": "Earwig",
+          "rarity": "common",
+          "eduText": "Earwigs have pincers on their tail that they use to defend themselves and catch food.",
+          "imagePrompt": "an earwig with tail pincers on a leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Earwig"
+        },
+        {
+          "name": "Lacewing",
+          "rarity": "common",
+          "eduText": "Baby lacewings pile bits of trash on their backs to hide from enemies.",
+          "imagePrompt": "a delicate green lacewing with lacy transparent wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Neuroptera"
+        },
+        {
+          "name": "Antlion",
+          "rarity": "common",
+          "eduText": "Antlion larvae dig funnel-shaped sand traps to catch ants that tumble in.",
+          "imagePrompt": "an antlion larva at the bottom of a sand funnel",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Antlion"
+        },
+        {
+          "name": "Bombardier Beetle",
+          "rarity": "common",
+          "eduText": "The bombardier beetle sprays a hot, stinky chemical to scare away attackers.",
+          "imagePrompt": "a bombardier beetle spraying a tiny puff of defense",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bombardier_beetle"
+        },
+        {
+          "name": "Stink Bug",
+          "rarity": "common",
+          "eduText": "Stink bugs release a bad smell from their bodies when they feel scared.",
+          "imagePrompt": "a shield-shaped green stink bug on a leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pentatomidae"
+        },
+        {
+          "name": "Weevil",
+          "rarity": "common",
+          "eduText": "Weevils have a long snout with tiny mouthparts right at the tip.",
+          "imagePrompt": "a small weevil with a long curved snout",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Weevil"
+        },
+        {
+          "name": "Froghopper",
+          "rarity": "common",
+          "eduText": "The froghopper can leap over 70 times its own body length, higher than a flea.",
+          "imagePrompt": "a tiny froghopper insect mid-jump on a leaf",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Froghopper"
+        },
+        {
+          "name": "Assassin Bug",
+          "rarity": "common",
+          "eduText": "The assassin bug uses its sharp beak to grab and slurp up other insects.",
+          "imagePrompt": "an assassin bug with a curved beak on a stem",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Reduviidae"
+        },
+        {
+          "name": "Stick Insect",
+          "rarity": "rare",
+          "eduText": "Stick insects can regrow a leg if they lose one while they are still young.",
+          "imagePrompt": "a long brown stick insect blending into twigs",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phasmatodea"
+        },
+        {
+          "name": "Atlas Moth",
+          "rarity": "rare",
+          "eduText": "The atlas moth's wingtips look like snake heads to scare away hungry birds.",
+          "imagePrompt": "a giant atlas moth with patterned wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Attacus_atlas"
+        },
+        {
+          "name": "Jewel Beetle",
+          "rarity": "rare",
+          "eduText": "Jewel beetles shine like metal, and their colors can last for thousands of years.",
+          "imagePrompt": "a sparkling metallic-green jewel beetle",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Buprestidae"
+        },
+        {
+          "name": "Rhinoceros Beetle",
+          "rarity": "rare",
+          "eduText": "The rhinoceros beetle can lift objects hundreds of times its own weight.",
+          "imagePrompt": "a black rhinoceros beetle with a big horn",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dynastinae"
+        },
+        {
+          "name": "Orchid Mantis",
+          "rarity": "rare",
+          "eduText": "The orchid mantis looks like a pink flower to trick insects into coming close.",
+          "imagePrompt": "a pink orchid mantis shaped like a flower petal",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hymenopus_coronatus"
+        },
+        {
+          "name": "Giant Water Bug",
+          "rarity": "rare",
+          "eduText": "Father giant water bugs carry their eggs on their backs until they hatch.",
+          "imagePrompt": "a large brown giant water bug underwater",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Belostomatidae"
+        },
+        {
+          "name": "Treehopper",
+          "rarity": "rare",
+          "eduText": "Treehoppers grow amazing spiky shapes on their backs that look like thorns.",
+          "imagePrompt": "a thorn-shaped treehopper on a green stem",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Treehopper"
+        },
+        {
+          "name": "Hercules Beetle",
+          "rarity": "rare",
+          "eduText": "The male Hercules beetle's horn can be longer than the rest of its body.",
+          "imagePrompt": "a large Hercules beetle with a long curved horn",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hercules_beetle"
+        },
+        {
+          "name": "Goliath Beetle",
+          "rarity": "epic",
+          "eduText": "Goliath beetles are among the heaviest insects on Earth, as heavy as a small apple.",
+          "imagePrompt": "a huge striped Goliath beetle on a log",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goliathus"
+        },
+        {
+          "name": "Titan Beetle",
+          "rarity": "epic",
+          "eduText": "The titan beetle's jaws are strong enough to snap a wooden pencil in half.",
+          "imagePrompt": "a giant black titan beetle in the rainforest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Titan_beetle"
+        },
+        {
+          "name": "Giant Weta",
+          "rarity": "epic",
+          "eduText": "The giant weta is one of the heaviest insects, heavier than a sparrow.",
+          "imagePrompt": "a large brown giant weta insect on a branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Weta"
+        },
+        {
+          "name": "Devil's Flower Mantis",
+          "rarity": "epic",
+          "eduText": "The devil's flower mantis spreads bright colors to startle anything that bothers it.",
+          "imagePrompt": "a colorful devils flower mantis with raised arms",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Idolomantis"
+        },
+        {
+          "name": "Luna Moth",
+          "rarity": "epic",
+          "eduText": "The adult luna moth has no mouth and lives only about one week.",
+          "imagePrompt": "a pale green luna moth with long tail wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Luna_moth"
+        },
+        {
+          "name": "Queen Alexandra's Birdwing",
+          "rarity": "legendary",
+          "eduText": "Queen Alexandra's birdwing is the largest butterfly in the world, wider than a dinner plate.",
+          "imagePrompt": "an enormous colorful birdwing butterfly in flight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Queen_Alexandra%27s_birdwing"
+        },
+        {
+          "name": "Hercules Moth",
+          "rarity": "legendary",
+          "eduText": "The Hercules moth has the largest wing area of any moth in the world.",
+          "imagePrompt": "a giant brown Hercules moth with huge wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coscinocera_hercules"
+        }
+      ]
+    },
+    {
+      "name": "Special Plants",
+      "cards": [
+        {
+          "name": "Venus Flytrap",
+          "rarity": "common",
+          "eduText": "The Venus flytrap snaps shut in less than a second to catch bugs for food.",
+          "imagePrompt": "a Venus flytrap with open jaw-like leaves",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Venus_flytrap"
+        },
+        {
+          "name": "Sunflower",
+          "rarity": "common",
+          "eduText": "Young sunflowers turn their heads to follow the sun across the sky each day.",
+          "imagePrompt": "a bright yellow sunflower facing the sun",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_sunflower"
+        },
+        {
+          "name": "Sundew",
+          "rarity": "common",
+          "eduText": "The sundew traps insects with sticky, glittering drops on its leaves.",
+          "imagePrompt": "a sundew plant with sparkling sticky tentacles",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Drosera"
+        },
+        {
+          "name": "Pitcher Plant",
+          "rarity": "common",
+          "eduText": "Pitcher plants hold a pool of liquid that traps and digests insects.",
+          "imagePrompt": "a tropical pitcher plant with a tube-shaped trap",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pitcher_plant"
+        },
+        {
+          "name": "Sensitive Plant",
+          "rarity": "common",
+          "eduText": "The sensitive plant folds its leaves shut the moment you touch them.",
+          "imagePrompt": "a sensitive plant with feathery folding leaves",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mimosa_pudica"
+        },
+        {
+          "name": "Saguaro Cactus",
+          "rarity": "common",
+          "eduText": "A saguaro cactus can store hundreds of liters of water inside its trunk.",
+          "imagePrompt": "a tall saguaro cactus with arms in the desert",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saguaro"
+        },
+        {
+          "name": "Bamboo",
+          "rarity": "common",
+          "eduText": "Bamboo is the fastest-growing plant and can grow almost a meter in a single day.",
+          "imagePrompt": "a green bamboo grove with tall stalks",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bamboo"
+        },
+        {
+          "name": "Water Lily",
+          "rarity": "common",
+          "eduText": "Water lily leaves float on ponds and can be big enough to hold a small frog.",
+          "imagePrompt": "a pink water lily floating on a calm pond",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nymphaeaceae"
+        },
+        {
+          "name": "Aloe Vera",
+          "rarity": "common",
+          "eduText": "Aloe vera stores a cooling gel inside its leaves that can soothe sunburns.",
+          "imagePrompt": "an aloe vera plant with thick spiky leaves",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aloe_vera"
+        },
+        {
+          "name": "Fern",
+          "rarity": "common",
+          "eduText": "Ferns grew on Earth long before dinosaurs and spread using tiny spores, not seeds.",
+          "imagePrompt": "a lush green fern with curling fronds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fern"
+        },
+        {
+          "name": "Moss",
+          "rarity": "common",
+          "eduText": "Moss has no roots and drinks water straight through its tiny green leaves.",
+          "imagePrompt": "a soft carpet of green moss on a rock",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Moss"
+        },
+        {
+          "name": "Dandelion",
+          "rarity": "common",
+          "eduText": "A single dandelion puff can carry over a hundred seeds away on the wind.",
+          "imagePrompt": "a white dandelion puff releasing seeds in the breeze",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taraxacum"
+        },
+        {
+          "name": "Lotus",
+          "rarity": "common",
+          "eduText": "Lotus leaves are so waterproof that raindrops roll right off and clean them.",
+          "imagePrompt": "a pink lotus flower rising above the water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nelumbo_nucifera"
+        },
+        {
+          "name": "Bird of Paradise",
+          "rarity": "common",
+          "eduText": "The bird of paradise flower looks just like a colorful bird taking off.",
+          "imagePrompt": "an orange and blue bird of paradise flower",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Strelitzia"
+        },
+        {
+          "name": "Snapdragon",
+          "rarity": "common",
+          "eduText": "Squeeze a snapdragon flower and it opens like a tiny dragon's mouth.",
+          "imagePrompt": "a row of colorful snapdragon flowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Antirrhinum"
+        },
+        {
+          "name": "Bladderwort",
+          "rarity": "rare",
+          "eduText": "The bladderwort sucks in tiny water creatures with the fastest trap in the plant world.",
+          "imagePrompt": "a floating bladderwort with tiny underwater traps",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Utricularia"
+        },
+        {
+          "name": "Butterwort",
+          "rarity": "rare",
+          "eduText": "The butterwort's greasy leaves feel like butter and glue small insects in place.",
+          "imagePrompt": "a butterwort plant with sticky flat leaves",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pinguicula"
+        },
+        {
+          "name": "Living Stones",
+          "rarity": "rare",
+          "eduText": "Living stones are plants that look just like pebbles to hide from hungry animals.",
+          "imagePrompt": "living stone plants that look like small pebbles",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lithops"
+        },
+        {
+          "name": "Cobra Lily",
+          "rarity": "rare",
+          "eduText": "The cobra lily looks like a rearing snake and confuses insects with see-through windows.",
+          "imagePrompt": "a cobra lily pitcher plant shaped like a snake",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Darlingtonia_californica"
+        },
+        {
+          "name": "Dragon Blood Tree",
+          "rarity": "rare",
+          "eduText": "When the dragon blood tree is cut, it oozes a deep red sap like dragon's blood.",
+          "imagePrompt": "an umbrella-shaped dragon blood tree",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dracaena_cinnabari"
+        },
+        {
+          "name": "Passion Flower",
+          "rarity": "rare",
+          "eduText": "The passion flower has a wild, spiky crown of petals unlike any other bloom.",
+          "imagePrompt": "a purple passion flower with a fringed crown",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Passiflora"
+        },
+        {
+          "name": "Resurrection Plant",
+          "rarity": "rare",
+          "eduText": "The resurrection plant can dry into a brown ball and spring back to green with water.",
+          "imagePrompt": "a curled brown resurrection plant unfurling green",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Selaginella_lepidophylla"
+        },
+        {
+          "name": "Welwitschia",
+          "rarity": "rare",
+          "eduText": "Welwitschia grows only two leaves in its whole life, and can live over a thousand years.",
+          "imagePrompt": "a welwitschia plant with two long curling leaves in the desert",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Welwitschia"
+        },
+        {
+          "name": "Corpse Flower",
+          "rarity": "epic",
+          "eduText": "The corpse flower is one of the biggest blooms and smells like rotting meat.",
+          "imagePrompt": "a giant corpse flower bloom in a greenhouse",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amorphophallus_titanum"
+        },
+        {
+          "name": "Baobab Tree",
+          "rarity": "epic",
+          "eduText": "Baobab trees store water in their giant trunks and can live for over a thousand years.",
+          "imagePrompt": "a huge baobab tree with a fat trunk at sunset",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Adansonia"
+        },
+        {
+          "name": "Giant Sequoia",
+          "rarity": "epic",
+          "eduText": "Giant sequoias are the largest trees on Earth and can grow wider than a road.",
+          "imagePrompt": "a towering giant sequoia in a misty forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sequoiadendron"
+        },
+        {
+          "name": "Rafflesia",
+          "rarity": "epic",
+          "eduText": "Rafflesia grows the largest single flower in the world and has no leaves or stem.",
+          "imagePrompt": "a huge red spotted rafflesia flower on the ground",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rafflesia"
+        },
+        {
+          "name": "Bristlecone Pine",
+          "rarity": "epic",
+          "eduText": "Bristlecone pines are among the oldest living things, some nearly 5,000 years old.",
+          "imagePrompt": "a twisted ancient bristlecone pine on a mountain",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bristlecone_pine"
+        },
+        {
+          "name": "Pando",
+          "rarity": "legendary",
+          "eduText": "Pando is a forest of aspen trees that are all one giant plant sharing a single root system.",
+          "imagePrompt": "a golden aspen grove that is one connected plant",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pando_(tree)"
+        },
+        {
+          "name": "Wollemi Pine",
+          "rarity": "legendary",
+          "eduText": "The Wollemi pine was thought extinct with the dinosaurs until a few were found alive in 1994.",
+          "imagePrompt": "a rare Wollemi pine tree with bumpy bark",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wollemia"
+        }
+      ]
     }
   ]
 }
