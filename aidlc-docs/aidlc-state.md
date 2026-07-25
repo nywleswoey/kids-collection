@@ -196,7 +196,7 @@ Answers: Q1=D→clarQ1=D (weighted rarity roll via RARITY_WEIGHTS → single-rar
 - [x] Requirements Analysis — APPROVED-PENDING (increment19-unify-tickets-requirements.md); FR1–FR9 + NFR1–5. User Stories SKIPPED (refactor, single increment). AWAITING approval at gate.
 - [x] Application Design — APPROVED-PENDING (increment19-unify-tickets-design.md). Migration 0005 (add easter_egg_tickets, backfill sum of 6, drop old). New pull-service.pullEasterEgg (weighted roll → pick-1-of-5); offer {easterEgg,rolledRarity}; claim spends easterEggTickets. Collapses actions/token-service/GrantControl/PullButton/EasterEggPicker(reveal)/SacrificePanel/quiz-award. ⚠️ Extra touchpoint found: quiz-service awards a lucky ticket → now easterEggTickets. AWAITING approval at gate.
 ### 🟢 CONSTRUCTION
-- [~] Code Generation — Part 1 PLAN created (plans/increment19-unify-tickets-code-generation-plan.md), 12 steps. AWAITING plan approval before Part 2 generation.
+- [x] Code Generation — DONE (increment19-unify-tickets/code/code-summary.md). All 12 plan steps [x]. typecheck clean, 174/174 tests, build ✅, no client secret leak, no *_new files. Migration 0005 GENERATED (add easter_egg_tickets + backfill sum-of-6 + drop old); journal + 0005_snapshot hand-authored, db:generate confirms "No schema changes". ⚠️ Migration 0005 NOT YET APPLIED (needs DB auth) — Build & Test. Note: migration sum-invariant enforced by SQL, validated on apply (no pure-JS fn to unit-test); random ~1% egg untouched (Q3=A). AWAITING approval at Code Gen gate.
 - [ ] Build & Test
 ### 🟡 OPERATIONS
 - [ ] Operations gate
