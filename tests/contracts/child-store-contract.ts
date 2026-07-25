@@ -24,7 +24,7 @@ export function runChildStoreContract(
     it("readColumn is 0 for an absent child and for an unset column", async () => {
       const store = await makeStore({ kid: { pullTokens: 2 } });
       expect(await store.readColumn("ghost", "pullTokens")).toBe(0);
-      expect(await store.readColumn("kid", "epicTickets")).toBe(0);
+      expect(await store.readColumn("kid", "easterEggTickets")).toBe(0);
       expect(await store.readColumn("kid", "pullTokens")).toBe(2);
     });
 
@@ -35,9 +35,9 @@ export function runChildStoreContract(
     });
 
     it("spendOne of a ticket column leaves pullTokens unchanged but still returns it", async () => {
-      const store = await makeStore({ kid: { pullTokens: 5, epicTickets: 1 } });
-      expect(await store.spendOne("kid", "epicTickets")).toBe(5); // pullTokens returned
-      expect(await store.readColumn("kid", "epicTickets")).toBe(0);
+      const store = await makeStore({ kid: { pullTokens: 5, easterEggTickets: 1 } });
+      expect(await store.spendOne("kid", "easterEggTickets")).toBe(5); // pullTokens returned
+      expect(await store.readColumn("kid", "easterEggTickets")).toBe(0);
       expect(await store.readColumn("kid", "pullTokens")).toBe(5);
     });
 

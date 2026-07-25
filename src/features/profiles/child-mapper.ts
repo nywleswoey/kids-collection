@@ -1,5 +1,4 @@
 import type { children } from "@/db/schema";
-import { pickTicketsFromRow } from "@/features/pull/pick-tickets";
 import type { Child } from "@/lib/types";
 
 /**
@@ -13,8 +12,6 @@ export function toChild(row: typeof children.$inferSelect): Child {
     name: row.name,
     avatar: row.avatar,
     pullTokens: row.pullTokens,
-    epicTickets: row.epicTickets,
-    luckyTickets: row.luckyTickets,
-    pickTickets: pickTicketsFromRow(row),
+    easterEggTickets: row.easterEggTickets,
   };
 }

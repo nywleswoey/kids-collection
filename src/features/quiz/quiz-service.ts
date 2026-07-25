@@ -44,9 +44,9 @@ export interface QuizDeps {
 
 /**
  * Quiz orchestration (Inc11), parameterized by its ports. `buildQuiz` is pure
- * (questions + signed offer); `submitQuiz` re-scores server-side and grants a
- * lucky ticket via ChildStore; the activity reads bucket completions by SGT day.
- * Prod wiring: `quiz-service.prod.ts`.
+ * (questions + signed offer); `submitQuiz` re-scores server-side and grants an
+ * Easter Egg ticket via ChildStore (Inc19); the activity reads bucket completions
+ * by SGT day. Prod wiring: `quiz-service.prod.ts`.
  */
 export function makeQuizService({ quiz, children }: QuizDeps) {
   /** Assemble a quiz + signed offer. The offer holds the authoritative answer
@@ -72,7 +72,7 @@ export function makeQuizService({ quiz, children }: QuizDeps) {
   }
 
   /**
-   * Score a submission server-side and grant a lucky ticket if eligible
+   * Score a submission server-side and grant an Easter Egg ticket if eligible
    * (FR6/FR7). Correct answers come from the signed offer — the client only sends
    * its picks. Caps are enforced by scanning today's (SGT) completions.
    */
@@ -119,7 +119,7 @@ export function makeQuizService({ quiz, children }: QuizDeps) {
       awarded: award,
     });
 
-    if (award) await children.incrementColumn(childId, "luckyTickets", 1);
+    if (award) await children.incrementColumn(childId, "easterEggTickets", 1);
 
     return { passed, correct, total: answers.length, awarded: award, reason, wrongIndexes };
   }

@@ -34,7 +34,7 @@ export interface Topic {
 }
 
 export const QUIZ_LENGTH = 5;
-export const DAILY_TICKET_CAP = 3; // global lucky tickets/day from quizzes (D6=D)
+export const DAILY_TICKET_CAP = 3; // global Easter Egg tickets/day from quizzes (D6=D)
 
 /** Why an award was or wasn't granted, for a friendly message. */
 export type AwardReason = "ok" | "failed" | "topic-done" | "daily-cap";

@@ -1,6 +1,6 @@
 import { drawCard } from "@/lib/logic";
 import { env } from "@/lib/env";
-import type { Card, PullResult, Rarity, EggTicket } from "@/lib/types";
+import type { Card, PullResult, Rarity } from "@/lib/types";
 import type { ChildStore } from "@/db/stores/child-store";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/features/pool/catalog";
@@ -10,12 +10,13 @@ import {
   pickEasterEggChoices,
   pickCommonRareChoices,
   pickRarityChoices,
+  rollWeightedRarity,
 } from "./easter-egg";
-import { rollUpgradeTier, SACRIFICE_COST } from "./sacrifice";
-import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
+import { SACRIFICE_COST } from "./sacrifice";
+import { type BalanceColumn } from "./pick-tickets";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 
-/** Rare pick-1-of-5 easter egg: server offers epic+ choices, claimed later. */
+/** Pick-1-of-5 easter egg: server offers choices, claimed later. */
 export interface EasterEggOutcome {
   outOfTokens: false;
   easterEgg: true;
@@ -24,6 +25,9 @@ export interface EasterEggOutcome {
   ownedCounts: Record<string, number>;
   offer: string;
   newBalance: number;
+  /** Inc19 FR4: server-rolled tier for the unified Easter Egg ticket, so the
+   *  picker can surprise-reveal it. Absent for the random ~1% eggs. */
+  revealRarity?: Rarity;
 }
 
 export type PullOutcome =
@@ -32,9 +36,8 @@ export type PullOutcome =
   | { outOfTokens: true };
 
 export interface SacrificeResult {
-  /** Rarity of the pick ticket earned (Inc16 FR1): 50/50 same tier or one up. */
-  ticketRarity: Rarity;
-  sourceRarity: Rarity;
+  /** Easter Egg ticket balance after the sacrifice granted one (Inc19 FR7). */
+  newBalance: number;
 }
 
 const OFFER_TTL_MS = 120_000; // 2 min
@@ -64,6 +67,7 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
     choices: Card[],
     newBalance: number,
     offerExtra: Partial<OfferPayload> = {},
+    revealRarity?: Rarity,
   ): Promise<EasterEggOutcome> {
     const cardIds = choices.map((c) => c.id);
     const offer = await makeOffer(
@@ -71,7 +75,15 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
       env.authSecret,
     );
     const ownedCounts = await collections.ownedCounts(childId, cardIds);
-    return { outOfTokens: false, easterEgg: true, choices, ownedCounts, offer, newBalance };
+    return {
+      outOfTokens: false,
+      easterEgg: true,
+      choices,
+      ownedCounts,
+      offer,
+      newBalance,
+      ...(revealRarity ? { revealRarity } : {}),
+    };
   }
 
   /**
@@ -149,58 +161,23 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
   }
 
   /**
-   * Shared tail for ticket-gated eggs: the ticket is NOT spent here — spent
-   * atomically at claim (single-use), and the offer pins the ticket. Returns the
-   * current (unchanged) normal token balance.
+   * Redeem the unified Easter Egg ticket (Inc19 FR3/FR4): guard on the ticket
+   * balance (>= 1 held), roll a rarity by the normal pull odds, then offer a
+   * pick-1-of-5 of that exact rarity from the FULL pool. The ticket is NOT spent
+   * here — spent atomically at claim (single-use); the offer pins `easterEgg` so
+   * claim decrements `easterEggTickets`. The rolled tier rides along for the
+   * surprise reveal. Returns out-of-tokens when no Easter Egg ticket is held.
    */
-  async function makeTicketEggOutcome(
-    childId: string,
-    choices: Card[],
-    offerExtra: Partial<OfferPayload>,
-  ): Promise<EasterEggOutcome> {
-    return eggOutcome(childId, choices, await children.readColumn(childId, "pullTokens"), offerExtra);
-  }
-
-  /**
-   * Shared body for the ticket-gated egg entry points: guard on the ticket column
-   * (>= 1 held), draw the pick-1-of-5 from the FULL pool, and hand off. The ticket
-   * is NOT spent here — spent atomically at claim; `offerExtra` pins which column
-   * claim decrements. Returns out-of-tokens when no ticket is held.
-   */
-  async function offerTicketEgg(
-    childId: string,
-    column: BalanceColumn,
-    offerExtra: Partial<OfferPayload>,
-    chooseFrom: (pool: Card[]) => Card[],
-    label: string,
-  ): Promise<PullOutcome> {
-    const held = await children.readColumn(childId, column);
+  async function pullEasterEgg(childId: string): Promise<PullOutcome> {
+    const held = await children.readColumn(childId, "easterEggTickets");
     if (held < 1) return { outOfTokens: true };
 
-    const choices = chooseFrom(await catalog.listCards());
-    if (choices.length === 0) throw new Error(`${label}: no eligible cards`);
+    const rarity = rollWeightedRarity();
+    const choices = pickRarityChoices(await catalog.listCards(), rarity, 5);
+    if (choices.length === 0) throw new Error("pullEasterEgg: no eligible cards");
 
-    return makeTicketEggOutcome(childId, choices, offerExtra);
-  }
-
-  /**
-   * Guaranteed easter egg via a special ticket (Inc9 FR4). Offers the pick-1-of-5
-   * for the ticket's tier from the FULL pool. The special ticket is spent
-   * atomically at claim (single-use); the offer pins the kind.
-   */
-  async function pullSpecialEgg(childId: string, kind: EggTicket): Promise<PullOutcome> {
-    const chooseFrom = (pool: Card[]) =>
-      kind === "epic" ? pickEasterEggChoices(pool, 5) : pickCommonRareChoices(pool, 5);
-    return offerTicketEgg(childId, specialTicketColumn(kind), { ticket: kind }, chooseFrom, "pullSpecialEgg");
-  }
-
-  /**
-   * Redeem a rarity-pick ticket (Inc16 FR2): offer pick-1-of-5 of that exact
-   * rarity from the FULL pool. Spent atomically at claim; the offer pins the rarity.
-   */
-  async function pullRarityPick(childId: string, rarity: Rarity): Promise<PullOutcome> {
-    const chooseFrom = (pool: Card[]) => pickRarityChoices(pool, rarity, 5);
-    return offerTicketEgg(childId, pickTicketColumn(rarity), { pickRarity: rarity }, chooseFrom, "pullRarityPick");
+    const balance = await children.readColumn(childId, "pullTokens");
+    return eggOutcome(childId, choices, balance, { easterEgg: true, rolledRarity: rarity }, rarity);
   }
 
   /**
@@ -226,14 +203,10 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
     const card = await catalog.getCard(chosenCardId);
     if (!card) throw new Error("claimEasterEgg: card not found");
 
-    // Atomic spend — one column (rarity-pick, special ticket, or normal token).
-    // The pinned offer field picks which; missing both spends a normal token.
-    // Single-use: the guarded decrement makes the signed offer un-replayable.
-    const key: BalanceColumn = payload.pickRarity
-      ? pickTicketColumn(payload.pickRarity)
-      : payload.ticket
-        ? specialTicketColumn(payload.ticket)
-        : "pullTokens";
+    // Atomic spend — the unified Easter Egg ticket when the offer pins `easterEgg`,
+    // otherwise a normal token (the random ~1% eggs). Single-use: the guarded
+    // decrement makes the signed offer un-replayable.
+    const key: BalanceColumn = payload.easterEgg ? "easterEggTickets" : "pullTokens";
     const newBalance = await children.spendOne(childId, key);
     if (newBalance === null) return { outOfTokens: true };
 
@@ -241,9 +214,10 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
   }
 
   /**
-   * Sacrifice SACRIFICE_COST copies of a card for a rarity-pick ticket (Inc16
-   * FR1). Free (spends copies, not tokens). Atomic guarded decrement prevents
-   * over-spending; the ticket's rarity is same-or-one-tier-higher (50/50).
+   * Sacrifice SACRIFICE_COST copies of a card for one unified Easter Egg ticket
+   * (Inc19 FR7). Free (spends copies, not tokens). Atomic guarded decrement
+   * prevents over-spending; rarity no longer matters — every sacrifice yields the
+   * same 🥚 ticket.
    *
    * A sacrifice always leaves the child at least ONE copy — you burn duplicates,
    * never your only card. `minHeld = SACRIFICE_COST + 1` enforces that: a holding
@@ -258,13 +232,14 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
     const burned = await collections.removeCard(childId, cardId, SACRIFICE_COST, SACRIFICE_COST + 1);
     if (burned === null) throw new Error("sacrifice: not enough copies");
 
-    const ticketRarity = rollUpgradeTier(source.rarity); // 50/50 same / one up
-    await children.incrementColumn(childId, pickTicketColumn(ticketRarity), 1);
+    // Atomic +1 that returns the new balance (never negative).
+    const newBalance = await children.clampedGrant(childId, "easterEggTickets", 1);
+    if (newBalance === null) throw new Error("sacrifice: child not found");
 
-    return { ticketRarity, sourceRarity: source.rarity };
+    return { newBalance };
   }
 
-  return { pull, pullSpecialEgg, pullRarityPick, claimEasterEgg, sacrifice };
+  return { pull, pullEasterEgg, claimEasterEgg, sacrifice };
 }
 
 export type PullService = ReturnType<typeof makePullService>;

@@ -1,7 +1,7 @@
 import type { ChildStore } from "./child-store";
 import type { BalanceColumn } from "@/features/pull/pick-tickets";
 
-/** Seed shape: `{ [childId]: { pullTokens?, epicTickets?, … } }`. Absent columns
+/** Seed shape: `{ [childId]: { pullTokens?, easterEggTickets? } }`. Absent columns
  *  read as 0; a childId absent from the seed is an absent child. */
 export type ChildSeed = Record<string, Partial<Record<BalanceColumn, number>>>;
 

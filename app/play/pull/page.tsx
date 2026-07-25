@@ -8,10 +8,10 @@ export default async function PullPage() {
   const child = await requireActivePlayer();
 
   const balance = await tokenService.getBalance(child.id);
-  const [allCards, themes, special] = await Promise.all([
+  const [allCards, themes, easterEggTickets] = await Promise.all([
     listCards(),
     listThemes(),
-    tokenService.getSpecialBalances(child.id),
+    tokenService.getEasterEggBalance(child.id),
   ]);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
   const flashPool = allCards.map((c) => ({
@@ -36,9 +36,7 @@ export default async function PullPage() {
         initialBalance={balance}
         flashPool={flashPool}
         themes={themes.map((t) => ({ id: t.id, name: t.name }))}
-        epicTickets={special.epic}
-        luckyTickets={special.lucky}
-        pickTickets={child.pickTickets}
+        easterEggTickets={easterEggTickets}
       />
       <div className="flex gap-3 text-sm">
         <Link

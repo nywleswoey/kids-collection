@@ -1,12 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { pickRarityChoices } from "@/features/pull/easter-egg";
-import {
-  pickTicketColumn,
-  pickTicketsFromRow,
-  hasAnyPickTicket,
-} from "@/features/pull/pick-tickets";
-import { RARITIES, type Rarity } from "@/lib/types";
+import { pickRarityChoices, rollWeightedRarity } from "@/features/pull/easter-egg";
+import { RARITIES, RARITY_WEIGHTS, type Rarity } from "@/lib/types";
 import type { Card } from "@/lib/types";
 
 function card(id: string, rarity: Rarity): Card {
@@ -37,24 +32,34 @@ describe("pickRarityChoices (Inc16 FR2)", () => {
   });
 });
 
-describe("pick-tickets helpers (Inc16 FR2/FR3)", () => {
-  it("column name per rarity", () => {
-    expect(pickTicketColumn("common")).toBe("commonPickTickets");
-    expect(pickTicketColumn("rare")).toBe("rarePickTickets");
-    expect(pickTicketColumn("epic")).toBe("epicPickTickets");
-    expect(pickTicketColumn("legendary")).toBe("legendaryPickTickets");
+describe("rollWeightedRarity (Inc19 FR3)", () => {
+  it("only ever returns a valid rarity, for any rng() in [0,1)", () => {
+    fc.assert(
+      fc.property(fc.double({ min: 0, max: 1, noNaN: true }).filter((u) => u < 1), (u) => {
+        expect(RARITIES).toContain(rollWeightedRarity(() => u));
+      }),
+    );
   });
 
-  it("maps a row to a Record and detects any ticket", () => {
-    const row = {
-      commonPickTickets: 0,
-      rarePickTickets: 2,
-      epicPickTickets: 0,
-      legendaryPickTickets: 0,
-    };
-    const rec = pickTicketsFromRow(row);
-    expect(rec).toEqual({ common: 0, rare: 2, epic: 0, legendary: 0 });
-    expect(hasAnyPickTicket(rec)).toBe(true);
-    expect(hasAnyPickTicket({ common: 0, rare: 0, epic: 0, legendary: 0 })).toBe(false);
+  it("maps the weight bands to the right tier (60/25/12/3)", () => {
+    // total = 100; cumulative bands: common [0,60), rare [60,85), epic [85,97), legendary [97,100)
+    expect(rollWeightedRarity(() => 0)).toBe("common");
+    expect(rollWeightedRarity(() => 0.59)).toBe("common");
+    expect(rollWeightedRarity(() => 0.6)).toBe("rare");
+    expect(rollWeightedRarity(() => 0.84)).toBe("rare");
+    expect(rollWeightedRarity(() => 0.85)).toBe("epic");
+    expect(rollWeightedRarity(() => 0.96)).toBe("epic");
+    expect(rollWeightedRarity(() => 0.97)).toBe("legendary");
+    expect(rollWeightedRarity(() => 0.999)).toBe("legendary");
+  });
+
+  it("empirical distribution tracks RARITY_WEIGHTS", () => {
+    const N = 20_000;
+    const counts: Record<Rarity, number> = { common: 0, rare: 0, epic: 0, legendary: 0 };
+    // Deterministic sweep across [0,1) so the test is stable (no Math.random).
+    for (let i = 0; i < N; i++) counts[rollWeightedRarity(() => i / N)]++;
+    for (const r of RARITIES) {
+      expect(counts[r] / N).toBeCloseTo(RARITY_WEIGHTS[r] / 100, 2);
+    }
   });
 });

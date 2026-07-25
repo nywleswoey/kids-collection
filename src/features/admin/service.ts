@@ -29,8 +29,7 @@ export function makeAdminService({ profiles, collections, catalog }: AdminDeps) 
       kids.map(async (c) => ({
         child: toChild(c),
         balance: c.pullTokens,
-        epicTickets: c.epicTickets,
-        luckyTickets: c.luckyTickets,
+        easterEggTickets: c.easterEggTickets,
         owned: (await collections.ownedCardIds(c.id)).size,
         total,
       })),

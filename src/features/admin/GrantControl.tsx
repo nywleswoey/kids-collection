@@ -1,15 +1,10 @@
 "use client";
 
-import { useState, useTransition, type CSSProperties, type ReactNode } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import {
   grantTokensAction,
-  grantSpecialTicketAction,
-  grantRarityPickTicketAction,
+  grantEasterEggTicketAction,
 } from "@/features/pull/actions";
-import { RARITY_META } from "@/features/card/rarity";
-import { RARITIES, zeroRarityCount, type EggTicket, type Rarity } from "@/lib/types";
-
-const ZERO_PICKS: Record<Rarity, number> = zeroRarityCount();
 
 /** A counter display with +1 / −1 grant buttons; −1 is disabled at zero. */
 function Stepper({
@@ -18,7 +13,6 @@ function Stepper({
   count,
   pending,
   label,
-  style,
   onInc,
   onDec,
 }: {
@@ -27,13 +21,12 @@ function Stepper({
   count: number;
   pending: boolean;
   label: ReactNode;
-  style?: CSSProperties;
   onInc: () => void;
   onDec: () => void;
 }) {
   return (
     <span className="flex items-center gap-1">
-      <span data-testid={`${id}-balance-${childId}`} className="tabular-nums" style={style}>
+      <span data-testid={`${id}-balance-${childId}`} className="tabular-nums">
         {label}
       </span>
       <button
@@ -61,20 +54,14 @@ function Stepper({
 export function GrantControl({
   childId,
   initialBalance,
-  initialEpic = 0,
-  initialLucky = 0,
-  initialPicks = ZERO_PICKS,
+  initialEasterEgg = 0,
 }: {
   childId: string;
   initialBalance: number;
-  initialEpic?: number;
-  initialLucky?: number;
-  initialPicks?: Record<Rarity, number>;
+  initialEasterEgg?: number;
 }) {
   const [balance, setBalance] = useState(initialBalance);
-  const [epic, setEpic] = useState(initialEpic);
-  const [lucky, setLucky] = useState(initialLucky);
-  const [picks, setPicks] = useState<Record<Rarity, number>>(initialPicks);
+  const [easterEgg, setEasterEgg] = useState(initialEasterEgg);
   const [amount, setAmount] = useState(1);
   const [pending, startTransition] = useTransition();
 
@@ -86,18 +73,10 @@ export function GrantControl({
     });
   }
 
-  function grantTicket(kind: EggTicket, n: number) {
+  function grantEgg(n: number) {
     startTransition(async () => {
-      const next = await grantSpecialTicketAction(childId, kind, n);
-      if (kind === "epic") setEpic(next);
-      else setLucky(next);
-    });
-  }
-
-  function grantPick(rarity: Rarity, n: number) {
-    startTransition(async () => {
-      const next = await grantRarityPickTicketAction(childId, rarity, n);
-      setPicks((p) => ({ ...p, [rarity]: next }));
+      const next = await grantEasterEggTicketAction(childId, n);
+      setEasterEgg(next);
     });
   }
 
@@ -144,46 +123,17 @@ export function GrantControl({
         </button>
       </div>
 
+      {/* Unified Easter Egg ticket (Inc19 FR6): one +1/−1 stepper. */}
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <Stepper
-          id="epic"
+          id="egg"
           childId={childId}
-          count={epic}
+          count={easterEgg}
           pending={pending}
-          label={<>✨ {epic}</>}
-          onInc={() => grantTicket("epic", 1)}
-          onDec={() => grantTicket("epic", -1)}
+          label={<>🥚 {easterEgg}</>}
+          onInc={() => grantEgg(1)}
+          onDec={() => grantEgg(-1)}
         />
-        <Stepper
-          id="lucky"
-          childId={childId}
-          count={lucky}
-          pending={pending}
-          label={<>🍀 {lucky}</>}
-          onInc={() => grantTicket("lucky", 1)}
-          onDec={() => grantTicket("lucky", -1)}
-        />
-      </div>
-
-      {/* Rarity-pick tickets (Inc16 FR3). */}
-      <div className="flex flex-wrap items-center gap-3 text-sm">
-        {RARITIES.map((r) => (
-          <Stepper
-            key={r}
-            id={`pick-${r}`}
-            childId={childId}
-            count={picks[r]}
-            pending={pending}
-            style={{ color: RARITY_META[r].frame }}
-            label={
-              <>
-                🎯{RARITY_META[r].label[0]} {picks[r]}
-              </>
-            }
-            onInc={() => grantPick(r, 1)}
-            onDec={() => grantPick(r, -1)}
-          />
-        ))}
       </div>
     </div>
   );

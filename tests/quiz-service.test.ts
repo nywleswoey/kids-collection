@@ -5,14 +5,14 @@ import { inMemoryQuizStore, type QuizSeedRow } from "@/db/stores/quiz-store.fake
 import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake";
 import { env } from "@/lib/env";
 
-/** submitQuiz's cap RMW + lucky-ticket grant, reachable through the QuizStore +
+/** submitQuiz's cap RMW + Easter Egg ticket grant, reachable through the QuizStore +
  * ChildStore ports. Offers are signed, so AUTH_SECRET must be non-empty. */
 
 const NOW = Date.UTC(2026, 0, 15, 6, 0, 0); // fixed instant → deterministic SGT day
 const TOPIC = "multiplication-within-100";
 const ANSWERS = ["A", "B", "C", "D", "E"]; // QUIZ_LENGTH = 5
 
-function setup(quizSeed: QuizSeedRow[] = [], childSeed: ChildSeed = { kid: { luckyTickets: 0 } }) {
+function setup(quizSeed: QuizSeedRow[] = [], childSeed: ChildSeed = { kid: { easterEggTickets: 0 } }) {
   const quiz = inMemoryQuizStore(quizSeed);
   const children = inMemoryChildStore(childSeed);
   return { service: makeQuizService({ quiz, children }), quiz, children };
@@ -37,14 +37,14 @@ afterAll(() => {
 });
 
 describe("makeQuizService.submitQuiz", () => {
-  it("awards a lucky ticket on a fresh pass", async () => {
+  it("awards an Easter Egg ticket on a fresh pass", async () => {
     const { service, children, quiz } = setup();
     const o = await offer("kid", TOPIC, ANSWERS);
 
     const outcome = await service.submitQuiz("kid", o, ANSWERS, NOW);
 
     expect(outcome).toMatchObject({ passed: true, correct: 5, awarded: true, reason: "ok" });
-    expect(await children.readColumn("kid", "luckyTickets")).toBe(1);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
     expect(await quiz.completionsFor("kid")).toHaveLength(1);
   });
 
@@ -55,7 +55,7 @@ describe("makeQuizService.submitQuiz", () => {
     const outcome = await service.submitQuiz("kid", o, ["A", "B", "C", "D", "X"], NOW);
 
     expect(outcome).toMatchObject({ passed: false, awarded: false, reason: "failed", wrongIndexes: [4] });
-    expect(await children.readColumn("kid", "luckyTickets")).toBe(0);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(0);
   });
 
   it("refuses a second award for the same topic today", async () => {
@@ -65,7 +65,7 @@ describe("makeQuizService.submitQuiz", () => {
     const outcome = await service.submitQuiz("kid", o, ANSWERS, NOW);
 
     expect(outcome).toMatchObject({ awarded: false, reason: "topic-done" });
-    expect(await children.readColumn("kid", "luckyTickets")).toBe(0);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(0);
   });
 
   it("enforces the global daily cap across topics", async () => {

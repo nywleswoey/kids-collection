@@ -1,6 +1,5 @@
 import type { ChildStore } from "@/db/stores/child-store";
-import { pickTicketColumn, specialTicketColumn, type BalanceColumn } from "./pick-tickets";
-import type { EggTicket, Rarity } from "@/lib/types";
+import type { BalanceColumn } from "./pick-tickets";
 
 export interface TokenDeps {
   children: ChildStore;
@@ -31,15 +30,9 @@ export function makeTokenService({ children }: TokenDeps) {
     return children.readColumn(childId, "pullTokens");
   }
 
-  /** Current special egg-ticket balances (Inc9 FR4). */
-  async function getSpecialBalances(
-    childId: string,
-  ): Promise<{ epic: number; lucky: number }> {
-    const [epic, lucky] = await Promise.all([
-      children.readColumn(childId, "epicTickets"),
-      children.readColumn(childId, "luckyTickets"),
-    ]);
-    return { epic, lucky };
+  /** Current unified Easter Egg ticket balance (Inc19). */
+  function getEasterEggBalance(childId: string): Promise<number> {
+    return children.readColumn(childId, "easterEggTickets");
   }
 
   /** Grant/adjust tokens (F1). Balance clamped >= 0 (U4-BR8). */
@@ -47,17 +40,12 @@ export function makeTokenService({ children }: TokenDeps) {
     return grantColumn(childId, "pullTokens", delta, "grant");
   }
 
-  /** Grant/adjust a special egg ticket (Inc9 FR4). Clamped >= 0. */
-  function grantSpecial(childId: string, kind: EggTicket, delta: number): Promise<number> {
-    return grantColumn(childId, specialTicketColumn(kind), delta, "grantSpecial");
+  /** Grant/adjust the unified Easter Egg ticket (Inc19 FR6). Clamped >= 0. */
+  function grantEasterEgg(childId: string, delta: number): Promise<number> {
+    return grantColumn(childId, "easterEggTickets", delta, "grantEasterEgg");
   }
 
-  /** Grant/adjust a rarity-pick ticket (Inc16 FR3). Clamped >= 0. */
-  function grantPickTicket(childId: string, rarity: Rarity, delta: number): Promise<number> {
-    return grantColumn(childId, pickTicketColumn(rarity), delta, "grantPickTicket");
-  }
-
-  return { getBalance, getSpecialBalances, grant, grantSpecial, grantPickTicket };
+  return { getBalance, getEasterEggBalance, grant, grantEasterEgg };
 }
 
 export type TokenService = ReturnType<typeof makeTokenService>;

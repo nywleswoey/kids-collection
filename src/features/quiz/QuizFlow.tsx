@@ -186,7 +186,7 @@ export function QuizFlow({
           <h1 className="text-3xl font-bold title-pop">All correct! 🎉</h1>
           {o.awarded ? (
             <p className="pill pill--gold" data-testid="quiz-awarded">
-              You earned a Lucky ticket! 🍀 +1
+              You earned an Easter Egg ticket! 🥚 +1
             </p>
           ) : o.reason === "topic-done" ? (
             <p className="pill">You already earned this one today — great job! 🌟</p>

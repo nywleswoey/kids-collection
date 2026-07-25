@@ -3,7 +3,6 @@
 import posthog from "posthog-js";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { RARITY_LABEL } from "@/features/card/rarity";
 import { useSound } from "@/features/sound/useSound";
 import { playReward } from "@/features/sound/sfx";
 import { ErrorBanner } from "@/features/ui/ErrorBanner";
@@ -21,7 +20,7 @@ export function SacrificePanel({
   count: number;
 }) {
   const [result, setResult] = useState<{
-    ticketRarity: string;
+    newBalance: number;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -33,12 +32,12 @@ export function SacrificePanel({
     startTransition(async () => {
       try {
         const res = await sacrificeAction(cardId);
-        setResult({ ticketRarity: res.ticketRarity });
-        // Inc15/16: set-complete cue + fanfare for an epic/legendary pick ticket.
-        playReward(play, res.ticketRarity);
+        setResult({ newBalance: res.newBalance });
+        // Inc19: celebratory set-complete cue + fanfare for the earned egg ticket.
+        playReward(play, "epic");
         posthog.capture("card_sacrificed", {
           card_id: cardId,
-          ticket_rarity: res.ticketRarity,
+          easter_egg_balance: res.newBalance,
         });
       } catch {
         setError("Couldn't sacrifice — you need at least 3 copies.");
@@ -54,10 +53,10 @@ export function SacrificePanel({
         data-testid="sacrifice-result"
       >
         <p className="pill pill--gold text-base">
-          🎯 You earned a {RARITY_LABEL[result.ticketRarity as keyof typeof RARITY_LABEL]} Pick ticket!
+          🥚 You earned 1 Easter Egg ticket!
         </p>
         <p className="text-center text-sm text-[color:var(--ink-soft)]">
-          Redeem it on the Discover screen to pick a {RARITY_LABEL[result.ticketRarity as keyof typeof RARITY_LABEL]} card. ✨
+          Redeem it on the Discover screen to open an Easter Egg — pick 1 of 5! ✨
         </p>
         <Link href="/play/pull" className="btn btn--primary" data-testid="sacrifice-go-redeem">
           🚀 Go redeem

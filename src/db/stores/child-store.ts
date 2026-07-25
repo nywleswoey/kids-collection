@@ -2,8 +2,8 @@ import type { BalanceColumn } from "@/features/pull/pick-tickets";
 
 /**
  * ChildStore — the persistence port for a child's spendable integer columns on
- * the `children` table (normal `pullTokens`, the two special egg tickets, the
- * four rarity-pick tickets). Deep by design: each method is one atomic column
+ * the `children` table (normal `pullTokens` and the unified `easterEggTickets`).
+ * Deep by design: each method is one atomic column
  * operation, so the compare-and-swap and clamp semantics live behind the seam
  * and can be unit-tested against the in-memory fake.
  *

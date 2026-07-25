@@ -88,6 +88,36 @@ describe("makePullService.pull", () => {
   });
 });
 
+describe("makePullService.pullEasterEgg", () => {
+  const prevSecret = process.env.AUTH_SECRET;
+  beforeAll(() => {
+    process.env.AUTH_SECRET = "test-secret-key";
+  });
+  afterAll(() => {
+    if (prevSecret === undefined) delete process.env.AUTH_SECRET;
+    else process.env.AUTH_SECRET = prevSecret;
+  });
+
+  it("rolls a rarity and offers a pick-1-of-5 of that tier without spending yet", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0); // roll → common (weight 60 first)
+    const pool = [card("r1", "rare"), card("c1", "common"), card("c2", "common")];
+    const { service, children } = setup({ kid: { pullTokens: 3, easterEggTickets: 2 } }, {}, pool);
+
+    const res = await service.pullEasterEgg("kid");
+
+    if (!("easterEgg" in res) || !res.easterEgg) throw new Error("expected an easter-egg outcome");
+    expect(res.revealRarity).toBe("common");
+    expect(res.choices.every((c) => c.rarity === "common")).toBe(true);
+    // Ticket is NOT spent until claim (single-use); balance still 2.
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(2);
+  });
+
+  it("returns out-of-tokens when the child holds no Easter Egg ticket", async () => {
+    const { service } = setup({ kid: { pullTokens: 3, easterEggTickets: 0 } }, {}, [card("c1")]);
+    expect(await service.pullEasterEgg("kid")).toEqual({ outOfTokens: true });
+  });
+});
+
 describe("makePullService.claimEasterEgg", () => {
   const cards = [card("a"), card("b")];
 
@@ -119,20 +149,20 @@ describe("makePullService.claimEasterEgg", () => {
     expect(await children.readColumn("kid", "pullTokens")).toBe(1);
   });
 
-  it("a ticket-pinned offer spends that ticket, not a token", async () => {
-    const { service, children } = setup({ kid: { pullTokens: 5, epicTickets: 1 } }, {}, cards);
-    const offer = await offerFor("kid", ["a", "b"], { ticket: "epic" });
+  it("an easter-egg-pinned offer spends an Easter Egg ticket, not a token", async () => {
+    const { service, children } = setup({ kid: { pullTokens: 5, easterEggTickets: 1 } }, {}, cards);
+    const offer = await offerFor("kid", ["a", "b"], { easterEgg: true, rolledRarity: "common" });
 
     const result = await service.claimEasterEgg("kid", offer, "b");
 
     if (!("card" in result)) throw new Error("expected a card outcome");
     expect(result.newBalance).toBe(5); // pullTokens untouched
-    expect(await children.readColumn("kid", "epicTickets")).toBe(0);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(0);
   });
 
-  it("returns out-of-tokens when the pinned column is empty", async () => {
-    const { service } = setup({ kid: { pullTokens: 5, epicTickets: 0 } }, {}, cards);
-    const offer = await offerFor("kid", ["a", "b"], { ticket: "epic" });
+  it("returns out-of-tokens when the Easter Egg balance is empty", async () => {
+    const { service } = setup({ kid: { pullTokens: 5, easterEggTickets: 0 } }, {}, cards);
+    const offer = await offerFor("kid", ["a", "b"], { easterEgg: true, rolledRarity: "common" });
     expect(await service.claimEasterEgg("kid", offer, "a")).toEqual({ outOfTokens: true });
   });
 
@@ -151,15 +181,14 @@ describe("makePullService.claimEasterEgg", () => {
 });
 
 describe("makePullService.sacrifice", () => {
-  it("burns SACRIFICE_COST copies and grants a pick ticket", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0); // < 0.5 → same-tier ticket
+  it("burns SACRIFICE_COST copies and grants one Easter Egg ticket", async () => {
     const { service, children, collections } = setup({ kid: {} }, { kid: { c: 4 } }, [card("c", "rare")]);
 
     const result = await service.sacrifice("kid", "c");
 
-    expect(result).toEqual({ ticketRarity: "rare", sourceRarity: "rare" });
+    expect(result).toEqual({ newBalance: 1 });
     expect(await collections.cardCount("kid", "c")).toBe(1); // 4 − 3
-    expect(await children.readColumn("kid", "rarePickTickets")).toBe(1);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
   });
 
   it("always leaves at least one copy — a holding of exactly SACRIFICE_COST is not enough", async () => {
@@ -169,7 +198,7 @@ describe("makePullService.sacrifice", () => {
 
     await expect(service.sacrifice("kid", "c")).rejects.toThrow("not enough copies");
     expect(await collections.cardCount("kid", "c")).toBe(3); // untouched
-    expect(await children.readColumn("kid", "rarePickTickets")).toBe(0);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(0);
   });
 
   it("throws when the child lacks enough copies", async () => {

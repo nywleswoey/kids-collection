@@ -30,9 +30,7 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
           <GrantControl
             childId={child.id}
             initialBalance={row.balance}
-            initialEpic={row.epicTickets}
-            initialLucky={row.luckyTickets}
-            initialPicks={child.pickTickets}
+            initialEasterEgg={row.easterEggTickets}
           />
           <Link
             href={`/admin/child/${child.id}/binder`}
@@ -54,7 +52,7 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
               🧠 Quizzes
             </span>
             <span data-testid={`admin-quiz-today-${child.id}`}>
-              🍀 today: {quiz.earnedToday}/3
+              🥚 today: {quiz.earnedToday}/3
             </span>
             <span>all-time: {quiz.earnedAllTime}</span>
           </div>
@@ -67,7 +65,7 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
                   <span className="opacity-70">
                     {r.correct}/{r.total}
                   </span>
-                  {r.awarded ? <span>🍀</span> : null}
+                  {r.awarded ? <span>🥚</span> : null}
                 </li>
               ))}
             </ul>

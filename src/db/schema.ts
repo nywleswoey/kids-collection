@@ -58,23 +58,14 @@ export const children = pgTable(
     name: text("name").notNull(),
     avatar: text("avatar").notNull(),
     pullTokens: integer("pull_tokens").notNull().default(3),
-    // Special egg tickets (Inc9 FR4): guaranteed pick-1-of-5 per egg type.
-    epicTickets: integer("epic_tickets").notNull().default(0),
-    luckyTickets: integer("lucky_tickets").notNull().default(0),
-    // Rarity-pick tickets (Inc16 FR2): pick-1-of-5 of a specific rarity.
-    commonPickTickets: integer("common_pick_tickets").notNull().default(0),
-    rarePickTickets: integer("rare_pick_tickets").notNull().default(0),
-    epicPickTickets: integer("epic_pick_tickets").notNull().default(0),
-    legendaryPickTickets: integer("legendary_pick_tickets").notNull().default(0),
+    // Unified Easter Egg tickets (Inc19): one balance replacing the old epic/lucky
+    // egg tickets and the four rarity-pick tickets. Redeemed for a weighted-roll
+    // pick-1-of-5. Backfilled by migration 0005 as the sum of the six old columns.
+    easterEggTickets: integer("easter_egg_tickets").notNull().default(0),
   },
   (t) => [
     check("pull_tokens_non_negative", sql`${t.pullTokens} >= 0`), // BR5
-    check("epic_tickets_non_negative", sql`${t.epicTickets} >= 0`),
-    check("lucky_tickets_non_negative", sql`${t.luckyTickets} >= 0`),
-    check("common_pick_tickets_non_negative", sql`${t.commonPickTickets} >= 0`),
-    check("rare_pick_tickets_non_negative", sql`${t.rarePickTickets} >= 0`),
-    check("epic_pick_tickets_non_negative", sql`${t.epicPickTickets} >= 0`),
-    check("legendary_pick_tickets_non_negative", sql`${t.legendaryPickTickets} >= 0`),
+    check("easter_egg_tickets_non_negative", sql`${t.easterEggTickets} >= 0`),
   ],
 );
 

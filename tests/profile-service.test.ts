@@ -10,14 +10,14 @@ function setup(seed: ProfileSeed = []) {
 }
 
 describe("makeProfileService", () => {
-  it("listChildren returns domain Child objects, name-ordered, with pickTickets", async () => {
+  it("listChildren returns domain Child objects, name-ordered, with easterEggTickets", async () => {
     const { service } = setup([
       { name: "Zoe", avatar: "cat" },
-      { name: "abe", avatar: "owl", rarePickTickets: 2 },
+      { name: "abe", avatar: "owl", easterEggTickets: 2 },
     ]);
     const kids = await service.listChildren();
     expect(kids.map((c) => c.name)).toEqual(["abe", "Zoe"]);
-    expect(kids[0].pickTickets).toEqual({ common: 0, rare: 2, epic: 0, legendary: 0 });
+    expect(kids[0].easterEggTickets).toBe(2);
   });
 
   it("getChild maps a found row and returns null for a miss", async () => {

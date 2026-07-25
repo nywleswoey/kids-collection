@@ -14,10 +14,12 @@ export interface OfferPayload extends SignedPayload {
   childId: string;
   cardIds: string[];
   exp: number; // epoch ms
-  /** Special egg ticket kind (Inc9 FR4); absent for the random ~1% eggs. */
-  ticket?: "epic" | "lucky";
-  /** Rarity-pick ticket (Inc16 FR2); spends the matching {rarity}_pick_tickets. */
-  pickRarity?: "common" | "rare" | "epic" | "legendary";
+  /** Unified Easter Egg ticket redemption (Inc19). When set, claim spends one
+   *  `easter_egg_tickets`; absent for the random ~1% eggs (which spend a token). */
+  easterEgg?: true;
+  /** The server-rolled tier for this Easter Egg (Inc19); drives the surprise
+   *  reveal and pins that all candidates share this rarity. */
+  rolledRarity?: "common" | "rare" | "epic" | "legendary";
 }
 
 function isOfferPayload(p: unknown): p is OfferPayload {

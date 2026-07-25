@@ -12,17 +12,15 @@ function buildRow(
     name: string;
     avatar: string;
     pullTokens: number;
-    epicTickets: number;
-    luckyTickets: number;
+    easterEggTickets: number;
   },
   ownedDistinct: number,
   poolTotal: number,
 ): AdminChildRow {
   return {
-    child: { ...child, pickTickets: { common: 0, rare: 0, epic: 0, legendary: 0 } },
+    child,
     balance: child.pullTokens,
-    epicTickets: child.epicTickets,
-    luckyTickets: child.luckyTickets,
+    easterEggTickets: child.easterEggTickets,
     owned: ownedDistinct,
     total: poolTotal,
   };
@@ -43,8 +41,7 @@ describe("admin overview row (G1)", () => {
               name: "K",
               avatar: "fox",
               pullTokens: tokens,
-              epicTickets: 0,
-              luckyTickets: 0,
+              easterEggTickets: 0,
             },
             clampedOwned,
             total,

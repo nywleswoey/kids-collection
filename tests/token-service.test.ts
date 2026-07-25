@@ -8,10 +8,10 @@ function setup(seed: ChildSeed) {
 }
 
 describe("makeTokenService", () => {
-  it("reads normal and special balances", async () => {
-    const svc = setup({ kid: { pullTokens: 4, epicTickets: 2, luckyTickets: 1 } });
+  it("reads normal and Easter Egg balances", async () => {
+    const svc = setup({ kid: { pullTokens: 4, easterEggTickets: 3 } });
     expect(await svc.getBalance("kid")).toBe(4);
-    expect(await svc.getSpecialBalances("kid")).toEqual({ epic: 2, lucky: 1 });
+    expect(await svc.getEasterEggBalance("kid")).toBe(3);
   });
 
   it("grant clamps at 0 and returns the new balance", async () => {
@@ -20,10 +20,10 @@ describe("makeTokenService", () => {
     expect(await svc.grant("kid", -100)).toBe(0); // clamped, never negative
   });
 
-  it("grantSpecial and grantPickTicket target the right column", async () => {
+  it("grantEasterEgg targets the Easter Egg column, clamped at 0", async () => {
     const svc = setup({ kid: { pullTokens: 0 } });
-    expect(await svc.grantSpecial("kid", "lucky", 3)).toBe(3);
-    expect(await svc.grantPickTicket("kid", "epic", 2)).toBe(2);
+    expect(await svc.grantEasterEgg("kid", 3)).toBe(3);
+    expect(await svc.grantEasterEgg("kid", -100)).toBe(0); // clamped
     expect(await svc.getBalance("kid")).toBe(0); // untouched
   });
 

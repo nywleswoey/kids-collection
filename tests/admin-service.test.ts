@@ -26,7 +26,7 @@ function fakeCatalog(cards: Card[], themes: Theme[]): Catalog {
 describe("makeAdminService.getAdminOverview", () => {
   it("aggregates each child's balances + distinct-owned against pool totals", async () => {
     const profiles = inMemoryProfileStore([
-      { id: "k1", name: "Bea", avatar: "owl", pullTokens: 5, epicTickets: 1, luckyTickets: 2 },
+      { id: "k1", name: "Bea", avatar: "owl", pullTokens: 5, easterEggTickets: 3 },
       { id: "k2", name: "Ada", avatar: "cat", pullTokens: 0 },
     ]);
     const collections = inMemoryCollectionStore({ k1: { a: 2, b: 1 }, k2: { a: 1 } });
@@ -43,7 +43,7 @@ describe("makeAdminService.getAdminOverview", () => {
     expect(overview.children.map((r) => r.child.name)).toEqual(["Ada", "Bea"]);
 
     const bea = overview.children.find((r) => r.child.name === "Bea")!;
-    expect(bea).toMatchObject({ balance: 5, epicTickets: 1, luckyTickets: 2, owned: 2, total: 3 });
+    expect(bea).toMatchObject({ balance: 5, easterEggTickets: 3, owned: 2, total: 3 });
 
     const ada = overview.children.find((r) => r.child.name === "Ada")!;
     expect(ada).toMatchObject({ balance: 0, owned: 1, total: 3 });

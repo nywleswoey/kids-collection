@@ -6,7 +6,6 @@ import { getPostHogClient } from "@/lib/posthog-server";
 import { pullService } from "./pull-service.prod";
 import { tokenService } from "./token-service.prod";
 import type { PullOutcome, SacrificeResult } from "./pull-service";
-import type { EggTicket, Rarity } from "@/lib/types";
 
 const PULL_PATHS = ["/play/pull", "/play/binder"] as const;
 
@@ -30,18 +29,9 @@ export async function pullAction(themeId?: string): Promise<PullOutcome> {
   return withActiveChild((childId) => pullService.pull(childId, themeId), PULL_PATHS, { label: "pull" });
 }
 
-/** Spend a special egg ticket for a guaranteed pick-1-of-5 (Inc9 FR4). */
-export async function pullSpecialEggAction(
-  kind: EggTicket,
-): Promise<PullOutcome> {
-  return withActiveChild((childId) => pullService.pullSpecialEgg(childId, kind), PULL_PATHS, { label: "pull_special_egg" });
-}
-
-/** Redeem a rarity-pick ticket for a pick-1-of-5 of that rarity (Inc16 FR2). */
-export async function pullRarityPickAction(
-  rarity: Rarity,
-): Promise<PullOutcome> {
-  return withActiveChild((childId) => pullService.pullRarityPick(childId, rarity), PULL_PATHS, { label: "pull_rarity_pick" });
+/** Redeem the unified Easter Egg ticket for a weighted-roll pick-1-of-5 (Inc19 FR3). */
+export async function pullEasterEggAction(): Promise<PullOutcome> {
+  return withActiveChild((childId) => pullService.pullEasterEgg(childId), PULL_PATHS, { label: "pull_easter_egg" });
 }
 
 /** Claim the picked card from an easter-egg offer (U6-FR2). */
@@ -85,36 +75,17 @@ export async function grantTokensAction(
   return newBalance;
 }
 
-/** Parent grants a special egg ticket to a child (Inc9 FR4). */
-export async function grantSpecialTicketAction(
+/** Parent grants a unified Easter Egg ticket to a child (Inc19 FR6). */
+export async function grantEasterEggTicketAction(
   childId: string,
-  kind: EggTicket,
   amount: number,
 ): Promise<number> {
-  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantSpecial(childId, kind, n), "grant_special_ticket");
+  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantEasterEgg(childId, n), "grant_easter_egg_ticket");
   const parent = await getParent();
   if (parent) {
     const posthog = getPostHogClient();
     if (posthog) {
-      posthog.capture({ distinctId: parent.id, event: "special_ticket_granted", properties: { ticket_kind: kind, amount: Math.trunc(Number(amount)) } });
-      await posthog.flush();
-    }
-  }
-  return newBalance;
-}
-
-/** Parent grants a rarity-pick ticket to a child (Inc16 FR3). */
-export async function grantRarityPickTicketAction(
-  childId: string,
-  rarity: Rarity,
-  amount: number,
-): Promise<number> {
-  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantPickTicket(childId, rarity, n), "grant_rarity_pick_ticket");
-  const parent = await getParent();
-  if (parent) {
-    const posthog = getPostHogClient();
-    if (posthog) {
-      posthog.capture({ distinctId: parent.id, event: "rarity_pick_granted", properties: { rarity, amount: Math.trunc(Number(amount)) } });
+      posthog.capture({ distinctId: parent.id, event: "easter_egg_ticket_granted", properties: { amount: Math.trunc(Number(amount)) } });
       await posthog.flush();
     }
   }

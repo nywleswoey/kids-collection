@@ -3,7 +3,7 @@
 import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
-import { pullAction, pullSpecialEggAction, pullRarityPickAction } from "./actions";
+import { pullAction, pullEasterEggAction } from "./actions";
 import { RevealCard } from "@/features/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
@@ -11,55 +11,36 @@ import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
-import { RARITY_META } from "@/features/card/rarity";
-import { RARITIES, zeroRarityCount, type EggTicket, type Rarity } from "@/lib/types";
-
-const ZERO_PICKS: Record<Rarity, number> = zeroRarityCount();
-
-// Special egg tickets share one button shape, differing only in emoji/label (FR4).
-const SPECIAL_TICKETS: { kind: EggTicket; emoji: string; label: string }[] = [
-  { kind: "epic", emoji: "✨", label: "Epic" },
-  { kind: "lucky", emoji: "🍀", label: "Lucky" },
-];
 
 export function PullButton({
   childId,
   initialBalance,
   flashPool = [],
   themes = [],
-  epicTickets = 0,
-  luckyTickets = 0,
-  pickTickets = ZERO_PICKS,
+  easterEggTickets = 0,
 }: {
   childId: string;
   initialBalance: number;
   flashPool?: FlashCard[];
   themes?: { id: string; name: string }[];
-  epicTickets?: number;
-  luckyTickets?: number;
-  pickTickets?: Record<Rarity, number>;
+  easterEggTickets?: number;
 }) {
   const [balance, setBalance] = useState(initialBalance);
-  const [epic, setEpic] = useState(epicTickets);
-  const [lucky, setLucky] = useState(luckyTickets);
-  const [picks, setPicks] = useState<Record<Rarity, number>>(pickTickets);
+  const [eggs, setEggs] = useState(easterEggTickets);
   const [outcome, setOutcome] = useState<PullOutcome | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [pending, startTransition] = useTransition();
-  const activeTicket = useRef<EggTicket | null>(null);
-  const activePick = useRef<Rarity | null>(null); // Inc16: which rarity-pick is redeeming
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
 
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
-  // all. If they still hold a special ticket, keep the Discover button visible
+  // all. If they still hold an Easter Egg ticket, keep the Discover button visible
   // but greyed so they know a normal ticket is needed for it (B2=B).
-  const askParent = balance <= 0 && epic <= 0 && lucky <= 0;
-  const hasSpecial = epic > 0 || lucky > 0;
-  const specialCounts: Record<EggTicket, number> = { epic, lucky };
+  const askParent = balance <= 0 && eggs <= 0;
+  const hasEggs = eggs > 0;
 
   // First-duplicate sacrifice hint (Inc13 FR4). Fire once the reveal is on
   // screen (after any roulette) for a normal-pull duplicate the child hasn't
@@ -81,19 +62,14 @@ export function PullButton({
     }
   }, [balance, play]);
 
-  // Shared launch flow for every pull kind (normal, special ticket, rarity pick):
-  // sound cues, reset the picker, pin which ticket is redeeming, then dispatch.
-  // On success a normal card pull kicks off the slot-machine build-up (Inc7 FR1);
-  // any easter-egg outcome plays the picker-appear cue instead (Inc15 FR3).
-  function runPull(
-    action: () => Promise<PullOutcome>,
-    redeeming: { ticket: EggTicket | null; pick: Rarity | null },
-  ) {
+  // Shared launch flow for both pull kinds (normal, Easter Egg ticket): sound
+  // cues, reset the picker, then dispatch. On success a normal card pull kicks off
+  // the slot-machine build-up (Inc7 FR1); an easter-egg outcome plays the
+  // picker-appear cue instead (Inc15 FR3).
+  function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg") {
     play("click");
     play("packOpen");
     setOutcome(null);
-    activeTicket.current = redeeming.ticket;
-    activePick.current = redeeming.pick;
     startTransition(async () => {
       const res = await action();
       setOutcome(res);
@@ -102,9 +78,8 @@ export function PullButton({
         return;
       }
       setBalance(res.newBalance);
-      const ticketType: string = redeeming.pick ?? redeeming.ticket ?? "normal";
       posthog.capture("card_pulled", {
-        ticket_type: ticketType,
+        ticket_type: kind,
         theme_id: themeId || null,
         is_easter_egg: !!res.easterEgg,
         ...(res.easterEgg
@@ -121,28 +96,18 @@ export function PullButton({
   }
 
   function doPull() {
-    runPull(() => pullAction(themeId || undefined), { ticket: null, pick: null });
+    runPull(() => pullAction(themeId || undefined), "normal");
   }
 
-  function doSpecialEgg(kind: EggTicket) {
-    runPull(() => pullSpecialEggAction(kind), { ticket: kind, pick: null });
+  // Inc19: redeem the unified Easter Egg ticket → weighted-roll pick-1-of-5.
+  function doEasterEgg() {
+    runPull(() => pullEasterEggAction(), "easter_egg");
   }
 
-  // Inc16 FR2: redeem a rarity-pick ticket → pick-1-of-5 of that rarity.
-  function doRarityPick(rarity: Rarity) {
-    runPull(() => pullRarityPickAction(rarity), { ticket: null, pick: rarity });
-  }
-
-  // On a successful egg claim, decrement the ticket that was spent (FR4/Inc16).
+  // On a successful egg claim, decrement the Easter Egg ticket that was spent.
   function onEggClaimed(newBalance: number) {
     setBalance(newBalance);
-    if (activeTicket.current === "epic") setEpic((n) => Math.max(0, n - 1));
-    else if (activeTicket.current === "lucky") setLucky((n) => Math.max(0, n - 1));
-    else if (activePick.current) {
-      const r = activePick.current;
-      setPicks((p) => ({ ...p, [r]: Math.max(0, p[r] - 1) }));
-    }
-    activePick.current = null;
+    setEggs((n) => Math.max(0, n - 1));
   }
 
   return (
@@ -197,51 +162,29 @@ export function PullButton({
           >
             {pending ? "Launching…" : "🚀 Discover a card"}
           </button>
-          {outOfTokens && hasSpecial ? (
+          {outOfTokens && hasEggs ? (
             <span
               data-testid="use-special-hint"
               className="text-sm text-[color:var(--ink-soft)]"
             >
-              Out of normal tickets — use a special ticket below! ✨
+              Out of normal tickets — open your Easter Egg below! 🥚
             </span>
           ) : null}
         </div>
       )}
 
-      {/* Special egg tickets — guaranteed pick-1-of-5 (FR4). */}
-      {epic > 0 || lucky > 0 ? (
-        <div className="flex flex-wrap justify-center gap-3" data-testid="special-tickets">
-          {SPECIAL_TICKETS.filter((t) => specialCounts[t.kind] > 0).map((t) => (
-            <button
-              key={t.kind}
-              type="button"
-              onClick={() => doSpecialEgg(t.kind)}
-              disabled={pending}
-              data-testid={`special-${t.kind}-button`}
-              className="btn btn--primary press font-bold"
-            >
-              {t.emoji} {t.label} Pick ({specialCounts[t.kind]})
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {/* Rarity-pick tickets (Inc16 FR2) — pick-1-of-5 of that exact rarity. */}
-      {RARITIES.some((r) => picks[r] > 0) ? (
-        <div className="flex flex-wrap justify-center gap-3" data-testid="pick-tickets">
-          {RARITIES.filter((r) => picks[r] > 0).map((r) => (
-            <button
-              key={r}
-              type="button"
-              onClick={() => doRarityPick(r)}
-              disabled={pending}
-              data-testid={`pick-${r}-button`}
-              className="btn btn--primary press font-bold"
-              style={{ borderColor: RARITY_META[r].frame }}
-            >
-              🎯 {RARITY_META[r].label} Pick ({picks[r]})
-            </button>
-          ))}
+      {/* Unified Easter Egg ticket (Inc19 FR8) — weighted-roll pick-1-of-5. */}
+      {hasEggs ? (
+        <div className="flex flex-wrap justify-center gap-3" data-testid="easter-egg-tickets">
+          <button
+            type="button"
+            onClick={doEasterEgg}
+            disabled={pending}
+            data-testid="easter-egg-button"
+            className="btn btn--primary press font-bold"
+          >
+            🥚 Open Easter Egg ({eggs})
+          </button>
         </div>
       ) : null}
 
@@ -250,6 +193,7 @@ export function PullButton({
           key={outcome.offer}
           choices={outcome.choices}
           ownedCounts={outcome.ownedCounts}
+          revealRarity={outcome.revealRarity}
           offer={outcome.offer}
           onDone={(r) => onEggClaimed(r.newBalance)}
         />

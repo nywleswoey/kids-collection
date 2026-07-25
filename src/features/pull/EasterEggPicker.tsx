@@ -3,7 +3,7 @@
 import posthog from "posthog-js";
 import { CardImage } from "@/features/card/CardImage";
 import { useState } from "react";
-import type { Card as CardType } from "@/lib/types";
+import type { Card as CardType, Rarity } from "@/lib/types";
 import { Card } from "@/features/card/Card";
 import { RARITY_META } from "@/features/card/rarity";
 import { Fireworks } from "@/features/anim/Fireworks";
@@ -25,12 +25,16 @@ type Phase = "choosing" | "revealed";
 export function EasterEggPicker({
   choices,
   ownedCounts = {},
+  revealRarity,
   offer,
   onDone,
 }: {
   choices: CardType[];
   /** Inc16 FR4: active child's owned count per choice card (0 = new). */
   ownedCounts?: Record<string, number>;
+  /** Inc19 FR4: server-rolled tier for the unified Easter Egg ticket, surprise-
+   *  revealed above the choices. Absent for the random ~1% eggs. */
+  revealRarity?: Rarity;
   offer: string;
   onDone: (result: Extract<PullOutcome, { outOfTokens: false }>) => void;
 }) {
@@ -83,7 +87,17 @@ export function EasterEggPicker({
   return (
     <div className="flex flex-col items-center gap-5" data-testid="easter-egg-picker">
       <div className="flex flex-col items-center gap-1 text-center">
-        <span className="pill pill--gold text-base">✨ Lucky Star! ✨</span>
+        {revealRarity ? (
+          <span
+            data-testid="easter-egg-reveal"
+            className="pill pill--gold text-base"
+            style={{ color: RARITY_META[revealRarity].frame }}
+          >
+            🥚 {RARITY_META[revealRarity].label} Egg! 🥚
+          </span>
+        ) : (
+          <span className="pill pill--gold text-base">✨ Lucky Star! ✨</span>
+        )}
         <p className="display text-lg">Pick one special card!</p>
       </div>
 

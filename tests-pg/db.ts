@@ -6,30 +6,21 @@ import type { QuizSeedRow } from "@/db/stores/quiz-store.fake";
 /** Raw seeding client (neonConfig is set by setup.ts before this evaluates). */
 const sql = neon(process.env.DATABASE_URL!);
 
-const BALANCE_COLUMNS = [
-  "pullTokens",
-  "epicTickets",
-  "luckyTickets",
-  "commonPickTickets",
-  "rarePickTickets",
-  "epicPickTickets",
-  "legendaryPickTickets",
-] as const;
+const BALANCE_COLUMNS = ["pullTokens", "easterEggTickets"] as const;
 
 /** Wipe every table so each makeStore() call yields a fresh, isolated store. */
 export async function resetAll(): Promise<void> {
   await sql`TRUNCATE collections, collection_rewards, quiz_completions, children, cards, themes RESTART IDENTITY CASCADE`;
 }
 
-/** Insert children with all seven balance columns set explicitly (0 unless the
- *  seed overrides), so absent columns read as 0 rather than the table default. */
+/** Insert children with both balance columns set explicitly (0 unless the seed
+ *  overrides), so absent columns read as 0 rather than the table default. */
 export async function seedChildren(seed: ChildSeed): Promise<void> {
   for (const [id, cols] of Object.entries(seed)) {
     const v = BALANCE_COLUMNS.map((c) => cols[c] ?? 0);
     await sql`INSERT INTO children
-      (id, name, avatar, pull_tokens, epic_tickets, lucky_tickets,
-       common_pick_tickets, rare_pick_tickets, epic_pick_tickets, legendary_pick_tickets)
-      VALUES (${id}, 'test', '🙂', ${v[0]}, ${v[1]}, ${v[2]}, ${v[3]}, ${v[4]}, ${v[5]}, ${v[6]})`;
+      (id, name, avatar, pull_tokens, easter_egg_tickets)
+      VALUES (${id}, 'test', '🙂', ${v[0]}, ${v[1]})`;
   }
 }
 

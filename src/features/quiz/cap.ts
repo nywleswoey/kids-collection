@@ -12,7 +12,7 @@ export function sgtDayKey(nowMs: number): number {
 }
 
 /**
- * Decide whether a passing attempt earns a lucky ticket (FR7).
+ * Decide whether a passing attempt earns an Easter Egg ticket (FR7; Inc19).
  * - Must have passed.
  * - Per-topic/day (Q4=B): the topic must not already be awarded today.
  * - Global/day (D6=D): fewer than DAILY_TICKET_CAP awarded today.

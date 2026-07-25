@@ -38,17 +38,10 @@ export interface Child {
   name: string;
   avatar: string; // preset avatar key
   pullTokens: number; // >= 0
-  epicTickets: number; // special epic+ egg tickets (Inc9 FR4), >= 0
-  luckyTickets: number; // special common/rare egg tickets (Inc9 FR4), >= 0
-  // Rarity-pick tickets (Inc16 FR2): pick-1-of-5 of a specific rarity, >= 0.
-  pickTickets: Record<Rarity, number>;
+  // Unified Easter Egg tickets (Inc19): one balance replacing the old epic/lucky
+  // and four rarity-pick tickets. Redeemed for a weighted-roll pick-1-of-5. >= 0.
+  easterEggTickets: number;
 }
-
-/** Special egg ticket kinds (Inc9 FR4). */
-export type EggTicket = "epic" | "lucky";
-
-/** Rarity a pick ticket unlocks (Inc16 FR2). */
-export type PickRarity = Rarity;
 
 /** One row per (childId, cardId); duplicates increment count (BR8/BR9). */
 export interface CollectionEntry {
@@ -92,8 +85,7 @@ export interface BinderView {
 export interface AdminChildRow {
   child: Child;
   balance: number;
-  epicTickets: number;
-  luckyTickets: number;
+  easterEggTickets: number;
   owned: number;
   total: number;
 }

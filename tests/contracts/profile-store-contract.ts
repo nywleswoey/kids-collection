@@ -32,7 +32,7 @@ export function runProfileStoreContract(
       const store = await makeStore();
       const row = await store.create({ name: "Newbie", avatar: "owl" });
       expect(row).toMatchObject({ name: "Newbie", avatar: "owl", pullTokens: 3 });
-      expect(row.epicTickets).toBe(0);
+      expect(row.easterEggTickets).toBe(0);
       expect(await store.find(row.id)).not.toBeNull();
     });
 

@@ -36,9 +36,7 @@ const childArb: fc.Arbitrary<Child> = fc.record({
   name: fc.string(),
   avatar: fc.constant("fox"),
   pullTokens: fc.integer({ min: 0, max: 1000 }),
-  epicTickets: fc.integer({ min: 0, max: 10 }),
-  luckyTickets: fc.integer({ min: 0, max: 10 }),
-  pickTickets: fc.constant({ common: 0, rare: 0, epic: 0, legendary: 0 }),
+  easterEggTickets: fc.integer({ min: 0, max: 10 }),
 });
 
 describe("drawCard (BR1, BR2)", () => {
@@ -120,9 +118,7 @@ describe("applyPull (BR6, BR8, BR9)", () => {
       name: "n",
       avatar: "fox",
       pullTokens: 0,
-      epicTickets: 0,
-      luckyTickets: 0,
-      pickTickets: { common: 0, rare: 0, epic: 0, legendary: 0 },
+      easterEggTickets: 0,
     };
     const card: Card = {
       id: "card-x",

@@ -11,12 +11,7 @@ function row(seq: number, r: Partial<ChildRow> & { name: string; avatar: string 
     name: r.name,
     avatar: r.avatar,
     pullTokens: r.pullTokens ?? 3, // schema default (BR4)
-    epicTickets: r.epicTickets ?? 0,
-    luckyTickets: r.luckyTickets ?? 0,
-    commonPickTickets: r.commonPickTickets ?? 0,
-    rarePickTickets: r.rarePickTickets ?? 0,
-    epicPickTickets: r.epicPickTickets ?? 0,
-    legendaryPickTickets: r.legendaryPickTickets ?? 0,
+    easterEggTickets: r.easterEggTickets ?? 0,
   };
 }
 

@@ -1,4 +1,4 @@
-import type { Card, Rarity } from "@/lib/types";
+import { RARITIES, RARITY_WEIGHTS, type Card, type Rarity } from "@/lib/types";
 import type { Rng } from "@/lib/logic";
 import { sample } from "@/lib/rng";
 
@@ -9,6 +9,21 @@ import { sample } from "@/lib/rng";
 
 /** Chance per discover that the pick-1-of-5 easter egg fires (~1%). */
 export const EGG_CHANCE = 0.01;
+
+/**
+ * Roll a rarity by the normal pull odds (Inc19 FR3): weighted by RARITY_WEIGHTS
+ * (common 60 / rare 25 / epic 12 / legendary 3). PURE so the unified Easter Egg
+ * ticket's tier distribution is property-testable and client-tamper-proof.
+ */
+export function rollWeightedRarity(rng: Rng = Math.random): Rarity {
+  const total = RARITIES.reduce((sum, r) => sum + RARITY_WEIGHTS[r], 0);
+  let roll = rng() * total;
+  for (const r of RARITIES) {
+    roll -= RARITY_WEIGHTS[r];
+    if (roll < 0) return r;
+  }
+  return RARITIES[RARITIES.length - 1]; // rng()===1 fallback
+}
 
 const EPIC_PLUS: readonly Rarity[] = ["epic", "legendary"];
 const COMMON_RARE: readonly Rarity[] = ["common", "rare"];
