@@ -197,6 +197,6 @@ Answers: Q1=D→clarQ1=D (weighted rarity roll via RARITY_WEIGHTS → single-rar
 - [x] Application Design — APPROVED-PENDING (increment19-unify-tickets-design.md). Migration 0005 (add easter_egg_tickets, backfill sum of 6, drop old). New pull-service.pullEasterEgg (weighted roll → pick-1-of-5); offer {easterEgg,rolledRarity}; claim spends easterEggTickets. Collapses actions/token-service/GrantControl/PullButton/EasterEggPicker(reveal)/SacrificePanel/quiz-award. ⚠️ Extra touchpoint found: quiz-service awards a lucky ticket → now easterEggTickets. AWAITING approval at gate.
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (increment19-unify-tickets/code/code-summary.md). All 12 plan steps [x]. typecheck clean, 174/174 tests, build ✅, no client secret leak, no *_new files. Migration 0005 GENERATED (add easter_egg_tickets + backfill sum-of-6 + drop old); journal + 0005_snapshot hand-authored, db:generate confirms "No schema changes". ⚠️ Migration 0005 NOT YET APPLIED (needs DB auth) — Build & Test. Note: migration sum-invariant enforced by SQL, validated on apply (no pure-JS fn to unit-test); random ~1% egg untouched (Q3=A). AWAITING approval at Code Gen gate.
-- [ ] Build & Test
+- [x] Build & Test — DONE (build-and-test/increment19-unify-tickets-build-and-test.md). typecheck clean, 174/174 tests, build ✅. Migration 0005 APPLIED to Neon prod (pre-check Σ old 6 cols = 0 → zero-risk; post-verify children = pull_tokens+easter_egg_tickets, Σ egg=0, checks OK). db:generate → "No schema changes". AWAITING approval to proceed to Operations (prod deploy).
 ### 🟡 OPERATIONS
-- [ ] Operations gate
+- [ ] Operations gate — Q7=A: deploy to Vercel prod (git push main → Vercel). Migration already applied.
