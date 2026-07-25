@@ -194,9 +194,9 @@ Intent Analysis: Request type=Refactoring/Enhancement; Scope=Multiple components
 Answers: Q1=D→clarQ1=D (weighted rarity roll via RARITY_WEIGHTS → single-rarity pick-1-of-5), clarQ2=A (surprise-reveal tier), Q2=A (sum 6 cols 1:1), Q3=A (~1% random egg unchanged/epic+), Q4=A (🥚 "Easter Egg ticket"), Q5=B (one +1/−1 stepper), Q6=A (sacrifice 3 dups→1 egg ticket), Q7=A (build+migrate+deploy prod).
 ### 🔵 INCEPTION
 - [x] Requirements Analysis — APPROVED-PENDING (increment19-unify-tickets-requirements.md); FR1–FR9 + NFR1–5. User Stories SKIPPED (refactor, single increment). AWAITING approval at gate.
+- [x] Application Design — APPROVED-PENDING (increment19-unify-tickets-design.md). Migration 0005 (add easter_egg_tickets, backfill sum of 6, drop old). New pull-service.pullEasterEgg (weighted roll → pick-1-of-5); offer {easterEgg,rolledRarity}; claim spends easterEggTickets. Collapses actions/token-service/GrantControl/PullButton/EasterEggPicker(reveal)/SacrificePanel/quiz-award. ⚠️ Extra touchpoint found: quiz-service awards a lucky ticket → now easterEggTickets. AWAITING approval at gate.
 ### 🟢 CONSTRUCTION
-- [ ] Application Design (conditional — pending answers)
-- [ ] Code Generation
+- [~] Code Generation — Part 1 PLAN created (plans/increment19-unify-tickets-code-generation-plan.md), 12 steps. AWAITING plan approval before Part 2 generation.
 - [ ] Build & Test
 ### 🟡 OPERATIONS
 - [ ] Operations gate

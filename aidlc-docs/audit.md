@@ -1387,3 +1387,35 @@
 **Context**: INCEPTION — Requirements Analysis complete, approval gate
 
 ---
+
+## INCREMENT 19 — Requirements Approved
+**Timestamp**: 2026-07-24T17:05:00Z
+**User Input**: "continue"
+**AI Response**: Interpreted as Approve & Continue. Requirements APPROVED. User Stories skipped (refactor, single increment). Proceeding to Application Design (conditional — warranted by new redemption logic + schema migration). Loading inception/application-design.md.
+**Context**: INCEPTION — Requirements approved → Application Design
+
+---
+
+## INCREMENT 19 — Application Design Complete
+**Timestamp**: 2026-07-24T17:20:00Z
+**User Input**: (design stage — no ambiguities requiring user questions; requirements decisive)
+**AI Response**: Grounded design in pull-service redemption/claim flow. Wrote increment19-unify-tickets-design.md (consolidated, matching prior-increment convention). Key design: migration 0005 (add easter_egg_tickets, backfill = sum of 6 old, drop old + checks); pure rollWeightedRarity(RARITY_WEIGHTS); pullEasterEgg replaces pullSpecialEgg+pullRarityPick; offer {easterEgg,rolledRarity}; claim spends single easterEggTickets column (single-use preserved); sacrifice grants easterEggTickets; GrantControl → one 🥚 +1/−1 stepper; EasterEggPicker surprise reveal. DISCOVERED extra in-scope touchpoint: quiz-service.ts grants luckyTickets on pass → must become easterEggTickets (QuizFlow copy + DAILY_TICKET_CAP kept). No design questions needed. Presenting approval gate; Units Generation skipped (single increment).
+**Context**: INCEPTION — Application Design complete, approval gate
+
+---
+
+## INCREMENT 19 — Application Design Approved
+**Timestamp**: 2026-07-25T00:00:00Z
+**User Input**: "ok"
+**AI Response**: Interpreted as Approve & Continue (incl. quiz-reward touchpoint in scope). Application Design APPROVED. Units Generation skipped (single increment). Proceeding to Code Generation. Loading construction/code-generation.md; will produce Part 1 plan (checkboxes) for approval before generating.
+**Context**: CONSTRUCTION — Application Design approved → Code Generation (Part 1 planning)
+
+---
+
+## INCREMENT 19 — Code Generation Part 1 (Plan)
+**Timestamp**: 2026-07-25T00:10:00Z
+**User Input**: (planning)
+**AI Response**: Created 12-step code-generation plan (plans/increment19-unify-tickets-code-generation-plan.md): (1) types+schema, (2) migration 0005 sum-backfill, (3) pure rollWeightedRarity + prune sacrifice/pick-tickets, (4) offer payload, (5) pull-service pullEasterEgg+claim+sacrifice, (6) token-service+actions, (7) stores+mappers, (8) quiz reward → easterEggTickets, (9) UI (GrantControl/PullButton/EasterEggPicker reveal/SacrificePanel/ProfileRow/ChildAdminRow), (10) tests, (11) verify build, (12) code-summary doc. Presenting plan for approval before generating.
+**Context**: CONSTRUCTION — Code Generation Part 1, plan approval gate
+
+---
