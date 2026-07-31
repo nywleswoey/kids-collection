@@ -1,5 +1,5 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { themes, cards } from "@/db/schema";
 import type { Card, Theme } from "@/lib/types";
@@ -17,8 +17,9 @@ function toCard(row: typeof cards.$inferSelect): Card {
 }
 
 /** Runtime pool reads — consumed by U4 (draw), U5 (binder), U6 (card UI). */
+/** Ordered oldest → newest (Inc21 FR1) — the pull screen's "recency". */
 export async function listThemes(): Promise<Theme[]> {
-  const rows = await db.select().from(themes);
+  const rows = await db.select().from(themes).orderBy(asc(themes.sortOrder));
   return rows.map((r) => ({ id: r.id, name: r.name }));
 }
 

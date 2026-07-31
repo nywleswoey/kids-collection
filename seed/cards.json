@@ -216,6 +216,221 @@
       ]
     },
     {
+      "name": "Mythic Creatures",
+      "cards": [
+        {
+          "name": "Griffin",
+          "rarity": "common",
+          "eduText": "Told of in the ancient Near East and Greece, the griffin has an eagle's head and a lion's body.",
+          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Griffin"
+        },
+        {
+          "name": "Pegasus",
+          "rarity": "common",
+          "eduText": "Pegasus is a winged horse from ancient Greek myths who was said to gallop through the sky.",
+          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus"
+        },
+        {
+          "name": "Kappa",
+          "rarity": "common",
+          "eduText": "In Japanese folklore, the kappa is a mischievous river creature said to love cucumbers.",
+          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kappa_(folklore)"
+        },
+        {
+          "name": "Selkie",
+          "rarity": "common",
+          "eduText": "Scottish and Irish folklore tells of selkies, seals who could shed their skin to walk on land as people.",
+          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Selkie"
+        },
+        {
+          "name": "Fenghuang",
+          "rarity": "common",
+          "eduText": "The fenghuang is a bird from Chinese mythology, long seen as a symbol of peace and good fortune.",
+          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fenghuang"
+        },
+        {
+          "name": "Brownie",
+          "rarity": "common",
+          "eduText": "In British and Scottish folklore, brownies are helpful house spirits who tidy up in exchange for treats.",
+          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Brownie_(folklore)"
+        },
+        {
+          "name": "Mermaid",
+          "rarity": "common",
+          "eduText": "Tales of mermaids — half-human, half-fish — appear in folklore all around the world.",
+          "imagePrompt": "a friendly mermaid with a shimmering tail sitting on a rock by the sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mermaid"
+        },
+        {
+          "name": "Fairy",
+          "rarity": "common",
+          "eduText": "European folklore describes fairies as tiny magical beings, sometimes shown with delicate wings.",
+          "imagePrompt": "a tiny glowing fairy with delicate wings among flowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fairy"
+        },
+        {
+          "name": "Gnome",
+          "rarity": "common",
+          "eduText": "In Renaissance folklore, gnomes are small earth spirits said to live underground.",
+          "imagePrompt": "a cheerful little gnome with a pointed red hat in a garden",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gnome"
+        },
+        {
+          "name": "Troll",
+          "rarity": "common",
+          "eduText": "Norse and Scandinavian folklore tell of trolls, large creatures said to live in mountains or caves.",
+          "imagePrompt": "a big friendly troll sitting among mossy mountain boulders",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Troll"
+        },
+        {
+          "name": "Goblin",
+          "rarity": "common",
+          "eduText": "European folklore describes goblins as small, mischievous creatures.",
+          "imagePrompt": "a small mischievous goblin grinning in a torch-lit cave",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goblin"
+        },
+        {
+          "name": "Centaur",
+          "rarity": "common",
+          "eduText": "In Greek mythology, a centaur has the upper body of a human and the body of a horse.",
+          "imagePrompt": "a noble centaur, half human and half horse, standing in a meadow",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Centaur"
+        },
+        {
+          "name": "Minotaur",
+          "rarity": "common",
+          "eduText": "Greek myth tells of the Minotaur, a creature with a bull's head kept in a maze called the Labyrinth.",
+          "imagePrompt": "a strong minotaur with a bull's head standing at the entrance of a maze",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Minotaur"
+        },
+        {
+          "name": "Cyclops",
+          "rarity": "common",
+          "eduText": "In Greek mythology, the Cyclopes were giants with a single eye in the middle of the forehead.",
+          "imagePrompt": "a giant one-eyed cyclops resting beside a rocky hillside",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cyclopes"
+        },
+        {
+          "name": "Satyr",
+          "rarity": "common",
+          "eduText": "Greek myth describes satyrs as playful nature spirits, part human and part goat.",
+          "imagePrompt": "a playful satyr with goat legs holding pan pipes in a forest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Satyr"
+        },
+        {
+          "name": "Unicorn",
+          "rarity": "rare",
+          "eduText": "Legends across many cultures describe the unicorn, a horse-like creature with a single spiraling horn.",
+          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Unicorn"
+        },
+        {
+          "name": "Kirin",
+          "rarity": "rare",
+          "eduText": "The qilin (kirin) of East Asian legend is a gentle mythical creature whose appearance was seen as a good omen.",
+          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Qilin"
+        },
+        {
+          "name": "Thunderbird",
+          "rarity": "rare",
+          "eduText": "Many Indigenous peoples of North America tell of the thunderbird, a great bird linked to storms and rain.",
+          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thunderbird_(mythology)"
+        },
+        {
+          "name": "Sphinx",
+          "rarity": "rare",
+          "eduText": "The sphinx of Greek myth had a lion's body and a human head, and was famous for asking riddles.",
+          "imagePrompt": "a majestic sphinx with a lion's body and a calm human face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sphinx"
+        },
+        {
+          "name": "Hydra",
+          "rarity": "rare",
+          "eduText": "In Greek myth, the Hydra was a serpent that grew two new heads whenever one was cut off.",
+          "imagePrompt": "a many-headed serpent hydra rising from a misty swamp",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lernaean_Hydra"
+        },
+        {
+          "name": "Basilisk",
+          "rarity": "rare",
+          "eduText": "European legend tells of the basilisk, a serpent said to be the 'king of serpents'.",
+          "imagePrompt": "a green serpent basilisk with a small crown-like crest",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Basilisk"
+        },
+        {
+          "name": "Yeti",
+          "rarity": "rare",
+          "eduText": "Himalayan folklore tells of the Yeti, a large ape-like creature said to live in the snowy mountains.",
+          "imagePrompt": "a big furry white yeti walking through snowy mountains",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yeti"
+        },
+        {
+          "name": "Banshee",
+          "rarity": "rare",
+          "eduText": "In Irish folklore, the banshee is a spirit whose wailing cry was said to be an omen.",
+          "imagePrompt": "a pale ghostly banshee floating over misty green Irish hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banshee"
+        },
+        {
+          "name": "Sky Dragon",
+          "rarity": "epic",
+          "eduText": "In Chinese mythology, dragons are wise, benevolent beings often connected with water and rain.",
+          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_dragon"
+        },
+        {
+          "name": "Phoenix",
+          "rarity": "epic",
+          "eduText": "The phoenix is a mythical bird said to be reborn from its own ashes, an ancient symbol of renewal.",
+          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phoenix_(mythology)"
+        },
+        {
+          "name": "Kraken",
+          "rarity": "epic",
+          "eduText": "Scandinavian legends tell of the Kraken, a giant sea monster said to rise up near ships.",
+          "imagePrompt": "a giant kraken sea monster with huge tentacles rising near a wooden ship",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kraken"
+        },
+        {
+          "name": "Cerberus",
+          "rarity": "epic",
+          "eduText": "In Greek myth, Cerberus was a many-headed dog who guarded the gates of the underworld.",
+          "imagePrompt": "a three-headed dog cerberus guarding a shadowy gate",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cerberus"
+        },
+        {
+          "name": "Roc",
+          "rarity": "epic",
+          "eduText": "Middle Eastern legends describe the Roc, a bird so enormous it was said to carry off elephants.",
+          "imagePrompt": "an enormous roc bird with vast wings soaring over mountains",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Roc_(mythology)"
+        },
+        {
+          "name": "World Turtle",
+          "rarity": "legendary",
+          "eduText": "The World Turtle appears in myths from several cultures, picturing the world resting on a giant turtle's back.",
+          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell",
+          "sourceUrl": "https://en.wikipedia.org/wiki/World_Turtle"
+        },
+        {
+          "name": "Leviathan",
+          "rarity": "legendary",
+          "eduText": "The Leviathan is a giant sea creature described in ancient Hebrew texts.",
+          "imagePrompt": "a colossal sea creature leviathan coiling through deep dark ocean",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leviathan"
+        }
+      ]
+    },
+    {
       "name": "Dinosaurs",
       "cards": [
         {
@@ -642,221 +857,6 @@
           "eduText": "Solaris blazes like a tiny star; the real Sun is a giant star that lights and warms our whole planet.",
           "imagePrompt": "a brilliant hero radiating golden sunlight with a fiery halo",
           "sourceUrl": "https://en.wikipedia.org/wiki/Sun"
-        }
-      ]
-    },
-    {
-      "name": "Mythic Creatures",
-      "cards": [
-        {
-          "name": "Griffin",
-          "rarity": "common",
-          "eduText": "Told of in the ancient Near East and Greece, the griffin has an eagle's head and a lion's body.",
-          "imagePrompt": "a noble griffin with soft feathered wings standing on a grassy hill",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Griffin"
-        },
-        {
-          "name": "Pegasus",
-          "rarity": "common",
-          "eduText": "Pegasus is a winged horse from ancient Greek myths who was said to gallop through the sky.",
-          "imagePrompt": "a white winged horse trotting on a cloud in a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus"
-        },
-        {
-          "name": "Kappa",
-          "rarity": "common",
-          "eduText": "In Japanese folklore, the kappa is a mischievous river creature said to love cucumbers.",
-          "imagePrompt": "a small friendly green turtle-like river creature holding a cucumber",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Kappa_(folklore)"
-        },
-        {
-          "name": "Selkie",
-          "rarity": "common",
-          "eduText": "Scottish and Irish folklore tells of selkies, seals who could shed their skin to walk on land as people.",
-          "imagePrompt": "a gentle seal resting on a rock beside a soft grey sealskin cloak",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Selkie"
-        },
-        {
-          "name": "Fenghuang",
-          "rarity": "common",
-          "eduText": "The fenghuang is a bird from Chinese mythology, long seen as a symbol of peace and good fortune.",
-          "imagePrompt": "an elegant bird with long rainbow tail feathers perched on a plum branch",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Fenghuang"
-        },
-        {
-          "name": "Brownie",
-          "rarity": "common",
-          "eduText": "In British and Scottish folklore, brownies are helpful house spirits who tidy up in exchange for treats.",
-          "imagePrompt": "a tiny cheerful house sprite in a brown hood sweeping with a straw broom",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Brownie_(folklore)"
-        },
-        {
-          "name": "Mermaid",
-          "rarity": "common",
-          "eduText": "Tales of mermaids — half-human, half-fish — appear in folklore all around the world.",
-          "imagePrompt": "a friendly mermaid with a shimmering tail sitting on a rock by the sea",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Mermaid"
-        },
-        {
-          "name": "Fairy",
-          "rarity": "common",
-          "eduText": "European folklore describes fairies as tiny magical beings, sometimes shown with delicate wings.",
-          "imagePrompt": "a tiny glowing fairy with delicate wings among flowers",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Fairy"
-        },
-        {
-          "name": "Gnome",
-          "rarity": "common",
-          "eduText": "In Renaissance folklore, gnomes are small earth spirits said to live underground.",
-          "imagePrompt": "a cheerful little gnome with a pointed red hat in a garden",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Gnome"
-        },
-        {
-          "name": "Troll",
-          "rarity": "common",
-          "eduText": "Norse and Scandinavian folklore tell of trolls, large creatures said to live in mountains or caves.",
-          "imagePrompt": "a big friendly troll sitting among mossy mountain boulders",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Troll"
-        },
-        {
-          "name": "Goblin",
-          "rarity": "common",
-          "eduText": "European folklore describes goblins as small, mischievous creatures.",
-          "imagePrompt": "a small mischievous goblin grinning in a torch-lit cave",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Goblin"
-        },
-        {
-          "name": "Centaur",
-          "rarity": "common",
-          "eduText": "In Greek mythology, a centaur has the upper body of a human and the body of a horse.",
-          "imagePrompt": "a noble centaur, half human and half horse, standing in a meadow",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Centaur"
-        },
-        {
-          "name": "Minotaur",
-          "rarity": "common",
-          "eduText": "Greek myth tells of the Minotaur, a creature with a bull's head kept in a maze called the Labyrinth.",
-          "imagePrompt": "a strong minotaur with a bull's head standing at the entrance of a maze",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Minotaur"
-        },
-        {
-          "name": "Cyclops",
-          "rarity": "common",
-          "eduText": "In Greek mythology, the Cyclopes were giants with a single eye in the middle of the forehead.",
-          "imagePrompt": "a giant one-eyed cyclops resting beside a rocky hillside",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Cyclopes"
-        },
-        {
-          "name": "Satyr",
-          "rarity": "common",
-          "eduText": "Greek myth describes satyrs as playful nature spirits, part human and part goat.",
-          "imagePrompt": "a playful satyr with goat legs holding pan pipes in a forest",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Satyr"
-        },
-        {
-          "name": "Unicorn",
-          "rarity": "rare",
-          "eduText": "Legends across many cultures describe the unicorn, a horse-like creature with a single spiraling horn.",
-          "imagePrompt": "a gentle white unicorn with a spiral horn in a field of wildflowers",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Unicorn"
-        },
-        {
-          "name": "Kirin",
-          "rarity": "rare",
-          "eduText": "The qilin (kirin) of East Asian legend is a gentle mythical creature whose appearance was seen as a good omen.",
-          "imagePrompt": "a graceful deer-like creature with golden scales and gentle antlers",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Qilin"
-        },
-        {
-          "name": "Thunderbird",
-          "rarity": "rare",
-          "eduText": "Many Indigenous peoples of North America tell of the thunderbird, a great bird linked to storms and rain.",
-          "imagePrompt": "a huge majestic bird with wide patterned wings gliding above green hills",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Thunderbird_(mythology)"
-        },
-        {
-          "name": "Sphinx",
-          "rarity": "rare",
-          "eduText": "The sphinx of Greek myth had a lion's body and a human head, and was famous for asking riddles.",
-          "imagePrompt": "a majestic sphinx with a lion's body and a calm human face",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Sphinx"
-        },
-        {
-          "name": "Hydra",
-          "rarity": "rare",
-          "eduText": "In Greek myth, the Hydra was a serpent that grew two new heads whenever one was cut off.",
-          "imagePrompt": "a many-headed serpent hydra rising from a misty swamp",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Lernaean_Hydra"
-        },
-        {
-          "name": "Basilisk",
-          "rarity": "rare",
-          "eduText": "European legend tells of the basilisk, a serpent said to be the 'king of serpents'.",
-          "imagePrompt": "a green serpent basilisk with a small crown-like crest",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Basilisk"
-        },
-        {
-          "name": "Yeti",
-          "rarity": "rare",
-          "eduText": "Himalayan folklore tells of the Yeti, a large ape-like creature said to live in the snowy mountains.",
-          "imagePrompt": "a big furry white yeti walking through snowy mountains",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Yeti"
-        },
-        {
-          "name": "Banshee",
-          "rarity": "rare",
-          "eduText": "In Irish folklore, the banshee is a spirit whose wailing cry was said to be an omen.",
-          "imagePrompt": "a pale ghostly banshee floating over misty green Irish hills",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Banshee"
-        },
-        {
-          "name": "Sky Dragon",
-          "rarity": "epic",
-          "eduText": "In Chinese mythology, dragons are wise, benevolent beings often connected with water and rain.",
-          "imagePrompt": "a long friendly serpent dragon with flowing whiskers curling through clouds",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_dragon"
-        },
-        {
-          "name": "Phoenix",
-          "rarity": "epic",
-          "eduText": "The phoenix is a mythical bird said to be reborn from its own ashes, an ancient symbol of renewal.",
-          "imagePrompt": "a beautiful bird with warm orange and gold feathers rising into sunlight",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Phoenix_(mythology)"
-        },
-        {
-          "name": "Kraken",
-          "rarity": "epic",
-          "eduText": "Scandinavian legends tell of the Kraken, a giant sea monster said to rise up near ships.",
-          "imagePrompt": "a giant kraken sea monster with huge tentacles rising near a wooden ship",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Kraken"
-        },
-        {
-          "name": "Cerberus",
-          "rarity": "epic",
-          "eduText": "In Greek myth, Cerberus was a many-headed dog who guarded the gates of the underworld.",
-          "imagePrompt": "a three-headed dog cerberus guarding a shadowy gate",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Cerberus"
-        },
-        {
-          "name": "Roc",
-          "rarity": "epic",
-          "eduText": "Middle Eastern legends describe the Roc, a bird so enormous it was said to carry off elephants.",
-          "imagePrompt": "an enormous roc bird with vast wings soaring over mountains",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Roc_(mythology)"
-        },
-        {
-          "name": "World Turtle",
-          "rarity": "legendary",
-          "eduText": "The World Turtle appears in myths from several cultures, picturing the world resting on a giant turtle's back.",
-          "imagePrompt": "an enormous calm turtle with a green island and tiny trees on its shell",
-          "sourceUrl": "https://en.wikipedia.org/wiki/World_Turtle"
-        },
-        {
-          "name": "Leviathan",
-          "rarity": "legendary",
-          "eduText": "The Leviathan is a giant sea creature described in ancient Hebrew texts.",
-          "imagePrompt": "a colossal sea creature leviathan coiling through deep dark ocean",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Leviathan"
         }
       ]
     },

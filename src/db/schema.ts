@@ -26,6 +26,9 @@ export const themes = pgTable("themes", {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text("name").notNull().unique(),
+  // Display order, lowest = oldest (Inc21 FR1). Written from the theme's
+  // position in seed/cards.json, so a newly appended theme is the most recent.
+  sortOrder: integer("sort_order").notNull().default(0),
 });
 
 /** Cards — shared library. */

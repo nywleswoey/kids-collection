@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { tokenService } from "@/features/pull/token-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
+import { recentCategories } from "@/features/pull/categories";
 import { listCards, listThemes } from "@/features/pool/service";
 
 export default async function PullPage() {
@@ -13,6 +14,10 @@ export default async function PullPage() {
     listThemes(),
     tokenService.getEasterEggBalance(child.id),
   ]);
+  // Only the most recent categories get a chip, so the row stays readable on a
+  // phone (Inc21 FR3). Capped here, server-side, so the hidden ones are never
+  // serialized into the client payload. 🎲 Random still draws from all of them.
+  const visibleThemes = recentCategories(themes);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
   const flashPool = allCards.map((c) => ({
     id: c.id,
@@ -35,7 +40,7 @@ export default async function PullPage() {
         childId={child.id}
         initialBalance={balance}
         flashPool={flashPool}
-        themes={themes.map((t) => ({ id: t.id, name: t.name }))}
+        themes={visibleThemes.map((t) => ({ id: t.id, name: t.name }))}
         easterEggTickets={easterEggTickets}
       />
       <div className="flex gap-3 text-sm">

@@ -22,13 +22,25 @@ async function pruneNotIn(
   return deleted.length;
 }
 
-/** Upsert a theme by name; returns its id (idempotent, U3-BR8). */
-export async function upsertTheme(name: string): Promise<string> {
+/**
+ * Upsert a theme by name; returns its id (idempotent, U3-BR8). `sortOrder` is
+ * the theme's position in seed/cards.json and is refreshed on every sync, so
+ * reordering that file reorders the pull screen's chips (Inc21 FR2).
+ */
+export async function upsertTheme(
+  name: string,
+  sortOrder: number,
+): Promise<string> {
   const existing = await db.query.themes.findFirst({
     where: eq(themes.name, name),
   });
-  if (existing) return existing.id;
-  const [row] = await db.insert(themes).values({ name }).returning();
+  if (existing) {
+    if (existing.sortOrder !== sortOrder) {
+      await db.update(themes).set({ sortOrder }).where(eq(themes.id, existing.id));
+    }
+    return existing.id;
+  }
+  const [row] = await db.insert(themes).values({ name, sortOrder }).returning();
   return row.id;
 }
 

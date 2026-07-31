@@ -83,9 +83,11 @@ async function main() {
     prunedCards: 0,
   };
 
-  for (const theme of seed.themes) {
+  // Array position is the theme's display order — appending a theme to
+  // seed/cards.json makes it the most recent (Inc21 FR2).
+  for (const [sortOrder, theme] of seed.themes.entries()) {
     const themeId =
-      mode === "review" ? "(review)" : await upsertTheme(theme.name);
+      mode === "review" ? "(review)" : await upsertTheme(theme.name, sortOrder);
 
     await runPool(theme.cards, CONCURRENCY, async (card) => {
       try {

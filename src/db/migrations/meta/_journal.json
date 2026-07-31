@@ -43,6 +43,13 @@
       "when": 1783946722172,
       "tag": "0005_unify_easter_egg_tickets",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783946822172,
+      "tag": "0006_theme_sort_order",
+      "breakpoints": true
     }
   ]
 }
