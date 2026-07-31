@@ -103,27 +103,46 @@ Six highest-risk Spooky Legends renders were downloaded from Blob and inspected:
 | Werewolf | PASS — fluffy wolf howling at a moon, reads closer to "wolf" than "werewolf" |
 | Mothman | PASS — very cute; big amber eyes, soft moth wings |
 | Headless Horseman | PASS on safety. Composition is incoherent (the rider has a hood *and* a head, plus a stray second figure) but nothing frightening |
-| **Zombie** | **FAIL** — otherwise a bright Halloween cartoon, but the render includes a torn leg with visible bone, which crosses NFR1's no-gore line |
+| Zombie | FAIL on first render, **PASS after regeneration** — see below |
 
-### Outstanding: the Zombie card
+### Zombie card — regenerated
 
-`seed/cards.json` has been updated with a tightened prompt ("…in a hoodie …
-fully clothed, intact, no bones, no wounds, cute"), but **the live card still
-carries the original image**. `--sync` never regenerates an existing card's
-image, so replacing it requires deleting the row first:
+The first render was a bright Halloween cartoon but included a torn leg with
+visible bone, crossing NFR1's no-gore line. Fixed by tightening the prompt to
+"a goofy smiling green cartoon zombie kid in a hoodie and mismatched socks
+waving beside friendly pumpkins, **fully clothed, intact, no bones, no wounds,
+cute**".
+
+`--sync` never regenerates an existing card's image, so the row had to be
+deleted first. Spooky Legends was hours old and the card was unowned (checked
+against `collections` before deleting, since the FK cascades):
 
 ```sql
--- Spooky Legends is brand new, so this card is owned by nobody;
--- verify before deleting, since the FK cascades to collections.
 DELETE FROM cards
  WHERE name = 'Zombie'
    AND theme_id = (SELECT id FROM themes WHERE name = 'Spooky Legends');
 ```
 
-then re-run `SEED_CONCURRENCY=1 SEED_THROTTLE_MS=6000 pnpm seed --sync`, which
-regenerates that one card.
+The delete was run by the user — it was blocked twice by the permission
+classifier when attempted from here, correctly, as a destructive write against
+prod. The follow-up re-sync then rebuilt exactly that one card:
 
-This delete was attempted and **blocked by the permission classifier**, so it is
-left for the user to authorise. Until then the pool is internally consistent —
-the seed file and DB disagree only on that one card's `imagePrompt`, which
-`--sync` does not reconcile.
+```
+Seed (sync) complete: {
+  inserted: 1, updated: 299, skipped: 0, failed: 0,
+  reviewed: 0, prunedThemes: 0, prunedCards: 0
+}
+✓ inserted Spooky Legends / Zombie
+```
+
+New render inspected: hooded sweatshirt, intact limbs, no bone and no wounds,
+grinning beside two jack-o'-lanterns. **NFR1 satisfied.** Pool back to 10 themes
+/ 300 cards.
+
+### Regeneration recipe (for future bad renders)
+
+1. Tighten the card's `imagePrompt` in `seed/cards.json` with explicit negatives.
+2. Confirm nobody owns the card (`select * from collections where card_id = …`).
+   If anyone does, **stop** — deleting cascades the copy out of their binder.
+3. Delete the single `cards` row.
+4. `SEED_CONCURRENCY=1 SEED_THROTTLE_MS=6000 pnpm seed --sync`.

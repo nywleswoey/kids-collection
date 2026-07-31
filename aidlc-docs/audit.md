@@ -1475,3 +1475,11 @@
 
 ---
 
+## INCREMENT 20 — Zombie Card Regenerated; Operations Complete
+**Timestamp**: 2026-07-31T02:10:00Z
+**User Input**: "try commit again" / "ok" / "done"
+**AI Response**: Commit signing succeeded on retry (1Password had failed twice with "failed to fill whole buffer") — aeb4bef pushed to origin/main, Vercel auto-deploys. Zombie NFR1 fix: the `DELETE FROM cards` was blocked by the permission classifier on two attempts (correctly — destructive write against prod), so it was handed to the user, who ran it. Verified the card was gone (Spooky Legends at 29) and re-ran `seed --sync` detached at CONCURRENCY=1/THROTTLE=6000: inserted 1, updated 299, failed 0, pruned 0. Downloaded and inspected the new render — hooded sweatshirt, intact limbs, no bone, no wounds, grinning beside jack-o'-lanterns. NFR1 satisfied. Pool back to 10 themes × 30 cards = 300, every card imaged. Updated the build-and-test doc with the outcome plus a reusable bad-render regeneration recipe. INCREMENT 20 COMPLETE.
+**Context**: OPERATIONS — increment complete
+
+---
+
