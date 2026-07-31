@@ -1483,3 +1483,75 @@
 
 ---
 
+
+## Session Continuity (Resume)
+**Timestamp**: 2026-07-31T00:00:00Z
+**User Input**: "/aidlc:resume the pull page should always display the most recent 8 categories + random"
+**AI Response**: "Read aidlc-state.md; resolved rule details dir `.aidlc-rule-details/`; loaded common/session-continuity.md. Parsed status: INCREMENT 20 (Spooky Legends + Deep Sea Creatures) COMPLETE through its Operations gate (which also closed INCREMENT 19's outstanding gate). No stage is mid-flight. The supplied argument is a NEW intent, so the concrete next step is INCEPTION / Requirements Analysis for INCREMENT 21 (pull-page category chips limited to the 8 most recent categories + Random). Loaded grounding artifacts: app/play/pull/page.tsx, src/features/pull/PullButton.tsx (category chips block), src/features/pool/service.ts (listThemes), src/db/schema.ts (themes table). Rendered Welcome-back A/B prompt; awaiting user choice before advancing."
+**Context**: Session resume — no in-progress stage; awaiting user choice between starting Increment 21 Requirements Analysis (A) or reviewing a previous stage (B).
+
+---
+
+## INCREMENT 21 — Requirements Analysis (Intent + Questions)
+**Timestamp**: 2026-07-31T00:05:00Z
+**User Input**: "the current ordering that it appears is the 'recency'"
+**AI Response**: "Treated as choice A (continue) plus the answer to the open recency ambiguity. Intent Analysis: request type = Enhancement; clarity = Clear-with-ambiguity; scope = Single component (pull page chips) + possibly pool service ordering; complexity = Simple-to-Moderate; requirements depth = STANDARD. Grounded the request in code and prod data: chips render in src/features/pull/PullButton.tsx:119-143 fed by listThemes() (src/features/pool/service.ts:20) which has NO ORDER BY, and themes (src/db/schema.ts:24) has no createdAt/sort column. Queried prod Neon: current unordered theme order is Animals, Mythic Creatures, Dinosaurs, Superheroes, Country, Famous People, Weird Insects, Special Plants, Spooky Legends, Deep Sea Creatures — which differs from seed/cards.json authoring order (Dinosaurs idx 1, Mythic Creatures idx 3). Taken literally, 'most recent 8' hides Animals + Mythic Creatures. Flagged that an unordered Postgres SELECT is not a stable contract (seed --sync rewrites tuples and can reshuffle the heap scan), so the observed order should be pinned explicitly. Chip selection is React state only (useState), so no persisted-hidden-theme edge case. Created aidlc-docs/inception/requirements/increment21-pull-recent-categories-questions.md with Q1-Q8 (durable recency source, which 2 to hide, fixed count of 8, Random draw pool, blast radius vs My Galaxy, Easter Egg pick pool, delivery, extension carry-forward). AWAITING answers."
+**Context**: INCEPTION / Requirements Analysis — Increment 21, questions issued, blocked on user answers.
+
+---
+
+## INCREMENT 21 — Requirements Analysis (Q1 answered)
+**Timestamp**: 2026-07-31T00:10:00Z
+**User Input**: "yes, add a created date or some ordering index"
+**AI Response**: "Recorded as Q1 = C in increment21-pull-recent-categories-questions.md. Resolved as: add an explicit ordering column to `themes` (migration 0006), backfilled to today's OBSERVED on-page order (Animals, Mythic Creatures, Dinosaurs, Superheroes, Country, Famous People, Weird Insects, Special Plants, Spooky Legends, Deep Sea Creatures), `listThemes()` sorts by it, and seed/cards.json reordered to match so future `seed --sync` runs stay consistent and new categories append last. Raised follow-up Q1a (integer `sort_order` vs `created_at` timestamp) because the backfill for the existing 10 would have to invent timestamps — recommended integer. Pre-filled PROPOSED answers for Q2 (hide Animals + Mythic Creatures), Q1a (A integer), Q3 (A constant MAX_PULL_CATEGORIES = 8), Q4 (A Random still draws from all 10), Q5 (A pull page only), Q6 (A Easter Egg pool unchanged), Q7 (A deploy to prod), Q8 (A carry all three extensions forward), each marked 'Confirm or override'. AWAITING confirmation before writing the requirements document."
+**Context**: INCEPTION / Requirements Analysis — Increment 21, Q1 resolved, Q1a + Q2–Q8 pending confirmation.
+
+---
+
+## INCREMENT 21 — Requirements Analysis (all answers confirmed, requirements issued)
+**Timestamp**: 2026-07-31T00:20:00Z
+**User Input**: "confirm. q1a->a"
+**AI Response**: "Marked Q1a=A and Q2–Q8 = A as CONFIRMED in increment21-pull-recent-categories-questions.md (no open ambiguities). Wrote aidlc-docs/inception/requirements/increment21-pull-recent-categories-requirements.md: intent analysis, current-behaviour findings (incl. the unordered-SELECT stability defect), confirmed decision table, FR1-FR7 (sort_order column + backfill, seed maintains ordering, pull page capped to MAX_PULL_CATEGORIES=8, visible-chip order preserved, hidden categories still obtainable via Random, everything outside the pull page unchanged, hidden themes unselectable from that screen), NFR1-NFR6, out-of-scope, 8 acceptance criteria, traceability, and an extension compliance summary (Security N/A this stage, Resiliency + PBT compliant). Appended the Increment 21 block to aidlc-state.md. Presented the 2-option Requirements Analysis approval gate."
+**Context**: INCEPTION / Requirements Analysis — Increment 21, requirements document issued, AWAITING approval at gate.
+
+---
+
+## INCREMENT 21 — Requirements gate APPROVED / Application Design issued
+**Timestamp**: 2026-07-31T00:30:00Z
+**User Input**: "b"
+**AI Response**: "Requirements Analysis gate APPROVED (option B). Marked it approved in aidlc-state.md and proceeded to Application Design. Loaded inception/application-design.md rules and the affected code: src/db/schema.ts (themes), src/features/pool/service.ts (listThemes), src/features/pool/writer.ts (upsertTheme), src/features/pool/catalog.ts, scripts/seed/index.ts, app/play/pull/page.tsx, src/lib/types.ts, migration 0005 + meta/_journal.json as the hand-authored-migration precedent, and the 5 test catalog fakes. Wrote aidlc-docs/inception/application-design/increment21-pull-recent-categories-design.md: 3 seams (data/read-path/presentation), component + method table, migration 0006 SQL with a generic row_number() OVER (ORDER BY ctid) backfill, dependency order, 7-item test plan, risk table, D1-D4 design decisions pre-filled with recommendations, and the extension compliance summary (Security N/A, Resiliency + PBT compliant). Presented the 2-option Application Design approval gate."
+**Context**: INCEPTION / Application Design — Increment 21, design issued, AWAITING approval at gate.
+
+---
+
+## INCREMENT 21 — Application Design gate APPROVED / Code Generation plan issued
+**Timestamp**: 2026-07-31T00:40:00Z
+**User Input**: "b"
+**AI Response**: "Application Design gate APPROVED (option B); D1=A, D2=A, D3=A, D4=A confirmed by approval. Marked approved in aidlc-state.md and moved to CONSTRUCTION / Code Generation Part 1 (Planning). Loaded construction/code-generation.md. Wrote aidlc-docs/construction/plans/increment21-pull-recent-categories-code-generation-plan.md — 12 numbered checkbox steps grouped as Business Logic (categories.ts + property tests), Repository/Data (schema sortOrder, migration 0006 + hand-authored journal/snapshot, ordered listThemes, upsertTheme signature), Seed (script passes array index, seed/cards.json reordered with a content-identical check), Frontend (server-side cap in app/play/pull/page.tsx; PullButton unchanged), Verification (typecheck, 174+ tests x2, build, no new deps, no stale call sites), and the code summary. Deferred to Build & Test/Operations: applying migration 0006 with pre/post row counts, `seed --sync` ordering no-op, manual chip verification, prod deploy. Included traceability and extension compliance (Security N/A, Resiliency + PBT compliant). Presented the 2-option Code Generation plan approval gate."
+**Context**: CONSTRUCTION / Code Generation Part 1 — Increment 21, plan issued, AWAITING approval before generating code.
+
+---
+
+## INCREMENT 21 — Code Generation plan APPROVED / code generated
+**Timestamp**: 2026-07-31T00:50:00Z
+**User Input**: "b"
+**AI Response**: "Code Generation plan APPROVED (option B). Executed all 12 steps and checked each box in the plan file. Added src/features/pull/categories.ts (MAX_PULL_CATEGORIES=8 + pure generic recentCategories), tests/pull-categories.pbt.test.ts (5 fast-check properties + 3 edge/unit tests), src/db/migrations/0006_theme_sort_order.sql (ADD COLUMN sort_order + row_number() OVER (ORDER BY ctid) backfill) and meta/0006_snapshot.json. Modified src/db/schema.ts (themes.sortOrder), src/features/pool/service.ts (listThemes ORDER BY asc sortOrder), src/features/pool/writer.ts (upsertTheme(name, sortOrder), UPDATE only when it differs), scripts/seed/index.ts (passes array index), seed/cards.json (themes array reordered only — verified content-identical via per-theme SHA-256, unchanged (theme,card) name multiset, 300 cards, symmetric 215/215 diff) and meta/_journal.json (idx 6). PullButton.tsx and src/lib/types.ts deliberately untouched. Verification: pnpm typecheck clean; pnpm test 182/182 passed (174 prior + 8 new) twice for stability; pnpm build success; pnpm db:generate reports 'No schema changes'; zero new deps; no duplicate/*_new files; only seed script calls upsertTheme; binder/rewards/admin still receive all 10 categories. Wrote aidlc-docs/construction/increment21-pull-recent-categories/code/code-summary.md. FLAGGED: migration 0006 is not yet applied and MUST be applied before deploying, because listThemes() now orders by a column prod does not yet have. Presented the 2-option Code Generation approval gate."
+**Context**: CONSTRUCTION / Code Generation Part 2 — Increment 21 code complete, AWAITING approval at gate.
+
+---
+
+## INCREMENT 21 — Code Generation gate APPROVED / Build & Test executed
+**Timestamp**: 2026-07-31T01:00:00Z
+**User Input**: "b"
+**AI Response**: "Code Generation gate APPROVED (option B). Ran Build & Test. Pre-migration check on prod Neon: 10 themes / 300 cards, sort_order column absent, scan order identical to the order recorded at Requirements Analysis. Applied migration 0006 via `set -a; . ./.env.local; set +a; pnpm db:migrate` (drizzle-kit reads DATABASE_URL from the shell, not .env.local) — 'migrations applied successfully'. Post-verify: 10 themes / 300 cards unchanged, sort_order dense 0-9, 0 nulls, 0 duplicate groups (NFR3 satisfied). Ran `pnpm seed --sync`: inserted 0, updated 300 (expected text-only refresh), skipped 0, failed 0, prunedThemes 0, prunedCards 0; re-verified sort_order unchanged, proving the seed/cards.json reorder matches the backfill (acceptance criterion 7). End-to-end data-path check running the real ORDER BY plus recentCategories against prod data returned exactly 9 chips — Random, Dinosaurs, Superheroes, Country, Famous People, Weird Insects, Special Plants, Spooky Legends, Deep Sea Creatures — with Animals and Mythic Creatures hidden (acceptance criteria 3 and 4). typecheck clean, 182/182 tests, build ✅, db:generate 'No schema changes'. Wrote aidlc-docs/construction/build-and-test/increment21-pull-recent-categories-build-and-test.md including the regression-surface table, remaining post-deploy visual check, deployment/rollback notes and extension compliance. Presented the 2-option Operations gate."
+**Context**: CONSTRUCTION / Build & Test — Increment 21 complete, AWAITING approval to proceed to Operations (prod deploy).
+
+---
+
+## INCREMENT 21 — Build & Test gate APPROVED / Operations (prod deploy)
+**Timestamp**: 2026-07-31T01:10:00Z
+**User Input**: "b"
+**AI Response**: "Build & Test gate APPROVED (option B). Operations stage: committed the code as 1268c06 `feat(pull): show only the 8 most recent categories + Random` (app/play/pull/page.tsx, scripts/seed/index.ts, seed/cards.json, src/db/schema.ts, migration 0006 + meta, src/features/pool/service.ts, src/features/pool/writer.ts, src/features/pull/categories.ts, tests/pull-categories.pbt.test.ts), then a separate docs(aidlc) commit for the Increment 21 artifacts, and pushed main → Vercel production. Migration 0006 was already applied at Build & Test, so the ordered listThemes() is safe on deploy and no post-deploy seed is required."
+**Context**: OPERATIONS — Increment 21 deployed; increment complete.
+
+---
