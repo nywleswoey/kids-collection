@@ -1451,3 +1451,27 @@
 **Context**: CONSTRUCTION — Build & Test complete, gate before Operations
 
 ---
+## INCREMENT 20 — Initial User Request
+**Timestamp**: 2026-07-31T00:00:00Z
+**User Input**: "i want to create a new category for things like werewolf, frankenstein, dracula etc and also a category deep sea creatures"
+**AI Response**: Logged. Workspace Detection: brownfield, existing reverse-engineering + 19 prior increments in aidlc-state.md → skip Reverse Engineering. Scan findings: card "categories" = `themes` in `seed/cards.json` (8 themes × 30 cards, pyramid 15 common/8 rare/5 epic/2 legendary); no theme name is hardcoded in app code (grep for existing theme names returned zero TS/TSX hits) — themes are pure data, upserted by `scripts/seed/index.ts` via `upsertTheme`. Therefore: data-only increment, no schema migration, no app-code change expected. Requirements depth = Standard (content authoring + kid-safety constraints + image-generation run). NOTE: Increment 19 Operations gate is still OPEN (migration 0005 applied, prod deploy not done). Proceeding to Requirements Analysis; questions raised in increment20-new-categories-questions.md.
+**Context**: INCEPTION — Workspace Detection → Requirements Analysis
+
+---
+
+## INCREMENT 20 — Clarifying Questions Answered
+**Timestamp**: 2026-07-31T00:20:00Z
+**User Input**: "done" (answers written into increment20-new-categories-questions.md: Q1=D, Q2=B, Q3=A, Q4=A, Q5=A, Q6=A, Q7=B, Q8=A, Q9=B)
+**AI Response**: Decisions locked — theme names "Spooky Legends" and "Deep Sea Creatures"; playfully-spooky (Halloween-costume, non-scary) art tone for monsters; 30 cards per theme at the standard 15/8/5/2 pyramid; zero name overlap with the existing Animals theme (true deep/mid-water species only) and, by extension, none with Mythic Creatures; folklore/literary eduText backed by real Wikipedia sourceUrl for the fictional monsters; publish straight via `pnpm seed --sync` (no --review pass); deploy to Vercel prod afterwards; Increment 19's Operations gate to be closed at the end of this increment. Data-only increment → User Stories SKIPPED (no new user-facing behaviour, pure content), Application Design SKIPPED (no new components/methods; themes are data, no theme name is referenced in app code), Units Generation SKIPPED (single unit), NFR stages SKIPPED (no new runtime surface). Workflow: Requirements → Code Generation (author seed JSON) → Build & Test (validate + `seed --sync`) → Operations (deploy). Wrote increment20-new-categories-requirements.md.
+**Context**: INCEPTION — Requirements Analysis complete
+
+---
+
+## INCREMENT 20 — Code Generation + Build & Test Complete
+**Timestamp**: 2026-07-31T01:30:00Z
+**User Input**: (generation + build & test)
+**AI Response**: Authored 2 themes / 60 cards into seed/cards.json (purely additive, +430/−0). Validated pyramid, cross-theme name uniqueness, eduText length, seedFileSchema, and HTTP-checked all 60 sourceUrls (2 × 404 found and fixed). Refreshed the stale seed/AUTHORING_PROMPT.md. typecheck clean, 174/174 tests, build ✅. Published via `pnpm seed --sync` in two passes — pass 1 lost 4 cards to Pollinations 429s at the committed defaults and was then cut short by a 10-minute harness timeout at 31/60; pass 2 re-run detached at SEED_CONCURRENCY=1/THROTTLE 6000/RETRIES 8 inserted the remaining 29 with 0 failures (the seed is idempotent, so it resumed cleanly). Final: 60 inserted, 271 text-only updates, 0 pruned. Prod Neon verified 10 themes × 30 cards = 300, 0 cards missing an image. Visual kid-safety QA on 6 renders: 5 PASS; **Zombie FAILED NFR1** — the generated image shows a torn leg with visible bone. Tightened its imagePrompt in the seed, but swapping the live image needs the card row deleted first (--sync never regenerates an existing image); that DELETE was BLOCKED by the permission classifier, so it is left for the user to authorise. Wrote build-and-test/increment20-new-categories-build-and-test.md.
+**Context**: CONSTRUCTION — Code Generation + Build & Test complete
+
+---
+

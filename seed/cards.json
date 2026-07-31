@@ -1719,6 +1719,436 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Wollemia"
         }
       ]
+    },
+    {
+      "name": "Spooky Legends",
+      "cards": [
+        {
+          "name": "Ghost",
+          "rarity": "common",
+          "eduText": "In old European folklore, ghosts were spirits who stayed behind to finish something they cared about.",
+          "imagePrompt": "a friendly round cartoon ghost with big happy eyes floating in a moonlit doorway",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ghost"
+        },
+        {
+          "name": "Skeleton",
+          "rarity": "common",
+          "eduText": "Dancing skeletons appear in medieval European church art called the Danse Macabre.",
+          "imagePrompt": "a cheerful cartoon skeleton in a top hat doing a little tap dance",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Danse_Macabre"
+        },
+        {
+          "name": "Jack-o'-Lantern",
+          "rarity": "common",
+          "eduText": "The Irish tale of Stingy Jack gave us jack-o'-lanterns, first carved from turnips, not pumpkins.",
+          "imagePrompt": "a glowing carved pumpkin with a goofy grin sitting on a hay bale",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jack-o%27-lantern"
+        },
+        {
+          "name": "Scarecrow",
+          "rarity": "common",
+          "eduText": "Farmers have used scarecrows for over 3,000 years; ancient Greeks carved wooden ones to guard crops.",
+          "imagePrompt": "a patchwork scarecrow in a straw hat waving cheerfully from a cornfield at dusk",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Scarecrow"
+        },
+        {
+          "name": "Gargoyle",
+          "rarity": "common",
+          "eduText": "Real gargoyles are carved waterspouts that carry rainwater off cathedral roofs, away from the walls.",
+          "imagePrompt": "a chubby smiling stone gargoyle perched on a cathedral roof with wings folded",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gargoyle"
+        },
+        {
+          "name": "Zombie",
+          "rarity": "common",
+          "eduText": "The word zombie comes from Haitian folklore and reached English through Caribbean storytelling.",
+          "imagePrompt": "a goofy smiling green cartoon zombie kid in a hoodie and mismatched socks waving beside friendly pumpkins, fully clothed, intact, no bones, no wounds, cute",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Zombie"
+        },
+        {
+          "name": "Witch",
+          "rarity": "common",
+          "eduText": "Storybook witches ride broomsticks, an image that first appeared in European artwork in the 1400s.",
+          "imagePrompt": "a friendly cartoon witch in a pointy hat stirring a bubbling green cauldron",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Witchcraft"
+        },
+        {
+          "name": "Black Cat",
+          "rarity": "common",
+          "eduText": "Black cats mean bad luck in some countries and good luck in others, including Japan and Scotland.",
+          "imagePrompt": "a sleek black cat with bright yellow eyes sitting on a pumpkin under a full moon",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Black_cat"
+        },
+        {
+          "name": "Bogeyman",
+          "rarity": "common",
+          "eduText": "Almost every country has its own bogeyman story, told to make children a little careful after dark.",
+          "imagePrompt": "a fuzzy purple monster with silly googly eyes peeking out from under a cosy bed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bogeyman"
+        },
+        {
+          "name": "Will-o'-the-Wisp",
+          "rarity": "common",
+          "eduText": "Marsh lights called will-o'-the-wisps are real: gases from swamp mud can glow in the dark.",
+          "imagePrompt": "tiny glowing blue flame spirits drifting over a misty moonlit marsh",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Will-o%27-the-wisp"
+        },
+        {
+          "name": "Jackalope",
+          "rarity": "common",
+          "eduText": "The jackalope, a jackrabbit with antlers, is an American tall tale from 1930s Wyoming.",
+          "imagePrompt": "a fluffy rabbit with small deer antlers hopping across a prairie at sunset",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jackalope"
+        },
+        {
+          "name": "Poltergeist",
+          "rarity": "common",
+          "eduText": "Poltergeist is German for 'noisy ghost' - the kind said to rattle doors and knock things off shelves.",
+          "imagePrompt": "a swirl of playful sparkling energy tossing books and teacups around a cosy attic",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Poltergeist"
+        },
+        {
+          "name": "Bunyip",
+          "rarity": "common",
+          "eduText": "The bunyip comes from Aboriginal Australian stories and is said to live in swamps and waterholes.",
+          "imagePrompt": "a shaggy round friendly bunyip with flippers wading in an Australian billabong at twilight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bunyip"
+        },
+        {
+          "name": "Imp",
+          "rarity": "common",
+          "eduText": "In European folklore imps are small tricksters who play pranks rather than do any real harm.",
+          "imagePrompt": "a tiny grinning imp with little horns balancing cheekily on a candlestick",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Imp"
+        },
+        {
+          "name": "Boggart",
+          "rarity": "common",
+          "eduText": "In northern English folklore a boggart is a house spirit blamed for missing socks and spoiled milk.",
+          "imagePrompt": "a small furry boggart hiding in a kitchen cupboard clutching a stolen stripy sock",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Boggart"
+        },
+        {
+          "name": "Chupacabra",
+          "rarity": "rare",
+          "eduText": "The chupacabra legend began in Puerto Rico in 1995; most sightings turn out to be coyotes with mange.",
+          "imagePrompt": "a spiky-backed cartoon chupacabra with big ears sniffing around a moonlit farm",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chupacabra"
+        },
+        {
+          "name": "Mothman",
+          "rarity": "rare",
+          "eduText": "Mothman was reported in Point Pleasant, West Virginia in 1966, and the town holds a festival for it.",
+          "imagePrompt": "a cute stylised winged mothman with soft fuzzy fur and big glowing amber eyes on a bridge",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mothman"
+        },
+        {
+          "name": "Jersey Devil",
+          "rarity": "rare",
+          "eduText": "The Jersey Devil has been part of New Jersey Pine Barrens folklore since the 1700s.",
+          "imagePrompt": "a small cartoon winged creature with a horse-like head and goat legs flying over pine woods",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jersey_Devil"
+        },
+        {
+          "name": "Baba Yaga",
+          "rarity": "rare",
+          "eduText": "In Slavic folktales Baba Yaga lives in a wooden hut that walks around on giant chicken legs.",
+          "imagePrompt": "a wooden hut standing on two giant chicken legs in a birch forest, kindly old woman at the window",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Baba_Yaga"
+        },
+        {
+          "name": "Golem",
+          "rarity": "rare",
+          "eduText": "In Jewish folklore the Golem of Prague was a clay giant brought to life to protect its community.",
+          "imagePrompt": "a big gentle clay golem with glowing symbols on its chest standing in an old town square",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Golem"
+        },
+        {
+          "name": "Black Shuck",
+          "rarity": "rare",
+          "eduText": "Black Shuck is a huge shaggy ghost dog from English coastal legends, first written about in 1577.",
+          "imagePrompt": "a large shaggy black dog with kind glowing eyes standing on a foggy seaside path",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Black_Shuck"
+        },
+        {
+          "name": "Kelpie",
+          "rarity": "rare",
+          "eduText": "Scottish kelpies are shape-shifting water horses said to live in lochs and rushing rivers.",
+          "imagePrompt": "a sleek horse made of rippling glassy water rising from a calm Scottish loch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kelpie"
+        },
+        {
+          "name": "Jiangshi",
+          "rarity": "rare",
+          "eduText": "The jiangshi of Chinese folklore is famous for hopping instead of walking, arms stretched out.",
+          "imagePrompt": "a comical cartoon hopping jiangshi in a robe with a paper talisman on its hat, arms outstretched",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jiangshi"
+        },
+        {
+          "name": "Werewolf",
+          "rarity": "epic",
+          "eduText": "Stories of people turning into wolves are ancient; the word werewolf means 'man-wolf' in Old English.",
+          "imagePrompt": "a fluffy friendly cartoon werewolf howling happily at a big full moon on a hilltop",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Werewolf"
+        },
+        {
+          "name": "The Mummy",
+          "rarity": "epic",
+          "eduText": "Ancient Egyptians wrapped mummies in linen to preserve them; the movie monster came much later.",
+          "imagePrompt": "a friendly bandage-wrapped mummy waving, one bandage trailing, in a warm torchlit tomb",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mummy"
+        },
+        {
+          "name": "Bigfoot",
+          "rarity": "epic",
+          "eduText": "Bigfoot, also called Sasquatch, is a Pacific Northwest legend; a newspaper coined the name in 1958.",
+          "imagePrompt": "a big shaggy friendly bigfoot standing among tall pine trees in morning mist",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bigfoot"
+        },
+        {
+          "name": "Loch Ness Monster",
+          "rarity": "epic",
+          "eduText": "Nessie stories date to the 1930s; scientists searching Loch Ness found eel DNA but no monster.",
+          "imagePrompt": "a friendly long-necked green lake monster peeking out of a misty Scottish loch",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Loch_Ness_Monster"
+        },
+        {
+          "name": "Headless Horseman",
+          "rarity": "epic",
+          "eduText": "The Headless Horseman comes from Washington Irving's 1820 story 'The Legend of Sleepy Hollow'.",
+          "imagePrompt": "a storybook cloaked rider on a black horse holding a glowing jack-o'-lantern in autumn woods",
+          "sourceUrl": "https://en.wikipedia.org/wiki/The_Legend_of_Sleepy_Hollow"
+        },
+        {
+          "name": "Dracula",
+          "rarity": "legendary",
+          "eduText": "Count Dracula was created by Bram Stoker in his 1897 novel, inspired partly by Transylvanian folklore.",
+          "imagePrompt": "a dapper smiling cartoon vampire in a red-lined cape in a candlelit castle hall, playful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Count_Dracula"
+        },
+        {
+          "name": "Frankenstein's Monster",
+          "rarity": "legendary",
+          "eduText": "Mary Shelley wrote Frankenstein at 18; in the book the monster is gentle, well-read and very lonely.",
+          "imagePrompt": "a tall green gentle giant with neck bolts and a stitched jacket holding a small flower, cartoon",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Frankenstein%27s_monster"
+        }
+      ]
+    },
+    {
+      "name": "Deep Sea Creatures",
+      "cards": [
+        {
+          "name": "Anglerfish",
+          "rarity": "common",
+          "eduText": "The anglerfish dangles a lure lit by glowing bacteria to bring curious prey close in the dark.",
+          "imagePrompt": "a round cartoon anglerfish with a glowing lantern lure in the dark blue deep sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Anglerfish"
+        },
+        {
+          "name": "Vampire Squid",
+          "rarity": "common",
+          "eduText": "The vampire squid eats 'marine snow' - bits of food drifting down from the sunlit water above.",
+          "imagePrompt": "a small red vampire squid with webbed arms and big blue eyes floating in dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Vampire_squid"
+        },
+        {
+          "name": "Giant Isopod",
+          "rarity": "common",
+          "eduText": "Giant isopods are relatives of woodlice and can go years between meals on the deep sea floor.",
+          "imagePrompt": "a plump armoured giant isopod walking across pale deep-sea sand",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giant_isopod"
+        },
+        {
+          "name": "Dumbo Octopus",
+          "rarity": "common",
+          "eduText": "The dumbo octopus flaps ear-like fins to swim and lives deeper than any other kind of octopus.",
+          "imagePrompt": "a cute pink dumbo octopus flapping its ear-like fins above the seabed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Grimpoteuthis"
+        },
+        {
+          "name": "Blobfish",
+          "rarity": "common",
+          "eduText": "Blobfish look droopy only out of water; deep down the pressure keeps them looking like normal fish.",
+          "imagePrompt": "a soft pink blobfish with a gentle smile resting on a rock in deep water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Psychrolutes_marcidus"
+        },
+        {
+          "name": "Lanternfish",
+          "rarity": "common",
+          "eduText": "Lanternfish may be the most numerous fish on Earth, and they glow with rows of tiny light organs.",
+          "imagePrompt": "a small silvery lanternfish with rows of glowing blue dots along its belly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lanternfish"
+        },
+        {
+          "name": "Sea Pig",
+          "rarity": "common",
+          "eduText": "Sea pigs are sea cucumbers that walk on puffy legs, hoovering up food from deep-sea mud.",
+          "imagePrompt": "a chubby pale pink sea pig walking on puffy tube feet across the deep sea floor",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Scotoplanes"
+        },
+        {
+          "name": "Hatchetfish",
+          "rarity": "common",
+          "eduText": "The hatchetfish glows on its belly so predators below cannot see its shadow against the light.",
+          "imagePrompt": "a shiny silver hatchetfish with huge round eyes in dim blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Marine_hatchetfish"
+        },
+        {
+          "name": "Barreleye Fish",
+          "rarity": "common",
+          "eduText": "The barreleye has a see-through head, and its tube eyes rotate to look up through its own forehead.",
+          "imagePrompt": "a barreleye fish with a transparent dome head and glowing green tube eyes in dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Barreleye"
+        },
+        {
+          "name": "Fangtooth",
+          "rarity": "common",
+          "eduText": "For its size the fangtooth has the biggest teeth of any fish, so its skull has pockets to hold them.",
+          "imagePrompt": "a small stubby cartoon fangtooth fish with a big head and comical underbite in blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fangtooth"
+        },
+        {
+          "name": "Mariana Snailfish",
+          "rarity": "common",
+          "eduText": "The Mariana snailfish lives over 8 km down, deeper than any other fish ever recorded.",
+          "imagePrompt": "a small translucent pink snailfish with a tadpole tail near a deep trench floor",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mariana_snailfish"
+        },
+        {
+          "name": "Sea Cucumber",
+          "rarity": "common",
+          "eduText": "Some deep-sea cucumbers swim by flapping their whole body, drifting between meals on the seabed.",
+          "imagePrompt": "a translucent purple deep-sea cucumber drifting just above the seabed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sea_cucumber"
+        },
+        {
+          "name": "Yeti Crab",
+          "rarity": "common",
+          "eduText": "The yeti crab farms bacteria on its furry arms near hot vents, then eats them like a tiny garden.",
+          "imagePrompt": "a pale crab with fuzzy hairy claws beside a warm glowing deep-sea vent",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yeti_crab"
+        },
+        {
+          "name": "Glass Squid",
+          "rarity": "common",
+          "eduText": "Glass squid are almost completely see-through, which helps them hide in the open mid-water.",
+          "imagePrompt": "an almost transparent glass squid with glowing eyes floating in deep blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cranchiidae"
+        },
+        {
+          "name": "Zombie Worm",
+          "rarity": "common",
+          "eduText": "Zombie worms have no mouth or stomach; they bore into whale bones and let bacteria digest for them.",
+          "imagePrompt": "tiny feathery red worms growing out of an old pale whale bone on the seabed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Osedax"
+        },
+        {
+          "name": "Frilled Shark",
+          "rarity": "rare",
+          "eduText": "The frilled shark has changed little in millions of years and has 300 needle-like teeth in rows.",
+          "imagePrompt": "a long eel-like frilled shark with ruffled gills swimming in dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Frilled_shark"
+        },
+        {
+          "name": "Goblin Shark",
+          "rarity": "rare",
+          "eduText": "The goblin shark shoots its jaws forward like a slingshot to grab food, then tucks them back in.",
+          "imagePrompt": "a stylised pink goblin shark with a long flat snout gliding through deep water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goblin_shark"
+        },
+        {
+          "name": "Chambered Nautilus",
+          "rarity": "rare",
+          "eduText": "Nautiluses have drifted the deep for millions of years, adding a new shell chamber as they grow.",
+          "imagePrompt": "a spiral-shelled chambered nautilus with a striped shell drifting in blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chambered_nautilus"
+        },
+        {
+          "name": "Gulper Eel",
+          "rarity": "rare",
+          "eduText": "The gulper eel's mouth is bigger than the rest of its body, so it can swallow prey larger than itself.",
+          "imagePrompt": "a dark gulper eel with a huge balloon-like mouth and a glowing tail tip",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pelican_eel"
+        },
+        {
+          "name": "Viperfish",
+          "rarity": "rare",
+          "eduText": "The viperfish's teeth are so long they curve back past its eyes, forming a cage prey cannot escape.",
+          "imagePrompt": "a slim silver viperfish with a glowing dorsal lure in the dark deep sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Viperfish"
+        },
+        {
+          "name": "Dragonfish",
+          "rarity": "rare",
+          "eduText": "Dragonfish shine red light that most deep-sea animals cannot see - like a secret searchlight.",
+          "imagePrompt": "a black dragonfish with a glowing chin barbel lighting up the dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Barbeled_dragonfish"
+        },
+        {
+          "name": "Bigfin Squid",
+          "rarity": "rare",
+          "eduText": "Bigfin squid have elbow-like bends in arms that trail many times longer than their own body.",
+          "imagePrompt": "a ghostly bigfin squid with long thin trailing arms hovering in deep dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bigfin_squid"
+        },
+        {
+          "name": "Pompeii Worm",
+          "rarity": "rare",
+          "eduText": "The Pompeii worm lives on hot vent chimneys, with its tail in water hot enough to cook an egg.",
+          "imagePrompt": "a fuzzy grey and red tube worm on a steaming deep-sea vent chimney",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Alvinella_pompejana"
+        },
+        {
+          "name": "Giant Squid",
+          "rarity": "epic",
+          "eduText": "No one photographed a living giant squid until 2004; its eye is about the size of a dinner plate.",
+          "imagePrompt": "a huge reddish giant squid with long tentacles gliding through deep dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giant_squid"
+        },
+        {
+          "name": "Colossal Squid",
+          "rarity": "epic",
+          "eduText": "The colossal squid is the heaviest invertebrate known and has swivelling hooks on its arms.",
+          "imagePrompt": "an enormous pale colossal squid with giant eyes in the black Antarctic deep",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Colossal_squid"
+        },
+        {
+          "name": "Greenland Shark",
+          "rarity": "epic",
+          "eduText": "Greenland sharks can live over 250 years, making them the longest-lived vertebrates known.",
+          "imagePrompt": "a slow grey Greenland shark cruising through icy dark water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Greenland_shark"
+        },
+        {
+          "name": "Japanese Spider Crab",
+          "rarity": "epic",
+          "eduText": "The Japanese spider crab has the longest leg span of any arthropod - up to 3.7 metres across.",
+          "imagePrompt": "a huge long-legged Japanese spider crab standing on a rocky seabed",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Japanese_spider_crab"
+        },
+        {
+          "name": "Sperm Whale",
+          "rarity": "epic",
+          "eduText": "Sperm whales dive over 2 km down and hold their breath for around 90 minutes while hunting squid.",
+          "imagePrompt": "a big blocky-headed sperm whale diving down into deep blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sperm_whale"
+        },
+        {
+          "name": "Coelacanth",
+          "rarity": "legendary",
+          "eduText": "The coelacanth was thought extinct for 66 million years until a live one was caught in 1938.",
+          "imagePrompt": "a large blue coelacanth with white speckles and lobed fins near a deep rocky cave",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coelacanth"
+        },
+        {
+          "name": "Megamouth Shark",
+          "rarity": "legendary",
+          "eduText": "The megamouth shark was unknown to science until 1976, and very few have ever been seen alive.",
+          "imagePrompt": "a huge dark megamouth shark with a wide rubbery mouth filtering water in the deep",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Megamouth_shark"
+        }
+      ]
     }
   ]
 }
