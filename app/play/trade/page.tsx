@@ -1,19 +1,15 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { profileService } from "@/features/profiles/service.prod";
 import { tradeService } from "@/features/trade/trade-service.prod";
-import { TradeFlow } from "@/features/trade/TradeFlow";
+import { TradeBoard } from "@/features/trade/TradeBoard";
 
 export default async function TradePage() {
   const child = await requireActivePlayer();
 
-  const [myCards, all] = await Promise.all([
+  const [myCards, friends] = await Promise.all([
     tradeService.listTradableCards(child.id),
-    profileService.listChildren(),
+    tradeService.listFriendSummaries(child.id),
   ]);
-  const friends = all
-    .filter((c) => c.id !== child.id)
-    .map((c) => ({ id: c.id, name: c.name, avatar: c.avatar }));
 
   return (
     <main
@@ -26,11 +22,12 @@ export default async function TradePage() {
           Swap doubles, <span className="title-pop">{child.name}</span>!
         </h1>
         <p className="text-sm text-[color:var(--ink-soft)]">
-          Trade a double for a friend&apos;s double of the same rarity.
+          Pick a friend, then swap a double for one of theirs — same rarity. 🎁 marks a card the
+          other player doesn&apos;t have yet.
         </p>
       </div>
 
-      <TradeFlow myCards={myCards} friends={friends} />
+      <TradeBoard myCards={myCards} friends={friends} />
 
       <div className="flex gap-3 text-sm">
         <Link href="/play/home" className="btn btn--ghost">

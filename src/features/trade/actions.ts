@@ -1,17 +1,25 @@
 "use server";
 
-import { withParent, withActiveChild } from "@/features/actions/action";
-import type { Rarity } from "@/lib/types";
+import { withActiveChild } from "@/features/actions/action";
 import { tradeService } from "./trade-service.prod";
 import type { TradeResult } from "./trade-service";
 import type { TradableCard } from "./trade-logic";
 
-/** Friend's tradable duplicates of a given rarity (FR5 step 3). */
-export async function getMatchesAction(
-  bChildId: string,
-  rarity: Rarity,
-): Promise<TradableCard[]> {
-  return withParent(() => tradeService.listMatchesForRarity(bChildId, rarity), undefined, "get_trade_matches");
+/**
+ * Everything the swap board needs for one partner (Inc22 FR3). Read-only. The
+ * active child is resolved server-side — the client says WHO to trade with, never
+ * who it is.
+ */
+export async function getTradeBoardAction(friendId: string): Promise<{
+  theirDupes: TradableCard[];
+  theirOwnedIds: string[];
+  myOwnedIds: string[];
+}> {
+  return withActiveChild(
+    (childId) => tradeService.getTradeBoard(childId, friendId),
+    undefined,
+    { parent: true, label: "get_trade_board" },
+  );
 }
 
 /**

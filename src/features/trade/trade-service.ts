@@ -1,8 +1,17 @@
-import type { Card, Rarity } from "@/lib/types";
+import type { Card, Child } from "@/lib/types";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/features/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { validateTrade, type TradableCard, type TradeSide } from "./trade-logic";
+import { missingCount } from "./board";
+
+/** Shared empty set for a friend who owns nothing yet. */
+const EMPTY: ReadonlySet<string> = new Set();
+
+/** The slice of the profile service the trade board needs — the other players. */
+export interface ChildDirectory {
+  listChildren(): Promise<Child[]>;
+}
 
 export type TradeResult =
   | { ok: true; gave: Card; got: Card }
@@ -12,6 +21,7 @@ export interface TradeDeps {
   collections: CollectionStore;
   catalog: Catalog;
   rewards: RewardGranter;
+  profiles: ChildDirectory;
 }
 
 /**
@@ -20,7 +30,7 @@ export interface TradeDeps {
  * atomicity lives entirely behind `CollectionStore.swapCards`; this module only
  * validates, delegates, and fans out completion rewards.
  */
-export function makeTradeService({ collections, catalog, rewards }: TradeDeps) {
+export function makeTradeService({ collections, catalog, rewards, profiles }: TradeDeps) {
   /** Cards a child can offer: owned duplicates (count >= 2), with card + rarity. */
   async function listTradableCards(childId: string): Promise<TradableCard[]> {
     const [cards, rows] = await Promise.all([
@@ -36,13 +46,51 @@ export function makeTradeService({ collections, catalog, rewards }: TradeDeps) {
     return out;
   }
 
-  /** A child's tradable duplicates matching one rarity (FR5 step 3). */
-  async function listMatchesForRarity(
+  /**
+   * Everything the friend-first swap board needs, in one call (Inc22 FR3): the
+   * partner's WHOLE duplicate list — no rarity is known at this point, since the
+   * friend is chosen before any card — plus both ownership sets, which is what
+   * lets each column label the cards the other party is missing.
+   *
+   * Ownership travels as arrays because this crosses a server-action boundary
+   * (Sets don't serialize); the caller rehydrates them for `board.ts`.
+   */
+  async function getTradeBoard(
     childId: string,
-    rarity: Rarity,
-  ): Promise<TradableCard[]> {
-    const all = await listTradableCards(childId);
-    return all.filter((t) => t.card.rarity === rarity);
+    friendId: string,
+  ): Promise<{ theirDupes: TradableCard[]; theirOwnedIds: string[]; myOwnedIds: string[] }> {
+    const [theirDupes, theirOwned, myOwned] = await Promise.all([
+      listTradableCards(friendId),
+      collections.ownedCardIds(friendId),
+      collections.ownedCardIds(childId),
+    ]);
+    return {
+      theirDupes,
+      theirOwnedIds: [...theirOwned],
+      myOwnedIds: [...myOwned],
+    };
+  }
+
+  /**
+   * Every OTHER child, each with a count of how many of this child's duplicates
+   * they're missing (Inc22 FR7). One batched ownership read for all of them —
+   * never one round trip per friend (NFR5).
+   */
+  async function listFriendSummaries(
+    childId: string,
+  ): Promise<Array<{ id: string; name: string; avatar: string; missingCount: number }>> {
+    const [mine, children] = await Promise.all([
+      listTradableCards(childId),
+      profiles.listChildren(),
+    ]);
+    const friends = children.filter((c) => c.id !== childId);
+    const owned = await collections.ownedCardIdsForChildren(friends.map((f) => f.id));
+    return friends.map((f) => ({
+      id: f.id,
+      name: f.name,
+      avatar: f.avatar,
+      missingCount: missingCount(mine, owned.get(f.id) ?? EMPTY),
+    }));
   }
 
   /**
@@ -97,7 +145,7 @@ export function makeTradeService({ collections, catalog, rewards }: TradeDeps) {
     return { ok: true, gave: aCard, got: bCard };
   }
 
-  return { listTradableCards, listMatchesForRarity, executeTrade };
+  return { listTradableCards, getTradeBoard, listFriendSummaries, executeTrade };
 }
 
 export type TradeService = ReturnType<typeof makeTradeService>;

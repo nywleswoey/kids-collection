@@ -3,7 +3,7 @@ import { makeTradeService } from "@/features/trade/trade-service";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import type { Catalog } from "@/features/pool/catalog";
-import type { Card, Rarity } from "@/lib/types";
+import type { Card, Child, Rarity } from "@/lib/types";
 
 /** These orchestration tests are only reachable because the service now accepts
  * ports instead of importing the `db` singleton — the whole point of the seam. */
@@ -39,10 +39,19 @@ function recordingRewards(): RewardGranter & { calls: Array<[string, string[]]> 
   };
 }
 
-function setup(seed: CollectionSeed, cards: Card[]) {
+function kid(id: string, name = id): Child {
+  return { id, name, avatar: "fox", pullTokens: 0, easterEggTickets: 0 };
+}
+
+function setup(seed: CollectionSeed, cards: Card[], children: Child[] = []) {
   const collections = inMemoryCollectionStore(seed);
   const rewards = recordingRewards();
-  const service = makeTradeService({ collections, catalog: fakeCatalog(cards), rewards });
+  const service = makeTradeService({
+    collections,
+    catalog: fakeCatalog(cards),
+    rewards,
+    profiles: { async listChildren() { return children; } },
+  });
   return { service, collections, rewards };
 }
 
@@ -92,13 +101,71 @@ describe("makeTradeService.executeTrade", () => {
   });
 });
 
-describe("makeTradeService.listMatchesForRarity", () => {
-  it("returns only same-rarity duplicates", async () => {
-    const cards = [card("x", "rare"), card("y", "rare"), card("z", "epic")];
-    const { service } = setup({ B: { x: 2, y: 1, z: 3 } }, cards);
+describe("makeTradeService.getTradeBoard (Inc22 FR3)", () => {
+  const cards = [card("x", "rare"), card("y", "rare"), card("z", "epic")];
 
-    const matches = await service.listMatchesForRarity("B", "rare");
+  it("returns the friend's WHOLE duplicate list, not one rarity", async () => {
+    // Friend-first means no rarity is known when this is fetched.
+    const { service } = setup({ A: { x: 2 }, B: { x: 2, y: 1, z: 3 } }, cards);
 
-    expect(matches).toEqual([{ card: cards[0], count: 2 }]); // y is not a duplicate, z is epic
+    const board = await service.getTradeBoard("A", "B");
+
+    expect(board.theirDupes.map((t) => t.card.id).sort()).toEqual(["x", "z"]); // y is not a dup
+  });
+
+  it("returns both ownership sets as arrays, so each column can label the other side", async () => {
+    const { service } = setup({ A: { x: 2, z: 1 }, B: { y: 4 } }, cards);
+
+    const board = await service.getTradeBoard("A", "B");
+
+    expect([...board.myOwnedIds].sort()).toEqual(["x", "z"]);
+    expect([...board.theirOwnedIds].sort()).toEqual(["y"]);
+  });
+});
+
+describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
+  const cards = [card("x", "rare"), card("y", "rare"), card("z", "epic")];
+
+  it("excludes the active child and counts the duplicates each friend is missing", async () => {
+    const { service } = setup(
+      { A: { x: 2, z: 3 }, B: { x: 5 }, C: {} },
+      cards,
+      [kid("A"), kid("B", "Ben"), kid("C", "Cass")],
+    );
+
+    const friends = await service.listFriendSummaries("A");
+
+    expect(friends.map((f) => f.id)).toEqual(["B", "C"]); // self excluded
+    expect(friends.find((f) => f.id === "B")!.missingCount).toBe(1); // has x, missing z
+    expect(friends.find((f) => f.id === "C")!.missingCount).toBe(2); // owns nothing
+    expect(friends.find((f) => f.id === "B")!.name).toBe("Ben");
+  });
+
+  it("reads every friend's ownership in ONE batched call (NFR5)", async () => {
+    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { x: 1 }, C: { x: 1 } });
+    let batched = 0;
+    let perChild = 0;
+    const spy = {
+      ...collections,
+      async ownedCardIdsForChildren(ids: string[]) {
+        batched += 1;
+        return collections.ownedCardIdsForChildren(ids);
+      },
+      async ownedCardIds(id: string) {
+        perChild += 1;
+        return collections.ownedCardIds(id);
+      },
+    };
+    const service = makeTradeService({
+      collections: spy,
+      catalog: fakeCatalog(cards),
+      rewards: recordingRewards(),
+      profiles: { async listChildren() { return [kid("A"), kid("B"), kid("C")]; } },
+    });
+
+    await service.listFriendSummaries("A");
+
+    expect(batched).toBe(1);
+    expect(perChild).toBe(0); // never one round trip per friend
   });
 });
