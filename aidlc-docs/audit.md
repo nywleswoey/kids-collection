@@ -1621,3 +1621,10 @@ for trade: A, but only need to hightlight new instead of labelling all cards. a 
 **Context**: INCREMENT 22 — CONSTRUCTION / Build & Test complete, AWAITING approval to proceed to Operations (prod deploy).
 
 ---
+## INCREMENT 22 — Build & Test APPROVED / Operations (prod deploy)
+**Timestamp**: 2026-08-01T04:00:00Z
+**User Input**: "approve"
+**AI Response**: "Build & Test gate APPROVED. Operations: pushed 40ce8cf..475afbb to origin/main (5 commits — 1fde2a0 fix(sacrifice) 4-copy gate, 4d8b3d8 feat(binder) galaxy sacrifice filter, 117e689 feat(db) batched ownedCardIdsForChildren, 71cdddd feat(trade) friend-first board, 475afbb docs(aidlc)). Vercel production deployment dpl_GtzpfZErEvtJp6AozfGJuthqQJcA (kids-collection-92pclzcn2) reached status Ready and holds the kids-collection.vercel.app alias. Live smoke check: /play/trade returns 302 to /signin as expected for an unauthenticated request. Code-only deploy — no migration, no seed, no post-deploy step; rollback is a clean Vercel instant rollback since nothing persistent changed. INCREMENT 22 COMPLETE. Two follow-ups carried forward: (1) the visual check on a signed-in child profile was never performed by me (auth required) — 6-point checklist in build-and-test §4; (2) burnable = 0 for all three children today, so the 🔥 chip reads 0 and sacrificing is currently unreachable for everyone — pre-existing, and a candidate for a future increment if the 4-copy threshold is too high in practice."
+**Context**: OPERATIONS — Increment 22 deployed to prod; increment complete.
+
+---
