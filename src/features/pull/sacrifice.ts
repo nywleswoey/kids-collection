@@ -10,6 +10,17 @@ import type { Rng } from "@/lib/logic";
 /** Copies consumed per sacrifice. */
 export const SACRIFICE_COST = 3;
 
+/**
+ * Copies you must hold before a sacrifice is possible. Burning SACRIFICE_COST
+ * copies is never allowed to take your last one — `pull-service` enforces that
+ * with `removeCard(childId, cardId, SACRIFICE_COST, SACRIFICE_COST + 1)`, so a
+ * holding of exactly SACRIFICE_COST can't be burned. Every surface that offers
+ * or advertises a sacrifice gates on THIS constant, so the card detail page and
+ * the galaxy's burn filter are the same expression rather than two that happen
+ * to agree (Inc22 D4).
+ */
+export const SACRIFICE_MIN = SACRIFICE_COST + 1;
+
 /** The next rarity up, capped at the top tier (legendary → legendary). Still used
  *  by the collection-completion reward (rewards/service.ts). */
 export function nextTier(r: Rarity): Rarity {
