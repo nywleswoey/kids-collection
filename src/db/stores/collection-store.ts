@@ -56,6 +56,14 @@ export interface CollectionStore {
   /** The set of card ids the child owns (count >= 1). */
   ownedCardIds(childId: string): Promise<Set<string>>;
 
+  /**
+   * `ownedCardIds` for several children in ONE read. Children with no cards are
+   * absent from the map (not an empty set), and an empty input issues no query.
+   * Exists so the trade board can label every friend chip without fanning out
+   * one round trip per friend (Inc22 FR7/NFR5).
+   */
+  ownedCardIdsForChildren(childIds: string[]): Promise<Map<string, Set<string>>>;
+
   /** Every owned (cardId, count) row for a child — the binder's full collection. */
   entries(childId: string): Promise<Array<{ cardId: string; count: number }>>;
 

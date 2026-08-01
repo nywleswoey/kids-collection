@@ -38,6 +38,29 @@ export function runCollectionStoreContract(
       expect(await store.ownedCardIds("ghost")).toEqual(new Set());
     });
 
+    it("ownedCardIdsForChildren groups several children in one read (Inc22)", async () => {
+      const store = await makeStore({ kid: { a: 1, b: 3 }, pal: { b: 2 } });
+      const got = await store.ownedCardIdsForChildren(["kid", "pal"]);
+      expect(got.get("kid")).toEqual(new Set(["a", "b"]));
+      expect(got.get("pal")).toEqual(new Set(["b"]));
+    });
+
+    it("ownedCardIdsForChildren omits children holding nothing, and no-ops on empty input", async () => {
+      const store = await makeStore({ kid: { a: 1 } });
+      const got = await store.ownedCardIdsForChildren(["kid", "ghost"]);
+      expect(got.has("ghost")).toBe(false);
+      expect(got.size).toBe(1);
+      expect(await store.ownedCardIdsForChildren([])).toEqual(new Map());
+    });
+
+    it("ownedCardIdsForChildren agrees with ownedCardIds per child", async () => {
+      const store = await makeStore({ kid: { a: 1, b: 3 }, pal: { b: 2, c: 5 } });
+      const batched = await store.ownedCardIdsForChildren(["kid", "pal"]);
+      for (const id of ["kid", "pal"]) {
+        expect(batched.get(id)).toEqual(await store.ownedCardIds(id));
+      }
+    });
+
     it("entries returns every owned (cardId, count) row", async () => {
       const store = await makeStore({ kid: { a: 1, b: 3 } });
       const entries = (await store.entries("kid")).sort((x, y) => x.cardId.localeCompare(y.cardId));
