@@ -5,8 +5,10 @@ grants pull tokens as a reward; each child pulls cards from a shared,
 pre-generated, rarity-tiered, themed pool — with pictures, short educational
 facts, and holographic/3D card effects. Deployed on Vercel.
 
-Built with the [AI-DLC](https://github.com/awslabs/aidlc-workflows) workflow;
-design docs live in `aidlc-docs/`.
+Increments 1–22 were built with the AI-DLC v1 workflow; those design and audit
+artifacts are kept as history in `aidlc-docs/`. Current product definition lives
+in `Product-Definition/`, produced by [aidlc-discovery](https://github.com/aws-samples/sample-aidlc-discovery)
+v2 (`/aidlc-discovery`).
 
 ## Stack
 - Next.js (App Router) + TypeScript + Tailwind
@@ -55,7 +57,8 @@ app/                  Next.js routes + layout
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, pure business logic
 tests/                property-based + integration tests
-aidlc-docs/           AI-DLC design + audit artifacts
+Product-Definition/   current vision, technical environment, open questions
+aidlc-docs/           AI-DLC v1 design + audit artifacts (increments 1–22, history)
 ```
 
 ## Data model (U1)
