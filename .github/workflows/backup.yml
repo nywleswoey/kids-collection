@@ -1,0 +1,164 @@
+# Nightly verified backup of the children's collections (Increment 23, FR10–FR16).
+#
+# The dump is only half of it: every run restores its own dump into a throwaway
+# Postgres and asserts the result matches production exactly. A backup that is not
+# verified is a belief, not a backup — so a dump that cannot be restored fails the
+# run that produced it.
+#
+# All client tooling runs from the postgres:17 image rather than an apt-installed
+# client: production is PostgreSQL 17.x and a v16 pg_dump refuses to run at all.
+#
+# Requires one repository secret:
+#   BACKUP_DATABASE_URL — direct (NON-pooler) Neon endpoint for the read-only role.
+#   pg_dump is unreliable against a transaction-pooling endpoint.
+name: backup
+
+on:
+  schedule:
+    # 18:00 UTC = 02:00 SGT (UTC+8). GitHub disables scheduled workflows after
+    # 60 days of repository inactivity and emails the owner — see docs/RESTORE.md.
+    - cron: "0 18 * * *"
+  workflow_dispatch: # on-demand dump, e.g. immediately before running anything destructive
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  dump-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      # Bare Postgres 17 as the restore target. Migrations are deliberately NOT
+      # applied — a full dump recreates the schema itself.
+      restore-target:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: restore
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      PG_IMAGE: postgres:17-alpine
+      RESTORE_URL: postgres://postgres:postgres@localhost:5433/restore
+      # Every table in every schema, with its row count. No allowlist: a schema
+      # added later must show up here without anyone remembering to add it.
+      COUNT_SQL: >-
+        SELECT n.nspname, c.relname,
+               (xpath('/row/c/text()',
+                 query_to_xml(format('SELECT count(*) AS c FROM %I.%I', n.nspname, c.relname),
+                              false, true, '')))[1]::text::bigint
+        FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE c.relkind = 'r' AND n.nspname NOT IN ('pg_catalog','information_schema')
+          AND n.nspname NOT LIKE 'pg_toast%'
+        ORDER BY 1, 2;
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Pull the Postgres client image
+        run: docker pull -q "$PG_IMAGE"
+
+      # Neon free tier idle-suspends. Wake it and wait rather than failing the run:
+      # a late backup is fine, a missing one is not (FR16).
+      # PGURL is passed to the container BY NAME (`-e PGURL`), so the value never
+      # appears on a command line or in the log. Expansion is deferred into the
+      # container with `sh -c '...'` in single quotes — expanding it in the runner's
+      # shell would both leak it and pass psql an empty argument.
+      - name: Wake the database
+        env:
+          PGURL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 10); do
+            if docker run --rm -e PGURL "$PG_IMAGE" \
+                 sh -c 'psql "$PGURL" -Atc "SELECT 1"' >/dev/null 2>/tmp/wake.err; then
+              echo "database awake (attempt $attempt)"; exit 0
+            fi
+            echo "not ready yet (attempt $attempt), retrying…"
+            sleep 10
+          done
+          echo "::error::database did not become reachable"
+          sed -E 's#postgres(ql)?://[^ ]*#<redacted>#g' /tmp/wake.err || true
+          exit 1
+        shell: bash
+
+      - name: Capture production row counts
+        env:
+          PGURL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          # A real tab, via printf: POSIX sh inside the container has no $'\t'.
+          docker run --rm -e PGURL -e COUNT_SQL "$PG_IMAGE" \
+            sh -c 'psql "$PGURL" -At -F "$(printf "\t")" -c "$COUNT_SQL"' > prod-counts.tsv
+          echo "captured $(wc -l < prod-counts.tsv) tables"
+        shell: bash
+
+      # No -t and no -n, ever. The full dump is the mechanism, not a default:
+      # narrowing it means a table added by a future migration silently stops
+      # being backed up, and nobody finds out until a restore.
+      - name: Dump
+        env:
+          PGURL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          if ! docker run --rm -e PGURL "$PG_IMAGE" \
+                 sh -c 'pg_dump "$PGURL" --no-owner --no-privileges' 2>/tmp/dump.err \
+               | gzip > "dump-$(date -u +%Y%m%d).sql.gz"; then
+            echo "::error::pg_dump failed"
+            # pg_dump can echo the connection string on failure — redact before printing.
+            sed -E 's#postgres(ql)?://[^ ]*#<redacted>#g' /tmp/dump.err
+            exit 1
+          fi
+          ls -lh dump-*.sql.gz
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: dump-*.sql.gz
+          retention-days: 90
+          if-no-files-found: error
+
+      # Piped over stdin rather than bind-mounted: no volume, nothing to get the
+      # host path wrong about, and the dump never lands in the container filesystem.
+      - name: Restore into the throwaway database
+        env:
+          PGURL: ${{ env.RESTORE_URL }}
+        run: |
+          set -euo pipefail
+          gunzip -c dump-*.sql.gz | docker run --rm -i --network host -e PGURL "$PG_IMAGE" \
+            sh -c 'psql "$PGURL" -v ON_ERROR_STOP=1 -q'
+        shell: bash
+
+      - name: Read the restored row counts
+        env:
+          PGURL: ${{ env.RESTORE_URL }}
+        run: |
+          set -euo pipefail
+          docker run --rm --network host -e PGURL -e COUNT_SQL "$PG_IMAGE" \
+            sh -c 'psql "$PGURL" -At -F "$(printf "\t")" -c "$COUNT_SQL"' > restored-counts.tsv
+        shell: bash
+
+      - name: Verify the backup restores exactly
+        run: pnpm exec tsx scripts/backup/verify.ts prod-counts.tsv restored-counts.tsv
