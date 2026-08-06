@@ -1,4 +1,4 @@
-import { and, eq, notInArray, type SQL } from "drizzle-orm";
+import { and, eq, notInArray, sql, type SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { themes, cards, collections } from "@/db/schema";
@@ -73,13 +73,41 @@ export async function insertCardIfNew(input: {
   return "inserted";
 }
 
+/** Thrown when a pool reset would destroy collection rows (Inc23 FR1). */
+export class PoolResetBlockedError extends Error {
+  constructor(readonly ownedRows: number) {
+    super(
+      `resetPool refused: ${ownedRows} collection row(s) exist. Deleting cards or themes ` +
+        `cascades into collections, so this would destroy children's cards. A pool reset and ` +
+        `wiping the children's collections are different operations and must stay different.`,
+    );
+    this.name = "PoolResetBlockedError";
+  }
+}
+
+/** Total rows in `collections` — the blast radius of any pool-wide delete. */
+export async function countCollections(): Promise<number> {
+  const [row] = await db.select({ n: sql<number>`count(*)::int` }).from(collections);
+  return row?.n ?? 0;
+}
+
 /**
- * Wipe all pool content (and every child's collection that references it) so a
- * reseed can rebuild from scratch — used for the Superheroes→Dinosaurs swap
- * (U4-FR4). Deletes in FK order: collections → cards → themes.
+ * Wipe the card pool so a reseed can rebuild from scratch (U4-FR4). Deletes
+ * cards then themes — NEVER collections.
+ *
+ * Refuses outright when any collection row exists (Inc23 FR1). That check is not
+ * belt-and-braces: `cards.theme_id` and `collections.card_id` are both ON DELETE
+ * CASCADE, so deleting the pool destroys every child's cards regardless of what
+ * this function names. Since a reset deletes every card, "rows in scope" is
+ * simply "any row", which is why the check cannot be narrower than the delete.
+ *
+ * There is deliberately NO override parameter. Re-adding one re-arms the exact
+ * defect this exists to remove — see "What Must NOT Change" in the feature's
+ * vision document. A caller that genuinely wants both operations calls both.
  */
 export async function resetPool(): Promise<void> {
-  await db.delete(collections);
+  const owned = await countCollections();
+  if (owned > 0) throw new PoolResetBlockedError(owned);
   await db.delete(cards);
   await db.delete(themes);
 }

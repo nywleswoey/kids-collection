@@ -8,8 +8,19 @@
  *                                 (eduText/sourceUrl) on existing ones, and prune
  *                                 themes/cards dropped from the seed. No image regen
  *                                 for unchanged cards.
+ *   pnpm seed --sync --allow-prune
+ *                                 as above, permitting the prune. Without this flag a
+ *                                 sync with pending prunes aborts before ANY write.
  *
  * Requires DATABASE_URL and (for --publish/--sync) BLOB_READ_WRITE_TOKEN in env.
+ *
+ * ── Destructive-operation guards (Inc23) ─────────────────────────────────────
+ * `cards.theme_id` and `collections.card_id` both cascade, so deleting pool rows
+ * destroys the children's collections. Any operation that deletes prints its blast
+ * radius and, against production, requires the exact collection-row count typed in
+ * at an interactive terminal. There is no bypass flag: the guard's only input
+ * channel is a TTY, because the scenario being defended against is a stale value in
+ * `.env.local` — the same file that supplies the production credential.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -25,6 +36,9 @@ import {
   deleteThemesNotIn,
   deleteCardsNotIn,
 } from "@/features/pool/writer";
+import { previewReset, previewPrune, isEmpty } from "@/features/pool/blast-radius";
+import { isProductionDatabaseUrl, describeTarget } from "@/features/pool/db-target";
+import { confirmDestructive } from "./guard";
 import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
@@ -67,10 +81,42 @@ async function main() {
     }
   }
 
-  // --reset wipes the existing pool first (full rebuild, U4-FR4).
+  // Destructive-operation guards (Inc23 FR3–FR8). Both run BEFORE any write:
+  // every pool delete cascades into `collections`, so the decision to proceed
+  // has to be made while nothing has happened yet.
+  const isProduction = isProductionDatabaseUrl(process.env.DATABASE_URL);
+  const target = describeTarget(process.env.DATABASE_URL);
+
+  // --reset wipes the existing pool first (full rebuild, U4-FR4). resetPool()
+  // itself refuses when the pool is owned; this is the operator-facing half.
   if (mode === "publish" && process.argv.includes("--reset")) {
-    console.log("--reset: wiping existing pool (collections, cards, themes)…");
+    const radius = await previewReset();
+    await confirmDestructive({ operation: "reset", target, isProduction, radius });
+    console.log("--reset: wiping existing pool (cards, themes)…");
     await resetPool();
+  }
+
+  // Sync prunes anything missing from the seed file, and those deletes cascade
+  // into the children's cards. Decide up front: with prunes pending and no
+  // --allow-prune, abort before a single row is inserted, updated or deleted.
+  if (mode === "sync") {
+    const radius = await previewPrune(seed);
+    if (!isEmpty(radius)) {
+      if (!process.argv.includes("--allow-prune")) {
+        console.error(
+          `\n⛔ --sync would prune ${radius.themes} theme(s) and ${radius.cards} card(s), ` +
+            `destroying ${radius.collectionRows} collection row(s).\n` +
+            `   Nothing has been written. Re-run with --allow-prune if that is intended.\n`,
+        );
+        console.error(`   Themes: ${radius.themeNames.join(", ") || "(none)"}`);
+        for (const c of radius.perChild) {
+          console.error(`   ${c.name}: ${c.rows} card row(s)`);
+        }
+        process.exitCode = 1;
+        return;
+      }
+      await confirmDestructive({ operation: "prune", target, isProduction, radius });
+    }
   }
 
   const report = {
