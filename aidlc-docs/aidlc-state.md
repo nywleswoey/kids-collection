@@ -72,7 +72,11 @@ Answers (increment3-branding-questions.md): 1=Star Catchers, 2=Discover, 3=My Ga
 ### 🟢 CONSTRUCTION
 - [x] Code Generation — DONE (code-summary.md); typecheck clean, 33/33 tests, build ✅, zero new deps. 2 new files (brand.ts, Asteroids.tsx) + 11 edits. Avatar regression fixed (CSS stacking).
 - [x] Build & Test — instruction doc written (increment3-branding-build-and-test.md); typecheck clean, 33/33 tests, build ✅, zero new deps.
+- [x] Build & Test — DONE. typecheck clean, 229/229 unit, test:pg 40 passed/3 skipped, build ✅. **FIRST REAL WORKFLOW RUN GREEN on GitHub's runner** (run 31115905569, 1m14s, all 12 steps): `Restore verified: every table present, every row count exact. 7 tables, 1174 rows verified.` Artifact db-backup-31115905569 = 56,674 bytes, expires 2026-11-04 (90-day retention confirmed). **Zero occurrences of the connection string anywhere in the public log** — the pass-by-name + redaction approach holds. (1174 rows vs 1159 in the local rehearsal — the children pulled 15 more cards in between; live data.) ⚠️ First dispatch (run 31115802303, from main) FAILED at `Install pnpm`: pnpm/action-setup@v4 refuses to guess a version and package.json has no `packageManager` field. Fixed by pinning `version: 10` in the workflow (kept out of package.json to avoid changing local corepack behaviour). Verified by dispatching from the fix branch — workflow_dispatch runs the workflow from any ref once it exists on the default branch. ⚠️ Visual check of the delete dialog NOT done (needs a Google-authenticated session).
 ### 🟡 OPERATIONS
+- [x] Merged PR #10 to main (merge commit 7b5333d) → Vercel prod deploy. Only user-visible change is the profile-delete dialog; everything else is scripts + CI. **BACKUP_DATABASE_URL secret set** (read-only kc_backup_ro, direct non-pooler; a trailing newline was caught and stripped — it would have failed with `invalid sslmode value`).
+- [ ] **BLOCKING: merge the pnpm fix.** Scheduled runs use the DEFAULT BRANCH copy of the workflow, which still has the broken step — tonight's 02:00 SGT run fails until the fix lands on main.
+- [ ] Delete the leftover `neondb_reader` Neon console role (console-created → neon_superuser-equivalent, unused; only the owner can remove it).
 - [x] Operations gate — user approved (2026-07-11). Placeholder stage; increment COMPLETE.
 
 ## INCREMENT 4 — Admin Gate, Preview & Content
