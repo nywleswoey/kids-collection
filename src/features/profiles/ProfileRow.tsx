@@ -15,12 +15,15 @@ export function ProfileRow({
   avatar,
   pullTokens,
   easterEggTickets = 0,
+  ownedCount,
 }: {
   id: string;
   name: string;
   avatar: string;
   pullTokens: number;
   easterEggTickets?: number;
+  /** Distinct cards this child owns — shown in the delete confirmation (Inc23 FR9). */
+  ownedCount: number;
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -67,7 +70,7 @@ export function ProfileRow({
         >
           Edit
         </button>
-        <RemoveProfileButton id={id} name={name} />
+        <RemoveProfileButton id={id} name={name} ownedCount={ownedCount} />
       </span>
     </li>
   );
