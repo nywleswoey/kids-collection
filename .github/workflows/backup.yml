@@ -72,6 +72,10 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
+        with:
+          # Required: package.json has no `packageManager` field, and the action
+          # refuses to guess. Matches the pnpm major used locally (10.x).
+          version: 10
 
       - run: pnpm install --frozen-lockfile
 
