@@ -1,12 +1,20 @@
-# Card-Authoring Prompt (paste into claude.ai)
+# Card-Authoring Prompt
 
-Use this to author a **new theme** (category) for `seed/cards.json`. Copy the box
-into a claude.ai chat, then merge the returned theme object into the `themes`
-array of `seed/cards.json`.
+Use this to author a **new theme** (category) for `seed/cards.json`.
 
-The pool is additive: `pnpm seed --sync` image-generates and inserts only cards
-that are new, and prunes any theme/card you *remove* from the seed. Never delete
-a theme you want to keep — that deletes it from every child's collection too.
+**Author in-repo, with `seed/cards.json` open.** The hardest constraint below is *"not already used by
+a card in any other theme"*, and a chat session that cannot read the file is being asked to avoid
+collisions with 360 names it has never seen. Paste the box into a session that has the file.
+
+The pool is additive: `pnpm seed --sync` image-generates and inserts only cards that are new, and prunes
+any theme/card you *remove* from the seed. Never delete a theme you want to keep — that deletes it from
+every child's collection too.
+
+**Several rules below are now enforced by the schema** (`src/features/pool/seed-schema.ts`), so
+`pnpm seed` of any kind fails fast rather than publishing a broken theme: exactly 30 cards, the exact
+rarity pyramid, card names unique across the *whole* pool, and `eduText` ≤ 120 characters. A theme must
+therefore be authored to completion before it enters `seed/cards.json` — the file can no longer be
+committed half-authored.
 
 ---
 
@@ -27,32 +35,61 @@ a theme you want to keep — that deletes it from every child's collection too.
 >
 > Requirements:
 > - **Theme name**: short and title-case, matching the existing set ("Animals",
->   "Dinosaurs", "Mythic Creatures", "Weird Insects", "Special Plants",
->   "Spooky Legends", "Deep Sea Creatures", …).
+>   "Mythic Creatures", "Dinosaurs", "Superheroes", "Country", "Famous People",
+>   "Weird Insects", "Special Plants", "Spooky Legends", "Deep Sea Creatures",
+>   "Flying Machines", "Ocean Machines").
 > - **30 cards**, rarity pyramid: **15 common, 8 rare, 5 epic, 2 legendary**.
 >   Every theme has exactly this shape — set-completion rewards and the rarity
->   filters depend on it.
+>   filters depend on it. *(Schema-enforced.)*
 > - Names unique within the theme, **and** not already used by a card in any
->   other theme. Check `seed/cards.json` first.
+>   other theme. Check `seed/cards.json` first. *(Schema-enforced, globally.)*
 > - `eduText`: a true, simple, age-appropriate fact (readable by a 7-year-old),
->   max ~120 characters. For fictional subjects, make the fact about the *story
+>   **max 120 characters**. For fictional subjects, make the fact about the *story
 >   or folklore* ("Mary Shelley wrote Frankenstein at 18…") — never present
->   fiction as fact.
+>   fiction as fact. *(Schema-enforced.)*
 > - `sourceUrl`: a real, resolvable URL (Wikipedia is fine) backing the fact.
 >   Verify it returns 200 — parenthesised suffixes often 404.
 > - `imagePrompt`: a short, concrete, **kid-friendly, non-scary** description of
->   the subject only (no art-style words — the app appends `ART_STYLE`). Avoid
->   weapons, blood, or frightening imagery. Steer spooky subjects cute or
->   comical (a smiling vampire, a clumsy zombie).
-> - Output JSON only.
+>   the subject only (no art-style words — the app appends `ART_STYLE`).
+>
+> **Content rule — applies to every theme:**
+>
+> - **Weapons and military hardware are permitted.** A fighter's guns, an aircraft
+>   carrier's deck, a submarine's torpedo tubes, a knight's sword — visible
+>   weaponry on any subject is fine.
+> - **Gore and violence are prohibited.** Nothing firing, attacking, burning,
+>   sinking, exploding or being destroyed. No blood, wounds, injury or casualties.
+>   No combat scenes. The subject sits still and is looked at.
+> - **Non-scary and kid-friendly still applies in full.** Steer spooky subjects
+>   cute or comical (a smiling vampire, a clumsy zombie).
+> - **`eduText` covers engineering, exploration, nature, story or history — never
+>   combat.** Not what a thing destroyed; what it *is*, or what it *reached*.
+> - **At most 2–3 military subjects per theme.** A *military* submarine counts
+>   against the cap; a *research* submersible (Alvin, Trieste) does not. Judge it
+>   by what the subject is for.
+>
+> Output JSON only.
 
 ---
 
-Before publishing, sanity-check the card count, the rarity pyramid, name
-collisions across all themes, and that every `sourceUrl` returns 200. Then:
+Merge the returned theme object into the `themes` array of `seed/cards.json`. **Append it** — array
+position is the theme's display order, and `themes.sort_order` is a contract. Never insert mid-array,
+never reorder existing entries: that reshuffles what the children already know.
+
+Then:
 
 ```bash
-pnpm seed --review     # optional: generate images to seed/review/ (no DB writes)
-# eyeball seed/review/*, then:
-pnpm seed --sync       # generate images for NEW cards -> Blob -> insert (idempotent)
+pnpm seed --check-urls   # every sourceUrl in the file must return 200
+pnpm seed --review       # generates images for NEW cards only, into seed/review/
+# eyeball every generated image: kid-safety, and the weapons/gore boundary above
+pnpm seed --sync         # publishes the REVIEWED bytes -> Blob -> insert (idempotent)
 ```
+
+`--review` skips cards already published and cards already reviewed, so an interrupted run resumes.
+To reject an image: delete its file from `seed/review/` and re-run `--review`.
+
+`--sync` refuses to insert a card that has no reviewed image. If it says so, run `--review` first —
+`--allow-unreviewed` exists but defeats the guarantee that no unreviewed image reaches a child.
+
+If `--sync` reports a pending **prune**, or asks you to type a collection-row count: **stop.** Something
+was renamed or dropped in the seed file. Fix the file; do not pass `--allow-prune`.
