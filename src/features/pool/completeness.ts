@@ -22,6 +22,7 @@
  */
 import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
 import type { SeedFile } from "./seed-schema";
+import { SEP } from "./publish-plan";
 
 /** Published card count for one (theme, rarity). */
 export interface PublishedCount {
@@ -56,7 +57,7 @@ export function comparePoolShape(
   published: PublishedCount[],
 ): Shortfall[] {
   const actual = new Map<string, number>();
-  for (const row of published) actual.set(`${row.theme} ${row.rarity}`, row.n);
+  for (const row of published) actual.set(`${row.theme}${SEP}${row.rarity}`, row.n);
 
   const shortfalls: Shortfall[] = [];
   for (const theme of seed.themes) {
@@ -64,7 +65,7 @@ export function comparePoolShape(
     for (const card of theme.cards) expected[card.rarity as Rarity]++;
 
     for (const rarity of RARITIES) {
-      const found = actual.get(`${theme.name} ${rarity}`) ?? 0;
+      const found = actual.get(`${theme.name}${SEP}${rarity}`) ?? 0;
       if (found < expected[rarity]) {
         shortfalls.push({ theme: theme.name, rarity, expected: expected[rarity], found });
       }

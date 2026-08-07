@@ -27,6 +27,7 @@
  * per the convention `image.ts` sets, so all of this is testable without a network.
  */
 import type { SeedFile } from "./seed-schema";
+import { SEP } from "./publish-plan";
 
 export type FetchImpl = typeof fetch;
 
@@ -122,9 +123,9 @@ export async function checkSourceUrls(
 
   // Stable, file-order output: workers finish out of order, and a check whose
   // report reshuffles between runs is hard to diff.
-  const order = new Map(targets.map((t, i) => [`${t.theme} ${t.card}`, i]));
+  const order = new Map(targets.map((t, i) => [`${t.theme}${SEP}${t.card}`, i]));
   return failures.sort(
     (a, b) =>
-      (order.get(`${a.theme} ${a.card}`) ?? 0) - (order.get(`${b.theme} ${b.card}`) ?? 0),
+      (order.get(`${a.theme}${SEP}${a.card}`) ?? 0) - (order.get(`${b.theme}${SEP}${b.card}`) ?? 0),
   );
 }
