@@ -19,7 +19,23 @@ Last generated: 2026-08-03T11:16:45Z
   found nothing, which is weaker than confirming none exists. Resolve before any migration touching
   `collections`, `children`, or `cards`. **Highest-stakes item in this file.**
 
-### OQ-B-2: Does the $0/month cost target survive an ever-growing card pool?
+### OQ-B-2: Does the $0/month cost target survive an ever-growing card pool? — ✅ **CLOSED 2026-08-07**
+
+> **Answer: yes, and storage is not the binding constraint.** Measured either side of Increment 24's
+> pool growth (10 themes/300 cards → 12 themes/360 cards): Vercel Blob went 25.48 MB → **28.29 MB**
+> against a **1 GB** free tier, and Neon holds ~1,038 rows of short text against a storage-bounded
+> (not row-bounded) free tier. The marginal cost of a theme is **≈1.4 MB of Blob and 30 rows**
+> (≈2.5 MB taking the older, more textured images as the conservative case).
+>
+> That leaves room for roughly **400–700 more themes** before Blob's free tier fills — a thirty-fold
+> increase on today's pool. The limits on this project are the parent's authoring time and the
+> children's appetite, not the free tier. Full figures:
+> `aidlc-docs/construction/build-and-test/increment24-vehicle-themes-build-and-test.md` §2.
+>
+> *Recorded so it is not rediscovered*: Blob holds 13 orphaned objects (373 for 360 cards),
+> pre-existing and not created by Increment 24. `uploadImage` writes before `insertCardIfNew`, so a
+> card uploaded but never inserted leaves its object behind. Under 1 MB; not worth tooling.
+
 - **Source section**: Success Metrics / Full Scope Vision
 - **Question**: The single success metric fixes runtime cost at $0/month held flat (Q10), while the pool
   is explicitly intended to keep growing (Q18). At what pool size do Neon rows or Vercel Blob storage
