@@ -2149,6 +2149,436 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Megamouth_shark"
         }
       ]
+    },
+    {
+      "name": "Flying Machines",
+      "cards": [
+        {
+          "name": "Hot Air Balloon",
+          "rarity": "common",
+          "eduText": "Hot air balloons rise because heated air is lighter than the cooler air around them.",
+          "imagePrompt": "a colourful striped hot air balloon with a wicker basket floating in a clear blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hot_air_balloon"
+        },
+        {
+          "name": "Glider",
+          "rarity": "common",
+          "eduText": "A glider has no engine at all. It rides rising warm air and can stay up for hours.",
+          "imagePrompt": "a slender white glider with very long thin wings soaring above green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Glider_aircraft"
+        },
+        {
+          "name": "Biplane",
+          "rarity": "common",
+          "eduText": "Biplanes have two stacked wings. The extra wing gives plenty of lift at slow speeds.",
+          "imagePrompt": "a cheerful red biplane with two stacked wings and a spinning propeller",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Biplane"
+        },
+        {
+          "name": "Seaplane",
+          "rarity": "common",
+          "eduText": "Seaplanes land on water using floats instead of wheels, so they need no runway.",
+          "imagePrompt": "a bright yellow seaplane resting on calm blue water on two pontoon floats",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Seaplane"
+        },
+        {
+          "name": "Helicopter",
+          "rarity": "common",
+          "eduText": "A helicopter's spinning blades are really wings. Tilting them lets it hover or fly backwards.",
+          "imagePrompt": "a friendly blue and white helicopter hovering with spinning rotor blades",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Helicopter"
+        },
+        {
+          "name": "Airship",
+          "rarity": "common",
+          "eduText": "Airships float using gas lighter than air, and unlike balloons they have engines to steer.",
+          "imagePrompt": "a silver airship with a long rounded body and a small passenger gondola underneath",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Airship"
+        },
+        {
+          "name": "Hang Glider",
+          "rarity": "common",
+          "eduText": "A hang glider has no engine or cockpit. The pilot hangs below the wing and steers by leaning.",
+          "imagePrompt": "a bright triangular hang glider wing with a smiling pilot hanging below, above green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hang_gliding"
+        },
+        {
+          "name": "Drone",
+          "rarity": "common",
+          "eduText": "Drones fly with nobody aboard. Four spinning rotors hold them steady enough to carry a camera.",
+          "imagePrompt": "a small white quadcopter drone with four rotors and a tiny camera underneath",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Unmanned_aerial_vehicle"
+        },
+        {
+          "name": "Cargo Plane",
+          "rarity": "common",
+          "eduText": "Cargo planes have a nose or tail that swings wide open so trucks can drive straight inside.",
+          "imagePrompt": "a large friendly cargo plane on a runway with its nose door open and crates beside it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cargo_aircraft"
+        },
+        {
+          "name": "Water Bomber",
+          "rarity": "common",
+          "eduText": "Water bombers scoop up water while skimming across a lake, then drop it on forest fires.",
+          "imagePrompt": "a red and yellow firefighting plane skimming low over a calm lake, scooping water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aerial_firefighting"
+        },
+        {
+          "name": "Crop Duster",
+          "rarity": "common",
+          "eduText": "Crop dusters fly just above the fields, spraying seeds or water in long straight lines.",
+          "imagePrompt": "a small yellow crop duster plane flying low over a bright green field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agricultural_aircraft"
+        },
+        {
+          "name": "Autogyro",
+          "rarity": "common",
+          "eduText": "An autogyro's top rotor has no engine. Air rushing through it spins it and lifts the craft.",
+          "imagePrompt": "a small open autogyro with a free-spinning rotor above and a propeller at the back",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Autogyro"
+        },
+        {
+          "name": "Jetpack",
+          "rarity": "common",
+          "eduText": "Real jetpacks do work, but they burn fuel so quickly that most flights last under a minute.",
+          "imagePrompt": "a shiny silver jetpack with two nozzles, hovering just above a grassy field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jet_pack"
+        },
+        {
+          "name": "Air Ambulance",
+          "rarity": "common",
+          "eduText": "Air ambulances carry doctors to people far from any hospital and can land almost anywhere.",
+          "imagePrompt": "a white and red air ambulance helicopter with a large cross on its side, on a green field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Air_medical_services"
+        },
+        {
+          "name": "Jet Airliner",
+          "rarity": "common",
+          "eduText": "Jet airliners cruise about 10 km up, where the thin air means less drag and less fuel burned.",
+          "imagePrompt": "a friendly white passenger jet airliner flying above fluffy white clouds",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jet_airliner"
+        },
+        {
+          "name": "Cessna 172",
+          "rarity": "rare",
+          "eduText": "The Cessna 172 is the most-produced aeroplane ever, with more than 44,000 built since 1956.",
+          "imagePrompt": "a small white and blue Cessna propeller plane parked on a grass airfield",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cessna_172"
+        },
+        {
+          "name": "Montgolfier Balloon",
+          "rarity": "rare",
+          "eduText": "In 1783 a Montgolfier balloon carried a sheep, a duck and a rooster before any person flew.",
+          "imagePrompt": "an ornate blue and gold eighteenth-century hot air balloon with painted patterns",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Montgolfier_brothers"
+        },
+        {
+          "name": "Spirit of St. Louis",
+          "rarity": "rare",
+          "eduText": "In 1927 Charles Lindbergh flew it alone across the Atlantic, taking 33 and a half hours.",
+          "imagePrompt": "a silver single-engine monoplane with a very long nose and no forward window",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spirit_of_St._Louis"
+        },
+        {
+          "name": "Supermarine Spitfire",
+          "rarity": "rare",
+          "eduText": "The Spitfire's curved elliptical wings let it turn tightly, a clever design first flown in 1936.",
+          "imagePrompt": "a green and grey Spitfire aeroplane parked on grass, elliptical wings, propeller still",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Supermarine_Spitfire"
+        },
+        {
+          "name": "Harrier Jump Jet",
+          "rarity": "rare",
+          "eduText": "The Harrier swivels its jet nozzles downwards, so it can take off straight up with no runway.",
+          "imagePrompt": "one single grey Harrier jump jet, side view, hovering low above an empty green airfield, clear blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hawker_Siddeley_Harrier"
+        },
+        {
+          "name": "Boeing 747",
+          "rarity": "rare",
+          "eduText": "The 747's famous hump exists so the cockpit sits above a nose that opens upward for cargo.",
+          "imagePrompt": "a large white Boeing 747 jumbo jet with a humped upper deck, standing on a runway",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Boeing_747"
+        },
+        {
+          "name": "Airbus A380",
+          "rarity": "rare",
+          "eduText": "The A380 is the largest passenger plane, with two full decks and room for over 500 people.",
+          "imagePrompt": "a huge double-decker Airbus A380 passenger plane lifting off from a runway",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Airbus_A380"
+        },
+        {
+          "name": "Hubble Space Telescope",
+          "rarity": "rare",
+          "eduText": "Hubble orbits above our blurry atmosphere, which is why its pictures of far galaxies are sharp.",
+          "imagePrompt": "a shiny cylindrical space telescope with gold solar panels, orbiting above Earth",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hubble_Space_Telescope"
+        },
+        {
+          "name": "Concorde",
+          "rarity": "epic",
+          "eduText": "Concorde flew faster than sound, crossing the Atlantic in under three and a half hours.",
+          "imagePrompt": "a sleek white Concorde jet with a drooping pointed nose and triangular delta wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Concorde"
+        },
+        {
+          "name": "Solar Impulse 2",
+          "rarity": "epic",
+          "eduText": "Solar Impulse 2 flew right around the world on sunlight alone, using no fuel at all.",
+          "imagePrompt": "a solar powered airplane resting on a runway, huge straight wing covered with dark solar cells, four small propellers, sunny blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Solar_Impulse"
+        },
+        {
+          "name": "Saturn V",
+          "rarity": "epic",
+          "eduText": "Saturn V is the tallest rocket ever flown, and it carried people all the way to the Moon.",
+          "imagePrompt": "a tall white and black Saturn V rocket standing upright beside its launch tower",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saturn_V"
+        },
+        {
+          "name": "Space Shuttle",
+          "rarity": "epic",
+          "eduText": "The Space Shuttle was the first spacecraft that could reach orbit and then land like a plane.",
+          "imagePrompt": "a white space shuttle orbiter with black tiles underneath and a tall tail fin",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Space_Shuttle"
+        },
+        {
+          "name": "International Space Station",
+          "rarity": "epic",
+          "eduText": "The Space Station circles Earth every 90 minutes, so astronauts see 16 sunrises every day.",
+          "imagePrompt": "a large space station with long solar panel wings floating above a blue Earth",
+          "sourceUrl": "https://en.wikipedia.org/wiki/International_Space_Station"
+        },
+        {
+          "name": "Wright Flyer",
+          "rarity": "legendary",
+          "eduText": "In 1903 the Wright Flyer made the first powered flight, lasting 12 seconds and 37 metres.",
+          "imagePrompt": "an early wooden and canvas biplane with twin propellers, resting on sandy ground",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wright_Flyer"
+        },
+        {
+          "name": "Voyager 1",
+          "rarity": "legendary",
+          "eduText": "Voyager 1 has flown since 1977 and is now the farthest human-made object from Earth.",
+          "imagePrompt": "a small spacecraft with a large white dish antenna and long thin booms, among stars",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Voyager_1"
+        }
+      ]
+    },
+    {
+      "name": "Ocean Machines",
+      "cards": [
+        {
+          "name": "Sailboat",
+          "rarity": "common",
+          "eduText": "Sailboats can travel against the wind by zig-zagging, using the sail rather like a wing.",
+          "imagePrompt": "a single small white sailboat with a triangular sail on calm blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sailboat"
+        },
+        {
+          "name": "Tugboat",
+          "rarity": "common",
+          "eduText": "Tugboats are small but hugely powerful, pushing ships hundreds of times their own size.",
+          "imagePrompt": "a single chubby red and black tugboat floating in a calm harbour",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tugboat"
+        },
+        {
+          "name": "Ferry",
+          "rarity": "common",
+          "eduText": "Ferries carry people and cars across water where a bridge would be too hard to build.",
+          "imagePrompt": "a single blue and white passenger ferry on calm water near a green coastline",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ferry"
+        },
+        {
+          "name": "Fishing Trawler",
+          "rarity": "common",
+          "eduText": "Trawlers tow big nets behind them, and powerful winches haul the catch back on board.",
+          "imagePrompt": "a single sturdy green fishing trawler with nets on deck, on calm blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fishing_trawler"
+        },
+        {
+          "name": "Lifeboat",
+          "rarity": "common",
+          "eduText": "Rescue lifeboats are built to turn upright again by themselves if a big wave rolls them.",
+          "imagePrompt": "a single bright orange and blue rescue lifeboat on gentle blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lifeboat_(rescue)"
+        },
+        {
+          "name": "Speedboat",
+          "rarity": "common",
+          "eduText": "Speedboats lift their nose and skim on top of the water instead of pushing through it.",
+          "imagePrompt": "a single sleek white speedboat skimming across calm blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Motorboat"
+        },
+        {
+          "name": "Catamaran",
+          "rarity": "common",
+          "eduText": "A catamaran rides on two hulls, which makes it steadier and faster than one hull alone.",
+          "imagePrompt": "a single white catamaran with two hulls and a tall sail on blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Catamaran"
+        },
+        {
+          "name": "Hovercraft",
+          "rarity": "common",
+          "eduText": "A hovercraft rides on a cushion of air, so it can cross water, mud and even dry sand.",
+          "imagePrompt": "a single hovercraft with a grey rubber skirt gliding just above shallow water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hovercraft"
+        },
+        {
+          "name": "Gondola",
+          "rarity": "common",
+          "eduText": "Venice gondolas are built slightly lopsided so one rower with one oar can still go straight.",
+          "imagePrompt": "a single black Venetian gondola with a curved metal prow on a narrow canal",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gondola"
+        },
+        {
+          "name": "Paddle Steamer",
+          "rarity": "common",
+          "eduText": "Paddle steamers push themselves along with huge turning wheels made of wooden paddles.",
+          "imagePrompt": "a single white paddle steamer with a big red paddle wheel on a calm river",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Paddle_steamer"
+        },
+        {
+          "name": "Container Ship",
+          "rarity": "common",
+          "eduText": "The biggest container ships carry over 20,000 steel boxes stacked like giant bricks.",
+          "imagePrompt": "a single large container ship stacked with colourful boxes on calm blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Container_ship"
+        },
+        {
+          "name": "Oil Tanker",
+          "rarity": "common",
+          "eduText": "Loaded tankers are so heavy that they can need several kilometres just to come to a stop.",
+          "imagePrompt": "a single long red and black oil tanker ship on a calm blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Oil_tanker"
+        },
+        {
+          "name": "Dredger",
+          "rarity": "common",
+          "eduText": "Dredgers vacuum sand and mud off the seabed to keep harbours deep enough for big ships.",
+          "imagePrompt": "a single yellow dredger ship with a long suction pipe in a calm harbour",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dredging"
+        },
+        {
+          "name": "Jet Ski",
+          "rarity": "common",
+          "eduText": "A jet ski has no propeller. It sucks water in and squirts it out fast to push itself along.",
+          "imagePrompt": "a single bright blue jet ski resting on calm sunny water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Personal_water_craft"
+        },
+        {
+          "name": "Canal Barge",
+          "rarity": "common",
+          "eduText": "Canal barges are long and narrow to fit locks, the water lifts that carry boats uphill.",
+          "imagePrompt": "a single long narrow canal barge painted green and red on a quiet canal",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Barge"
+        },
+        {
+          "name": "Icebreaker",
+          "rarity": "rare",
+          "eduText": "An icebreaker rides up onto the ice and uses its own great weight to crack a path open.",
+          "imagePrompt": "a single red icebreaker ship pushing through flat white sea ice under a pale sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Icebreaker"
+        },
+        {
+          "name": "Cruise Ship",
+          "rarity": "rare",
+          "eduText": "The largest cruise ships carry more people at sea than live in many small towns.",
+          "imagePrompt": "a single huge white cruise ship with many decks on calm blue water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cruise_ship"
+        },
+        {
+          "name": "Hospital Ship",
+          "rarity": "rare",
+          "eduText": "Hospital ships carry operating rooms and doctors to coasts hit by storms or earthquakes.",
+          "imagePrompt": "a single white hospital ship with large red crosses painted on its side, at sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hospital_ship"
+        },
+        {
+          "name": "Hydrofoil",
+          "rarity": "rare",
+          "eduText": "A hydrofoil rises up on small underwater wings, lifting its hull clear above the waves.",
+          "imagePrompt": "a single white hydrofoil boat raised above the water on underwater wings",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hydrofoil"
+        },
+        {
+          "name": "Cable Layer",
+          "rarity": "rare",
+          "eduText": "Cable ships lay the undersea cables that carry nearly all of the world's internet.",
+          "imagePrompt": "a single cable-laying ship with big cable drums on deck, on calm open sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cable_layer"
+        },
+        {
+          "name": "Cutty Sark",
+          "rarity": "rare",
+          "eduText": "Cutty Sark was a fast tea clipper built in 1869 and is now kept on land in London.",
+          "imagePrompt": "a single tall wooden sailing clipper with three masts and white sails on blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cutty_Sark"
+        },
+        {
+          "name": "RRS Sir David Attenborough",
+          "rarity": "rare",
+          "eduText": "A public vote picked the name Boaty McBoatface, so its little yellow submarine got it.",
+          "imagePrompt": "a single red and white polar research ship among floating white ice",
+          "sourceUrl": "https://en.wikipedia.org/wiki/RRS_Sir_David_Attenborough"
+        },
+        {
+          "name": "Aircraft Carrier",
+          "rarity": "rare",
+          "eduText": "A carrier's deck is a floating runway, and steam catapults help planes get up to speed.",
+          "imagePrompt": "a single grey aircraft carrier ship with a long flat empty deck, on calm blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aircraft_carrier"
+        },
+        {
+          "name": "USS Nautilus",
+          "rarity": "epic",
+          "eduText": "In 1958 USS Nautilus became the first ship ever to travel under the ice at the North Pole.",
+          "imagePrompt": "a single grey submarine floating on the surface of a calm sea, conning tower visible",
+          "sourceUrl": "https://en.wikipedia.org/wiki/USS_Nautilus_(SSN-571)"
+        },
+        {
+          "name": "Alvin",
+          "rarity": "epic",
+          "eduText": "Alvin is a research submersible that has carried scientists on over 5,000 deep-sea dives.",
+          "imagePrompt": "a single small white and red research submersible with round windows, underwater",
+          "sourceUrl": "https://en.wikipedia.org/wiki/DSV_Alvin"
+        },
+        {
+          "name": "Queen Mary 2",
+          "rarity": "epic",
+          "eduText": "Queen Mary 2 is an ocean liner built with a thicker, stronger hull to cross the Atlantic.",
+          "imagePrompt": "a single large black and white ocean liner with a red funnel on open blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Queen_Mary_2"
+        },
+        {
+          "name": "Deepsea Challenger",
+          "rarity": "epic",
+          "eduText": "In 2012 Deepsea Challenger carried one person alone to the deepest place in the ocean.",
+          "imagePrompt": "a single tall lime-green submersible shaped like a torpedo, deep underwater",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Deepsea_Challenger"
+        },
+        {
+          "name": "Bathysphere",
+          "rarity": "epic",
+          "eduText": "In 1930 the Bathysphere hung from a cable so people could watch deep-sea life alive.",
+          "imagePrompt": "a single small round steel diving ball with thick glass portholes, underwater",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bathysphere"
+        },
+        {
+          "name": "Trieste",
+          "rarity": "legendary",
+          "eduText": "In 1960 Trieste reached the floor of the Mariana Trench, almost 11 km below the waves.",
+          "imagePrompt": "a single bathyscaphe with a large float above a small round cabin, deep underwater",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Trieste_(bathyscaphe)"
+        },
+        {
+          "name": "Seawise Giant",
+          "rarity": "legendary",
+          "eduText": "Seawise Giant was the longest ship ever built, longer than three football pitches.",
+          "imagePrompt": "a single enormously long tanker ship stretching across a calm blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Seawise_Giant"
+        }
+      ]
     }
   ]
 }
