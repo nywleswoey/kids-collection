@@ -86,7 +86,16 @@ pnpm seed --sync         # publishes the REVIEWED bytes -> Blob -> insert (idemp
 ```
 
 `--review` skips cards already published and cards already reviewed, so an interrupted run resumes.
-To reject an image: delete its file from `seed/review/` and re-run `--review`.
+
+**To reject an image, change its `imagePrompt` — deleting the file is not enough.** Pollinations
+returns the *same bytes for the same prompt* (verified: two calls, identical sha256), so deleting a
+review file and re-running `--review` regenerates the picture you just rejected. Editing the
+`imagePrompt` changes the content hash, which both asks for a different picture and makes the old
+review file stop matching. Delete the stale file too if you want to keep the folder tidy.
+
+Prompt wording that helps: name **one** subject ("a single ..."), give a viewpoint ("side view"), and
+put it somewhere plain ("parked on grass"). Sleek aircraft photographed in flight are the shape this
+model most often renders as two overlapping copies.
 
 `--sync` refuses to insert a card that has no reviewed image. If it says so, run `--review` first —
 `--allow-unreviewed` exists but defeats the guarantee that no unreviewed image reaches a child.
