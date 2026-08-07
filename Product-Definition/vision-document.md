@@ -115,7 +115,8 @@ Grounded in the repository as of 2026-08-03 — 14 feature modules under `src/fe
 - **Seeding pipeline** — offline: author card text via a claude.ai prompt → `seed/cards.json` → generate
   images programmatically → upload to Blob → load into Postgres. Parent-reviewable before publish.
 
-**Current pool**: 10 themes × 30 cards = **300 cards**, each theme a uniform 15 common / 8 rare /
+**Current pool**: 12 themes × 30 cards = **360 cards** (Increment 24 added Flying Machines and Ocean
+Machines, the first man-made subject matter), each theme a uniform 15 common / 8 rare /
 5 epic / 2 legendary.
 
 ### Future Extensions (not committed)
@@ -224,7 +225,7 @@ current ages (confirmed 4, 7, 9).
 Star Catchers is a private, kid-safe collectible-card web app live on Vercel, used daily by one parent
 and three children aged 4, 7 and 9. The parent signs in with Google (email allowlist) and grants tickets;
 each child picks their profile and spends tickets to pull rarity-weighted cards from a shared,
-pre-generated pool of 300 cards across 10 themes (uniformly 15 common / 8 rare / 5 epic / 2 legendary per
+pre-generated pool of 360 cards across 12 themes (uniformly 15 common / 8 rare / 5 epic / 2 legendary per
 theme), each card carrying an image and an age-appropriate educational fact. Cards land in a per-child
 binder ("Galaxy") grouped by theme with duplicate counts and locked silhouettes, and can be viewed with
 holographic, 3D-tilt and reveal effects. Around that core sit quizzes, kid-to-kid trading, duplicate
@@ -256,6 +257,11 @@ Next.js App Router + TypeScript + Tailwind application on Vercel, with Neon Post
   be treated as one. Admin actions stay behind the passcode gate. No secret may reach the client bundle.
 - **Kid-safety: no unreviewed content path to a child, ever.** Every image and fact is parent-reviewed
   before going live. No runtime generation into a child-facing surface.
+- **The review→publish byte identity.** Since Increment 24, review filenames are content-addressed by
+  prompt hash and `pnpm seed --sync` publishes the reviewed *bytes*. `--sync` generating a fresh image
+  for a card that has a matching review file is a **regression, not an optimisation** — it re-opens the
+  gap where an edited prompt could republish an image reviewed against a prompt that no longer exists.
+  `--sync` also refuses to insert a card with no reviewed image without `--allow-unreviewed`.
 - **`SACRIFICE_COST` / `SACRIFICE_MIN` stay a single source of truth.** `SACRIFICE_COST = 3`,
   `SACRIFICE_MIN = 4` in `src/features/pull/sacrifice.ts`, consumed by both the card detail page and the
   galaxy filter, with a property-based test asserting the equivalence. The values are correct as-is; the

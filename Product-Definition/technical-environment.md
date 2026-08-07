@@ -127,6 +127,13 @@ The ways an AI agent most plausibly breaks this codebase *while writing perfectl
 - **Don't add a runtime generation call of any kind into a child-facing path.** The kid-safety rule is
   absolute, and this is the prohibition most likely to be violated with good intentions
   ("let's make the card text dynamic!").
+- **Don't let a destructive or invariant-defeating seed operation proceed silently.** Established by
+  Increment 23 and extended by Increment 24, the seed CLI has **one idiom** for "this needs a human
+  decision": an explicit named `--allow-*` flag, a printed blast radius, and a non-zero exit by
+  default. `--allow-prune` and `--allow-unreviewed` must stay consistent with each other, and a future
+  third guard follows the same shape. A guard whose only bypass is a TTY prompt must not gain an
+  environment variable or a `--yes` flag — the failure being defended against is a stale value in
+  `.env.local`, the same file that supplies the production credential.
 
 ---
 
@@ -141,7 +148,7 @@ The ways an AI agent most plausibly breaks this codebase *while writing perfectl
 | Vercel Blob | Free tier. Stores the 300 card images. Written by the seeding pipeline, never at runtime. |
 | Google OAuth (identity only) | Parent sign-in with an email allowlist. Identity provider only — not hosting or storage. |
 | PostHog | Analytics + error capture. **Session replay is restricted**: enabled only inside the child play area, `maskAllInputs: true`, `recordCrossOriginIframes: false`, off by default so parent/admin pages (including the passcode screen) are never recorded. **Any change to this scoping is a kid-safety decision, not a config tweak.** |
-| Pollinations.ai | **Seed-time only, never at runtime.** Free, no API key. Generates card images offline before parent review. |
+| Pollinations.ai | **Seed-time only, never at runtime.** Free, no API key. Generates card images offline before parent review. **Deterministic per prompt** — measured 2026-08-07, the same prompt returned an identical sha256 twice. Two consequences: rejecting an image means *changing the `imagePrompt`*, since deleting the review file and regenerating returns the same picture; and nothing binds the service to stay deterministic, so `--sync` publishes reviewed **bytes** rather than re-requesting the prompt. |
 
 ### Disallow List
 
@@ -376,7 +383,8 @@ input space; the 14 existing PBT files already meet the stronger bar.
 `pnpm test:pg` when the persistence layer changes. No code review (single developer). No security
 scanning.
 
-**Enforcement status — declared intent, not yet implemented.** `.github/workflows/` does not exist. These
+**Enforcement status — declared intent, not yet implemented.** `.github/workflows/` now exists but holds
+only `backup.yml` (the nightly verified backup, Increment 23) — there is still **no test or lint CI**. These
 gates are real and have been run for 22 increments, but **manually**; nothing blocks a deploy that skipped
 them. The user's stated position: *"will automate later on."*
 

@@ -1,0 +1,458 @@
+# INCREMENT 24 — Application Design: Vehicle Themes
+
+**Status**: AWAITING APPROVAL
+**Date**: 2026-08-07
+**Requirements**: `aidlc-docs/inception/requirements/increment24-vehicle-themes-requirements.md`
+(APPROVED 2026-08-07, including Finding D)
+**Source**: `Product-Definition/features/vehicle-themes/` (aidlc-discovery 2026-08-07); parent
+definition **not superseded**
+**Decisions to confirm**: **D1–D7** (§7)
+
+---
+
+## 1. Design scope
+
+Two slices, one increment.
+
+- **Slice A** — the offline seed CLI: four schema rules + a PBT, content-addressed review keys,
+  reviewed-bytes publishing, an unreviewed-insert guard, a scoped review pass, a URL checker, and an
+  in-band completeness check. FR1–FR12.
+- **Slice B** — 60 cards of content, reviewed and published theme by theme, plus the free-tier
+  measurement. FR13–FR21.
+
+**Nothing here enters the request path.** No route, component, Server Action, service, store, port or
+migration is touched. `src/features/pool/` gains pure modules and read-only queries; `scripts/seed/`
+gains control flow. The deployed app is unchanged except that it serves 60 more cards.
+
+**Boundary being respected**: `loadSeed` stays pure, synchronous and network-free (NFR4). Every rule
+added to it is an in-memory check over an already-parsed object. The URL check (FR11) is a separate
+flag for exactly this reason.
+
+---
+
+## 2. Component inventory
+
+### 2.1 New — `src/features/pool/`
+
+| Module | Purity | Purpose |
+|---|---|---|
+| `keys.ts` | **pure** | `slug`, `blobKey`, `reviewKey` — the one place a card's storage names are derived (FR7) |
+| `publish-plan.ts` | one query + **pure** planner | Which cards would be inserted? Answers FR9 and FR10 from a single read (Finding B) |
+| `completeness.ts` | one query + **pure** comparator | Post-`--sync` pool-shape assertion (FR12) |
+| `url-check.ts` | network, injected `fetch` | `sourceUrl` reachability (FR11) |
+
+### 2.2 New — tests
+
+| File | Kind |
+|---|---|
+| `tests/seed-rules.pbt.test.ts` | **PBT** — FR6, closes OQ-VT-J1 |
+| `tests/keys.test.ts` | unit — FR7 |
+| `tests/publish-plan.test.ts` | unit — the pure planner |
+| `tests/completeness.test.ts` | unit — the pure comparator |
+| `tests/url-check.test.ts` | unit — injected `fetch`, per `image.ts` convention |
+
+### 2.3 Modified
+
+| File | Change |
+|---|---|
+| `src/features/pool/seed-schema.ts` | FR2–FR5: 30 cards, 15/8/5/2, global name uniqueness, `eduText` ≤120 |
+| `scripts/seed/index.ts` | Control flow: `--check-urls`, plan-driven loop, FR8 reviewed bytes, FR9 guard, FR10 scoped review, FR12 completeness. `slug` moves out to `keys.ts` |
+| `tests/pool.test.ts` | ⚠️ **Forced rewrite** — see §3.2 |
+| `seed/AUTHORING_PROMPT.md` | FR1 — the global content rule + military cap |
+| `seed/cards.json` | FR13/FR14/FR19 — two themes appended |
+
+### 2.4 Not touched
+
+`writer.ts` (no new write, `resetPool` keeps no override parameter), `blast-radius.ts`, `db-target.ts`,
+`scripts/seed/guard.ts`, `image.ts`, `prompt.ts`, `loader.ts`, `catalog.ts`/`catalog.pg.ts`/`service.ts`,
+every `app/` route, every feature service, every migration, `package.json` (**no new dependency** —
+FR7 uses `node:crypto`).
+
+### 2.5 Deleted
+
+Nothing. `slug` is *moved*, not duplicated.
+
+---
+
+## 3. Slice A — the seed CLI
+
+### 3.1 `seed-schema.ts` — the four rules live in the schema (D1)
+
+The rules go on the existing zod schemas as refinements, not in a separate predicate module. The
+project's own argument for declining the PBT was *"`loadSeed` runs the schema on every seed command, so
+the schema **is** the gate"* — splitting the rules out of the schema would give that gate a second
+source of truth to drift from.
+
+```
+seedCardSchema   .eduText: z.string().trim().min(1).max(120)          # FR5
+themeSeedSchema  .superRefine  -> exactly 30 cards                     # FR2
+                              -> exactly 15/8/5/2                      # FR3
+seedFileSchema   .superRefine  -> card names globally unique           # FR4
+```
+
+Error messages carry the offending path and the actual value, because these fire during a 30-card
+authoring merge where "which theme, which card" is the whole diagnostic:
+
+- FR2 → `Flying Machines: expected 30 cards, found 29`
+- FR3 → `Flying Machines: expected 15/8/5/2, found common=16 rare=7 epic=5 legendary=2`
+- FR4 → `duplicate card name "Concorde" in themes: Flying Machines, Famous People`
+
+FR4 is placed on `seedFileSchema` because it is the only level that sees every theme. It is also the
+rule that matters most: `insertCardIfNew` `[writer.ts:75]` returns `"skipped"` on a name collision and
+**swallows it silently**, so without this rule a colliding theme publishes 29 cards and quietly breaks
+its own pyramid with nothing logged as an error.
+
+### 3.2 ⚠️ `tests/pool.test.ts` breaks and must be rewritten
+
+Every fixture in the existing loader suite is a **one-card theme** `[pool.test.ts:8-19, 22-27, 30-35,
+37-44]`. Under FR2 all of them now fail the count rule.
+
+Two consequences, both forced rather than chosen:
+
+1. The positive test (`"accepts a valid seed"`) would start failing.
+2. The negative tests would keep passing **for the wrong reason** — `"rejects invalid rarity"` would
+   throw on the card count before ever reaching the rarity enum, making the assertion vacuous.
+
+Design: add a fixture builder to the test file — `validTheme(name, overrides?)` producing a compliant
+30-card 15/8/5/2 theme — and rewrite each negative case as *"a valid file with exactly one thing
+wrong"*. That is the only shape that keeps a negative test meaningful once the schema has several
+independent rules.
+
+This is the kind of change that looks like incidental test churn in a diff. It is not: it is the point
+at which the suite starts asserting the new invariants instead of accidentally satisfying them.
+
+### 3.3 `keys.ts` — one derivation of every storage name (D3)
+
+`slug` is currently a private helper in `scripts/seed/index.ts:217` used for **both** the review
+filename and the Blob pathname. FR7 changes one of those two and not the other, so it moves to a shared
+pure module where the divergence is explicit and testable.
+
+```
+slug(s)                     -> lowercase, non-alphanumerics collapsed to "-", trimmed
+blobKey(theme, cardName)    -> slug(`${theme}-${cardName}`)                # unchanged (Q6=A)
+promptHash(card)            -> sha256(buildPrompt(card)).hex.slice(0, 8)
+reviewKey(theme, card)      -> `${slug(`${theme}-${card.name}`)}-${promptHash(card)}`   # FR7
+```
+
+Pure, `node:crypto` only, no I/O — unit-testable and no new dependency.
+
+**Blob is unchanged (Q6=A).** `uploadImage(blobKey(...), bytes)` still passes the pathname
+`cards/<slug>.jpg` to `put` `[image.ts:80]`, exactly as today; the returned URL is stored in
+`cards.image_url` as today. The hash lives only in the review filename, where it has a job.
+
+**Accepted consequence of hashing `buildPrompt(card)` rather than `card.imagePrompt`**: `buildPrompt`
+appends `ART_STYLE` `[prompt.ts:9-11]`, so editing `ART_STYLE` invalidates all 360 hashes and forces a
+full re-review. That is correct — the prompt genuinely changed for every card — and is recorded so it
+is not met with surprise. Hashing the raw `imagePrompt` instead would make an `ART_STYLE` edit
+invisible to the review gate, which is the failure mode FR7 exists to remove.
+
+### 3.4 `publish-plan.ts` — one read answers both FR9 and FR10 (D2)
+
+Finding B in the requirements says the guard's set and the review pass's set must agree. The strongest
+way to guarantee that is for them to be *the same object*.
+
+```
+listPublishedCardKeys(): Promise<Set<string>>     # ONE query, read-only
+    SELECT themes.name, cards.name FROM cards JOIN themes ON themes.id = cards.theme_id
+    -> Set of `${theme}\0${card}`
+
+planInserts(seed, published): { theme, card }[]   # PURE set difference
+```
+
+- **`\0` as the composite separator**, not `-` or `/`: theme and card names both contain spaces and
+  punctuation, and a printable separator lets `("A-B", "C")` and `("A", "B-C")` collide. A NUL cannot
+  appear in either name.
+- **One query, not 360.** The status quo calls `cardExists` per card `[index.ts:141]` — a round-trip
+  each. The plan replaces those with a single join, and the loop consults the plan.
+- **`insertCardIfNew` remains the final backstop.** It still re-checks before writing
+  `[writer.ts:74]`, so a stale plan cannot cause a duplicate insert. The plan is an optimisation and a
+  *decision* input; it is not the write-time guarantee.
+- **Read-only, and no theme lookup needed.** The requirements flagged that `upsertTheme` **writes**
+  `[writer.ts:32-49]` and so cannot be used to resolve a theme id in review mode. The set-difference
+  design sidesteps it entirely: a brand-new theme simply contributes no keys, so all 30 of its cards
+  land in the plan. `--review` therefore performs exactly one read and zero writes (FR10).
+
+### 3.5 `completeness.ts` — compares the DB against the seed file (D6)
+
+```
+readPublishedShape(): Promise<{ theme: string; rarity: Rarity; n: number }[]>   # one grouped query
+comparePoolShape(seed, actual): { theme, rarity, expected, found }[]            # PURE, [] == healthy
+```
+
+Compared against **the seed file**, not against hard-coded `30` / `15/8/5/2` constants. The schema
+(FR2–FR3) already guarantees the file holds the pyramid, so the file is a correct expectation — and
+deriving from it means a future deliberate change to the pyramid needs one edit, not two that can
+disagree. A constant would additionally re-encode, in a third place, a rule the schema and the PBT
+already state.
+
+Runs **in-band at the end of `--sync`** (NFR: "the completeness check runs in-band" is in the feature's
+*What Must NOT Change*). Prints a per-theme report; sets a non-zero exit code on any shortfall. Never a
+separate opt-in command — that would re-create the silent-short-theme failure it exists to prevent.
+
+The division of labour with the schema is strict and has no overlap:
+
+| Check | Runs | Catches |
+|---|---|---|
+| `seed-schema.ts` via `loadSeed` | before any write, every seed command | **authoring** faults |
+| `comparePoolShape` | after `--sync` writes | **publishing** faults (a card that 429'd out) |
+
+Because the file is provably correct, any shortfall is by definition a failed insert — which is what
+makes the documented remedy (*re-run `--sync`; never prune, never reset*) always the right one.
+
+### 3.6 `url-check.ts` — network-only, injected `fetch` (FR11)
+
+```
+checkSourceUrls(seed, { fetchImpl?, concurrency? }): Promise<{ theme, card, url, status }[]>
+```
+
+Follows `image.ts`'s established convention of an injectable `fetchImpl` so it is unit-testable without
+a network `[image.ts:23-34]`. Reuses the CLI's existing `runPool` concurrency helper
+`[index.ts:245-258]`. Returns the failures; `scripts/seed/index.ts` owns printing and the exit code.
+
+`GET` rather than `HEAD` — Wikipedia and several other hosts answer `HEAD` differently from `GET`, and a
+check that disagrees with what a human clicking the link would see is worse than no check.
+
+Covers **every card in the file** (Q3=A), so it stays DB-free and also re-checks the 300 existing
+`sourceUrl`s, which have had the longest time to rot. **Never called from `loadSeed`** (NFR4).
+
+### 3.7 `scripts/seed/index.ts` — control flow
+
+```
+1.  seed = loadSeed(SEED_PATH)                 # FR2–FR5 gate, before anything
+2.  if (--check-urls)  -> checkSourceUrls; print; exit 0/1; RETURN     # standalone (D5)
+3.  env guards: DATABASE_URL now required for review too (FR10)
+                BLOB_READ_WRITE_TOKEN warned for publish/sync
+4.  if (publish && --reset)  -> previewReset -> confirmDestructive -> resetPool()
+5.  if (sync)                -> previewPrune -> abort unless --allow-prune -> confirmDestructive
+6.  published = await listPublishedCardKeys()  # ONE read, AFTER any reset
+    plan      = planInserts(seed, published)   # pure
+7.  if (mode !== "review")   -> FR9 unreviewed guard, BEFORE any write
+8.  per-theme loop  (themeId only when mode !== "review")
+9.  if (sync) -> prune cards / prune themes    # execution unchanged
+10. if (sync) -> comparePoolShape -> report -> exit code   # FR12
+```
+
+**Step ordering that matters.** The plan is read at step 6, *after* the reset at step 4 — a reset
+empties the pool, so a plan computed before it would be stale and FR9 would check the wrong set. After
+a `--reset` the plan is the entire pool and FR9 correctly demands a review file for all 360 cards: a
+full republish is a full re-review. (`--reset` is not on this increment's path; `resetPool()` refuses
+while any collection row exists.)
+
+**FR9 — the unreviewed guard**, matching the `--allow-prune` idiom exactly (NFR5):
+
+```
+missing = plan.filter(p => !existsSync(join(REVIEW_DIR, reviewKey(p) + ".jpg")))
+if (missing.length && !argv.includes("--allow-unreviewed")) {
+  print each  "<theme> / <card>"
+  print       "Nothing has been written. Run `pnpm seed --review` first."
+  process.exitCode = 1; return
+}
+```
+
+Explicit named flag, printed blast radius, non-zero exit by default, nothing written. Applies to
+`--sync` **and** `--publish` (Finding D, approved) — both reach `insertCardIfNew` `[index.ts:174]`, and
+the vision's *"no unreviewed content path to a child, ever"* carries no mode qualifier.
+
+Insert-scoped, so the 300 existing cards never need a review file and **no back-fill of `seed/review/`
+is required**. The 33 stale files already there (Finding C) match no hash and are simply ignored.
+
+**The per-card branch**, with `isNew = plan.has(key)`:
+
+| mode | `isNew` | action |
+|---|---|---|
+| review | no | **skip** — FR10; this is what turns 360 images back into 30 |
+| review | yes, review file exists | **skip** — FR10 resumability after a 429-interrupted run |
+| review | yes, no file | generate → write `seed/review/<reviewKey>.jpg` |
+| sync | no | `updateCardMeta` (text only, no image) — unchanged |
+| publish | no | skip — unchanged |
+| sync/publish | yes, review file exists | **read those bytes** → upload → `insertCardIfNew` — **FR8** |
+| sync/publish | yes, no file | generate → upload → insert *(only reachable via `--allow-unreviewed`)* |
+
+The last two rows are NFR9, the review→publish byte identity: once FR8 lands, generating a fresh image
+for a card that has a matching review file is a **regression, not an optimisation**.
+
+`throttle()` is called only on the paths that actually generate, so a resumed run no longer pays 3s per
+already-reviewed card.
+
+### 3.8 `tests/seed-rules.pbt.test.ts` — FR6, closing OQ-VT-J1
+
+A fast-check property over generated seed files asserting acceptance **if and only if** the invariants
+hold. Both directions, because a one-directional property is satisfied by a schema that rejects
+everything.
+
+```
+cardArb(i)            -> valid card, name `n{i}`, eduText length 1..120
+themeArb(name, spec)  -> a theme with a caller-chosen rarity spec
+seedFileArb           -> 1..4 themes, globally distinct names
+
+property 1  a file built to spec (30 cards, 15/8/5/2, unique names, eduText<=120)
+            is ACCEPTED
+property 2  the same file with exactly one invariant broken is REJECTED
+            - drop or add a card            (FR2)
+            - flip one card's rarity        (FR3)
+            - copy a name into another theme(FR4)
+            - pad one eduText to 121        (FR5)
+```
+
+Arbitraries are **named helpers**, not inlined, per the repo's stated PBT convention
+`[tests/sacrifice.pbt.test.ts:6-20]`.
+
+It asserts through `parseSeed` — the real gate — rather than against a separately-exported predicate, so
+the test cannot pass while the thing that actually runs on every seed command disagrees.
+
+This makes the parent environment's blocking constraint literally true for the rarity pyramid, whose
+violation makes a (theme, rarity) set-completion reward permanently unreachable.
+
+---
+
+## 4. Slice B — content and publish
+
+No design surface — this is authoring and operating. The sequence is fixed by FR1/FR18:
+
+```
+FR1   edit seed/AUTHORING_PROMPT.md                 # ONCE, FIRST — it is the input to the rest
+        weapons permitted / gore + violence prohibited / <=2-3 military per theme
+        theme list refreshed to twelve
+        eduText <=120 and global name uniqueness restated as SCHEMA-ENFORCED
+  |
+Slice A lands and is green                          # the schema must exist before a 30-card merge
+  |
+FR21  record BEFORE figures: Vercel Blob GB, Neon row count      # obtainable only now
+  |
+FR13  author Flying Machines (30) in-repo, all 300 existing cards visible
+      -> loadSeed passes -> pnpm seed --check-urls passes
+FR17  pnpm seed --review   -> 30 images -> parent eyeballs every one
+FR18  pnpm seed --sync     -> publishes the reviewed bytes; FR12 must pass
+  |
+FR14  repeat for Ocean Machines
+  |
+FR21  record AFTER figures + per-theme marginal cost + remaining runway
+§6    write back the six Product-Definition deltas
+```
+
+**Ordering constraint made explicit**: Slice A must be green before the first 30-card merge. FR2–FR3
+mean `seed/cards.json` can no longer hold a half-authored theme, so the schema has to exist before the
+file grows — and it has to exist *as the thing that catches the authoring session's mistakes*, which is
+its whole purpose (FR15).
+
+**Stop conditions during Slice B** (NFR3, and the runbook in the feature's technical-environment.md):
+
+| Situation | Response |
+|---|---|
+| A card 429s out and is skipped | **Re-run `--sync`.** Idempotent; inserts only what is missing |
+| FR12 reports a theme short | **Re-run `--sync`.** Never prune, never reset. A short theme is **not data loss** — no child loses anything; only that (theme, rarity) set-completion is unreachable until fixed |
+| `--sync` reports a pending prune, or asks for a typed collection-row count | **STOP.** Do not type the number, do not pass `--allow-prune`. It can only mean something was renamed or dropped in the seed file. Fix the file |
+| `--sync` reports cards with no reviewed image | **STOP.** Run `--review` first. `--allow-unreviewed` exists but defeats the invariant |
+
+**FR19** — both themes are appended to the `themes` array, taking the two highest `sort_order` values.
+Array position *is* the display order `[index.ts:134-136]` and `themes.sort_order` is a contract in the
+parent vision document. No existing entry moves.
+
+**FR20** — `MAX_PULL_CATEGORIES` stays 8; no code change; `tests/pull-categories.pbt.test.ts:74` stays
+green. Dinosaurs and Superheroes lose their chips, joining Animals and Mythic Creatures, and remain
+fully collectable via 🎲 Random and every ticket flow (vision Q4a, accepted knowingly).
+
+---
+
+## 5. Testing position
+
+| Item | Test position |
+|---|---|
+| FR2–FR5 schema rules | **PBT** `tests/seed-rules.pbt.test.ts` (FR6) **+** the gate itself: `loadSeed` runs them on every seed command |
+| FR7 keys | Unit — slug stability, hash changes with `imagePrompt`, hash changes with `ART_STYLE`, blob key unchanged |
+| FR9/FR10 plan | Unit on the **pure** `planInserts`; the single query is thin enough not to warrant a `test:pg` suite |
+| FR11 URL check | Unit with an injected `fetchImpl`, per `image.ts` convention |
+| FR12 completeness | Unit on the **pure** `comparePoolShape` |
+| FR8 byte identity | Verified by hand at Build & Test — compare the sha256 of `seed/review/<key>.jpg` against the bytes fetched back from the Blob URL |
+| FR10 write-freedom | Verified by hand at Build & Test — run `--review` against a local DB and assert row counts unchanged |
+| `MAX_PULL_CATEGORIES = 8` | Existing `tests/pull-categories.pbt.test.ts:74`, unchanged |
+
+**No `test:pg` suite is added.** The new DB code is two read-only queries with no invariant of their
+own; Inc 23 added a pg suite because only a real database could prove a cascade did *not* fire. Nothing
+here has that character.
+
+**NFR10 caveat stands**: there is no test CI (F4), so everything above except the schema runs only when
+someone runs `pnpm test`. Parent OQ-T-2 is untouched.
+
+---
+
+## 6. Write-backs to `Product-Definition/` (§8 of the requirements)
+
+Applied at the end of the increment, after FR21 produces its number. Six deltas: pool count
+300 → 360 in two places, the review→publish byte-identity invariant, the `--allow-*` idiom under
+Prohibited Patterns, the stale *"`.github/workflows/` does not exist"* line, OQ-B-2's runway figure, and
+the repo-side authoring-prompt rule. `Product-Definition/features/vehicle-themes/` is **not** rewritten
+— it is the input to this increment.
+
+---
+
+## 7. Design decisions to confirm
+
+### D1 — Where do the four schema rules live?
+
+- **(A) Refinements on the existing zod schemas in `seed-schema.ts`** — one gate, one source of truth;
+  the PBT asserts through `parseSeed`. *Recommended.*
+- (B) A separate pure `seed-rules.ts` that `seed-schema.ts` calls — nicer error construction and rules
+  testable in isolation, at the cost of a second place the gate can drift from.
+
+### D2 — How is "which cards would be inserted" computed?
+
+- **(A) One `SELECT theme.name, card.name` join → `Set`, then a pure set difference** — FR9 and FR10
+  share the same object so they cannot disagree (Finding B); replaces 360 round-trips with one; needs
+  no theme-id lookup, so `--review` stays write-free. *Recommended.*
+- (B) Keep per-card `cardExists` calls — smaller diff, but the guard and the review pass each compute
+  their own set, and review mode would need a read-only theme lookup added to `writer.ts`.
+
+### D3 — Where does `slug` live?
+
+- **(A) Promote to `src/features/pool/keys.ts`**, exporting `slug` / `blobKey` / `reviewKey`; FR7
+  changes the review key only, and the divergence is explicit and unit-tested. *Recommended.*
+- (B) Leave `slug` private in `scripts/seed/index.ts` and derive the review key inline — two
+  derivations of a card's storage name that must be kept in step by hand.
+
+### D4 — What does `reviewKey` hash?
+
+- **(A) `sha256(buildPrompt(card))`** — the full prompt actually sent to Pollinations, so an `ART_STYLE`
+  change correctly invalidates every review file. *Recommended.*
+- (B) `sha256(card.imagePrompt)` — stabler review files, but an `ART_STYLE` edit would silently
+  republish images reviewed under the old style, which is the exact failure FR7 exists to remove.
+
+### D5 — Is `--check-urls` a mode or a modifier?
+
+- **(A) A standalone flag that short-circuits**: runs the check, prints, exits, does nothing else.
+  Keeps it network-only and DB-free, and makes it safe to run at any point during authoring.
+  *Recommended.*
+- (B) A modifier that runs before `--review`/`--sync` — one command instead of two, but it couples a
+  360-request network check to every publish and makes a publish fail for a reason unrelated to
+  publishing.
+
+### D6 — What does the completeness check compare against?
+
+- **(A) The seed file** — the schema already guarantees the file holds the pyramid, and a deliberate
+  future pyramid change needs one edit rather than two that can disagree. *Recommended.*
+- (B) Hard-coded `30` / `15,8,5,2` constants — independent of the file, but re-encodes in a third place
+  a rule the schema and the PBT already state.
+
+### D7 — `--review` and `DATABASE_URL`
+
+- **(A) Hard requirement** — `--review` fails fast when `DATABASE_URL` is unset, same as
+  `--publish`/`--sync` `[index.ts:71-76]`. *Recommended.*
+- (B) Degrade gracefully — review the whole pool when the DB is unreachable. Rejected in the
+  recommendation: silently reverting to a 360-image run is the failure Finding A describes, and a
+  degraded mode makes the FR9 guard's set and the review set disagree again.
+
+---
+
+## 8. Risks carried into Construction
+
+| Risk | Handling |
+|---|---|
+| `tests/pool.test.ts` rewrite hides a real regression behind "test churn" | §3.2 — negative tests become *valid file, one thing wrong*; called out explicitly at the Code Gen gate |
+| Pollinations degrades across a 60-image run | Bounded retry honouring `Retry-After` `[image.ts:46-58]`; failed cards are skipped, not published; FR10 makes the re-run cheap |
+| An authoring session run against the un-amended prompt | FR1 is sequenced first, and Slice A must be green before the first merge |
+| The relaxed global rule produces content in *other* themes the parent would not approve | Human review is unchanged and still mandatory; the 2–3 military cap is per theme and enforced at review. *(Policy, not mechanism — CONTRADICTION 4 in the feature's open-questions.md, deliberately chosen)* |
+| Free-tier boundary crossed sooner than expected | FR21 measures it rather than assuming |
+| "Ocean Machines" biases authoring to salt water | The name is a label, not a filter; flagged into the authoring session; `Water Machines` is an available fallback |
+
+**Carried assumption, flag if wrong**: a *military* submarine counts against the 2–3 cap; a *research*
+submersible does not.
