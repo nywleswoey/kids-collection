@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { getTopic } from "@/features/quiz/topics";
+import { isTopicOfferedToday } from "@/features/quiz/daily-topics";
+import { sgtDayKey } from "@/features/quiz/cap";
 import { QuizFlow } from "@/features/quiz/QuizFlow";
 
 export default async function TopicPage({
@@ -13,6 +15,12 @@ export default async function TopicPage({
   const { topicId } = await params;
   const topic = getTopic(topicId);
   if (!topic) redirect("/play/learn");
+
+  // Inc25 FR9: hiding the other seven in the picker is not enforcement — the URL
+  // is navigable. This redirect is the friendly half; the actual boundary is in
+  // buildQuiz (FR10), because startQuizAction is a Server Action and so a POST
+  // endpoint that a page check cannot gate.
+  if (!isTopicOfferedToday(child.id, sgtDayKey(Date.now()), topic.id)) redirect("/play/learn");
 
   return (
     <main

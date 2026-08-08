@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { TOPICS } from "@/features/quiz/topics";
+import { getTopic } from "@/features/quiz/topics";
+import { dailyTopics } from "@/features/quiz/daily-topics";
+import { sgtDayKey } from "@/features/quiz/cap";
 import { quizService } from "@/features/quiz/quiz-service.prod";
-import type { QuizSubject } from "@/features/quiz/types";
+import type { QuizSubject, Topic } from "@/features/quiz/types";
 
 const GROUPS: { subject: QuizSubject; label: string; emoji: string }[] = [
   { subject: "math", label: "Maths", emoji: "🔢" },
@@ -13,6 +15,13 @@ export default async function LearnPage() {
   const child = await requireActivePlayer();
 
   const done = await quizService.topicsAwardedToday(child.id);
+
+  // Inc25 FR8: three topics a day, chosen for the child — not all ten. Derived,
+  // not stored, so it can't reroll on refresh. The route and buildQuiz call the
+  // same function, so picker, URL and gate cannot drift apart.
+  const todays = dailyTopics(child.id, sgtDayKey(Date.now()))
+    .map(getTopic)
+    .filter((t): t is Topic => t !== undefined);
 
   return (
     <main
@@ -25,16 +34,16 @@ export default async function LearnPage() {
           Pass a quiz, earn a Lucky ticket! 🍀
         </h1>
         <p className="text-sm text-[color:var(--ink-soft)]">
-          Learn a little, then answer all 5 correctly.
+          Today&apos;s three topics. Learn a little, then answer all 5 correctly.
         </p>
       </div>
 
-      {GROUPS.map((g) => (
+      {GROUPS.filter((g) => todays.some((t) => t.subject === g.subject)).map((g) => (
         <section key={g.subject} className="flex w-full max-w-md flex-col gap-3">
           <h2 className="text-lg font-bold">
             {g.emoji} {g.label}
           </h2>
-          {TOPICS.filter((t) => t.subject === g.subject).map((t) => (
+          {todays.filter((t) => t.subject === g.subject).map((t) => (
             <Link
               key={t.id}
               href={`/play/learn/${t.id}`}
