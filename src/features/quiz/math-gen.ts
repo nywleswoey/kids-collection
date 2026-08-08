@@ -7,6 +7,7 @@
 import type { Rng } from "@/lib/logic";
 import { randInt, shuffle } from "@/lib/rng";
 
+import { fractionQuestion } from "./fraction-gen";
 import type { QuizQuestion } from "./types";
 
 /** Build 4 unique options around `answer` (>= 0), shuffled, answer included.
@@ -43,32 +44,67 @@ function q(
   };
 }
 
-/** a × b, factors 2–10, product <= 100. */
+/** Plausible near-misses for a *factor* (small slips), as opposed to a product. */
+const FACTOR_SPREAD = [1, -1, 2, -2];
+
+/** a × b, factors 2–10, product <= 100.
+ *
+ * Inc25 FR4: the missing operand moves. `a × b = ?` recalls a table fact;
+ * `a × ? = p` forces the inverse. Same drawn operands in every branch, so the
+ * answer stays computed (never authored) and the product stays <= 100. */
 function multiplicationWithin100(id: string, rng: Rng): QuizQuestion {
   const a = randInt(rng, 2, 10);
   const b = randInt(rng, 2, 10);
-  // distractors near the product, incl. off-by-one-factor errors.
-  return q(id, `${a} × ${b} = ?`, a * b, rng, [a, -a, b, -b]);
+  const p = a * b;
+  switch (randInt(rng, 0, 2)) {
+    // distractors near the product, incl. off-by-one-factor errors.
+    case 0:
+      return q(id, `${a} × ${b} = ?`, p, rng, [a, -a, b, -b]);
+    case 1:
+      return q(id, `${a} × ? = ${p}`, b, rng, FACTOR_SPREAD);
+    default:
+      return q(id, `? × ${b} = ${p}`, a, rng, FACTOR_SPREAD);
+  }
 }
 
-/** dividend ÷ divisor, exact. divisor & quotient 2–10, dividend <= 100. */
+/** dividend ÷ divisor, exact. divisor & quotient 2–10, dividend <= 100.
+ *  Inc25 FR4: three shapes, same exact division underneath. */
 function divisionWithin100(id: string, rng: Rng): QuizQuestion {
   const divisor = randInt(rng, 2, 10);
   const quotient = randInt(rng, 2, 10);
   const dividend = divisor * quotient;
-  return q(id, `${dividend} ÷ ${divisor} = ?`, quotient, rng);
+  switch (randInt(rng, 0, 2)) {
+    case 0:
+      return q(id, `${dividend} ÷ ${divisor} = ?`, quotient, rng);
+    case 1:
+      return q(id, `${dividend} ÷ ? = ${quotient}`, divisor, rng, FACTOR_SPREAD);
+    default:
+      return q(id, `? ÷ ${divisor} = ${quotient}`, dividend, rng, [divisor, -divisor]);
+  }
 }
 
-/** ? + x = 100, x any 1–99 (Q3=C). */
-function numberBonds100(id: string, rng: Rng): QuizQuestion {
-  const x = randInt(rng, 1, 99);
-  return q(id, `? + ${x} = 100`, 100 - x, rng, [20, -20]);
+/** ? + x = 1000 (Inc25 FR5 — replaces number-bonds-100).
+ *
+ * Q4-iv: MOSTLY arbitrary values in 1–999 with SOME rounder ones, so the topic
+ * can't be reduced to one trick ("ones make 10, tens make 90, hundreds make
+ * 900") applied on autopilot. The 1-in-10 rounder rate is a tuning value, not a
+ * contract — the invariant is `answer + x === 1000`. */
+function numberBonds1000(id: string, rng: Rng): QuizQuestion {
+  const x =
+    randInt(rng, 0, 9) === 0
+      ? randInt(rng, 1, 9) * 100 // rounder: 100, 200, … 900
+      : randInt(rng, 1, 999); // arbitrary
+  return q(id, `? + ${x} = 1000`, 1000 - x, rng, [100, -100, 200, -200]);
 }
 
 const GENERATORS: Record<string, (id: string, rng: Rng) => QuizQuestion> = {
   "multiplication-within-100": multiplicationWithin100,
   "division-within-100": divisionWithin100,
-  "number-bonds-100": numberBonds100,
+  "number-bonds-1000": numberBonds1000,
+  // Inc25 D1: fractions register here rather than adding a third branch to
+  // buildQuestions. It owns its option-building entirely — `options()` and `q()`
+  // above are integer-only and stay untouched.
+  fractions: fractionQuestion,
 };
 
 export function isMathTopic(topicId: string): boolean {

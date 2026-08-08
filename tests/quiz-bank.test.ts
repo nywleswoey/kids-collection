@@ -28,9 +28,12 @@ describe("grammar banks (Inc11)", () => {
 });
 
 describe("topics (Inc11)", () => {
-  it("has 9 topics, 3 math + 6 grammar, all with lessons", () => {
-    expect(TOPICS).toHaveLength(9);
-    expect(TOPICS.filter((t) => t.subject === "math")).toHaveLength(3);
+  it("has 10 topics, 4 math + 6 grammar, all with lessons", () => {
+    // Inc25 FR15: Fractions added, Number Bonds to 100 replaced by 1000.
+    // The 4 maths topics are load-bearing: the daily draw's "at least one maths"
+    // guarantee cannot be starved because at most 3 are excluded as yesterday's.
+    expect(TOPICS).toHaveLength(10);
+    expect(TOPICS.filter((t) => t.subject === "math")).toHaveLength(4);
     expect(TOPICS.filter((t) => t.subject === "grammar")).toHaveLength(6);
     for (const t of TOPICS) {
       expect(t.lesson.intro.length).toBeGreaterThan(10);

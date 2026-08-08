@@ -15,6 +15,19 @@ export interface QuizQuestion {
   options: string[];
   correct: string;
   explanation: string;
+  /** Inc25 FR13: an optional picture for the prompt, as STRUCTURE rather than
+   * markup — so generators stay pure and property-testable, and no child-facing
+   * screen ever needs `dangerouslySetInnerHTML`. Presentation only: it does not
+   * cross the signed-offer boundary (the offer signs answers + questionIds). */
+  visual?: QuizVisual;
+}
+
+/** A bar model: a rectangle in `parts` equal segments, `shaded` of them filled.
+ *  Bar models only — circles and object groups are out of scope. */
+export interface QuizVisual {
+  kind: "bar";
+  parts: number;
+  shaded: number;
 }
 
 /** Question as sent to the client. Inc13 FR6: carries the answer key +

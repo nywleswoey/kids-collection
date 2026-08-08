@@ -7,6 +7,7 @@ import { startQuizAction, submitQuizAction } from "./actions";
 import type { ClientQuestion, Lesson, QuizOutcome } from "./types";
 import { useSound } from "@/features/sound/useSound";
 import { Confetti } from "@/features/anim/Confetti";
+import { BarModel } from "./BarModel";
 
 type Phase = "lesson" | "quiz" | "result";
 
@@ -117,6 +118,9 @@ export function QuizFlow({
         <span className="pill pill--gold">
           Question {idx + 1} of {questions.length}
         </span>
+        {/* Inc25 FR14: fractions are the only topic that ships a picture. The
+            answers stay text buttons below, so only the prompt area grows. */}
+        {q.visual ? <BarModel parts={q.visual.parts} shaded={q.visual.shaded} /> : null}
         <p className="text-2xl font-bold">{q.prompt}</p>
         <div className="flex w-full flex-col gap-3">
           {q.options.map((opt) => {
