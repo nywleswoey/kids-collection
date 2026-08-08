@@ -41,16 +41,53 @@ describe("rollWeightedRarity (Inc19 FR3)", () => {
     );
   });
 
-  it("maps the weight bands to the right tier (60/25/12/3)", () => {
-    // total = 100; cumulative bands: common [0,60), rare [60,85), epic [85,97), legendary [97,100)
-    expect(rollWeightedRarity(() => 0)).toBe("common");
-    expect(rollWeightedRarity(() => 0.59)).toBe("common");
-    expect(rollWeightedRarity(() => 0.6)).toBe("rare");
-    expect(rollWeightedRarity(() => 0.84)).toBe("rare");
-    expect(rollWeightedRarity(() => 0.85)).toBe("epic");
-    expect(rollWeightedRarity(() => 0.96)).toBe("epic");
-    expect(rollWeightedRarity(() => 0.97)).toBe("legendary");
-    expect(rollWeightedRarity(() => 0.999)).toBe("legendary");
+  it("maps the weight bands to the right tier", () => {
+    // Inc25 FR3: bands are DERIVED from RARITY_WEIGHTS, not restated. The old
+    // version hardcoded 0.6/0.85/0.97, so it only asserted that someone had
+    // retyped the constant correctly — it broke the moment the odds were tuned
+    // and said nothing about rollWeightedRarity itself.
+    //
+    // Bands are accumulated in WEIGHT units (matching the implementation, which
+    // rolls rng()*total and subtracts weights) and probed strictly inside each
+    // band. Probing the exact edge would assert float identity on a boundary
+    // the two sides compute differently — that tests IEEE-754, not the mapping.
+    const total = RARITIES.reduce((s, r) => s + RARITY_WEIGHTS[r], 0);
+    expect(total).toBe(100); // the constant's own invariant
+
+    const EPS = 1e-6; // « the narrowest band (legendary, 2% = 0.02)
+    let loW = 0;
+    for (const r of RARITIES) {
+      const hiW = loW + RARITY_WEIGHTS[r];
+      expect(rollWeightedRarity(() => loW / total + EPS)).toBe(r); // just inside the low edge
+      expect(rollWeightedRarity(() => hiW / total - EPS)).toBe(r); // just inside the high edge
+      expect(rollWeightedRarity(() => (loW + hiW) / 2 / total)).toBe(r); // midpoint
+      loW = hiW;
+    }
+    expect(loW).toBe(total); // the bands tile the whole range — no gap, no overlap
+  });
+
+  it("covers [0,1) with no gaps: every roll lands in the band the weights imply", () => {
+    // The complement of the edge-probe above: a dense sweep proving no input is
+    // unmapped or mapped to a neighbouring tier, without asserting on exact
+    // boundary values.
+    const total = RARITIES.reduce((s, r) => s + RARITY_WEIGHTS[r], 0);
+    const N = 10_000;
+    for (let i = 0; i < N; i++) {
+      const u = i / N;
+      const w = u * total;
+      let acc = 0;
+      const expected = RARITIES.find((r) => {
+        acc += RARITY_WEIGHTS[r];
+        return w < acc;
+      })!;
+      const actual = rollWeightedRarity(() => u);
+      // Skip the handful of points sitting within float-noise of a boundary.
+      const nearEdge = RARITIES.some((_, i2) => {
+        const edge = RARITIES.slice(0, i2 + 1).reduce((s, r) => s + RARITY_WEIGHTS[r], 0);
+        return Math.abs(w - edge) < 1e-9;
+      });
+      if (!nearEdge) expect(actual).toBe(expected);
+    }
   });
 
   it("empirical distribution tracks RARITY_WEIGHTS", () => {
