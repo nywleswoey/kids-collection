@@ -1,0 +1,137 @@
+# The fast gate: nothing reaches `main` without passing typecheck, the unit and
+# property-based suite, and a real production build.
+#
+# Why this file exists: Property-Based Testing is a *blocking* constraint carried
+# from the product definition, and until now it was enforced by one person
+# remembering to run `pnpm test` — 22 of the 51 test files are `*.pbt.test.ts`.
+# This workflow is what turns that discipline into mechanism.
+#
+# This file only *supplies* a check. What makes it binding is branch protection
+# on `main`, which is a repository setting rather than anything committed here.
+# Until that is switched on, this workflow reports and nothing more.
+#
+# No secrets, deliberately. The repository is public, and every gate below is
+# verified to pass with the environment completely empty apart from the one
+# obviously-fake value at the bottom of this file. A workflow that holds no
+# secret cannot leak one, which beats being careful with it.
+name: ci
+
+on:
+  # `pull_request`, not `pull_request_target`. Two reasons, both load-bearing:
+  # it checks out the *merge result* rather than the PR branch — which is the
+  # thing actually being gated — and it runs without access to repository
+  # secrets, the correct posture for a public repo taking outside contributions.
+  pull_request:
+
+  # Pushes to `main` are re-checked even though branch protection will mean they
+  # can only arrive via a green PR. Two independently-green PRs can still merge
+  # into a red `main`, and a green history on `main` is what lets a future
+  # bisect trust its endpoints.
+  push:
+    branches: [main]
+
+# There is no `concurrency:` block here yet, and that is a decision rather than
+# an omission. backup.yml sets `cancel-in-progress: false`, which is right for a
+# backup — never abandon a half-finished dump — and probably wrong for a PR gate,
+# where a superseded push just burns a runner. Which way to go depends on how
+# long a run actually takes, so it is deferred until this has some runs behind
+# it. See "Not yet specified" on the map (#17).
+
+# Read-only. This workflow inspects the code; it never writes to the repo, posts
+# a comment, or publishes a package. Narrow it here rather than relying on the
+# repository default, which can be widened by someone who is not thinking about
+# this file.
+permissions:
+  contents: read
+
+jobs:
+  # The job id IS the check name branch protection will require (#24). There is
+  # deliberately no `name:` key, so there is exactly one string to get right
+  # instead of two that can drift apart.
+  #
+  # Renaming this job silently detaches the protection rule from the check it was
+  # protecting: the rule goes on waiting for a check that no longer reports, and
+  # the PR sits pending forever rather than failing loudly. Treat `fast-gate` as
+  # a published name.
+  fast-gate:
+    runs-on: ubuntu-latest
+
+    # The three gates together are roughly twenty seconds of real work on a
+    # laptop. Ten minutes is not a performance budget, it is a hang detector —
+    # this repo has already shipped one script that blocked forever waiting on
+    # an interactive prompt, and a job that hangs is worse than one that fails.
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Both toolchain versions come from package.json — `engines.node` here and
+      # `packageManager` for pnpm below — rather than literals in this file, so a
+      # developer bumping either one does not have to remember this file exists.
+      #
+      # Carry one caveat: `engines.node` is advisory. With no `.npmrc` setting
+      # `engine-strict`, pnpm warns and exits 0 on a mismatch. It pins what CI
+      # *installs*; it stops nothing.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+
+      # No `version:` on purpose — the action reads `packageManager`, so the pnpm
+      # running here is the exact one the developer ran. Pinning it again would
+      # give the repo two answers to one question.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      # `--frozen-lockfile` turns a lockfile that disagrees with package.json
+      # into a failure rather than a silent re-resolution — CI installing
+      # something the developer never installed is the whole class of bug this
+      # closes.
+      #
+      # No dependency cache yet. Install is comfortably the largest cost in this
+      # job, so whether `actions/cache` earns its keep is a real question — but
+      # it is one to answer against a measured number, and caching next to
+      # `--frozen-lockfile` carries its own correctness risk. See "Not yet
+      # specified" on the map (#17).
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile
+
+      # Each gate below runs even when an earlier gate failed, so one red run
+      # reports *every* broken gate instead of making you fix them one push at a
+      # time. The job still fails: a failed step fixes the job's conclusion
+      # regardless of what runs after it.
+      #
+      # The `steps.install.outcome` half matters as much as the `!cancelled()`
+      # half. If the toolchain never came up there is nothing to gate, and three
+      # cascading "command not found" failures would report a code problem that
+      # does not exist. An honest gate reports the failure it actually had.
+      - name: Typecheck
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm typecheck
+
+      # 321 tests across 51 files, 22 of them property-based. This step has no
+      # `env:` block, and that is the point: the suite is verified to pass with
+      # every environment variable unset, so there is nothing here to configure
+      # wrong and nothing to leak.
+      - name: Unit and property-based tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm test
+
+      # The only gate needing any environment at all, and a fake satisfies it.
+      #
+      # `next build` imports every page module while collecting page data — which
+      # happens whether or not a route prerenders, so "every route is dynamic"
+      # buys nothing — and that reaches `neon(env.databaseUrl)` at module load.
+      # `neon()` only *parses* the URL there; it never opens a connection during
+      # a build. So the value has to be a syntactically valid postgres URL and
+      # nothing more (`not-a-url` fails; this succeeds).
+      #
+      # `.invalid` is reserved by RFC 2606 and can never resolve, so this value
+      # cannot accidentally address a real database even if something later does
+      # try to dial it. That is why it is safe to commit in the open, and why it
+      # is written here rather than held as a secret.
+      - name: Build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        env:
+          DATABASE_URL: postgres://ci:ci@db.invalid/ci?sslmode=require
+        run: pnpm build
