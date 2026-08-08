@@ -66,9 +66,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node version comes from `engines.node` in package.json rather than a
+      # literal here, for the same reason pnpm's does below: one source of
+      # truth. setup-node reads `volta.node`, then `devEngines.runtime`, then
+      # `engines.node` — we only set the last.
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version-file: package.json
 
       # No version here on purpose: the action reads `packageManager` from
       # package.json, so the pnpm running here is the exact one the developer
