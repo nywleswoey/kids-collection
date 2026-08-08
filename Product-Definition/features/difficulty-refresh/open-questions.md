@@ -11,7 +11,8 @@
 | Pre-declared during the interviews | 10 (7 business, 3 technical) |
 | Resolved inside the approval loops | **10** |
 | Raised at the join | **3** (J1–J3) |
-| **Open going into AI-DLC** | **3** |
+| **Open going into AI-DLC** | ~~3~~ → **0** |
+| **Closed at Requirements, 2026-08-08** | **3** (J1=a, J2=a, J3=recommended) + 2 new findings |
 
 ---
 
@@ -36,7 +37,7 @@ Recorded for traceability. None of these need AI-DLC's attention.
 
 ## Contradictions and gaps found at the join
 
-### ❗ J1 — **OPEN**: the seen-tracking design cannot be implemented as specified
+### ✅ J1 — **CLOSED (a)** 2026-08-08: the seen-tracking design cannot be implemented as specified
 
 **The technical document says** seen-rows are written on **submit**, not when the offer is minted
 (OQ-DR-T1), so an abandoned quiz burns nothing.
@@ -72,7 +73,7 @@ Three ways out, and the choice has a security dimension:
 server-authoritative record of what was served. Note it slightly enlarges every offer token (5 short
 ids), which is inert — the token is already carrying 5 answer strings.
 
-### ❗ J2 — **OPEN**: ticket-free replay undercuts the anti-memorisation fix at today's bank size
+### ✅ J2 — **CLOSED (a), accepted** 2026-08-08: ticket-free replay undercuts the anti-memorisation fix at today's bank size
 
 Two approved decisions collide, and the arithmetic matters.
 
@@ -114,7 +115,7 @@ Options:
 authoring follow-up slips. The claim in D6 should be **restated more precisely**: seen-tracking
 delivers most of its value at today's bank size *for the once-a-day path*, not under heavy replay.
 
-### ⚠️ J3 — **OPEN (confirm)**: the vision's scope list and the technical delivery plan disagree
+### ✅ J3 — **CLOSED** 2026-08-08: the vision's scope list and the technical delivery plan disagree
 
 `vision-document.md` lists **11 items IN the MVP**, including item 10: *"Grow six grammar banks to
 40–50 each — ~150–200 authored questions. The largest single piece of work."*
@@ -174,3 +175,39 @@ Recorded so they are not re-derived as problems later.
 2. **J3** — cheap to settle and it defines "done" for the increment.
 3. **J2** — no action needed to start; record the arithmetic and revisit if the authoring follow-up
    slips.
+
+
+---
+
+## Resolution — closed at Requirements Analysis, 2026-08-08
+
+Increment 25 shipped (PR #15). All three join questions are closed, and the join itself missed two
+things that only appeared when the code was read.
+
+| ID | Resolution |
+|---|---|
+| **J1** | **(a)** — `questionIds` joins the signed offer payload. Confirmed against the code first: `QuizOfferPayload` was `{childId, topic, answers, exp}` and submit was `(offer, picks)`, so the server genuinely could not name what it served. Guard treats the field as optional so a quiz begun before the deploy still submits |
+| **J2** | **(a)** — accepted, with the arithmetic recorded. **Sharpened**: `conjunctions` and `prepositions` hold **14** questions, not ~16, so they give **two** clean attempts before repeats, not three. Confirmed by observation against a real database, not by argument |
+| **J3** | Increment 25 = vision items 1–9 and 11. Item 10 (~150–200 authored questions) is in scope for the **feature**, delivered in a second PR |
+
+### Two contradictions the join did not catch
+
+**Finding A — the daily-three gate was specified in the wrong place.** Both documents put enforcement on
+the route, reasoning correctly that hiding topics in the picker is not enforcement because the URL is
+navigable — then stopped one step short. `startQuizAction` is a Server Action: a directly invocable POST
+taking the topic id from the client, so a page redirect is bypassed exactly as a picker is. The gate now
+sits in `buildQuiz`. **This strengthens D5/T5-i rather than implementing it.**
+
+**Finding B — D1's schema could not perform D1's own reset.** `(child_id, question_id, seen_at)` does not
+say which topic a question belongs to, so the approved per-topic exhaustion reset was not expressible;
+the `vt-`/`pp-` prefixes are a naming habit, not data. A `topic` column was added. It also dissolves a
+hazard nobody had noticed: a global key silently requires grammar ids to be unique across **all six**
+banks — true today only by convention, tested nowhere, and precisely what the ~200-question authoring
+follow-up would have broken, silently merging two children's seen-sets. **This corrects D1.**
+
+### And one the design got wrong, caught by a property test
+
+`D5`'s recipe — *"'exclude yesterday's' comes free — call the same function with `sgtDayKey - 1`"* — does
+not terminate: day D needs D−1, needs D−2, with no anchor. The first implementation hid the recursion one
+level down and failed on the property test's first run, repeating a grammar topic across a cycle
+boundary. Non-repetition is now structural. The outcome D5 wanted is preserved in full; its recipe is not.

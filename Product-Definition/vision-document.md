@@ -105,7 +105,9 @@ Grounded in the repository as of 2026-08-03 — 14 feature modules under `src/fe
 - **Sound** — SFX and BGM, rarity fanfares, dedicated easter-egg cue.
 - **Easter eggs** — ~1% pick-1-of-N epic+ offers, HMAC-signed and expiring so a claim can't be swapped.
 - **Quizzes / Learn** — educational questions with per-question feedback (correct/incorrect, the right
-  answer, and a "why"); award granted server-side via signed offer.
+  answer, and a "why"); award granted server-side via signed offer. **Ten topics** (4 maths, 6 grammar)
+  since Inc 25, of which **three are drawn per child per day** — free choice was removed deliberately.
+  Grammar questions a child has already answered are remembered and deprioritised.
 - **Trading** — atomic two-sided duplicate swap between two children; friend-first board that badges only
   what the other party lacks.
 - **Sacrifice** — burn 4+ copies (keep 1) for a rarity-pick ticket, same tier or one up, 50/50.
@@ -249,7 +251,14 @@ Next.js App Router + TypeScript + Tailwind application on Vercel, with Neon Post
   a trade must never half-apply.
 - **Server-authoritative awards via HMAC-signed offers.** Easter-egg picks and quiz awards are pinned in
   a signed, expiring offer so a claim cannot be swapped for an un-offered card. Client-side answer keys
-  exist for feedback only. Award decisions must never move to the client.
+  exist for feedback only. Award decisions must never move to the client. **Since Inc 25 the quiz offer
+  also pins the question ids served**, so which questions a child has seen is likewise server-stated —
+  a client cannot suppress it. Anything the server must trust about what it served belongs in the
+  signed payload, not in the submission.
+- **A client-supplied topic id is not a permission.** The daily three are enforced in `buildQuiz`, not
+  in the page. A Server Action is a directly invocable POST, so a route redirect is a courtesy and the
+  service is the boundary — the same reasoning that makes child profile selection not a security
+  boundary.
 - **`themes.sort_order` is a contract, not a convenience.** Backfilled in migration 0006 to the exact
   order the children already saw. Reordering silently reshuffles their world.
 - **The auth and safety boundary.** Parent Google OAuth + email allowlist is the only real boundary.
