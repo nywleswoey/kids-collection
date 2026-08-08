@@ -27,4 +27,29 @@ export interface QuizStore {
 
   /** Record one attempt. */
   recordCompletion(entry: QuizCompletionInput): Promise<void>;
+
+  /** Question ids this child has already ANSWERED in `topic` (Inc25 FR19).
+   *  Grammar only — maths ids are positional and name a different question every
+   *  attempt, so tracking them would be meaningless. */
+  seenQuestionIds(childId: string, topic: string): Promise<string[]>;
+
+  /**
+   * Record `questionIds` as seen. Re-recording the same ids is a no-op, so a
+   * replayed submission cannot double-write.
+   *
+   * When `reset`, the topic's existing rows are cleared FIRST and atomically
+   * with the insert — the bank has been exhausted and the cycle restarts from
+   * the five just answered. The two halves must not be separate calls: an
+   * interruption between them would leave an empty seen-set and make those five
+   * immediately eligible again.
+   */
+  markQuestionsSeen(entry: SeenQuestionsInput): Promise<void>;
+}
+
+/** One "these were answered" write. `reset` restarts the topic's cycle. */
+export interface SeenQuestionsInput {
+  childId: string;
+  topic: string;
+  questionIds: string[];
+  reset: boolean;
 }

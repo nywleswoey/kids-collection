@@ -1,7 +1,7 @@
 import "server-only";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { quizCompletions } from "@/db/schema";
+import { quizCompletions, quizSeenQuestions } from "@/db/schema";
 import type { QuizStore } from "./quiz-store";
 
 /**
@@ -28,5 +28,37 @@ export const pgQuizStore: QuizStore = {
 
   async recordCompletion(entry) {
     await db.insert(quizCompletions).values(entry);
+  },
+
+  async seenQuestionIds(childId, topic) {
+    const rows = await db
+      .select({ questionId: quizSeenQuestions.questionId })
+      .from(quizSeenQuestions)
+      .where(and(eq(quizSeenQuestions.childId, childId), eq(quizSeenQuestions.topic, topic)));
+    return rows.map((r) => r.questionId);
+  },
+
+  async markQuestionsSeen({ childId, topic, questionIds, reset }) {
+    if (questionIds.length === 0) return;
+    const insert = db
+      .insert(quizSeenQuestions)
+      .values(questionIds.map((questionId) => ({ childId, topic, questionId })))
+      // Idempotent: a replayed offer re-inserts the same (child, topic, question)
+      // rows, which the primary key absorbs.
+      .onConflictDoNothing();
+
+    if (!reset) {
+      await insert;
+      return;
+    }
+    // neon-http has no interactive transaction (see collection-store.pg.ts
+    // swapCards), so the clear+insert goes through db.batch — the same idiom
+    // removeCard uses — to keep the reset atomic.
+    await db.batch([
+      db
+        .delete(quizSeenQuestions)
+        .where(and(eq(quizSeenQuestions.childId, childId), eq(quizSeenQuestions.topic, topic))),
+      insert,
+    ]);
   },
 };

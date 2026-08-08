@@ -115,6 +115,31 @@ export const quizCompletions = pgTable(
 );
 
 /**
+ * Which GRAMMAR questions a child has already ANSWERED (Inc25 FR18) — rows are
+ * written on submit, never when the offer is minted, so abandoning a quiz burns
+ * nothing.
+ *
+ * `topic` is part of the key for two reasons: the exhaustion reset is then one
+ * scoped DELETE, and question ids need only be unique WITHIN a bank rather than
+ * across all six (they are unique globally today only by prefix convention).
+ * Bounded by construction — 6 topics x ~50 questions x 3 children ~= 900 rows.
+ * Maths is excluded on purpose: its ids are positional, so the same id names a
+ * different question every attempt.
+ */
+export const quizSeenQuestions = pgTable(
+  "quiz_seen_questions",
+  {
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    topic: text("topic").notNull(),
+    questionId: text("question_id").notNull(),
+    seenAt: timestamp("seen_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.childId, t.topic, t.questionId] })],
+);
+
+/**
  * Collection-completion rewards (Inc16 FR5). One row per rewarded
  * (child, theme, rarity) set — UNIQUE guarantees a set is rewarded exactly once
  * (dedup + race backstop). `shownAt` null = the celebratory modal is still pending.
@@ -155,4 +180,5 @@ export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
 export type CollectionRow = typeof collections.$inferSelect;
 export type QuizCompletionRow = typeof quizCompletions.$inferSelect;
+export type QuizSeenQuestionRow = typeof quizSeenQuestions.$inferSelect;
 export type CollectionRewardRow = typeof collectionRewards.$inferSelect;
