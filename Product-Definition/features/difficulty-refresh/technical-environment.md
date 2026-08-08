@@ -58,10 +58,17 @@ tests · Vercel · $0/month runtime cost.
 ### D1 — Seen-question tracking: a new table, reached through `QuizStore` (T1)
 
 ```
-quiz_seen_questions (child_id, question_id, seen_at)
-  UNIQUE (child_id, question_id)
+quiz_seen_questions (child_id, topic, question_id, seen_at)
+  PRIMARY KEY (child_id, topic, question_id)
   FK child_id → children(id) ON DELETE CASCADE     -- matches quiz_completions
 ```
+
+> ⚠️ **CORRECTED at Requirements, 2026-08-08 (Finding B).** As first written this table had no `topic`
+> column — and could not perform the per-topic reset specified two bullets below, because a row did not
+> say which topic its question belonged to. The `vt-`/`pp-` prefixes are a naming habit, not data.
+> Adding `topic` also removes a hazard: a `(child, question)` key silently requires grammar ids to be
+> unique across **all six** banks, which holds today only by convention and is tested nowhere — exactly
+> what the ~200-question authoring follow-up would have broken, silently merging two seen-sets.
 
 - **A new method on the existing `QuizStore`**, not a new port. Same aggregate, same lifecycle.
 - **Full seam treatment**: pg adapter + in-memory fake + an extension to
@@ -121,6 +128,15 @@ pure SGT-day reasoning. A function of `(childId, sgtDayKey)`.
   property that makes item 4 actually remove free choice.
 - **The route rejects, it does not merely omit** (T5-i): `/play/learn/[topicId]` refuses a topic outside
   today's three. Hiding the other seven in the picker is not enforcement — the URL is navigable.
+  > ⚠️ **CORRECTED at Requirements, 2026-08-08 (Finding A).** Right reasoning, one step short. The gate
+  > belongs in **`buildQuiz`**: `startQuizAction` is a Server Action — a directly invocable POST taking
+  > the topic id from the client — so a page redirect is bypassed exactly as a picker is by typing a URL.
+  > The route redirect is retained for UX; the service is the boundary.
+- **"Exclude yesterday's" is NOT free.** *"Call the same function with `sgtDayKey - 1`"* does not
+  terminate — day D needs D−1, needs D−2, with no anchor. Non-repetition is delivered structurally
+  instead: consecutive days take disjoint slices of one per-cycle permutation, and a cycle's last day is
+  never adjusted so its predecessor is reconstructible in O(1). Corrected at Construction after a
+  property test caught a grammar topic repeating across a cycle boundary.
 
 **Feasibility, checked during the interview:** the "≥1 maths" guarantee cannot be starved. There are
 **4 maths topics** and at most **3** are excluded as yesterday's, so at least one is always eligible —

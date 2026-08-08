@@ -61,8 +61,8 @@ Scope: source code only. Config files (`.mjs`, `.json`) and generated output are
 | Next.js 15 (App Router) | Whole app — routing, Server Components, Server Actions, middleware | Maintain |
 | React 19 | UI layer; Server Components default | Maintain |
 | Tailwind CSS 4 | All styling; shared classes in `globals.css` | Maintain |
-| Drizzle ORM 0.36 + drizzle-kit 0.28 | All DB access; migrations 0000–0006 applied to prod | Maintain |
-| Neon Postgres 16 (`@neondatabase/serverless`) | Primary datastore — 6 tables | Maintain |
+| Drizzle ORM 0.36 + drizzle-kit 0.28 | All DB access; migrations 0000–0007 applied to prod | Maintain |
+| Neon Postgres (`@neondatabase/serverless`) | Primary datastore — **7 tables**. ⚠️ prod is **PG 17**, not 16; `test:pg` still runs PG16 | Maintain |
 | Auth.js / NextAuth 5.0.0-beta.25 | Parent Google OAuth | Maintain — **see OQ-T-3** |
 | Vercel Blob 0.27 | 300 card images | Maintain |
 | Zod 3 | Profile input + seed-file schema | Maintain |
@@ -144,7 +144,7 @@ The ways an AI agent most plausibly breaks this codebase *while writing perfectl
 | Service | Constraints / Notes |
 |---------|---------------------|
 | Vercel (hosting, Functions, Edge middleware) | Free tier. Production deploys only from the approved flow; no new paid add-ons. |
-| Neon Postgres | Free tier. Migrations 0000–0006 applied to prod — new migrations must preserve `collections`, `children` and `cards` data. |
+| Neon Postgres | Free tier. Migrations 0000–0007 applied to prod — new migrations must preserve `collections`, `children` and `cards` data. |
 | Vercel Blob | Free tier. Stores the 300 card images. Written by the seeding pipeline, never at runtime. |
 | Google OAuth (identity only) | Parent sign-in with an email allowlist. Identity provider only — not hosting or storage. |
 | PostHog | Analytics + error capture. **Session replay is restricted**: enabled only inside the child play area, `maskAllInputs: true`, `recordCrossOriginIframes: false`, off by default so parent/admin pages (including the passcode screen) are never recorded. **Any change to this scoping is a kid-safety decision, not a config tweak.** |
@@ -184,7 +184,7 @@ unauthenticated-by-default surface that has to re-implement the checks Server Ac
 **Relational / SQL only.**
 
 Postgres holds everything: `themes`, `cards`, `children`, `collections`, `quizCompletions`,
-`collectionRewards`. The guarantees protecting the children's data are relational features — CHECK
+`collectionRewards`, `quizSeenQuestions`. The guarantees protecting the children's data are relational features — CHECK
 constraints (`count >= 1`, non-negative ticket columns) and transactional batches for atomic trades.
 
 Explicitly **not** used: document store, key-value store, search index (300 cards need none), in-memory
@@ -314,7 +314,7 @@ contradictions**; this is a strict technical superset.
   `easter_egg_tickets_non_negative`, `epic_tickets_non_negative`, `lucky_tickets_non_negative`.
 - **`themes.sort_order`** — backfilled by migration 0006 to the exact order the children already saw.
   A contract, not a convenience.
-- **Migrations 0000–0006** — already applied to prod. Never edited in place; only added to.
+- **Migrations 0000–0007** — already applied to prod. Never edited in place; only added to.
 
 **Atomicity contracts** (proven by the dual-adapter contract suite)
 - `spendOne` returns null on guard failure — no double-spend.
