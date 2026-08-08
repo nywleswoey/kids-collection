@@ -10,7 +10,7 @@ const BALANCE_COLUMNS = ["pullTokens", "easterEggTickets"] as const;
 
 /** Wipe every table so each makeStore() call yields a fresh, isolated store. */
 export async function resetAll(): Promise<void> {
-  await sql`TRUNCATE collections, collection_rewards, quiz_completions, children, cards, themes RESTART IDENTITY CASCADE`;
+  await sql`TRUNCATE collections, collection_rewards, quiz_completions, quiz_seen_questions, children, cards, themes RESTART IDENTITY CASCADE`;
 }
 
 /** Insert children with both balance columns set explicitly (0 unless the seed

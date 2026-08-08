@@ -1,8 +1,10 @@
-import { getTopic } from "./topics";
+import { getTopic, topicTitle } from "./topics";
 import { generateMathQuestions, isMathTopic } from "./math-gen";
 import { GRAMMAR_BANKS, isGrammarTopic } from "./grammar-bank";
 import { makeQuizOffer, verifyQuizOffer } from "./quiz-offer";
 import { sgtDayKey, decideAward } from "./cap";
+import { isTopicOfferedToday } from "./daily-topics";
+import { coversBank, selectUnseenFirst } from "./seen-select";
 import { sample } from "@/lib/rng";
 import { env } from "@/lib/env";
 import type { ChildStore } from "@/db/stores/child-store";
@@ -19,10 +21,17 @@ import {
 const OFFER_TTL_MS = 10 * 60_000; // 10 min
 const ACTIVITY_LIMIT = 50;
 
-function buildQuestions(topicId: string, rng: () => number): QuizQuestion[] {
+/** Inc25 FR20: `seenIds` biases grammar toward questions this child has not
+ *  answered. Maths ignores it — its ids are positional, so the same id names a
+ *  different question every attempt. */
+function buildQuestions(
+  topicId: string,
+  rng: () => number,
+  seenIds: readonly string[] = [],
+): QuizQuestion[] {
   if (isMathTopic(topicId)) return generateMathQuestions(topicId, QUIZ_LENGTH, rng);
   if (isGrammarTopic(topicId)) {
-    return sample(GRAMMAR_BANKS[topicId], QUIZ_LENGTH, rng).map((q) => ({
+    return selectUnseenFirst(GRAMMAR_BANKS[topicId], seenIds, QUIZ_LENGTH, rng).map((q) => ({
       ...q,
       // shuffle options so the correct one isn't always first
       options: sample(q.options, q.options.length, rng),
@@ -58,12 +67,28 @@ export function makeQuizService({ quiz, children }: QuizDeps) {
     rng: () => number = Math.random,
   ): Promise<BuiltQuiz> {
     if (!getTopic(topicId)) throw new Error(`buildQuiz: unknown topic ${topicId}`);
-    const questions = buildQuestions(topicId, rng);
+
+    // Inc25 FR10: THE boundary for "three topics a day". The picker hides the
+    // other seven and the route redirects, but startQuizAction is a Server
+    // Action — a directly invocable POST that takes the topic id from the
+    // client — so neither is enforcement. This check sits where childId is
+    // already server-resolved, and it gates membership only: replaying a topic
+    // already passed today stays allowed (and unrewarded, via decideAward).
+    if (!isTopicOfferedToday(childId, sgtDayKey(nowMs), topicId))
+      throw new Error(`buildQuiz: topic not offered today ${topicId}`);
+
+    // Read-only on this path — seen-rows are written on submit, never here, so
+    // an abandoned quiz burns nothing (OQ-DR-T1).
+    const seenIds = isGrammarTopic(topicId)
+      ? await quiz.seenQuestionIds(childId, topicId)
+      : [];
+    const questions = buildQuestions(topicId, rng, seenIds);
     const offer = await makeQuizOffer(
       {
         childId,
         topic: topicId,
         answers: questions.map((q) => q.correct),
+        questionIds: questions.map((q) => q.id),
         exp: nowMs + OFFER_TTL_MS,
       },
       env.authSecret,
@@ -121,6 +146,23 @@ export function makeQuizService({ quiz, children }: QuizDeps) {
 
     if (award) await children.incrementColumn(childId, "easterEggTickets", 1);
 
+    // Inc25 FR20: "seen" means ANSWERED, so this is the only place seen-rows are
+    // written. Ids come from the SIGNED offer, never from the client. A
+    // pre-deploy offer carries none (FR17) — record nothing and move on.
+    const servedIds = payload.questionIds ?? [];
+    if (servedIds.length > 0 && isGrammarTopic(payload.topic)) {
+      const bankIds = GRAMMAR_BANKS[payload.topic].map((q) => q.id);
+      const seenIds = await quiz.seenQuestionIds(childId, payload.topic);
+      await quiz.markQuestionsSeen({
+        childId,
+        topic: payload.topic,
+        questionIds: servedIds,
+        // Bank exhausted: restart the cycle from the five just answered rather
+        // than reaching a state where every question counts as seen.
+        reset: coversBank(bankIds, seenIds, servedIds),
+      });
+    }
+
     return { passed, correct, total: answers.length, awarded: award, reason, wrongIndexes };
   }
 
@@ -141,7 +183,9 @@ export function makeQuizService({ quiz, children }: QuizDeps) {
     }
     const recent: QuizActivityRow[] = rows.slice(0, 8).map((r) => ({
       topic: r.topic,
-      title: getTopic(r.topic)?.title ?? r.topic,
+      // Inc25 FR6: resolves retired ids (number-bonds-100) to a label rather
+      // than showing a raw id; falls back to the raw id for anything unknown.
+      title: topicTitle(r.topic),
       correct: r.correct,
       total: r.total,
       passed: r.passed,

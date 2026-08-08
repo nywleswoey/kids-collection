@@ -25,13 +25,24 @@ export const TOPICS: Topic[] = [
     },
   },
   {
-    id: "number-bonds-100",
+    id: "number-bonds-1000",
     subject: "math",
-    title: "Number Bonds to 100",
+    title: "Number Bonds to 1000",
     lesson: {
       intro:
-        "Number bonds to 100 are two numbers that add up to make 100. Tip: make the ones add to 10, then the tens add to 90.",
-      example: "For 63, you need 37 more, because 63 + 37 = 100.",
+        "Number bonds to 1000 are two numbers that add up to make 1000. Tip: make the ones add to 10, then the tens add to 90, then the hundreds add to 900.",
+      example: "For 463, you need 537 more: 3 + 7 = 10, 60 + 30 = 90, 400 + 500 = 900. So 463 + 537 = 1000.",
+    },
+  },
+  {
+    id: "fractions",
+    subject: "math",
+    title: "Fractions",
+    lesson: {
+      intro:
+        "A fraction shows equal parts of a whole. The bottom number says how many equal parts there are; the top number says how many we have. To add or subtract fractions with the same bottom number, work with the top numbers only.",
+      example:
+        "A bar cut into 4 equal parts with 3 shaded is 3/4. And 1/5 + 3/5 = 4/5 — the bottom number stays 5.",
     },
   },
   {
@@ -101,3 +112,25 @@ const BY_ID = new Map(TOPICS.map((t) => [t.id, t]));
 export function getTopic(id: string): Topic | undefined {
   return BY_ID.get(id);
 }
+
+/**
+ * Topic ids that no longer exist but still appear in `quiz_completions` history
+ * (Inc25 FR6). History is NEVER rewritten — rewriting children's rows to claim
+ * attempts at a quiz that did not exist when they were taken was explicitly
+ * rejected — so the admin view resolves the retired id to a label instead.
+ */
+const RETIRED_TOPIC_TITLES: Record<string, string> = {
+  "number-bonds-100": "Number Bonds to 100 (retired)",
+};
+
+/** Display name for a topic id: live title → retired label → the raw id. The
+ *  raw-id fallback stays as the last resort for an id in neither map. */
+export function topicTitle(id: string): string {
+  return BY_ID.get(id)?.title ?? RETIRED_TOPIC_TITLES[id] ?? id;
+}
+
+/** Topic ids by subject — the source of truth for the daily draw's "at least one
+ *  maths" guarantee (Inc25 FR7). Derived from TOPICS, never from generator
+ *  registration, so it stays correct as generators come and go. */
+export const MATH_TOPIC_IDS: string[] = TOPICS.filter((t) => t.subject === "math").map((t) => t.id);
+export const GRAMMAR_TOPIC_IDS: string[] = TOPICS.filter((t) => t.subject === "grammar").map((t) => t.id);
