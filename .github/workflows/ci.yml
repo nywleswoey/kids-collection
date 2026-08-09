@@ -222,6 +222,7 @@ jobs:
       # thing on a runner as on a laptop. Worth being explicit about, because a
       # skip nobody looks at is how a green run stops being evidence.
       - name: Integration tests against the pg adapters
+        id: integration
         run: pnpm test:pg
 
       # The runner is destroyed with the containers on it, so the logs die with
@@ -229,16 +230,24 @@ jobs:
       # failure — the proxy image moving under us — surfaces as unhelpful fetch
       # errors in the vitest output and as the actual cause in the container's.
       #
-      # `always()`, NOT `failure()`, and this is the whole point of the step
-      # rather than a stylistic preference. Exceeding `timeout-minutes` CANCELS
-      # the job, and `failure()` is false under cancellation — so with
-      # `failure()` the one scenario this job is bounded against, `pg:up` wedged
-      # in its unbounded `pg_isready` wait, would be the one scenario that
-      # produced no logs at all. `always()` is the only condition that survives
-      # a cancellation.
+      # The condition reads "unless the suite passed", and both halves are
+      # load-bearing:
       #
-      # Both flags are here to match package.json's `pg:up`/`pg:down` exactly.
-      # `-p` alone does find the containers, but only while the name is right:
+      #   `always()` — because exceeding `timeout-minutes` CANCELS the job, and
+      #   `failure()` is false under cancellation. With `failure()` alone, the one
+      #   scenario this job is bounded against (`pg:up` wedged in its unbounded
+      #   `pg_isready` wait) would be the one scenario producing no logs at all.
+      #   Only `always()`/`cancelled()` survive a cancellation. Note this also
+      #   covers a mid-run cancellation, where `outcome` is not yet 'success'.
+      #
+      #   `steps.integration.outcome != 'success'` — because `always()` alone
+      #   dumps the proxy's per-request INFO chatter on every GREEN run too: the
+      #   first run of this job printed 5,596 lines of it after a passing suite,
+      #   which buries the 47/3 line that is the actual evidence. Logs nobody
+      #   needs are how the logs somebody needs get missed.
+      #
+      # Both compose flags match package.json's `pg:up`/`pg:down` exactly. `-p`
+      # alone does find the containers, but only while the name is right:
       # `docker compose -p <unknown> logs` prints nothing and exits 0, so a
       # renamed project would quietly degrade this to a no-op. With `-f`, a moved
       # compose file fails loudly instead.
@@ -247,5 +256,5 @@ jobs:
       # discarded either way, and a cleanup step would only race this one for the
       # logs.
       - name: Container logs
-        if: always()
+        if: ${{ always() && steps.integration.outcome != 'success' }}
         run: docker compose -f tests-pg/docker-compose.yml -p kc-pgtest logs --no-color --timestamps
