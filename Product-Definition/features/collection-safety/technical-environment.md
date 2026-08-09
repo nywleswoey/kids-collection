@@ -121,9 +121,14 @@ pg_dump (full, gzipped)  →  upload artifact  →  restore into throwaway Postg
 The verification step is part of the same run, not a separate job — a dump that cannot be restored should
 fail the run that produced it.
 
-**Reuse, don't rebuild**: `pnpm pg:up` already stands up Postgres 16 in Docker and applies every migration
+**Reuse, don't rebuild**: `pnpm pg:up` already stands up Postgres in Docker and applies every migration
 in order `[from: package.json:15]`, and `test:pg` already runs against it. The restore drill uses the same
 machinery rather than inventing a parallel path.
+
+*(Written when `pg:up` ran Postgres 16 and the drill therefore could not reuse it. Since issue #26 the
+compose file runs `postgres:17-alpine`, so the major now matches both production and the drill's own
+container — but the drill still stands up its own bare container, because it must restore into an
+**empty** database with no migrations applied.)*
 
 ### Messaging / Integration
 

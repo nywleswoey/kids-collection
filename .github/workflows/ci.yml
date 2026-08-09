@@ -217,9 +217,22 @@ jobs:
       # migrations re-implemented here in YAML.
       #
       # ubuntu-latest needs no preparation for this: docker compose v2 is present
-      # as a subcommand, and psql/pg_isready are preinstalled at PostgreSQL 16.14
-      # — the same major as the postgres:16-alpine container, so no version skew
-      # (verified in #19).
+      # as a subcommand, and psql/pg_isready are preinstalled (verified in #19).
+      #
+      # There IS client/server version skew here, deliberately: the runner's
+      # psql is PostgreSQL 16.x while the container is now postgres:17-alpine
+      # (#26), matching production Neon's MAJOR rather than the runner's tooling.
+      # The skew is harmless for what this job does. `pg_isready` performs no
+      # version check at all, and `psql -f` on plain DDL is just the wire
+      # protocol, which is stable across these majors — it prints its version
+      # banner only when interactive, so the migration loop is not even noisy.
+      # The one client that DOES refuse across majors is `pg_dump`, and this job
+      # never dumps; that refusal is backup.yml's problem, and backup.yml already
+      # runs its tooling from a postgres:17 image for exactly this reason.
+      #
+      # So the tradeoff is chosen on purpose: skew the CLIENT (which does not
+      # care) rather than the SERVER (where a behavioural difference from
+      # production is a real, silent risk to the contract suite's meaning).
       #
       # Its own step so that a failure here is legible as infrastructure. The
       # steps below are plain sequential — no `!cancelled()` as on fast-gate,
@@ -242,6 +255,17 @@ jobs:
       # test file, not a probe of the environment, so it means exactly the same
       # thing on a runner as on a laptop. Worth being explicit about, because a
       # skip nobody looks at is how a green run stops being evidence.
+      #
+      # ⚠️ Known flake, recorded rather than fixed (#26): this suite will
+      # occasionally stall on a single test until vitest's 30s testTimeout kills
+      # it, reporting a wall-clock far longer than 30s — consistent with the
+      # container host stalling, not with a slow query. It reproduced on
+      # postgres:16-alpine as readily as on 17, so it is NOT a consequence of
+      # the version bump, and it has never yet been seen on a runner (only on
+      # local Docker Desktop). Recorded here because it is the failure mode that
+      # would make this REQUIRED check go red on an unchanged tree — if that
+      # happens, re-run before believing the diff caused it, and see the map
+      # (#17) where the trigger to investigate properly is written down.
       - name: Integration tests against the pg adapters
         id: integration
         run: pnpm test:pg

@@ -1,6 +1,32 @@
+# Throwaway Postgres for the `test:pg` contract suite, plus the HTTP proxy that
+# lets @neondatabase/serverless talk to it. Started by `pnpm pg:up`, which also
+# applies every migration in order; torn down by `pnpm pg:down`. Nothing here is
+# a credential — these containers are local and disposable, and CI recreates
+# them from this file on a runner it then destroys.
 services:
   pg:
-    image: postgres:16-alpine
+    # Major 17, matching production Neon rather than the older client tooling
+    # that happens to ship on developer laptops and GitHub runners. This suite's
+    # whole value is that it runs against a REAL Postgres, which is worth much
+    # less if it is a different major from the one that serves the children's
+    # collections. Was `16-alpine` until #26; the drift was known and recorded
+    # from Increment 23 onward.
+    #
+    # The tag floats within the major on purpose, and what it buys is MAJOR
+    # parity — that is where behavioural differences live, and it is the whole
+    # claim this line should be read as making. Minor parity is not promised:
+    # Neon moves prod's minor on its own schedule and nothing here is notified,
+    # so pinning `17.10-alpine` would only buy a number that matched on the day
+    # it was written, plus a refresh ritual nobody is prompted to perform.
+    # (Both happened to be 17.10 when #26 landed.)
+    #
+    # ⚠️ Bumping this major does NOT upgrade an existing data directory. Compose
+    # reuses the anonymous volume when it recreates the container, so the new
+    # server finds a data dir written by the old one and exits immediately with
+    # "database files are incompatible with server". It fails loudly rather than
+    # silently, and `pnpm pg:down` (which passes `-v`) is the whole fix — but run
+    # it BEFORE the first `pg:up` after any change to this line.
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
