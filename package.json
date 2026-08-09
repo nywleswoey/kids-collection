@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:pg": "vitest run --config vitest.pg.config.ts",
-    "pg:up": "docker compose -f tests-pg/docker-compose.yml -p kc-pgtest up -d && until pg_isready -h localhost -p 5499 -U postgres -q; do sleep 0.5; done && for f in $(ls src/db/migrations/*.sql | sort); do PGPASSWORD=postgres psql -q -h localhost -p 5499 -U postgres -d main -v ON_ERROR_STOP=1 -f \"$f\"; done",
+    "pg:up": "docker compose -f tests-pg/docker-compose.yml -p kc-pgtest up -d && until pg_isready -h localhost -p 5499 -U postgres -q; do sleep 0.5; done && for f in src/db/migrations/*.sql; do PGPASSWORD=postgres psql -q -h localhost -p 5499 -U postgres -d main -v ON_ERROR_STOP=1 -f \"$f\" || exit 1; done",
     "pg:down": "docker compose -f tests-pg/docker-compose.yml -p kc-pgtest down -v",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
