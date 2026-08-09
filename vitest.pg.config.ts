@@ -17,7 +17,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests-pg/**/*.pg.test.ts"],
+    // SCRATCH — matches ZERO files on purpose (#23). Worse here than on the
+    // fast gate: the containers still come up, so the job LOOKS like it did
+    // its work.
+    include: ["tests-pg/**/*.no-such-suffix.pg.test.ts"],
     setupFiles: ["./tests-pg/setup.ts"],
     fileParallelism: false, // shared DB → run files serially
     testTimeout: 30_000,
