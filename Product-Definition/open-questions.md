@@ -60,7 +60,38 @@ Last generated: 2026-08-03T11:16:45Z
 
 ## Technical (Technical Environment) open questions
 
-### OQ-T-2: CI gates are declared but not enforced
+### OQ-T-2: CI gates are declared but not enforced — ✅ **CLOSED 2026-08-09**
+
+> **Answer: the four declared gates now run automatically on every pull request, and branch protection
+> makes them binding.** `.github/workflows/ci.yml` supplies two checks — **`fast-gate`** (`typecheck`,
+> `pnpm test`, `build`) and **`pg-gate`** (`pnpm pg:up` + `pnpm test:pg`) — on `pull_request` and on
+> `push: main`, with **no secrets at all**. The repository ruleset **`main protection`** requires a pull
+> request plus both checks, restricts deletions, blocks force-pushes and requires linear history.
+>
+> **The block is branch protection, not a Vercel change.** Vercel's push-to-`main` deploy trigger is
+> untouched; `main` only advances through a green PR, so gating what reaches `main` gates the deploy.
+>
+> **The blocking PBT constraint is now mechanism, not discipline** — and at greater depth than a local
+> run: CI sets `FC_NUM_RUNS: 1000`, ten times fast-check's default, so a run explores ~100,000 cases
+> across 100 `fc.assert` sites. `pnpm test:pg` was moved to **every PR** rather than "when the persistence
+> layer changes", because a path-filtered job that is *skipped* never reports and would leave a required
+> check pending forever.
+>
+> **The bypass list is empty**, deliberately: a "repository admin" entry would have exempted 100% of the
+> humans the rule governs, which is the shape of non-enforcement this question was raised about. Proven to
+> bite rather than assumed — a direct admin push to `main` was rejected with `GH013`, and each of the four
+> gates was deliberately broken and observed to go red for its own reason.
+>
+> *Recorded so it is not rediscovered*: **lint was consciously ruled out**, not forgotten — `next lint` is
+> deprecated, no ESLint config or dependency exists, and adopting it would have blocked this closure
+> behind an unbounded cleanup. The repo's hanging `lint` script was removed rather than wired up.
+> **Signed commits are deliberately not required** on `main`: the 1Password SSH agent is flaky, so the
+> rule would convert every flake into an unmergeable PR with no bypass — and a squash-merge is signed
+> server-side by GitHub regardless. Fixing the signing setup is a separate effort.
+>
+> Full detail: `technical-environment.md` → *Testing → CI/CD Gates*, and the heavily-commented
+> `.github/workflows/ci.yml`.
+
 - **Source section**: Testing — CI/CD Gates (T25)
 - **Question**: When should the declared gates (`typecheck` → `test` → `build`, plus `test:pg` on
   persistence changes) become an actual GitHub Actions workflow?
@@ -102,23 +133,25 @@ anything the Technical Environment forbids, or vice versa.
 | Scale / uptime | Explicit non-goals: no scalability target, no uptime SLO | No queues, no cache, no orchestration, no second datastore | **Aligned** — nothing is over-engineered for absent load |
 | Data protection | QB2 item 1: children's collection data above all else | TB2 restates it and adds the migration-level rule + five named CHECK constraints | **Aligned** — technical side is stricter |
 | Auth boundary | QB2 item 5: profile selection is NOT a security boundary | Restated verbatim, plus the fail-closed `signIn` allowlist and two-layer admin gate | **Aligned** |
-| Testing rigour | PBT is a blocking constraint | 14 PBT files + 5 dual-adapter contract specs exist — **but no CI enforces them** | **Gap, not contradiction** — tracked as OQ-T-2 |
+| Testing rigour | PBT is a blocking constraint | 22 PBT files + 5 dual-adapter contract specs exist, and since 2026-08-09 a **required CI check runs them on every PR** | **Aligned** — the gap that was OQ-T-2 is closed |
 | Compliance | No framework applies (private family app) | Encryption at rest and in transit; multi-tenancy on the deny list | **Aligned** — and the deny-list entry is what keeps "no framework" true |
 
 **Full QB2 vs TB2 item-by-item comparison**: `interview/technical/tech-env-answers-history.md`
 §"CROSS-ROLE CHECK". TB2 was found to be a strict technical superset of QB2 — every business invariant
 has a technical restatement, and the technical role added enforcement detail without weakening any.
 
-**One near-miss worth naming**: testing rigour is the only place the two roles don't fully meet. The
+**One near-miss worth naming**: testing rigour was the only place the two roles didn't fully meet. The
 Business role declared Property-Based Testing *blocking*; the Technical role found nothing enforces it.
-That is a gap between stated and enforced, not a conflict between the two documents — which is exactly
-what OQ-T-2 exists to close.
+That was a gap between stated and enforced, not a conflict between the two documents — and it is the gap
+OQ-T-2 existed to close. **Closed 2026-08-09**: `fast-gate` is a required status check on `main`, so a
+pull request whose properties fail cannot be merged. The row above now reads *Aligned* for that reason.
 
 ---
 
 ## Summary
 
-Total open questions: 5  (Business: 3, Technical: 2)
+Raised during definition: 5  (Business: 3, Technical: 2)
+**Still open: 3**  (OQ-B-1, OQ-B-3, OQ-T-3) — OQ-B-2 closed 2026-08-07, OQ-T-2 closed 2026-08-09.
 Cross-role contradictions: 0
 
 AI-DLC should load this file during Requirements Analysis and resolve each entry
@@ -126,10 +159,12 @@ before proceeding to User Stories or Application Design.
 
 **Priority order** if they can't all be addressed at once:
 1. **OQ-B-1** (backup/restore) — the only item where the downside is irreversible data loss.
-2. **OQ-T-2** (CI automation) — makes a declared blocking constraint actually blocking.
-3. **OQ-B-3** (AI-reconstructed prose) — cheap to confirm, and everything downstream inherits it.
-4. **OQ-B-2** (cost vs. pool growth) — no action needed today; needs a number, not a decision.
-5. **OQ-T-3** (next-auth beta) — no action until auth-adjacent work is planned.
+2. **OQ-B-3** (AI-reconstructed prose) — cheap to confirm, and everything downstream inherits it.
+3. **OQ-T-3** (next-auth beta) — no action until auth-adjacent work is planned.
+
+~~**OQ-T-2** (CI automation) — makes a declared blocking constraint actually blocking.~~ **Done
+2026-08-09.** ~~**OQ-B-2** (cost vs. pool growth) — needs a number, not a decision.~~ **Answered
+2026-08-07.**
 
 ---
 
