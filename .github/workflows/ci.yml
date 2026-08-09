@@ -1,27 +1,25 @@
-# The fast gate: nothing reaches `main` without passing typecheck, the unit and
-# property-based suite, and a real production build.
+# All four gates technical-environment.md declares — typecheck, the unit and
+# property-based suite, a real production build, and the pg integration suite —
+# split across two jobs: `fast-gate` needs nothing but Node, `pg-gate` needs
+# Docker containers. Nothing reaches `main` without both.
 #
 # Why this file exists: Property-Based Testing is a *blocking* constraint carried
 # from the product definition, and until now it was enforced by one person
 # remembering to run `pnpm test` — 22 of the 51 test files are `*.pbt.test.ts`.
 # This workflow is what turns that discipline into mechanism.
 #
-# This file only *supplies* a check. What makes it binding is branch protection
+# This file only *supplies* checks. What makes them binding is branch protection
 # on `main`, which is a repository setting rather than anything committed here.
 # Until that is switched on, this workflow reports and nothing more.
 #
 # No secrets, deliberately. The repository is public, and every gate below is
 # verified to pass with the environment completely empty apart from the one
-# obviously-fake value at the bottom of this file. A workflow that holds no
-# secret cannot leak one, which beats being careful with it.
-#
-# THIS IS NOT YET ALL THE DECLARED GATES. technical-environment.md requires four
-# — unit, integration, typecheck, build — and the integration suite (`pnpm
-# test:pg`, six files under tests-pg/ that the default vitest config deliberately
-# excludes so `pnpm test` needs no database) is NOT run here. It needs Postgres
-# containers on the runner, so it lands as a peer job in #22. Said out loud
-# because a gate that is quietly absent is the exact failure this effort exists
-# to prevent: "something checked" is a claim, and it must be a true one.
+# obviously-fake `.invalid` URL in the Build step — the only `env:` in this file.
+# (pg-gate needs no `env:` at all: its connection details are committed in
+# tests-pg/setup.ts and tests-pg/docker-compose.yml, and point at a throwaway
+# container this workflow starts.) A workflow that holds no secret cannot leak
+# one, which beats being careful with it. In particular NOTHING here may reach
+# the production database.
 name: ci
 
 on:
@@ -53,14 +51,14 @@ permissions:
   contents: read
 
 jobs:
-  # The job id IS the check name branch protection will require (#24). There is
-  # deliberately no `name:` key, so there is exactly one string to get right
-  # instead of two that can drift apart.
+  # Each job id IS a check name branch protection will require (#24) — there are
+  # now TWO: `fast-gate` and `pg-gate`. Neither job has a `name:` key, so there
+  # is exactly one string per check to get right instead of two that can drift.
   #
-  # Renaming this job silently detaches the protection rule from the check it was
-  # protecting: the rule goes on waiting for a check that no longer reports, and
-  # the PR sits pending forever rather than failing loudly. Treat `fast-gate` as
-  # a published name.
+  # Renaming either job silently detaches the protection rule from the check it
+  # was protecting: the rule goes on waiting for a check that no longer reports,
+  # and the PR sits pending forever rather than failing loudly. Treat both names
+  # as published.
   fast-gate:
     runs-on: ubuntu-latest
 
@@ -148,3 +146,115 @@ jobs:
         env:
           DATABASE_URL: postgres://ci:ci@db.invalid/ci?sslmode=require
         run: pnpm build
+
+  # The fourth declared gate: the integration suite, `pnpm test:pg` — the shared
+  # store contracts run a second time against the REAL pg adapters, which is what
+  # makes the Store seam more than an interface nobody tests twice.
+  #
+  # A SEPARATE JOB rather than three more steps on fast-gate, and the reason is
+  # not wall-clock (though it does now run alongside it). It is that this job is
+  # the only part of CI that depends on something outside the repository:
+  # `ghcr.io/timowilhelm/local-neon-http-proxy:main`, a mutable tag in a third
+  # party's personal namespace. When that breaks — and it can break with no
+  # commit of ours — a separate check means the failure names itself, and
+  # fast-gate stays green to say so. Folded into one job, the same outage would
+  # read as "the code is broken", which is a lie of exactly the kind this
+  # workflow exists to stop. (See "Not yet specified" on #17 for the standing
+  # question of pinning that image by digest.)
+  pg-gate:
+    runs-on: ubuntu-latest
+
+    # A hang detector, not a budget: locally this is ~55s of tests on top of ~3s
+    # of container start. It is set higher than fast-gate's 10 because `pg:up`
+    # waits on `until pg_isready … do sleep 0.5`, an UNBOUNDED loop — at a
+    # keyboard you ctrl-C it, on a runner it would sit here until GitHub's 6-hour
+    # ceiling, leaving a required check that never reports. This is the bound.
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same three setup steps as fast-gate, and deliberately not factored out:
+      # a composite action or a reusable workflow would trade eight duplicated
+      # lines for a second file to keep in sync, and these are the lines whose
+      # whole purpose is to have one obvious answer. See fast-gate above for why
+      # neither step carries a version literal.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # `pnpm pg:up`, verbatim — NOT ported to GitHub `services:`. The compose
+      # file stays the single source of truth, so `depends_on: service_healthy`
+      # ordering and the migration loop come free and CI cannot drift from what
+      # the developer runs. `services:` has no `depends_on` and would need the
+      # migrations re-implemented here in YAML.
+      #
+      # ubuntu-latest needs no preparation for this: docker compose v2 is present
+      # as a subcommand, and psql/pg_isready are preinstalled at PostgreSQL 16.14
+      # — the same major as the postgres:16-alpine container, so no version skew
+      # (verified in #19).
+      #
+      # Its own step so that a failure here is legible as infrastructure. The
+      # steps below are plain sequential — no `!cancelled()` as on fast-gate,
+      # where the gates are independent. Here they are not: running the suite
+      # against containers that never came up would report a wall of connection
+      # errors, i.e. a code failure that did not happen.
+      - name: Start Postgres and the Neon HTTP proxy
+        run: pnpm pg:up
+
+      # No env block, and none needed: tests-pg/setup.ts hardcodes both the local
+      # proxy endpoint and postgres://postgres:postgres@localhost:5499/main. That
+      # is a container this job just created and the runner will destroy — the
+      # credentials are as public as the compose file they come from.
+      #
+      # 47 tests pass and 3 skip. The 3 are `it.runIf(properties)` in the shared
+      # contracts, switched off by `{ properties: false }` at each tests-pg entry
+      # point — the properties DO run, exhaustively, against the in-memory fake
+      # in `pnpm test` over on fast-gate; running them again over HTTP round
+      # trips would buy nothing but minutes. The condition is a literal in the
+      # test file, not a probe of the environment, so it means exactly the same
+      # thing on a runner as on a laptop. Worth being explicit about, because a
+      # skip nobody looks at is how a green run stops being evidence.
+      - name: Integration tests against the pg adapters
+        id: integration
+        run: pnpm test:pg
+
+      # The runner is destroyed with the containers on it, so the logs die with
+      # them unless they are printed here. They matter because the interesting
+      # failure — the proxy image moving under us — surfaces as unhelpful fetch
+      # errors in the vitest output and as the actual cause in the container's.
+      #
+      # The condition reads "unless the suite passed", and both halves are
+      # load-bearing:
+      #
+      #   `always()` — because exceeding `timeout-minutes` CANCELS the job, and
+      #   `failure()` is false under cancellation. With `failure()` alone, the one
+      #   scenario this job is bounded against (`pg:up` wedged in its unbounded
+      #   `pg_isready` wait) would be the one scenario producing no logs at all.
+      #   Only `always()`/`cancelled()` survive a cancellation. Note this also
+      #   covers a mid-run cancellation, where `outcome` is not yet 'success'.
+      #
+      #   `steps.integration.outcome != 'success'` — because `always()` alone
+      #   dumps the proxy's per-request INFO chatter on every GREEN run too: the
+      #   first run of this job printed 5,596 lines of it after a passing suite,
+      #   which buries the 47/3 line that is the actual evidence. Logs nobody
+      #   needs are how the logs somebody needs get missed.
+      #
+      # Both compose flags match package.json's `pg:up`/`pg:down` exactly. `-p`
+      # alone does find the containers, but only while the name is right:
+      # `docker compose -p <unknown> logs` prints nothing and exits 0, so a
+      # renamed project would quietly degrade this to a no-op. With `-f`, a moved
+      # compose file fails loudly instead.
+      #
+      # No `pnpm pg:down`. Teardown on an ephemeral runner is ceremony: the VM is
+      # discarded either way, and a cleanup step would only race this one for the
+      # logs.
+      - name: Container logs
+        if: ${{ always() && steps.integration.outcome != 'success' }}
+        run: docker compose -f tests-pg/docker-compose.yml -p kc-pgtest logs --no-color --timestamps
