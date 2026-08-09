@@ -12,11 +12,12 @@
 # on `main`, which is a repository setting rather than anything committed here.
 # Until that is switched on, this workflow reports and nothing more.
 #
-# No secrets, deliberately. The repository is public, and every gate below is
-# verified to pass with the environment completely empty apart from the one
-# obviously-fake `.invalid` URL in the Build step — the only `env:` in this file.
-# (pg-gate needs no `env:` at all: its connection details are committed in
-# tests-pg/setup.ts and tests-pg/docker-compose.yml, and point at a throwaway
+# No secrets, deliberately. The repository is public, and every gate below still
+# passes with the environment completely empty. There are exactly two `env:`
+# blocks in this file and neither is a credential: an obviously-fake `.invalid`
+# URL that `next build` only parses, and FC_NUM_RUNS, which makes the property
+# search deeper but never makes it possible. (pg-gate has no `env:` at all — its
+# connection details are committed in tests-pg/, and point at a throwaway
 # container this workflow starts.) A workflow that holds no secret cannot leak
 # one, which beats being careful with it. In particular NOTHING here may reach
 # the production database.
@@ -120,12 +121,12 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm typecheck
 
-      # 321 tests across 51 files, 22 of them property-based, and 182 `fc.assert`
+      # 321 tests across 51 files, 22 of them property-based, and 100 `fc.assert`
       # call sites. The suite still passes with every environment variable unset
       # — the one below only makes the search deeper, never makes it possible.
       #
-      # 1000 is ten times fast-check's default, so this run explores ~182,000
-      # cases rather than ~18,200. Property-Based Testing is a *blocking*
+      # 1000 is ten times fast-check's default, so this run explores ~100,000
+      # cases rather than ~10,000. Property-Based Testing is a *blocking*
       # constraint (OQ-T-2), and mechanising a shallow search would close that
       # question only nominally. The runner is where depth is free: nobody is
       # waiting on it, and `pg-gate` sets the PR's wall-clock at ~2m30s either

@@ -21,14 +21,16 @@ import fc from "fast-check";
 const configured = process.env.FC_NUM_RUNS;
 
 if (configured !== undefined && configured !== "") {
-  const numRuns = Number(configured);
-
-  if (!Number.isInteger(numRuns) || numRuns < 1) {
+  // Decimal digits only, so the check means what the message says. `Number()`
+  // alone would quietly accept `1e3`, `0x10`, `0b101`, `+100`, `" 100 "` and
+  // `100.0` — all "valid" to Number.isInteger, none of them something anyone
+  // meant to write in a workflow file.
+  if (!/^[0-9]+$/.test(configured) || Number(configured) < 1) {
     throw new Error(
-      `FC_NUM_RUNS must be a positive integer; got ${JSON.stringify(configured)}. ` +
-        `Leave it unset for fast-check's default of 100.`,
+      `FC_NUM_RUNS must be a positive integer in plain decimal digits; ` +
+        `got ${JSON.stringify(configured)}. Leave it unset for fast-check's default of 100.`,
     );
   }
 
-  fc.configureGlobal({ numRuns });
+  fc.configureGlobal({ numRuns: Number(configured) });
 }
