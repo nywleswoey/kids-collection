@@ -120,12 +120,32 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm typecheck
 
-      # 321 tests across 51 files, 22 of them property-based. This step has no
-      # `env:` block, and that is the point: the suite is verified to pass with
-      # every environment variable unset, so there is nothing here to configure
-      # wrong and nothing to leak.
+      # 321 tests across 51 files, 22 of them property-based, and 182 `fc.assert`
+      # call sites. The suite still passes with every environment variable unset
+      # — the one below only makes the search deeper, never makes it possible.
+      #
+      # 1000 is ten times fast-check's default, so this run explores ~182,000
+      # cases rather than ~18,200. Property-Based Testing is a *blocking*
+      # constraint (OQ-T-2), and mechanising a shallow search would close that
+      # question only nominally. The runner is where depth is free: nobody is
+      # waiting on it, and `pg-gate` sets the PR's wall-clock at ~2m30s either
+      # way, so `fast-gate` has roughly 90s of slack before this could cost
+      # anyone a second.
+      #
+      # Measured local cost, whole suite: unset 3.17s, 500 3.66s, 1000 4.19s,
+      # 2000 5.42s, 5000 8.66s, 10000 15.33s. All green — the properties held to
+      # 10,000 runs each, so raising this further is a one-line change with a
+      # known price. 1000 is chosen over 10000 because most arbitraries here are
+      # small and bounded (`fc.integer({min:0,max:60})`, arrays of at most 5), so
+      # the tail is mostly re-sampling, and the slack is better kept for `build`.
+      #
+      # Reproduce any CI-only failure locally with `FC_NUM_RUNS=1000 pnpm test`.
+      # A malformed value throws — see tests/setup.ts for why that matters more
+      # than it looks.
       - name: Unit and property-based tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        env:
+          FC_NUM_RUNS: 1000
         run: pnpm test
 
       # The only gate needing any environment at all, and a fake satisfies it.
