@@ -1,5 +1,4 @@
 import { neonConfig } from "@neondatabase/serverless";
-import fc from "fast-check";
 
 /**
  * Point the neon-http driver at the local proxy (docker: postgres + neon HTTP
@@ -13,6 +12,14 @@ neonConfig.poolQueryViaFetch = true;
 process.env.DATABASE_URL = "postgres://postgres:postgres@localhost:5499/main";
 process.env.AUTH_SECRET ??= "test-secret-key";
 
-// Each property run truncates + reseeds a real DB over HTTP — keep the count
-// modest so the round-trips stay quick.
-fc.configureGlobal({ numRuns: 10 });
+// No `fc.configureGlobal` here, deliberately: this suite runs NO properties.
+// Every `it.runIf(properties)` in the shared contracts is switched off by the
+// `{ properties: false }` each tests-pg entry point passes, which is the whole
+// of the "47 passed | 3 skipped" — so nothing in this run reaches `fc.assert`
+// and a numRuns set here would configure nothing. It previously did, and read
+// as though the pg suite were fuzzing at a low count.
+//
+// If properties are ever switched on for the pg adapters, set a LOW count here
+// rather than inheriting: each run truncates and reseeds a real database over
+// HTTP, so the round-trips, not the search, are the cost. Depth for the suite
+// that actually fuzzes lives in tests/setup.ts, via FC_NUM_RUNS.
