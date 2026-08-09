@@ -33,7 +33,7 @@ Project type: Brownfield
 | Language | Version | Purpose | Rationale |
 |----------|---------|---------|-----------|
 | TypeScript | 5.7.x, `strict` | Everything — app, server actions, DB layer, tests, seed/reconcile scripts | Single language across the whole stack; type safety is the main defect filter given there's no second reviewer |
-| SQL (PostgreSQL dialect) | PG 16-compatible | Migrations in `src/db/migrations/*.sql`, CHECK constraints | Drizzle generates them, but they're committed and reviewed as real artifacts — the invariants live here |
+| SQL (PostgreSQL dialect) | PG 17-compatible | Migrations in `src/db/migrations/*.sql`, CHECK constraints | Drizzle generates them, but they're committed and reviewed as real artifacts — the invariants live here |
 
 There is no separate "backend language". Server Actions mean server code is the same TypeScript as client
 code, split by `"use server"` / `server-only` rather than by language.
@@ -62,7 +62,7 @@ Scope: source code only. Config files (`.mjs`, `.json`) and generated output are
 | React 19 | UI layer; Server Components default | Maintain |
 | Tailwind CSS 4 | All styling; shared classes in `globals.css` | Maintain |
 | Drizzle ORM 0.36 + drizzle-kit 0.28 | All DB access; migrations 0000–0007 applied to prod | Maintain |
-| Neon Postgres (`@neondatabase/serverless`) | Primary datastore — **7 tables**. ⚠️ prod is **PG 17**, not 16; `test:pg` still runs PG16 | Maintain |
+| Neon Postgres (`@neondatabase/serverless`) | Primary datastore — **7 tables**. Prod is **PG 17** (17.10 at time of writing); `test:pg` runs `postgres:17-alpine`, matching the major | Maintain |
 | Auth.js / NextAuth 5.0.0-beta.25 | Parent Google OAuth | Maintain — **see OQ-T-3** |
 | Vercel Blob 0.27 | 300 card images | Maintain |
 | Zod 3 | Profile input + seed-file schema | Maintain |
@@ -340,8 +340,14 @@ contradictions**; this is a strict technical superset.
 ### Test Types
 
 - **Unit** — 41 files under `tests/`, run by `pnpm test` (Vitest, node env, no database needed).
-- **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 16 in Docker via a
-  local Neon HTTP proxy (`tests-pg/`, 5 adapter suites, serial execution, 30s timeout).
+- **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 17 in Docker via a
+  local Neon HTTP proxy (`tests-pg/`, 5 adapter suites, serial execution, 30s timeout). The container
+  **major** deliberately matches production Neon, so a contract the suite proves is a contract prod
+  honours; the tag floats within the major, since Neon moves prod's minor unannounced and a pinned minor
+  would match only on the day it was pinned. The `psql` doing the migrations may be older, which nothing
+  here depends on. ⚠️ **Known flake**: the suite intermittently stalls on one test until the 30s timeout
+  fires. Reproduced on Postgres 16 and 17 alike, so it is not a property of the version; seen only on
+  local Docker Desktop so far, never on a CI runner.
 - **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds 5 conformance
   specs run against **both** adapters (in-memory fake in Vitest, pg adapter in `test:pg`), proving they
   agree on the atomicity contracts.
@@ -372,7 +378,7 @@ input space; the 14 existing PBT files already meet the stronger bar.
 |-----------|------|
 | Unit | Vitest 2 (`pnpm test`, node environment, `tests/**/*.test.ts`) |
 | Property-based | fast-check 3, via Vitest (`tests/**/*.pbt.test.ts`) |
-| Integration (real DB) | Vitest with `vitest.pg.config.ts` (`pnpm test:pg`) against Postgres 16 in Docker + `local-neon-http-proxy`; `fileParallelism: false` because the DB is shared |
+| Integration (real DB) | Vitest with `vitest.pg.config.ts` (`pnpm test:pg`) against Postgres 17 in Docker + `local-neon-http-proxy`; `fileParallelism: false` because the DB is shared |
 | Adapter contract | One shared conformance spec in `tests/contracts/`, run against the in-memory fake **and** the pg adapter |
 | Type checking | `tsc --noEmit` (`pnpm typecheck`) — with `allowJs: false`, so untyped source cannot slip in |
 | Local DB lifecycle | `pnpm pg:up` / `pnpm pg:down` (docker compose; applies all migrations in order) |
