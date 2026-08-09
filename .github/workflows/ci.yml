@@ -13,11 +13,13 @@
 # Until that is switched on, this workflow reports and nothing more.
 #
 # No secrets, deliberately. The repository is public, and every gate below is
-# verified to pass with the environment completely empty apart from two
-# obviously-fake local values (a `.invalid` build URL, and the throwaway
-# container's postgres/postgres). A workflow that holds no secret cannot leak
+# verified to pass with the environment completely empty apart from the one
+# obviously-fake `.invalid` URL in the Build step — the only `env:` in this file.
+# (pg-gate needs no `env:` at all: its connection details are committed in
+# tests-pg/setup.ts and tests-pg/docker-compose.yml, and point at a throwaway
+# container this workflow starts.) A workflow that holds no secret cannot leak
 # one, which beats being careful with it. In particular NOTHING here may reach
-# the production database: `pg-gate` talks only to a container it started.
+# the production database.
 name: ci
 
 on:
@@ -223,15 +225,27 @@ jobs:
         run: pnpm test:pg
 
       # The runner is destroyed with the containers on it, so the logs die with
-      # them unless they are printed here. Only on failure, and only then because
-      # the interesting failure — the proxy image moving under us — shows up as
-      # unhelpful fetch errors in the vitest output and as the actual cause in
-      # the container's. The project name alone finds them; no compose file path
-      # to drift from package.json.
+      # them unless they are printed here. They matter because the interesting
+      # failure — the proxy image moving under us — surfaces as unhelpful fetch
+      # errors in the vitest output and as the actual cause in the container's.
+      #
+      # `always()`, NOT `failure()`, and this is the whole point of the step
+      # rather than a stylistic preference. Exceeding `timeout-minutes` CANCELS
+      # the job, and `failure()` is false under cancellation — so with
+      # `failure()` the one scenario this job is bounded against, `pg:up` wedged
+      # in its unbounded `pg_isready` wait, would be the one scenario that
+      # produced no logs at all. `always()` is the only condition that survives
+      # a cancellation.
+      #
+      # Both flags are here to match package.json's `pg:up`/`pg:down` exactly.
+      # `-p` alone does find the containers, but only while the name is right:
+      # `docker compose -p <unknown> logs` prints nothing and exits 0, so a
+      # renamed project would quietly degrade this to a no-op. With `-f`, a moved
+      # compose file fails loudly instead.
       #
       # No `pnpm pg:down`. Teardown on an ephemeral runner is ceremony: the VM is
-      # discarded either way, and a cleanup step that runs before this one would
-      # take the logs with it.
-      - name: Container logs (on failure)
-        if: failure()
-        run: docker compose -p kc-pgtest logs --no-color --timestamps
+      # discarded either way, and a cleanup step would only race this one for the
+      # logs.
+      - name: Container logs
+        if: always()
+        run: docker compose -f tests-pg/docker-compose.yml -p kc-pgtest logs --no-color --timestamps
