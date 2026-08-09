@@ -14,6 +14,14 @@
 # verified to pass with the environment completely empty apart from the one
 # obviously-fake value at the bottom of this file. A workflow that holds no
 # secret cannot leak one, which beats being careful with it.
+#
+# THIS IS NOT YET ALL THE DECLARED GATES. technical-environment.md requires four
+# — unit, integration, typecheck, build — and the integration suite (`pnpm
+# test:pg`, six files under tests-pg/ that the default vitest config deliberately
+# excludes so `pnpm test` needs no database) is NOT run here. It needs Postgres
+# containers on the runner, so it lands as a peer job in #22. Said out loud
+# because a gate that is quietly absent is the exact failure this effort exists
+# to prevent: "something checked" is a claim, and it must be a true one.
 name: ci
 
 on:
@@ -79,6 +87,11 @@ jobs:
       # No `version:` on purpose — the action reads `packageManager`, so the pnpm
       # running here is the exact one the developer ran. Pinning it again would
       # give the repo two answers to one question.
+      #
+      # Note the order: setup-node runs BEFORE this, which is only safe because
+      # setup-node has no `cache:` key. `cache: pnpm` shells out to pnpm to
+      # locate the store, so adding it means pnpm has to be installed first.
+      # Whoever acts on the caching note below must swap these two steps.
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
