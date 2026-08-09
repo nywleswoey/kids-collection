@@ -66,7 +66,7 @@ Scope: source code only. Config files (`.mjs`, `.json`) and generated output are
 | Auth.js / NextAuth 5.0.0-beta.25 | Parent Google OAuth | Maintain — **see OQ-T-3** |
 | Vercel Blob 0.27 | 300 card images | Maintain |
 | Zod 3 | Profile input + seed-file schema | Maintain |
-| Vitest 2 + fast-check 3 | 41 unit/PBT files + 5 contract specs | Maintain |
+| Vitest 2 + fast-check 3 | 51 unit/PBT files (22 property-based) + 5 contract specs | Maintain |
 | PostHog (`posthog-js` / `posthog-node`) | Analytics, error capture, scoped session replay | Maintain |
 | Pollinations.ai | Seed-time image generation only | Maintain — Workers AI / Flux is the parked alternative |
 
@@ -339,9 +339,11 @@ contradictions**; this is a strict technical superset.
 
 ### Test Types
 
-- **Unit** — 41 files under `tests/`, run by `pnpm test` (Vitest, node env, no database needed).
+- **Unit** — 51 files under `tests/` (321 tests), run by `pnpm test` (Vitest, node env, no database
+  needed). 22 of the 51 are property-based; see below.
 - **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 17 in Docker via a
-  local Neon HTTP proxy (`tests-pg/`, 5 adapter suites, serial execution, 30s timeout). The container
+  local Neon HTTP proxy (`tests-pg/`, 6 suites — the 5 store adapters plus the pool writer — serial
+  execution, 30s timeout; 47 tests pass and 3 skip). The container
   **major** deliberately matches production Neon, so a contract the suite proves is a contract prod
   honours; the tag floats within the major, since Neon moves prod's minor unannounced and a pinned minor
   would match only on the day it was pinned. The `psql` doing the migrations may be older, which nothing
@@ -351,10 +353,12 @@ contradictions**; this is a strict technical superset.
 - **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds 5 conformance
   specs run against **both** adapters (in-memory fake in Vitest, pg adapter in `test:pg`), proving they
   agree on the atomicity contracts.
-- **Property-based — REQUIRED and BLOCKING** — ~14 `*.pbt.test.ts` files covering the logic where a wrong
-  answer costs the children real cards: `logic`, `sacrifice`, `trade-logic`, `offer`, `signed-token`,
-  `gate-token`, `auth-policy`, `quiz-cap`, `quiz-offer`, `quiz-math-gen`, `collection-reward`,
-  `rarity-filter`, `pull-categories`, `easter-egg`.
+- **Property-based — REQUIRED and BLOCKING** — **22** `*.pbt.test.ts` files carrying **100** `fc.assert`
+  call sites, covering the logic where a wrong answer costs the children real cards: `auth-policy`,
+  `collection-reward`, `count-report`, `db-target`, `easter-egg`, `gate-token`, `logic`, `offer`,
+  `pull-categories`, `quiz-cap`, `quiz-daily-topics`, `quiz-fraction-gen`, `quiz-math-gen`, `quiz-offer`,
+  `quiz-seen-select`, `rarity-filter`, `sacrifice`, `sacrifice-filter`, `seed-rules`, `signed-token`,
+  `trade-board`, `trade-logic`. **Now enforced in CI** — see *CI/CD Gates*, including the depth it runs at.
 
 **Explicitly not required**: end-to-end (no browser harness; the manual visual check covers it),
 performance/load (three users — there is no load), SAST/DAST (no public attack surface; the app sits
@@ -370,7 +374,8 @@ no provider is installed. This is a deliberate position, not an oversight. The b
 > eligibility, rarity weighting, quiz caps.
 
 A line-coverage percentage can be satisfied without ever asserting that an invariant holds across the
-input space; the 14 existing PBT files already meet the stronger bar.
+input space; the 22 existing PBT files already meet the stronger bar — and, since 2026-08-09, a required
+check runs them on every pull request rather than trusting that someone did.
 
 ### Tooling
 
@@ -385,18 +390,80 @@ input space; the 14 existing PBT files already meet the stronger bar.
 
 ### CI/CD Gates
 
-**Required gates before deploy**: unit tests + integration tests + `typecheck` + `build`, with
-`pnpm test:pg` when the persistence layer changes. No code review (single developer). No security
-scanning.
+**Required gates before merge**: `typecheck` + unit/PBT tests + `build` + integration tests
+(`pnpm test:pg`) — **all four on every pull request**, no path filtering. No code review (single
+developer). No security scanning. No lint (see below).
 
-**Enforcement status — declared intent, not yet implemented.** `.github/workflows/` now exists but holds
-only `backup.yml` (the nightly verified backup, Increment 23) — there is still **no test or lint CI**. These
-gates are real and have been run for 22 increments, but **manually**; nothing blocks a deploy that skipped
-them. The user's stated position: *"will automate later on."*
+**Enforcement status — enforced since 2026-08-09.** `.github/workflows/ci.yml` supplies the checks and
+**branch protection on `main` makes them binding**.
 
-> ⚠️ **Why this matters specifically**: Property-Based Testing is a **blocking** constraint carried from
-> the Business role. Until automation exists, that blocking rule is enforced only by developer discipline.
-> Tracked as **OQ-T-2**.
+- **The workflow**: two jobs on `pull_request` and on `push: main`. **`fast-gate`** runs `typecheck`,
+  `pnpm test` and `build` (~66s); **`pg-gate`** runs `pnpm pg:up` and `pnpm test:pg` against the Docker
+  containers (~2m24s, and therefore the PR's critical path). Two jobs rather than one because `pg-gate`
+  is CI's only dependency on something outside the repo (`local-neon-http-proxy`, a mutable tag in a
+  third party's namespace); isolated, that outage names itself instead of reading as broken code.
+  **Zero secrets** — every gate passes with the environment empty. The one value `build` needs is a
+  committed dummy `DATABASE_URL` pointing at an RFC 2606 `.invalid` host, which `neon()` only parses.
+- **The block is branch protection, not a Vercel change.** Repository ruleset `main protection`
+  (active, targeting `~DEFAULT_BRANCH` so a rename cannot leave it protecting nothing) requires a pull
+  request and both status checks `fast-gate` and `pg-gate`, restricts deletions, blocks force-pushes and
+  requires linear history. Vercel's push-to-`main` deploy trigger is untouched: `main` only advances
+  through a green PR, so the deploy is gated by gating what reaches `main`. An Ignored Build Step on
+  Vercel was considered and rejected — it needs a Vercel-side change and races the build.
+  ⚠️ **`fast-gate` and `pg-gate` are the only two checks that may ever be required**, and both names are
+  published: renaming a job silently detaches the rule from the check, leaving PRs pending forever rather
+  than failing loudly. In particular **`Vercel Preview Comments` must never be required** — it reported
+  `success` on all six deliberately-broken commits, so requiring it would re-create this document's own
+  problem in a different costume: a check that cannot fail.
+- **Bypass posture: the bypass list is empty.** A "repository admin" bypass entry would have exempted
+  100% of the humans the rule governs — a no-op wearing a rule's label, which is where OQ-T-2 started.
+  No configuration makes `main` immutable to a sole admin (editing the ruleset is always available), so
+  what an empty list buys is a **deliberate, version-logged detour** rather than a lock; a bypass entry
+  would sell that back for an escape hatch that exists anyway.
+- **0 required approvals is forced, not chosen.** GitHub forbids self-approval and there is no second
+  collaborator, so any count ≥ 1 alongside an empty bypass list makes `main` permanently unmergeable.
+  Likewise **"require branches to be up to date" is off**: `ci.yml` already runs on `push: main`, so a
+  semantic conflict names itself ~2.5 minutes after merge, and turning it on would tax every merge with
+  a rebase and a full `pg-gate` re-run to move that detection slightly earlier.
+- **Signed commits are deliberately NOT required** — see `open-questions.md`; it is a decision about the
+  signing setup, not about the gates. A squash-merge is signed server-side by GitHub's web-flow key
+  regardless, so `main`'s history is signed on the path this repo actually uses.
+- **Proven to bite, not assumed.** An empty commit pushed straight to `main` *as admin* was rejected with
+  `GH013`, naming both *"Changes must be made through a pull request"* and *"2 of 2 required status
+  checks are expected"* — the `2 of 2` confirming both contexts resolved rather than sitting unmatched.
+- **Proven honest, not merely green.** Each gate was deliberately broken on a throwaway branch, one
+  breakage per run, and each went red for its own reason: a failing assertion and a failing *property*
+  redden `test` only; a module-scope throw reddens `build` only (caught in *Collecting page data*, a
+  class the other three structurally cannot catch); a failing `*.pg.test.ts` reddens `pg-gate` only, with
+  a diff whose actual value was read back over the proxy, proving the containers came up.
+  ⚠️ **Consequence to preserve**: pointing either vitest `include` glob at a dead suffix reddens the
+  check (`No test files found`), because neither script sets `--passWithNoTests`. **It must never be
+  added** — a suite that passes while running nothing is precisely the failure this section exists to
+  prevent.
+
+**Why `test:pg` runs on *every* PR** — overriding the earlier rule of "when the persistence layer
+changes". A path-filtered job that is **skipped** never reports a conclusion, so as a *required* check it
+leaves the PR pending forever; the usual workaround, a same-named always-green companion job, is exactly
+the "something was checked" lie this document is trying to stop. The blanket rule costs ~2m24s per PR and
+removes the question entirely. The containers are the same `pnpm pg:up` a developer runs, on Postgres 17
+matching production's major (see *Test Types*).
+
+**Lint is deliberately absent, and this is a decision rather than an oversight.** `next lint` is
+deprecated and the repo's `lint` script — which hung on an interactive setup prompt — has been removed
+rather than wired into CI. Adopting ESLint properly means adding a config and a dependency and then
+fixing an unknown violation count across 25 increments; lint is not one of the four gates this document
+declares, and blocking the enforcement work behind an unbounded cleanup would have been a second effort
+wearing this one's clothes. Revisit as its own piece of work if it is ever wanted.
+
+> ✅ **Why this mattered**: Property-Based Testing is a **blocking** constraint carried from the Business
+> role, and it used to be enforced only by developer discipline. It is now enforced by mechanism:
+> `pnpm test` runs on `fast-gate` on every pull request and `fast-gate` is a required check, so a PR whose
+> properties fail cannot be merged. **Enforced depth**: CI sets `FC_NUM_RUNS: 1000` — ten times
+> fast-check's default — so a run explores ~100,000 cases across the suite's 100 `fc.assert` sites, while
+> a local run stays at the default 100 for a fast inner loop. `FC_NUM_RUNS=1000 pnpm test` reproduces CI
+> exactly, and a malformed value **throws**: `numRuns: NaN` would otherwise run every property zero times
+> and report a pass. No property has failed at any depth up to 10,000 runs each.
+> **OQ-T-2 is closed** (2026-08-09).
 
 ---
 
@@ -482,9 +549,13 @@ Full detail in `open-questions.md`.
 
 | ID | Title |
 |----|-------|
-| **OQ-T-2** | CI gates are declared but not enforced — no `.github/workflows/`, so the blocking PBT constraint rests on developer discipline |
 | **OQ-T-3** | `next-auth` is pinned to `5.0.0-beta.25`, a beta release sitting on the only security boundary |
 
-**Resolved during definition, not carried**: OQ-T-1 — `allowJs: true` meant the JavaScript prohibition was
-convention rather than mechanism. Closed on 2026-08-03 by setting `"allowJs": false`; `pnpm typecheck`
-passes clean.
+**Resolved, not carried:**
+
+- **OQ-T-1** — `allowJs: true` meant the JavaScript prohibition was convention rather than mechanism.
+  Closed on 2026-08-03 by setting `"allowJs": false`; `pnpm typecheck` passes clean.
+- **OQ-T-2** — CI gates were declared but not enforced, leaving the blocking PBT constraint resting on
+  developer discipline. **Closed on 2026-08-09**: `.github/workflows/ci.yml` runs all four gates on every
+  pull request and the `main protection` ruleset requires `fast-gate` and `pg-gate` to pass before merge.
+  Full detail in *Testing → CI/CD Gates* above.
