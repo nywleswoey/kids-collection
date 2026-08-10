@@ -45,7 +45,47 @@ GitHub → **Actions** → **backup** → the run for the day you want → **Art
 Pick the last run that finished *before* the damage. Every run verifies itself, so a green run is a
 dump that provably restored cleanly at the time it was made.
 
-### 3.2 Look at it before you use it
+### 3.2 Decrypt it
+
+**The artifact is GPG-encrypted and every command below assumes you have decrypted it first.** The
+repository is public, and an Actions artifact is downloadable by anyone with read access — which on a
+public repo is every logged-in GitHub user. So the dump is encrypted to a public key
+(`.github/backup-pubkey.asc`) before it is uploaded. The workflow can write a backup it cannot read.
+
+Unzip the artifact, then:
+
+```sh
+gpg --decrypt dump-YYYYMMDD.sql.gz.gpg > dump-YYYYMMDD.sql.gz
+```
+
+> ### ⚠️ Without the private key there is no recovery from a dump. None.
+>
+> This is not a "you would find it inconvenient" warning. The dumps are the only copy, and a
+> ciphertext whose private key is gone is indistinguishable from a deleted backup. **Neon PITR
+> (§2) is the only path that does not need the key — and it is 6 hours wide.**
+>
+> - **Key**: `kids-collection backup <sgfjords@gmail.com>`, primary fingerprint
+>   `06C5B3C745F38A8DB4EF2584BA722A309CE16F89`, encryption subkey `CCCD64C44FAE9C30`.
+> - **The private half lives in 1Password, and in the local `~/.gnupg` keyring.** Those are two
+>   copies of the same thing on one person's machine and one person's vault. If you have never
+>   confirmed you can restore it onto a *different* machine, you have not tested this.
+> - **Test the whole path yearly**, not just the decrypt: download a real artifact, decrypt, restore
+>   into a throwaway database, count rows. A restore drill that skips §3.5 tests nothing.
+
+To re-import the private key on a fresh machine (from the 1Password copy):
+
+```sh
+gpg --import backup-secret-key.asc
+```
+
+The public key needs no import to *verify* which key an artifact is addressed to — useful for
+checking an old artifact is decryptable before you need it to be:
+
+```sh
+gpg --list-packets dump-YYYYMMDD.sql.gz.gpg | head -2   # should name keyid CCCD64C44FAE9C30
+```
+
+### 3.3 Look at it before you use it
 
 ```sh
 gunzip -c dump-YYYYMMDD.sql.gz | grep '^COPY ' | sed 's/ FROM stdin;//'
@@ -59,7 +99,7 @@ gunzip -c dump-YYYYMMDD.sql.gz \
   | awk '/^COPY public.collections /{f=1;next} f&&/^\\\.$/{exit} f{n++} END{print n" collection rows"}'
 ```
 
-### 3.3 Rehearse locally (recommended)
+### 3.4 Rehearse locally (recommended)
 
 Never let the first real restore be the one that matters.
 
@@ -73,7 +113,7 @@ docker run --rm --network host -e PGURL=postgres://postgres:postgres@localhost:5
 docker rm -f kc-restore
 ```
 
-### 3.4 Restore into Neon
+### 3.5 Restore into Neon
 
 **Restore into a new Neon branch, not over production.** A branch costs nothing, keeps the damaged
 state available for comparison, and turns "restore" into a decision you can reverse.
@@ -123,6 +163,12 @@ exist in the target.
   what the manual trigger is for.
 - **The backup credential is read-only** (`kc_backup_ro`, direct non-pooler endpoint, stored as the
   `BACKUP_DATABASE_URL` secret). If it is ever rotated, update the secret or the next run fails.
+- **Never rotate the encryption key without keeping the old private half.** Old artifacts stay
+  encrypted to the key that was current when they were written, so discarding a retired private key
+  destroys every backup still inside the 90-day window. Rotation means: add the new public key, keep
+  every private key ever used, and treat 90 days as the earliest the old one can be retired. The
+  workflow asserts each ciphertext is addressed to the committed key, so a pubkey swap fails loudly —
+  but it cannot tell whether you still hold the matching private half. Only you can.
 
 ---
 
@@ -133,6 +179,18 @@ with it. This was a deliberate scoping decision (offsite copies are out of scope
 **OQ-CS-4**. The threat this backup was built for is operator error, which a single destination covers
 completely. If you ever want to reduce it, the cheapest step is downloading one artifact to local or
 removable storage occasionally — not a second automated destination.
+
+**Encryption added a second, independent concentration risk, and it is sharper than the first.** The
+GitHub account being lost costs you the backups; the *private key* being lost costs you the backups
+too, and it fails silently — the artifacts stay right where they are, perfectly intact and perfectly
+useless. There is no partial recovery from it and no warning that it has happened until a restore.
+Key custody is now as load-bearing as the dumps themselves; see the box in §3.2.
+
+**Six pre-encryption dumps (2026-08-06 → 2026-08-10) were downloaded to
+`~/Downloads/kids-collection-backups/` and deleted from GitHub** when the repository's artifacts were
+found to be publicly readable. They are *unencrypted*, they are the only copies of those days, and
+they need no key — which makes them both the fallback if key custody fails and a small pile of
+plaintext production data sitting in a Downloads folder. Decide where they should live.
 
 ---
 
