@@ -99,11 +99,12 @@ jobs:
       # something the developer never installed is the whole class of bug this
       # closes.
       #
-      # No dependency cache yet. Install is comfortably the largest cost in this
-      # job, so whether `actions/cache` earns its keep is a real question — but
-      # it is one to answer against a measured number, and caching next to
-      # `--frozen-lockfile` carries its own correctness risk. See "Not yet
-      # specified" on the map (#17).
+      # No dependency cache, and that question is CLOSED rather than deferred.
+      # The prediction when this file landed was that install would dominate the
+      # job; the first real run measured it at 4s of a 57s total, with `build`
+      # taking 30s. There is nothing there for `actions/cache` to win, and
+      # caching next to `--frozen-lockfile` carries its own correctness risk.
+      # Reopen it only against a new measurement, not against the intuition.
       - name: Install dependencies
         id: install
         run: pnpm install --frozen-lockfile
