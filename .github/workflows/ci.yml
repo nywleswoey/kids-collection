@@ -41,8 +41,9 @@ on:
 # an omission. backup.yml sets `cancel-in-progress: false`, which is right for a
 # backup — never abandon a half-finished dump — and probably wrong for a PR gate,
 # where a superseded push just burns a runner. Which way to go depends on how
-# long a run actually takes, so it is deferred until this has some runs behind
-# it. See "Not yet specified" on the map (#17).
+# long a run actually takes, so it was deferred until this had some runs behind
+# it. It now does (fast-gate ~1m, pg-gate ~2m30s), and the question is a live
+# ticket — #32 — rather than fog on the map.
 
 # Read-only. This workflow inspects the code; it never writes to the repo, posts
 # a comment, or publishes a package. Narrow it here rather than relying on the
@@ -70,40 +71,68 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      # Action majors are the LATEST, not the oldest that works, and that is the
+      # posture rather than an accident of when this was written. GitHub retires
+      # the Node runtime under an action on its own schedule: everything here was
+      # on the v4 line running Node 20, which GitHub had already begun
+      # force-running on Node 24 with a deprecation warning on every run. A
+      # required check is the worst place to discover that a forced runtime has
+      # stopped being forced, because the check that would fail is the one
+      # blocking the fix. Bumped in #31; re-check when a warning next appears.
+      - uses: actions/checkout@v7
 
       # Both toolchain versions come from package.json — `engines.node` here and
       # `packageManager` for pnpm below — rather than literals in this file, so a
       # developer bumping either one does not have to remember this file exists.
+      # `node-version-file: package.json` still resolves `engines.node` on v7:
+      # the action checks `volta.node`, then `devEngines.runtime`, then
+      # `engines.node`, and this repo sets only the last.
       #
       # Carry one caveat: `engines.node` is advisory. With no `.npmrc` setting
       # `engine-strict`, pnpm warns and exits 0 on a mismatch. It pins what CI
       # *installs*; it stops nothing.
-      - uses: actions/setup-node@v4
+      #
+      # `package-manager-cache: false` is the one input this bump ADDED, and it
+      # is deliberate rather than cargo-culted. setup-node v5 started caching
+      # automatically whenever package.json has a `packageManager` field — which
+      # this repo has — and for pnpm that means shelling out to pnpm to locate
+      # the store, from a step that runs BEFORE pnpm is installed. v6 narrowed
+      # the automatic case to npm only, so on v7 the default is already off
+      # here; this says so out loud instead of resting on a third party's
+      # default staying narrow. It is also just true: caching was measured and
+      # rejected (see the install step below).
+      - uses: actions/setup-node@v7
         with:
           node-version-file: package.json
+          package-manager-cache: false
 
       # No `version:` on purpose — the action reads `packageManager`, so the pnpm
       # running here is the exact one the developer ran. Pinning it again would
       # give the repo two answers to one question.
       #
+      # Still `pnpm/action-setup` and not its successor `pnpm/setup`: that one
+      # requires pnpm v11 or newer, and `packageManager` here is pnpm 10.32.1.
+      # It becomes the right answer if and when this repo moves to pnpm 11.
+      #
       # Note the order: setup-node runs BEFORE this, which is only safe because
-      # setup-node has no `cache:` key. `cache: pnpm` shells out to pnpm to
-      # locate the store, so adding it means pnpm has to be installed first.
-      # Whoever acts on the caching note below must swap these two steps.
+      # setup-node caches nothing — no `cache:` key, and `package-manager-cache`
+      # explicitly off above. Any form of pnpm-store caching shells out to pnpm
+      # to locate the store, so turning one on means swapping these two steps.
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       # `--frozen-lockfile` turns a lockfile that disagrees with package.json
       # into a failure rather than a silent re-resolution — CI installing
       # something the developer never installed is the whole class of bug this
       # closes.
       #
-      # No dependency cache yet. Install is comfortably the largest cost in this
-      # job, so whether `actions/cache` earns its keep is a real question — but
-      # it is one to answer against a measured number, and caching next to
-      # `--frozen-lockfile` carries its own correctness risk. See "Not yet
-      # specified" on the map (#17).
+      # No dependency cache, and that question is CLOSED rather than deferred.
+      # The prediction when this file landed was that install would dominate the
+      # job. It does not: install is 4s, and has stayed 4s across every run since
+      # — of a 57s job then and a ~69s job now, where `build` is 30s and the
+      # property search is ~20s. There is nothing there for `actions/cache` to
+      # win, and caching next to `--frozen-lockfile` carries its own correctness
+      # risk. Reopen it against a new measurement, not against the intuition.
       - name: Install dependencies
         id: install
         run: pnpm install --frozen-lockfile
@@ -193,19 +222,28 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Same three setup steps as fast-gate, and deliberately not factored out:
-      # a composite action or a reusable workflow would trade eight duplicated
+      # a composite action or a reusable workflow would trade nine duplicated
       # lines for a second file to keep in sync, and these are the lines whose
       # whole purpose is to have one obvious answer. See fast-gate above for why
-      # neither step carries a version literal.
-      - uses: actions/setup-node@v4
+      # neither step carries a version literal, why `package-manager-cache` is
+      # off, and why the action majors are the latest ones.
+      #
+      # The duplication has a bound, and it is checked rather than assumed: this
+      # preamble appears in exactly three places (both jobs here and backup.yml),
+      # it changed in all three in one commit (#31), and a mismatch between them
+      # is visible in a single `grep -rn 'uses:' .github/workflows`. That is a
+      # cheaper guarantee than a fourth file that can silently drift from what
+      # every job actually runs.
+      - uses: actions/setup-node@v7
         with:
           node-version-file: package.json
+          package-manager-cache: false
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

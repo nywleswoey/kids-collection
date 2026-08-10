@@ -64,21 +64,37 @@ jobs:
         ORDER BY 1, 2;
 
     steps:
-      - uses: actions/checkout@v4
+      # Majors are kept level with ci.yml, and moved with it in one commit (#31)
+      # — this preamble is duplicated across the two files on purpose, so two
+      # different answers to "which checkout?" would be the failure mode. The
+      # v4 line ran Node 20, which GitHub had already begun force-running on
+      # Node 24 while warning about it on every run.
+      - uses: actions/checkout@v7
 
       # Node version comes from `engines.node` in package.json rather than a
       # literal here, for the same reason pnpm's does below: one source of
       # truth. setup-node reads `volta.node`, then `devEngines.runtime`, then
-      # `engines.node` — we only set the last.
-      - uses: actions/setup-node@v4
+      # `engines.node` — we only set the last. Still true on v7.
+      #
+      # `package-manager-cache: false` because v5 added automatic caching for
+      # any package.json carrying `packageManager`, and for pnpm that shells out
+      # to a pnpm that this step has not installed yet. v6 narrowed the automatic
+      # case to npm, so the default is already off here — this states it rather
+      # than depending on it. It matters more in this file than in ci.yml: this
+      # job holds a production credential, and GitHub's own guidance is to turn
+      # automatic caching off in workflows with access to sensitive information.
+      - uses: actions/setup-node@v7
         with:
           node-version-file: package.json
+          package-manager-cache: false
 
       # No version here on purpose: the action reads `packageManager` from
       # package.json, so the pnpm running here is the exact one the developer
       # ran. Pinning it again would give the repo two answers to one question.
+      # Not the successor `pnpm/setup`, which requires pnpm v11 and this repo is
+      # on 10.32.1.
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - run: pnpm install --frozen-lockfile
 
@@ -139,8 +155,14 @@ jobs:
           ls -lh dump-*.sql.gz
         shell: bash
 
+      # Bumped with the rest (#31) even though it is not in ci.yml and so never
+      # appeared in the deprecation warning that started that ticket: v4 is the
+      # same Node 20 line, and this is the only step standing between a dump
+      # that exists and a dump anyone can retrieve. v7 changes nothing used
+      # here — it adds an `archive:` input for unzipped single-file uploads,
+      # which a `.sql.gz` does not want.
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: db-backup-${{ github.run_id }}
           path: dump-*.sql.gz
