@@ -219,18 +219,48 @@ jobs:
               echo "::error::$g is still gzip — it was not encrypted"; exit 1
             fi
 
-            # 3. Addressed to the key we think it is. A ciphertext encrypted to
-            #    a key nobody holds is indistinguishable from a good one until a
-            #    restore, so the recipient keyid is compared against the
-            #    encryption subkey of the committed public key. This is the
-            #    check that catches somebody rotating the pubkey file without
-            #    keeping the private half.
+            # 3. Addressed to a subkey of the key COMMITTED IN THIS REPO, and
+            #    the run log records which one.
+            #
+            #    Be precise about what this does and does not buy, because the
+            #    obvious reading is wrong. It does NOT catch "the pubkey was
+            #    rotated and nobody kept the private half" — this step encrypts
+            #    with the very file it then checks against, so that scenario
+            #    produces a perfectly consistent pass. Nothing CI can see
+            #    distinguishes a key you hold from one you do not; that risk is
+            #    real, it is the worst one here, and it is answered by the
+            #    yearly restore drill in docs/RESTORE.md, not by a runner.
+            #
+            #    What it does buy: proof the ciphertext went to the key in the
+            #    commit rather than to something else that happened to be in the
+            #    runner's keyring, and — the durable part — a line in the run
+            #    log naming the key each artifact needs. Ninety days later that
+            #    log is how you know which key to reach for.
+            #
+            #    All subkeys, not just the first: a key with two encryption
+            #    subkeys (which is what rotation looks like) would otherwise
+            #    fail here for no reason, since gpg picks the newest and `awk`
+            #    would have picked the oldest.
             want=$(gpg --show-keys --with-colons .github/backup-pubkey.asc \
-                     | awk -F: '$1=="sub"{print $5; exit}')
-            got=$(gpg --list-packets "$g" 2>/dev/null \
-                     | sed -n 's/.*keyid \([0-9A-F]*\).*/\1/p' | head -1)
-            [ -n "$want" ] && [ "$want" = "$got" ] || {
-              echo "::error::$g is addressed to $got, expected $want"; exit 1; }
+                     | awk -F: '$1=="sub"{print $5}')
+
+            # `|| true` is load-bearing, not defensive noise. `gpg
+            # --list-packets` EXITS 2 on a message it cannot decrypt, and it can
+            # never decrypt this one — that is the entire point of the design.
+            # It still prints the recipient packet first, which is all this
+            # needs, so the status is discarded deliberately. Left unguarded
+            # under `set -o pipefail`, that expected 2 kills the step *before*
+            # any of the error messages below can explain why. Which is exactly
+            # what it did on the first run of this step.
+            gpg --list-packets "$g" >packets.txt 2>/dev/null || true
+            got=$(sed -n 's/.*keyid \([0-9A-F]*\).*/\1/p' packets.txt | head -1)
+            rm -f packets.txt
+            [ -n "$want" ] || { echo "::error::no subkey in pubkey file"; exit 1; }
+            if ! printf '%s\n' "$want" | grep -qx "$got"; then
+              echo "::error::$g is addressed to $got, which is not a subkey of" \
+                   "the committed public key ($(printf '%s' "$want" | tr '\n' ' '))"
+              exit 1
+            fi
             echo "$g → encrypted to $got, $(wc -c < "$g") bytes"
           done
         shell: bash
