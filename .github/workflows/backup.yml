@@ -8,9 +8,23 @@
 # All client tooling runs from the postgres:17 image rather than an apt-installed
 # client: production is PostgreSQL 17.x and a v16 pg_dump refuses to run at all.
 #
+# THE UPLOADED ARTIFACT IS GPG-ENCRYPTED to a public key committed at
+# .github/backup-pubkey.asc. Actions artifacts are readable by anyone with read
+# access to the repository — on a public repo, every logged-in GitHub user — so
+# an unencrypted dump here is a published dump. Encryption is public-key so this
+# workflow can write a backup it cannot itself read; the private half is not in
+# this repository and is not in CI. See docs/RESTORE.md to decrypt.
+#
+# The verify half is UNAFFECTED and still runs against the plaintext, which never
+# leaves the runner. That ordering is deliberate: encryption is a wrapper for
+# transport, and it must not become something that can make a bad dump look
+# verified.
+#
 # Requires one repository secret:
 #   BACKUP_DATABASE_URL — direct (NON-pooler) Neon endpoint for the read-only role.
 #   pg_dump is unreliable against a transaction-pooling endpoint.
+#
+# Requires no decryption secret, deliberately — see the encrypt step.
 name: backup
 
 on:
@@ -155,17 +169,116 @@ jobs:
           ls -lh dump-*.sql.gz
         shell: bash
 
-      # Bumped with the rest (#31) even though it is not in ci.yml and so never
-      # appeared in the deprecation warning that started that ticket: v4 is the
-      # same Node 20 line, and this is the only step standing between a dump
-      # that exists and a dump anyone can retrieve. v7 changes nothing used
-      # here — it adds an `archive:` input for unzipped single-file uploads,
-      # which a `.sql.gz` does not want.
+      # THE UPLOADED ARTIFACT IS ENCRYPTED, AND THIS STEP IS WHY THE REPOSITORY
+      # CAN BE PUBLIC. An Actions artifact is downloadable by anyone with *read*
+      # access to the repository, which on a public repo is every logged-in
+      # GitHub user — so for as long as this workflow uploaded a plain
+      # `.sql.gz`, it was publishing the children's collection data on a 90-day
+      # rolling window. Nothing about the dump changed; where it can be read
+      # from did.
+      #
+      # PUBLIC-KEY, not a shared secret, and that is the whole design. The
+      # recipient key is committed in the clear at .github/backup-pubkey.asc
+      # because a public key is meant to be public. The consequence is the point:
+      # this runner can WRITE a backup it cannot READ. There is no decryption
+      # key in CI to leak, no repository secret whose compromise would also
+      # expose every past dump, and the `BACKUP_DATABASE_URL` blast radius is
+      # unchanged. Symmetric encryption with a repo secret would have failed all
+      # three.
+      #
+      # gpg rather than age or openssl, for one reason: gnupg is preinstalled on
+      # ubuntu-latest and the other two are not. This job runs unattended at
+      # 02:00 SGT, and an `apt-get install` or a pinned binary download is one
+      # more thing that can be down at 02:00. `--recipient-file` needs no
+      # keyring and no prior import, so there is no gpg state to go stale;
+      # `--trust-model always` is correct here and not a shortcut, because the
+      # web of trust answers "is this key who it claims" and we are not asking
+      # that — the key is not fetched from anywhere, it is read out of the
+      # commit being run.
+      - name: Encrypt the dump
+        run: |
+          set -euo pipefail
+          for f in dump-*.sql.gz; do
+            gpg --batch --yes --trust-model always \
+                --recipient-file .github/backup-pubkey.asc \
+                --encrypt --output "$f.gpg" "$f"
+          done
+
+          # Three assertions, because this is the one step whose failure is
+          # SILENT: a corrupt or wrongly-addressed ciphertext uploads perfectly
+          # happily and is only discovered by the person who needed the backup.
+          # The runner cannot decrypt (by design), so it checks what it can.
+          for g in dump-*.sql.gz.gpg; do
+            # 1. Non-empty.
+            [ -s "$g" ] || { echo "::error::$g is empty"; exit 1; }
+
+            # 2. Actually encrypted. Catches the plaintext ever being copied
+            #    through instead of enciphered — the failure that would look
+            #    exactly like success in the artifact listing.
+            if gunzip -t "$g" 2>/dev/null; then
+              echo "::error::$g is still gzip — it was not encrypted"; exit 1
+            fi
+
+            # 3. Addressed to a subkey of the key COMMITTED IN THIS REPO, and
+            #    the run log records which one.
+            #
+            #    Be precise about what this does and does not buy, because the
+            #    obvious reading is wrong. It does NOT catch "the pubkey was
+            #    rotated and nobody kept the private half" — this step encrypts
+            #    with the very file it then checks against, so that scenario
+            #    produces a perfectly consistent pass. Nothing CI can see
+            #    distinguishes a key you hold from one you do not; that risk is
+            #    real, it is the worst one here, and it is answered by the
+            #    yearly restore drill in docs/RESTORE.md, not by a runner.
+            #
+            #    What it does buy: proof the ciphertext went to the key in the
+            #    commit rather than to something else that happened to be in the
+            #    runner's keyring, and — the durable part — a line in the run
+            #    log naming the key each artifact needs. Ninety days later that
+            #    log is how you know which key to reach for.
+            #
+            #    All subkeys, not just the first: a key with two encryption
+            #    subkeys (which is what rotation looks like) would otherwise
+            #    fail here for no reason, since gpg picks the newest and `awk`
+            #    would have picked the oldest.
+            want=$(gpg --show-keys --with-colons .github/backup-pubkey.asc \
+                     | awk -F: '$1=="sub"{print $5}')
+
+            # `|| true` is load-bearing, not defensive noise. `gpg
+            # --list-packets` EXITS 2 on a message it cannot decrypt, and it can
+            # never decrypt this one — that is the entire point of the design.
+            # It still prints the recipient packet first, which is all this
+            # needs, so the status is discarded deliberately. Left unguarded
+            # under `set -o pipefail`, that expected 2 kills the step *before*
+            # any of the error messages below can explain why. Which is exactly
+            # what it did on the first run of this step.
+            gpg --list-packets "$g" >packets.txt 2>/dev/null || true
+            got=$(sed -n 's/.*keyid \([0-9A-F]*\).*/\1/p' packets.txt | head -1)
+            rm -f packets.txt
+            [ -n "$want" ] || { echo "::error::no subkey in pubkey file"; exit 1; }
+            if ! printf '%s\n' "$want" | grep -qx "$got"; then
+              echo "::error::$g is addressed to $got, which is not a subkey of" \
+                   "the committed public key ($(printf '%s' "$want" | tr '\n' ' '))"
+              exit 1
+            fi
+            echo "$g → encrypted to $got, $(wc -c < "$g") bytes"
+          done
+        shell: bash
+
+      # Uploads the `.gpg` ONLY. The glob matters: `dump-*.sql.gz` would match
+      # the plaintext that is still on disk (the restore step below needs it),
+      # so widening this pattern re-opens exactly the hole the step above
+      # closes. The plaintext never leaves the runner, which is discarded.
+      #
+      # Bumped to v7 with the rest (#31): v4 is the same Node 20 line, and this
+      # is the only step standing between a dump that exists and a dump anyone
+      # can retrieve. v7 changes nothing used here — it adds an `archive:` input
+      # for unzipped single-file uploads, which a `.sql.gz.gpg` does not want.
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: db-backup-${{ github.run_id }}
-          path: dump-*.sql.gz
+          path: dump-*.sql.gz.gpg
           retention-days: 90
           if-no-files-found: error
 
