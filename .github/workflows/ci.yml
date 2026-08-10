@@ -41,8 +41,9 @@ on:
 # an omission. backup.yml sets `cancel-in-progress: false`, which is right for a
 # backup — never abandon a half-finished dump — and probably wrong for a PR gate,
 # where a superseded push just burns a runner. Which way to go depends on how
-# long a run actually takes, so it is deferred until this has some runs behind
-# it. See "Not yet specified" on the map (#17).
+# long a run actually takes, so it was deferred until this had some runs behind
+# it. It now does (fast-gate ~57s, pg-gate ~2m30s), and the question is a live
+# ticket — #32 — rather than fog on the map.
 
 # Read-only. This workflow inspects the code; it never writes to the repo, posts
 # a comment, or publishes a package. Narrow it here rather than relying on the
