@@ -285,6 +285,13 @@ gitignored and untracked (verified); `.env.example` carries placeholders only an
 - **Server-only secrets**: `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `PARENT_EMAILS`,
   `ADMIN_PASSCODE`, `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`.
 - **Deliberately public** (`NEXT_PUBLIC_` prefix): the PostHog project token and host.
+- **GitHub Actions repository secrets** — a separate surface from the app's, and deliberately small
+  because the repository is public. Exactly two, both belonging to `backup.yml`:
+  `BACKUP_DATABASE_URL` (a **read-only** Neon role, `kc_backup_ro`, direct non-pooler endpoint) and
+  `BACKUP_PING_URL` (the dead-man's-switch ping — a *capability* rather than an address, since whoever
+  holds it can silence the alarm; it reaches no data, so the worst case is a muted alarm). **`ci.yml`
+  uses no secrets at all**, and that is a property worth keeping: a workflow that holds no secret
+  cannot leak one.
 
 **Standing constraint, verified every increment**: no secret may reach the client bundle. `ADMIN_PASSCODE`
 and `AUTH_SECRET` are server-only; the admin gate ships a *signed cookie*, never the passcode itself.

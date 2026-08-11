@@ -304,3 +304,62 @@ jobs:
 
       - name: Verify the backup restores exactly
         run: pnpm exec tsx scripts/backup/verify.ts prod-counts.tsv restored-counts.tsv
+
+      # The dead-man's switch, and the ONLY thing here that can report a backup
+      # which never ran. Everything else in this file reports on a run that
+      # happened; this repo's whole alerting posture is "a failed run is your
+      # alert", and a failed run is still a run. The gap that closes:
+      #
+      #   GitHub disables scheduled workflows in a PUBLIC repo after 60 days
+      #   with no repository activity — and a scheduled run is NOT activity, so
+      #   this workflow cannot keep itself alive. Two quiet months is ordinary
+      #   for a one-parent side project. Backups stop, no run fails, nothing is
+      #   emitted, and the first symptom is discovering there is no dump on the
+      #   day you need one. (Disabling appears to take `workflow_dispatch` with
+      #   it, so the manual "dump before doing something destructive" button
+      #   goes too — reported by others, not verified here.)
+      #
+      # Inverting the signal is what fixes it: the monitor expects a ping on a
+      # schedule and alerts on SILENCE, so it fires for every cause of "no
+      # backup" at once — dormancy, a disabled workflow, a rotated
+      # BACKUP_DATABASE_URL, a deleted repo, an account suspension. None of
+      # those can produce a failed run to notify on.
+      #
+      # LAST step, and deliberately NOT `if: always()`. A ping has to mean "a
+      # verified backup exists", not "the job got this far" — it is sent only
+      # after the restore-and-compare above has passed, so an unrestorable dump
+      # stays silent and trips the alarm exactly like a missing one.
+      #
+      # A failed ping does NOT fail the job. A monitoring outage must never turn
+      # a good backup red, and the failure direction is already safe: if the
+      # ping does not arrive, you are told. False alarm, never false calm.
+      #
+      # The URL is a SECRET because it is a capability, not an address —
+      # whoever holds it can silence the alarm by pinging on this job's behalf,
+      # which on a public repo would otherwise be anyone. It is the second
+      # secret in this workflow and, unlike BACKUP_DATABASE_URL, it reaches
+      # nothing: worst case is a muted alarm, never data.
+      #
+      # Absent secret = armed-but-not-configured, announced rather than assumed,
+      # so adding this step could not break tonight's run before the check
+      # exists. Setup: docs/RESTORE.md §5.
+      - name: Signal the dead-man's switch
+        env:
+          PING_URL: ${{ secrets.BACKUP_PING_URL }}
+        run: |
+          set -uo pipefail
+          if [ -z "${PING_URL:-}" ]; then
+            echo "::warning::BACKUP_PING_URL is not set — the dead-man's switch is NOT armed."
+            echo "A backup that stops running will go unnoticed. See docs/RESTORE.md §5."
+            exit 0
+          fi
+          # --retry covers a blip in the monitor, not in the backup. -o /dev/null
+          # keeps the response body out of a public log; GitHub masks the secret
+          # itself, but there is no reason to print either.
+          if curl -fsS -m 10 --retry 3 --retry-delay 2 -o /dev/null "$PING_URL"; then
+            echo "Dead-man's switch signalled: a verified backup exists."
+          else
+            echo "::warning::Ping failed. The backup itself is fine and verified —"
+            echo "expect an alert from the monitor, and treat it as a false alarm."
+          fi
+        shell: bash
