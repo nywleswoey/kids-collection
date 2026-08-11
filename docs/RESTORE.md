@@ -162,13 +162,53 @@ exist in the target.
 ## 5. Keeping the backup alive
 
 - **The schedule stops after 60 days of repository inactivity.** GitHub disables scheduled workflows
-  in dormant repositories and emails the repository owner. If this project goes quiet for two months,
-  re-enable the workflow from the Actions tab. Nothing else re-arms it.
+  in dormant **public** repositories and emails the repository owner. A scheduled run does **not**
+  count as activity — only something that modifies the repo (a push, a release, a merged PR) — so this
+  workflow cannot keep itself alive. Re-enable it from the Actions tab; nothing else re-arms it.
+  Disabling also appears to take `workflow_dispatch` with it, so the manual trigger below would be
+  gone too.
 - **Every run verifies itself.** The workflow restores its own dump into a throwaway Postgres and
   asserts every table is present with exactly the production row count. A failed run means the
   backup is not trustworthy — investigate it rather than waiting for the next night.
-- **A failed run is your alert.** GitHub notifies on workflow failure by default. There is no other
-  alerting, by design.
+- **A failed run is your alert — but a run that never happens cannot fail.** That gap is what the
+  dead-man's switch below closes. Apart from it, GitHub's default workflow-failure notification is
+  the only alerting, by design.
+
+### 5.1 The dead-man's switch
+
+The last step of `backup.yml` pings a monitoring service **only after** the restore-and-compare has
+passed. The monitor expects that ping on a schedule and **alerts on silence**, which inverts the
+signal: instead of reporting failures it can see, it reports the absence of success. One alarm covers
+every way a backup can stop — the 60-day dormancy above, a disabled workflow, a rotated
+`BACKUP_DATABASE_URL`, a deleted repo, a suspended account — none of which can produce a failed run
+to notify on.
+
+**False alarm, never false calm.** A monitoring outage rings the bell for a backup that was fine; no
+combination of failures rings it for a backup that was not.
+
+**Setup — this is not armed until you do it.** Until `BACKUP_PING_URL` exists, every run prints a
+warning saying so, and the backup still works exactly as before.
+
+1. Create a free account at a cron-monitoring service — [healthchecks.io](https://healthchecks.io) is
+   the obvious pick (free tier, open source, self-hostable if you ever want to move it).
+2. Add a check:
+   - **Name**: `kids-collection nightly backup`
+   - **Schedule**: `0 18 * * *` (matching `backup.yml`), timezone UTC
+   - **Grace period**: `2 hours` — a run takes minutes, so anything beyond that is a real problem.
+3. Copy the check's **ping URL**.
+4. Add it as a repository secret named **`BACKUP_PING_URL`**:
+   `gh secret set BACKUP_PING_URL --repo nywleswoey/kids-collection`
+5. Set the alert destination to an address you actually read. An alarm nobody sees is the thing this
+   was built to stop.
+6. **Prove it before trusting it**, both directions:
+   - Actions → **backup** → **Run workflow**. The check should go green within a minute.
+   - Then leave it alone past the grace period, or hit the service's "test alert" button, and
+     confirm the alert actually lands. A dead-man's switch that has never been observed to fire is a
+     claim, not a mechanism — the same standard the restore drill in §3.2 is held to.
+
+⚠️ **The ping URL is a secret because it is a capability, not an address.** Anyone holding it can
+silence the alarm by pinging on the workflow's behalf, which on a public repo would otherwise be
+anyone. Unlike `BACKUP_DATABASE_URL` it reaches no data — the worst case is a muted alarm.
 - **Take a dump before doing anything destructive.** Actions → backup → **Run workflow**. That is
   what the manual trigger is for.
 - **The backup credential is read-only** (`kc_backup_ro`, direct non-pooler endpoint, stored as the
