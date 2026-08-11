@@ -398,8 +398,10 @@ developer). No security scanning. No lint (see below).
 **branch protection on `main` makes them binding**.
 
 - **The workflow**: two jobs on `pull_request` and on `push: main`. **`fast-gate`** runs `typecheck`,
-  `pnpm test` and `build` (69–103s); **`pg-gate`** runs `pnpm pg:up` and `pnpm test:pg` against the Docker
-  containers (134–143s, and therefore the PR's critical path). Two jobs rather than one because `pg-gate`
+  `pnpm test` and `build` (**54–103s, mean 71**); **`pg-gate`** runs `pnpm pg:up` and `pnpm test:pg`
+  against the Docker containers (**103–166s, mean 142**, and therefore the PR's critical path) — both
+  measured over all 16 successful runs of the current configuration, and both varying that widely on an
+  unchanged tree purely from runner variation, so use the mean and expect the tail. Two jobs rather than one because `pg-gate`
   is CI's only dependency on something outside the repo (`local-neon-http-proxy`, a mutable tag in a
   third party's namespace); isolated, that outage names itself instead of reading as broken code.
   **Zero secrets** — every gate passes with the environment empty. The one value `build` needs is a
