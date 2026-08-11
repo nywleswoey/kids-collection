@@ -1,4 +1,11 @@
 # Discovery Session Index
+
+> ### ❄️ FROZEN SNAPSHOT — not a live index.
+>
+> Records the discovery session **as it stood on 2026-08-03** and is deliberately not maintained. The
+> *"Last Updated"* stamp below refers to that session, not to this directory. See
+> `technical-state.md` for why these files are frozen rather than corrected.
+
 - Created / Last Updated: 2026-08-03T02:51:17Z
 - Project Type: Feature on existing
 - Depth: full

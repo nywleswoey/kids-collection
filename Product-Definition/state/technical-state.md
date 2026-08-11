@@ -1,4 +1,20 @@
 # Technical State
+
+> ### ❄️ FROZEN SNAPSHOT — not a live index. Do not trust the counts below.
+>
+> This records the state of the definition session **as approved on 2026-08-03**, and is deliberately
+> not maintained. It is kept because the history is worth having, not because it is current.
+>
+> **The live sources are `Product-Definition/open-questions.md` and the documents themselves.** As of
+> 2026-08-12 the open-question counts here are wrong in both roles — Business is **1** open, not 3
+> (OQ-B-1 closed 2026-08-11, OQ-B-2 closed 2026-08-07), and Technical is **1**, not 2 (OQ-T-2 closed
+> 2026-08-09).
+>
+> This banner exists because *"deliberately frozen"* and *"nobody noticed it went stale"* are
+> indistinguishable to a reader, and this project has already been bitten once by a document stating
+> something with confidence long after it stopped being true. If a future effort decides `state/`
+> should be live after all, that is a fine decision — make it explicitly and delete this box.
+
 - Status: complete
 
 ## Role Progress
