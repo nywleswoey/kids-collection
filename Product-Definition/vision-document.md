@@ -278,3 +278,26 @@ Next.js App Router + TypeScript + Tailwind application on Vercel, with Neon Post
   `SACRIFICE_MIN = 4` in `src/features/pull/sacrifice.ts`, consumed by both the card detail page and the
   galaxy filter, with a property-based test asserting the equivalence. The values are correct as-is; the
   invariant is that they are never hardcoded anywhere else.
+- **A pool reset must never delete `collections`.** `cards.theme_id` and `collections.card_id` are both
+  `ON DELETE CASCADE`, so deleting the pool destroys every child's cards regardless of what the function
+  names. `resetPool()` therefore refuses outright while any collection row exists, and has **no override
+  parameter** — re-adding one re-arms the exact defect it exists to remove. A caller that genuinely wants
+  both operations calls both. *(Increment 23 FR1. The neighbouring `seed --sync` pruners are NOT guarded
+  this way — see #12.)*
+- **A destructive seed operation must detect production and require a fresh typed confirmation.** Never
+  an environment variable, a config file or a flag — those are all satisfiable by a script, which is the
+  failure this exists to prevent. It prints its blast radius per child, by name, requires the exact
+  collection-row count typed at an interactive terminal, and always aborts when there is no TTY.
+- **The backup is a full dump, with no `-t`/`-n` allowlist, ever.** A table allowlist silently stops
+  covering whatever is added next, and the tables most worth losing are the ones nobody remembered to
+  list.
+- **The restore drill runs on every backup run.** A dump that has not been restored is a claim, not a
+  backup: each run restores its own output into a throwaway Postgres and asserts every table is present
+  with exactly the production row count. A green run means a dump that *provably restored* at the time it
+  was taken. **And since #40 the artifact is GPG-encrypted before upload** — the repository is public, so
+  visibility protects nothing; encryption is what makes the destination safe.
+- **No service path may touch a `collections` row outside its named scope.** A sacrifice names one
+  `(child, card)`; a trade names two children and two cards; every other pair is a bystander and must be
+  untouched. Enforced since 2026-08-12 by properties in `tests/delete-path.pbt.test.ts` and cascade cases
+  in `tests-pg/delete-path.pg.test.ts` (OQ-CS-3), which also pin BR14: deleting a child takes their rows
+  and nobody else's.
