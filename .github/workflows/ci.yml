@@ -37,13 +37,42 @@ on:
   push:
     branches: [main]
 
-# There is no `concurrency:` block here yet, and that is a decision rather than
-# an omission. backup.yml sets `cancel-in-progress: false`, which is right for a
-# backup — never abandon a half-finished dump — and probably wrong for a PR gate,
-# where a superseded push just burns a runner. Which way to go depends on how
-# long a run actually takes, so it was deferred until this had some runs behind
-# it. It now does (fast-gate ~1m, pg-gate ~2m30s), and the question is a live
-# ticket — #32 — rather than fog on the map.
+# A superseded run is abandoned on a PR and never on `main`. Those are opposite
+# answers to one question, which is why both keys below are expressions rather
+# than the flat literals backup.yml can afford (`group: backup`, never cancel).
+#
+# The PR half is settled by the runtimes this block waited on: fast-gate ~69s,
+# pg-gate ~2m30s. A run against a commit nobody will merge spends a couple of
+# minutes of a free runner deciding something no one will read, and the newest
+# push is the only one whose verdict can matter. Cheap to cancel, worth nothing
+# to finish.
+#
+# `main` is the reverse: every commit there must keep its own recorded verdict.
+# A cancelled run leaves a commit in history that CI never judged — the "nobody
+# actually checked" hole this whole file exists to close.
+#
+# So for a push the group is keyed on the COMMIT, and that is deliberate rather
+# than the obvious `github.ref`. `cancel-in-progress` governs only the RUNNING
+# member of a group; a *pending* one is a separate rule — "any existing pending
+# job or workflow in the same concurrency group will be canceled and the new
+# queued job or workflow will take its place" — and it applies whatever the flag
+# says. A branch-keyed group puts every main push in one group, so three merges
+# inside one pg-gate would cancel the middle commit's run while it queued, by
+# exactly the mechanism this block was added to prevent. Keyed per commit the
+# group has one possible member, so nothing on `main` ever queues and nothing is
+# ever cancelled. (`queue: max` would also fix it, but it cannot be combined with
+# `cancel-in-progress: true`, and the PR half needs true.)
+#
+# Cancelling is safe against branch protection only because it can never touch a
+# SHA a rule is still looking at: the push that triggers the new run is the same
+# push that stopped the old commit being the PR head, and the rule evaluates the
+# head. This is worth stating because a cancelled required check does NOT merely
+# fail to report — `cancelled` is not among the successful/skipped/neutral
+# conclusions protection accepts, so it blocks. That is the cost the `main` half
+# is keyed to avoid, not a risk it was talked out of.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Read-only. This workflow inspects the code; it never writes to the repo, posts
 # a comment, or publishes a package. Narrow it here rather than relying on the
