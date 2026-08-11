@@ -195,26 +195,29 @@ load or uptime that will never be needed.
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| No known backup / restore path for children's collections | **High** | Not found in the repo. Collections are irreplaceable — a bad migration or dropped Neon branch loses every pull the kids have made. Confirm whether Neon PITR covers the current plan; otherwise schedule a periodic `pg_dump`. Tracked as **OQ-B-1**. |
+| ~~No known backup / restore path for children's collections~~ **Losing the backup encryption key** | **High** | **OQ-B-1 closed 2026-08-11 — the risk did not vanish, it moved.** Both layers exist: Neon PITR (**6 hours**, verified) and a self-verifying nightly `pg_dump` (**90 days**), runbook at `docs/RESTORE.md`. The dump is GPG-encrypted to a committed public key, so what is now irreplaceable is the **private** key — lose it and every dump in the window becomes silently unrecoverable, with only PITR's 6 hours needing no key. Mitigation is the **yearly restore drill** (`RESTORE.md` §3.2); no automated check can catch this. |
 | Single Google account is a single point of failure | Medium | The parent is the only authenticated user; losing that account makes all three binders inaccessible. No documented recovery path exists. |
 | Pollinations.ai is a free third party with no SLA or account | Medium | Only re-seeding depends on it — the 300 live cards are already in Blob, so the children are unaffected if it disappears. Cloudflare Workers AI / Flux is the parked fallback. |
 | Age-4 pre-reader cannot access the educational text | Medium | **Accepted trade-off.** The parent's judgement is that pictures alone suffice at this age; read-aloud is explicitly declined. Recorded as a known, deliberate limitation rather than an open action. |
-| Free-tier limits as the pool grows | Low–Medium | Raised in significance by the decision that the pool keeps growing. 300 cards today; the $0/month metric is the tripwire. Tracked as **OQ-B-2**. |
+| Free-tier limits as the pool grows | Low | **Downgraded — OQ-B-2 closed 2026-08-07 with a number.** Blob sits at 28.29 MB of a 1 GB tier and a theme costs ≈1.4 MB, leaving room for roughly **400–700 more themes**. The binding constraints are the parent's authoring time and the children's appetite, not the free tier. |
 | Increment 22 visual check still outstanding | Low | Checklist in `build-and-test` §4 — never run on a signed-in child profile. |
 
 ### Open Questions
 
 Full detail in `open-questions.md`.
 
-- **OQ-B-1 — No known backup or restore path for the children's collections.** Does any backup or
-  point-in-time restore exist for the Neon database today? Cannot be answered from the repo; note the
-  evidence is an assertion of absence. Resolve before any migration touching `collections`, `children`,
-  or `cards`.
-- **OQ-B-2 — Does the $0/month cost target survive an ever-growing card pool?** The success metric fixes
-  cost flat while the pool is intended to keep growing. Both hold at 300 cards; the crossover pool size
-  is unknown.
+**One remains open.**
+
 - **OQ-B-3 — Problem statement and vision statement are AI-reconstructed, not user-authored.** Nothing in
   the source material constrains them, making them the two sections most likely to be quietly wrong.
+
+Closed, kept here so they are not re-raised:
+
+- ~~**OQ-B-1** — No known backup or restore path.~~ **Closed 2026-08-11.** Neon PITR (6h, verified) plus a
+  self-verifying, GPG-encrypted nightly `pg_dump` (90d). See the Known Risks table above for where the
+  risk moved.
+- ~~**OQ-B-2** — Does $0/month survive an ever-growing card pool?~~ **Closed 2026-08-07.** Yes; ~400–700
+  themes of headroom, and storage was never the binding constraint.
 
 **Settled during definition — not open**: read-aloud (declined), pool growth (decided: keeps growing),
 parent visibility into per-child pulls (not wanted), `SACRIFICE_MIN` retune (withdrawn), children's
