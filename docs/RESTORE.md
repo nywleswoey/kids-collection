@@ -14,6 +14,16 @@ the right move depends almost entirely on how long ago the damage happened.
 | **1–90 days** | An older nightly dump | up to a day of pulls, from that day |
 | **> 90 days** | **Nothing exists** | everything |
 
+> **⚠️ The 1–90 day row is a property of the schedule, not of what is stored today.** The dump history was
+> reset to zero on 2026-08-10 when the plaintext artifacts were destroyed (§6), so the archive is only as
+> deep as the nights since then and reaches its full 90 days in November 2026. **Check what actually
+> exists before relying on this table** — Actions → **backup**, or:
+>
+> ```sh
+> gh api repos/nywleswoey/kids-collection/actions/artifacts \
+>   --jq '.artifacts[] | select(.expired|not) | "\(.name) \(.created_at)"'
+> ```
+
 **The 6–24 hour band has no point-in-time capability.** Recovery there means restoring last night's
 dump and accepting that the day's pulls are gone. That is a known property of the design, not a
 surprise — it was the accepted trade-off for a $0/month, zero-upkeep backup.
@@ -186,11 +196,20 @@ too, and it fails silently — the artifacts stay right where they are, perfectl
 useless. There is no partial recovery from it and no warning that it has happened until a restore.
 Key custody is now as load-bearing as the dumps themselves; see the box in §3.2.
 
-**Six pre-encryption dumps (2026-08-06 → 2026-08-10) were downloaded to
-`~/Downloads/kids-collection-backups/` and deleted from GitHub** when the repository's artifacts were
-found to be publicly readable. They are *unencrypted*, they are the only copies of those days, and
-they need no key — which makes them both the fallback if key custody fails and a small pile of
-plaintext production data sitting in a Downloads folder. Decide where they should live.
+**The pre-encryption dumps (2026-08-06 → 2026-08-10) no longer exist anywhere.** They were deleted from
+GitHub when the repository's artifacts were found to be publicly readable, downloaded to
+`~/Downloads/kids-collection-backups/` first, and **that local copy was subsequently deleted too
+(confirmed 2026-08-11)**. Those days are unrecoverable. That was the correct call — they were plaintext
+production data about children sitting unencrypted in a Downloads folder — but it is worth stating
+plainly rather than leaving a runbook pointing at a path that is not there.
+
+Two consequences follow. **The archive restarts from 2026-08-10**, which is what the warning in §1 is
+about. And **there is no longer any dump that does not need the private key**: the key-custody box in
+§3.2 was previously softened by those plaintext copies, and it no longer is. Below the 6-hour PITR
+window, the key is the single thing standing between a mistake and total loss.
+
+*(An inconsistency now impossible to settle, recorded so it is not re-litigated: this file said six
+dumps and the wayfinder map said seven. Nothing survives to count.)*
 
 ---
 

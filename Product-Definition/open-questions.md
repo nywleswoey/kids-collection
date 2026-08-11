@@ -7,7 +7,52 @@ Last generated: 2026-08-03T11:16:45Z
 
 ## Business (Vision) open questions
 
-### OQ-B-1: No known backup or restore path for the children's collections
+### OQ-B-1: No known backup or restore path for the children's collections — ✅ **CLOSED 2026-08-11**
+
+> **Answer: both exist now, and the "cheapest adequate insurance" turned out to be both, not either.**
+> Neon **point-in-time restore** covers the first **6 hours** — verified from the Neon dashboard on the
+> free plan, not assumed — and a **nightly `pg_dump`** covers **90 days** beyond it. Neither alone is
+> adequate: PITR is too narrow to survive a mistake noticed the next morning, and a nightly dump has no
+> second-level precision. `.github/workflows/backup.yml` runs at 18:00 UTC (02:00 SGT) and on
+> `workflow_dispatch`, against a **read-only** credential (`kc_backup_ro`, direct non-pooler endpoint,
+> stored as `BACKUP_DATABASE_URL`).
+>
+> **Every run verifies itself rather than asserting success**: it restores its own dump into a throwaway
+> Postgres 17 and asserts every table is present with exactly the production row count. A green run is a
+> dump that *provably restored* at the time it was taken. `docs/RESTORE.md` is the runbook, written
+> around how long ago the damage happened, because that is what determines the move.
+>
+> **The dump is GPG-encrypted to a public key committed at `.github/backup-pubkey.asc`**, so the runner
+> can write a backup it cannot read. This was not foresight — it closed a real leak: the artifacts were
+> uploaded in plaintext with 90-day retention, and an Actions artifact is downloadable by anyone with
+> read access, which on a public repo is every logged-in GitHub user. Roughly a week of the children's
+> collection data was retrievable by anyone. Found and fixed 2026-08-10/11 (#40).
+>
+> **The threat model this covers is operator error**, which is what the QB2 boundary is actually about,
+> and it is now defended *twice*: `resetPool()` refuses to run while any child owns a card, `pnpm seed
+> --sync` aborts rather than prune without `--allow-prune`, and any destructive seed operation against
+> production requires the exact collection-row count typed at an interactive terminal.
+>
+> *Recorded so it is not rediscovered*, three gaps that are accepted rather than overlooked:
+>
+> - **The 6–24 hour band has no point-in-time capability.** Recovery there means last night's dump and
+>   losing that day's pulls. Accepted trade-off for $0/month and zero upkeep.
+> - **Card images are not covered** — they live in Vercel Blob, no `pg_dump` includes them, and they are
+>   reproducible from `seed/cards.json`. A restored database points at Blob URLs that are still live.
+> - **Losing the private key destroys every dump inside the 90-day window, silently** — the artifacts stay
+>   intact and useless, and only PITR's 6 hours needs no key. This is now the sharpest single risk in the
+>   design, sharper than the concentration risk in OQ-CS-4 (code and backups in one GitHub account),
+>   because it fails without warning. No CI check can catch it; the answer is the **yearly restore drill**
+>   in `RESTORE.md` §3.2. Custody was tested rather than claimed — the 1Password copy was imported into a
+>   throwaway keyring and used to decrypt a real artifact.
+> - **The 90-day depth accrues from here; it does not exist yet.** As of closing, exactly **one** artifact
+>   is stored (`db-backup-31440936165`, 2026-08-10T23:05Z). Every plaintext predecessor was destroyed when
+>   the leak was found — deleted from GitHub, and the rescued local copies deleted afterwards too — so
+>   nothing before 2026-08-10 survives, and no dump exists that does not need the private key. The
+>   *mechanism* is proven and the *inventory* is one night deep, reaching its full 90 days in November.
+>
+> Full detail: `docs/RESTORE.md` and the heavily-commented `.github/workflows/backup.yml`.
+
 - **Source section**: Risks / What Must NOT Change
 - **Question**: Does any backup or point-in-time restore exist for the Neon Postgres database today? If
   not, what is the cheapest adequate insurance — Neon PITR on the current plan, or a scheduled `pg_dump`?
@@ -151,20 +196,23 @@ pull request whose properties fail cannot be merged. The row above now reads *Al
 ## Summary
 
 Raised during definition: 5  (Business: 3, Technical: 2)
-**Still open: 3**  (OQ-B-1, OQ-B-3, OQ-T-3) — OQ-B-2 closed 2026-08-07, OQ-T-2 closed 2026-08-09.
+**Still open: 2**  (OQ-B-3, OQ-T-3) — OQ-B-2 closed 2026-08-07, OQ-T-2 closed 2026-08-09,
+OQ-B-1 closed 2026-08-11.
 Cross-role contradictions: 0
 
 AI-DLC should load this file during Requirements Analysis and resolve each entry
 before proceeding to User Stories or Application Design.
 
 **Priority order** if they can't all be addressed at once:
-1. **OQ-B-1** (backup/restore) — the only item where the downside is irreversible data loss.
-2. **OQ-B-3** (AI-reconstructed prose) — cheap to confirm, and everything downstream inherits it.
-3. **OQ-T-3** (next-auth beta) — no action until auth-adjacent work is planned.
+1. **OQ-B-3** (AI-reconstructed prose) — cheap to confirm, and everything downstream inherits it.
+2. **OQ-T-3** (next-auth beta) — no action until auth-adjacent work is planned.
 
-~~**OQ-T-2** (CI automation) — makes a declared blocking constraint actually blocking.~~ **Done
-2026-08-09.** ~~**OQ-B-2** (cost vs. pool growth) — needs a number, not a decision.~~ **Answered
-2026-08-07.**
+~~**OQ-B-1** (backup/restore) — the only item where the downside is irreversible data loss.~~ **Closed
+2026-08-11.** Note the *shape* of the risk moved rather than vanishing: it is no longer "no backup
+exists" but "the private key must not be lost", which fails silently and is why the yearly restore
+drill is the mitigation. ~~**OQ-T-2** (CI automation) — makes a declared blocking constraint actually
+blocking.~~ **Done 2026-08-09.** ~~**OQ-B-2** (cost vs. pool growth) — needs a number, not a
+decision.~~ **Answered 2026-08-07.**
 
 ---
 
