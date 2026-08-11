@@ -108,6 +108,46 @@ export function runCollectionStoreContract(
       expect(await store.ownedCardIds("kid")).toEqual(new Set());
     });
 
+    // --- OQ-CS-3: scope. Every case above names only the children it acts on,
+    // so none of them could catch a WHERE clause that forgot `child_id` — the
+    // adapter would agree with itself while quietly emptying somebody else's
+    // binder. These put a BYSTANDER in the store holding the very same cards.
+    // The property-based version of this lives in tests/delete-path.pbt.test.ts
+    // and runs at depth; these are the concrete form, so the claim is also made
+    // against real Postgres (the pg run sets properties:false).
+
+    it("removeCard touches only the named child, not a bystander holding the same card", async () => {
+      const store = await makeStore({ kid: { a: 3 }, other: { a: 3 } });
+      expect(await store.removeCard("kid", "a")).toEqual({ count: 2 });
+      expect(await store.cardCount("other", "a")).toBe(3);
+    });
+
+    it("removeCard deleting a row to 0 does not delete another child's row for that card", async () => {
+      // The delete-the-row branch is the one that issues a DELETE rather than an
+      // UPDATE, so it is the branch where a missing child_id predicate is fatal.
+      const store = await makeStore({ kid: { a: 3 }, other: { a: 2 } });
+      expect(await store.removeCard("kid", "a", 3, 3)).toEqual({ count: 0 });
+      expect(await store.cardCount("kid", "a")).toBe(0);
+      expect(await store.cardCount("other", "a")).toBe(2);
+      expect(await store.ownedCardIds("other")).toEqual(new Set(["a"]));
+    });
+
+    it("swapCards touches only the two named children", async () => {
+      const store = await makeStore({ A: { x: 2 }, B: { y: 2 }, C: { x: 2, y: 2 } });
+      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(true);
+      expect(await store.cardCount("C", "x")).toBe(2);
+      expect(await store.cardCount("C", "y")).toBe(2);
+    });
+
+    it("a REFUSED swap leaves a bystander untouched too", async () => {
+      // The rollback path writes as well (it has to undo the first give), so it
+      // gets its own bystander case rather than trusting the success path's.
+      const store = await makeStore({ A: { x: 2 }, B: { y: 1 }, C: { x: 3, y: 3 } });
+      expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(false);
+      expect(await store.cardCount("C", "x")).toBe(3);
+      expect(await store.cardCount("C", "y")).toBe(3);
+    });
+
     it("swapCards swaps two duplicates cleanly", async () => {
       const store = await makeStore({ A: { x: 2 }, B: { y: 2 } });
       expect(await store.swapCards({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" })).toBe(true);
