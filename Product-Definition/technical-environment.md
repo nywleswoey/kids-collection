@@ -66,7 +66,7 @@ Scope: source code only. Config files (`.mjs`, `.json`) and generated output are
 | Auth.js / NextAuth 5.0.0-beta.25 | Parent Google OAuth | Maintain — **see OQ-T-3** |
 | Vercel Blob 0.27 | 300 card images | Maintain |
 | Zod 3 | Profile input + seed-file schema | Maintain |
-| Vitest 2 + fast-check 3 | 51 unit/PBT files (22 property-based) + 5 contract specs | Maintain |
+| Vitest 2 + fast-check 3 | 52 unit/PBT files (23 property-based) + 5 contract specs | Maintain |
 | PostHog (`posthog-js` / `posthog-node`) | Analytics, error capture, scoped session replay | Maintain |
 | Pollinations.ai | Seed-time image generation only | Maintain — Workers AI / Flux is the parked alternative |
 
@@ -339,11 +339,11 @@ contradictions**; this is a strict technical superset.
 
 ### Test Types
 
-- **Unit** — 51 files under `tests/` (321 tests), run by `pnpm test` (Vitest, node env, no database
-  needed). 22 of the 51 are property-based; see below.
+- **Unit** — 52 files under `tests/` (329 tests), run by `pnpm test` (Vitest, node env, no database
+  needed). 23 of the 52 are property-based; see below.
 - **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 17 in Docker via a
-  local Neon HTTP proxy (`tests-pg/`, 6 suites — the 5 store adapters plus the pool writer — serial
-  execution, 30s timeout; 47 tests pass and 3 skip). The container
+  local Neon HTTP proxy (`tests-pg/`, 7 suites — the 5 store adapters, the pool writer, and the
+  delete-path cascades — serial execution, 30s timeout; 57 tests pass and 3 skip). The container
   **major** deliberately matches production Neon, so a contract the suite proves is a contract prod
   honours; the tag floats within the major, since Neon moves prod's minor unannounced and a pinned minor
   would match only on the day it was pinned. The `psql` doing the migrations may be older, which nothing
@@ -371,11 +371,20 @@ no provider is installed. This is a deliberate position, not an oversight. The b
 
 > **Every invariant that protects the children's data must be covered by a property-based test or a
 > contract test** — ticket arithmetic, duplicate accounting, trade atomicity, offer signing, sacrifice
-> eligibility, rarity weighting, quiz caps.
+> eligibility, rarity weighting, quiz caps, **and the delete path**.
 
 A line-coverage percentage can be satisfied without ever asserting that an invariant holds across the
-input space; the 22 existing PBT files already meet the stronger bar — and, since 2026-08-09, a required
+input space; the 23 existing PBT files already meet the stronger bar — and, since 2026-08-09, a required
 check runs them on every pull request rather than trusting that someone did.
+
+The delete path was the one named gap in that list until 2026-08-12 (OQ-CS-3): `resetPool()` had a narrow
+guard and a narrow test, while the general statement — *no service path touches a `collections` row
+outside its named scope* — was deferred. It now ships as four properties in
+`tests/delete-path.pbt.test.ts` plus the cascade cases in `tests-pg/delete-path.pg.test.ts`, because the
+two catch classes the other structurally cannot: the store's row-DELETE branch is unreachable from any
+service, and a fake has no cascades to get wrong. ⚠️ **The `seed --sync` pruners remain structurally
+unguarded** — an empty keep-list deletes every collection row, and only the CLI's `--allow-prune` plus a
+typed confirmation stands in the way. That is pinned as behaviour, not fixed.
 
 ### Tooling
 

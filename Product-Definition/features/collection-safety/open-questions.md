@@ -45,7 +45,49 @@ Scope note: this file covers the **Collection Safety** feature. The parent
 
 ## Technical (Technical Environment) open questions
 
-### OQ-CS-3: The general delete-path property test is deferred, while PBT is a blocking constraint
+### OQ-CS-3: The general delete-path property test is deferred, while PBT is a blocking constraint — ✅ **CLOSED 2026-08-12**
+
+> **Answer: the general statement now ships, as four properties plus the concrete cases the properties
+> structurally cannot reach.** The deferral reasoning was re-examined rather than inherited, as this entry
+> asked, and it holds up: a narrow test was better than none. What it could not do was *say* the general
+> thing, and it turns out saying it needs two homes, not one.
+>
+> **`tests/delete-path.pbt.test.ts`** (in-memory fake, `FC_NUM_RUNS: 1000` in CI) states scope over a
+> generated world of 4 children × 4 cards — always LARGER than any operation touches, so a bystander
+> exists to be harmed:
+>
+> - a sacrifice changes only the `(child, card)` it names, and never below the one copy the child keeps;
+> - a trade changes only the four pairs it names;
+> - a trade never reduces a bystander's *total* holdings (the form that catches a balanced-but-wrong move);
+> - **no service path ever removes a `(child, card)` row at all** — the strong form, and true today.
+>
+> **`tests-pg/delete-path.pg.test.ts`** states what a fake cannot: every row that vanishes in production
+> vanishes through a **cascade**. BR14 (deleting a child takes their rows and nobody else's) was
+> *documented but untested* until now, and the `seed --sync` pruners had no pg coverage at all.
+>
+> *Recorded so it is not rediscovered*, four findings from building it:
+>
+> - **The pruners are not guarded the way `resetPool()` is.** `deleteThemesNotIn` / `deleteCardsNotIn`
+>   cascade into `collections` with no owned-rows check; their only protection is the CLI's
+>   `--allow-prune` plus a typed confirmation. **An empty keep-list deletes every theme, every card and
+>   every collection row** — `pruneNotIn` reads "keep nothing" as "no filter". Pinned as behaviour with a
+>   loud comment rather than changed: a prune that could not remove a dropped card would not be a prune.
+>   This is the sharpest remaining edge in the delete story.
+> - **Three of the four properties were vacuous when first written** and passed anyway. The four test
+>   cards had four different rarities, so `validateTrade` rejected every generated trade before it reached
+>   the store — green properties exercising nothing, which is this project's signature failure mode
+>   wearing a new costume. Each property now counts its own writes and asserts the count is non-zero.
+> - **Neither test location subsumes the other, and that was found by mutating, not by reasoning.** The
+>   store's row-DELETE branch is unreachable from any service (sacrifice keeps a copy; a swap needs a
+>   duplicate), so a mutation dropping `child_id` from that DELETE was missed by the properties entirely
+>   and caught only by the new concrete bystander cases in the shared store contract — which also run
+>   against real Postgres, where the properties deliberately do not.
+> - **Every assertion here was proven to bite.** Five mutations, each reverted: `removeCard` losing its
+>   `child_id` predicate, `swapCards` decrementing every holder, `sacrifice` allowed to burn a last copy,
+>   `pgProfileStore.remove` losing its id predicate, and `deleteCardsNotIn` losing its theme scope. Each
+>   went red, and the property failures shrank to 10–14-step counterexamples.
+>
+> Suite: **52 files / 329 tests** unit (was 51/321) and **7 files / 57 passed** pg (was 6/47).
 - **Source section**: Business Q5 (scope) vs parent Technical Environment (Testing)
 - **Question**: When does the property-based test *"no service path can delete a `collections` row it
   doesn't own"* ship, and is slice 1 acceptable without it?
@@ -92,13 +134,18 @@ mistake for scope creep later and remove.
 
 ## Summary
 
-Total open questions: 3  (Business: 2, Technical: 1)
-Cross-role contradictions: 0 · Gaps: 1 (OQ-CS-3) · Near-misses: 1 (alerting, in the user's favour)
+Total open questions: 2  (Business: 1, Technical: 1) — OQ-CS-3 closed 2026-08-12.
+Cross-role contradictions: 0 · Gaps: **0** (OQ-CS-3 closed) · Near-misses: 1 (alerting, in the user's favour)
 
 **Priority order**:
-1. **OQ-CS-3** (general delete-path PBT) — the only item where a *blocking* parent constraint is not met.
-2. **OQ-CS-2** (soft-delete) — V3's blast radius is unchanged until it ships; small increment.
-3. **OQ-CS-4** (single vendor) — deliberately scoped out; no action, keep visible.
+1. **OQ-CS-2** (soft-delete) — V3's blast radius is unchanged until it ships; small increment.
+2. **OQ-CS-4** (single vendor) — deliberately scoped out; no action, keep visible.
+
+~~**OQ-CS-3** (general delete-path PBT) — the only item where a *blocking* parent constraint is not met.~~
+**Closed 2026-08-12.** The blocking PBT constraint is now met for the delete path specifically, not just
+mechanised in general by parent OQ-T-2. One thing it surfaced is worth carrying into any future work on
+the seed pipeline: the `seed --sync` pruners have **no structural guard**, and an empty keep-list deletes
+every collection row.
 
 ---
 

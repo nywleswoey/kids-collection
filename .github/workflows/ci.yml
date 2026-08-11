@@ -204,7 +204,7 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm typecheck
 
-      # 321 tests across 51 files, 22 of them property-based, and 100 `fc.assert`
+      # 329 tests across 52 files, 23 of them property-based, and 104 `fc.assert`
       # call sites. The suite still passes with every environment variable unset
       # — the one below only makes the search deeper, never makes it possible.
       #
