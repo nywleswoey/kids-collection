@@ -1,4 +1,15 @@
 # Business State
+
+> ### ❄️ FROZEN SNAPSHOT — not a live index. Do not trust the counts below.
+>
+> This records the state of the definition session **as approved on 2026-08-03**, and is deliberately
+> not maintained. **The live source is `Product-Definition/open-questions.md`.**
+>
+> As of 2026-08-12 the *"Business: 3 open"* line below is wrong: **1** is open (OQ-B-3). OQ-B-2 closed
+> 2026-08-07 and OQ-B-1 — the highest-stakes item in the whole set — closed 2026-08-11.
+>
+> See the fuller note in `technical-state.md` for why this box exists rather than a corrected number.
+
 - Status: complete
 
 ## Role Progress
