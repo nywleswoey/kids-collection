@@ -77,7 +77,7 @@ Ways an agent could plausibly break this feature *while writing reasonable-looki
 
 | Service | Constraints / Notes |
 |---------|---------------------|
-| **GitHub Actions** | Free tier. Private repo `nywleswoey/kids-collection` `[from: gh repo view]` → 2,000 minutes/month included; a nightly dump costs roughly 45 min/month. **Well inside free — but it is a shared budget**, so future CI (parent OQ-T-2) draws from the same pool |
+| **GitHub Actions** | Free tier. ~~Private repo → 2,000 minutes/month included~~ **CORRECTED 2026-08-12: the repo is PUBLIC, and public repos get unlimited standard-runner minutes.** A nightly dump costs roughly 45 min/month and CI (parent OQ-T-2, now shipped) roughly 3.5 min per PR — neither draws on a budget. ⚠️ The original "shared budget" note was not merely over-cautious: **going private silently converts this to a metered 2,000 min/month allowance**, and would also disable branch-protection rulesets on GitHub Free. Both were observed during the ~9 hours the repo spent private on 2026-08-10 |
 | **GitHub Actions artifacts** | Free tier, default 90-day retention. The sole backup destination. Gzipped dump of 300 cards + 3 children is expected well under 1 MB |
 | **Neon PITR** | Already included on the current plan. **Verified retention: 6 hours.** No configuration change or cost |
 
@@ -150,8 +150,37 @@ This is a deliberate expansion, recorded rather than assumed:
   to hold write credentials, and this is the cheapest available reduction in blast radius.
 - The secret must never be echoed. `pg_dump` failures can print connection strings — redact or suppress
   verbose output.
-- Artifacts contain a **full copy of the production database**. Repository visibility is what protects
-  them; the repo must stay private, and that is now a security property, not merely a preference.
+- Artifacts contain a **full copy of the production database**.
+  ~~Repository visibility is what protects them; the repo must stay private, and that is now a security
+  property, not merely a preference.~~
+  > ### ⚠️ CORRECTED 2026-08-12 — this is false now, and the exposure it describes actually happened
+  >
+  > **The repository is public** (`gh repo view` → `PUBLIC`, 2026-08-12). An Actions artifact is
+  > downloadable by anyone with **read** access, which on a public repo is every logged-in GitHub user.
+  > Roughly a week of the children's collection data was retrievable by anyone until 2026-08-10.
+  >
+  > *When it stopped being private is not established.* The interview record for this feature cites
+  > `gh repo view` reporting **private** on 2026-08-05, so this line may well have been true the day it
+  > was written. That does not soften it — it sharpens it. **A security property that depends on a
+  > setting nobody watches is not a security property**, and this one silently stopped holding without a
+  > single document noticing.
+  >
+  > It is also why the leak went unnoticed: the line states a protection confidently enough that a reader
+  > checking "are the artifacts safe?" would stop here and be satisfied. The `$0/month` and "public repo"
+  > constraints were carried faithfully elsewhere in the parent documents — they were simply never read
+  > as statements about where the *backups* end up.
+  >
+  > **What actually protects them now is encryption, not visibility** (#40). The dump is GPG-encrypted to
+  > a public key committed at `.github/backup-pubkey.asc` before upload, so the runner can write a backup
+  > it cannot read. No decryption key exists in CI, and nothing whose compromise retroactively exposes
+  > past dumps.
+  >
+  > **Making the repo private is not the fix and must not be treated as one.** It was tried first and
+  > reverted: rulesets are unavailable on private repos on GitHub Free, so it disabled the branch
+  > protection enforcing the CI gates — fixing an exposure by removing an enforcement mechanism.
+  >
+  > The residual risk moved rather than vanishing: **lose the private key and every dump in the 90-day
+  > window is silently unrecoverable.** See `docs/RESTORE.md` §3.2 and #45.
 
 ### Unchanged
 
