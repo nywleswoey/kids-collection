@@ -1,0 +1,61 @@
+# Watches the FOUR action pins in .github/workflows/ and opens a PR when any of
+# them moves. That is the whole scope.
+#
+# Why this exists, precisely: when the actions were bumped off the deprecated
+# Node 20 majors (#31), editing the pins was cheap — three files, one commit.
+# The expensive part was that they had been stale for MONTHS while every single
+# run printed a deprecation warning nobody read. A composite action was
+# considered and rejected: it would only have moved where the stale pin sits.
+# The thing that was actually missing was something whose job is to notice.
+#
+# A required check is the worst place to discover that a forced runtime has
+# stopped being forced, because the check that would fail is the one blocking
+# the fix.
+#
+# NPM IS DELIBERATELY NOT WATCHED. This is a three-user side project with a
+# large Next.js dependency tree; that ecosystem would open a stream of PRs, each
+# costing a ~3.5 minute gate run, and the judgement about which of them matter
+# is real work rather than a rubber stamp. The action pins are four lines that
+# rot on GitHub's schedule rather than the maintainer's, which is exactly the
+# case a robot is better at than a person. Adding npm later is a separate
+# decision with its own tradeoffs — see #45.
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    # "/" means .github/workflows/ for this ecosystem — not the repo root as it
+    # would for npm. Both workflow files are covered by this one entry.
+    directory: "/"
+
+    schedule:
+      interval: "monthly"
+
+    # ONE PR for all four actions rather than one each. Weekly-per-action would
+    # be four PRs a month against a ruleset requiring two checks apiece, which
+    # is how a helpful robot becomes noise you learn to ignore — and an ignored
+    # Dependabot PR is worse than none, because it looks like coverage.
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+    # A backstop, not a target. With grouping there should only ever be one.
+    open-pull-requests-limit: 2
+
+    labels:
+      - "dependencies"
+
+    commit-message:
+      prefix: "ci"
+
+    # Major bumps INCLUDED on purpose, which is the opposite of the usual
+    # advice. Every bump #31 had to make was a major (v4→v7, v4→v6), because
+    # that is how GitHub retires the Node runtime under an action. Ignoring
+    # majors here would filter out precisely the updates this file exists to
+    # catch, leaving it to report only the ones that never mattered.
+    #
+    # The cost of a bad major is bounded and visible: the PR is gated by
+    # `fast-gate` and `pg-gate` like any other, so a breaking action change goes
+    # red before it reaches `main`. #31 is the worked example — a straight
+    # v4→v5 `setup-node` bump had a hard step failure latent in it, and the gates
+    # are what would have caught it.
