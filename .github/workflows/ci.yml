@@ -43,11 +43,21 @@ on:
 # This block was deliberately absent when the file landed, because choosing
 # either way needed runtimes nobody had yet; settled in #32 once they existed.
 #
-# The PR half is settled by those runtimes: over the last runs on `main`,
-# fast-gate took 69–103s and pg-gate 134–143s. A run against a commit nobody
-# will merge spends a couple of minutes of a free runner deciding something no
-# one will read, and the newest push is the only one whose verdict can matter.
-# Cheap to abandon, worth nothing to finish.
+# The PR half is settled by those runtimes. Across all 16 successful runs of the
+# CURRENT configuration (everything since #35 raised FC_NUM_RUNS), fast-gate is
+# 54-103s, mean 71, and pg-gate 103-166s, mean 142. A run against a commit
+# nobody will merge spends a couple of minutes of a free runner deciding
+# something no one will read, and the newest push is the only one whose verdict
+# can matter. Cheap to abandon, worth nothing to finish.
+#
+# Note the spread, which is wider than it looks like it should be: the same
+# unchanged tree varies by ~2x on fast-gate and ~60% on pg-gate, entirely from
+# runner variation. These figures were FIRST written here as 69-103s and
+# 134-143s, from two runs, and the very next PR fell outside BOTH ranges. So
+# they now carry their sample size on purpose — a range quoted from two
+# observations is a guess wearing a measurement's clothes, and this file is the
+# wrong place for that. Anything reasoning about CI cost should use the mean and
+# expect the tail, not treat the maximum as a ceiling.
 #
 # `main` is the reverse: every commit there must keep its own recorded verdict.
 # A cancelled run leaves a commit in history that CI never judged — the "nobody
@@ -172,8 +182,9 @@ jobs:
       # No dependency cache, and that question is CLOSED rather than deferred.
       # The prediction when this file landed was that install would dominate the
       # job. It does not: install is 4s, and has stayed 4s across every run since
-      # — of a 57s job then and a ~69s job now, where `build` is 30s and the
-      # property search is ~20s. There is nothing there for `actions/cache` to
+      # — of a 57s job then and a 54-103s one now (mean 71), where `build` is 30s
+      # and the property search is ~20s. There is nothing there for
+      # `actions/cache` to
       # win, and caching next to `--frozen-lockfile` carries its own correctness
       # risk. Reopen it against a new measurement, not against the intuition.
       - name: Install dependencies
@@ -200,10 +211,18 @@ jobs:
       # 1000 is ten times fast-check's default, so this run explores ~100,000
       # cases rather than ~10,000. Property-Based Testing is a *blocking*
       # constraint (OQ-T-2), and mechanising a shallow search would close that
-      # question only nominally. The runner is where depth is free: nobody is
-      # waiting on it, and `pg-gate` sets the PR's wall-clock at ~2m30s either
-      # way, so `fast-gate` has roughly 90s of slack before this could cost
-      # anyone a second.
+      # question only nominally. The runner is where depth is nearly free: nobody
+      # is waiting on it, and `pg-gate` usually sets the PR's wall-clock either
+      # way, so this mostly costs nothing.
+      #
+      # "Nearly" and "usually" are doing real work in that sentence, and they
+      # replace a flat claim of ~90s of slack. The two jobs' ranges OVERLAP:
+      # fast-gate is 54-103s and pg-gate 103-166s, so on an unlucky pairing —
+      # slow fast-gate, fast pg-gate — this job becomes the critical path rather
+      # than hiding behind it. The slack is ~70s at the means and 0s at the
+      # extremes. Still the right trade for a blocking constraint, but if this
+      # value is ever raised again, that is the headroom being spent, not a
+      # comfortable 90s.
       #
       # Measured local cost, whole suite: unset 3.17s, 500 3.66s, 1000 4.19s,
       # 2000 5.42s, 5000 8.66s, 10000 15.33s. All green — the properties held to
