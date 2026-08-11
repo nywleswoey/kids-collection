@@ -398,12 +398,22 @@ developer). No security scanning. No lint (see below).
 **branch protection on `main` makes them binding**.
 
 - **The workflow**: two jobs on `pull_request` and on `push: main`. **`fast-gate`** runs `typecheck`,
-  `pnpm test` and `build` (~66s); **`pg-gate`** runs `pnpm pg:up` and `pnpm test:pg` against the Docker
-  containers (~2m24s, and therefore the PR's critical path). Two jobs rather than one because `pg-gate`
+  `pnpm test` and `build` (69–103s); **`pg-gate`** runs `pnpm pg:up` and `pnpm test:pg` against the Docker
+  containers (134–143s, and therefore the PR's critical path). Two jobs rather than one because `pg-gate`
   is CI's only dependency on something outside the repo (`local-neon-http-proxy`, a mutable tag in a
   third party's namespace); isolated, that outage names itself instead of reading as broken code.
   **Zero secrets** — every gate passes with the environment empty. The one value `build` needs is a
   committed dummy `DATABASE_URL` pointing at an RFC 2606 `.invalid` host, which `neon()` only parses.
+- **Superseded PR runs are cancelled; runs on `main` never are.** The `concurrency:` group is keyed on
+  the pull request for a PR and on the **commit** for a push, with `cancel-in-progress` true only for
+  `pull_request`. A run against a commit nobody will merge is minutes spent deciding something no one
+  will read; a cancelled run on `main`, by contrast, would leave a commit in history that CI never
+  judged — the exact hole this section exists to close. The push key is the commit rather than the
+  branch on purpose: a *pending* run is cancelled when a third joins its group regardless of
+  `cancel-in-progress`, so a branch-keyed group would drop the middle commit's verdict when two merges
+  land inside one `pg-gate`. ⚠️ **Re-run the newest run, not an older one**: an older re-run rejoins the
+  PR's group, cancels the head's run, and reports against the stale SHA — leaving the head with two
+  cancelled (and therefore blocking) checks until it is pushed to or re-run.
 - **The block is branch protection, not a Vercel change.** Repository ruleset `main protection`
   (active, targeting `~DEFAULT_BRANCH` so a rename cannot leave it protecting nothing) requires a pull
   request and both status checks `fast-gate` and `pg-gate`, restricts deletions, blocks force-pushes and
@@ -444,7 +454,7 @@ developer). No security scanning. No lint (see below).
 **Why `test:pg` runs on *every* PR** — overriding the earlier rule of "when the persistence layer
 changes". A path-filtered job that is **skipped** never reports a conclusion, so as a *required* check it
 leaves the PR pending forever; the usual workaround, a same-named always-green companion job, is exactly
-the "something was checked" lie this document is trying to stop. The blanket rule costs ~2m24s per PR and
+the "something was checked" lie this document is trying to stop. The blanket rule costs ~2m20s per PR and
 removes the question entirely. The containers are the same `pnpm pg:up` a developer runs, on Postgres 17
 matching production's major (see *Test Types*).
 

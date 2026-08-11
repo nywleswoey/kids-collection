@@ -40,12 +40,14 @@ on:
 # A superseded run is abandoned on a PR and never on `main`. Those are opposite
 # answers to one question, which is why both keys below are expressions rather
 # than the flat literals backup.yml can afford (`group: backup`, never cancel).
+# This block was deliberately absent when the file landed, because choosing
+# either way needed runtimes nobody had yet; settled in #32 once they existed.
 #
-# The PR half is settled by the runtimes this block waited on: fast-gate ~69s,
-# pg-gate ~2m30s. A run against a commit nobody will merge spends a couple of
-# minutes of a free runner deciding something no one will read, and the newest
-# push is the only one whose verdict can matter. Cheap to cancel, worth nothing
-# to finish.
+# The PR half is settled by those runtimes: over the last runs on `main`,
+# fast-gate took 69–103s and pg-gate 134–143s. A run against a commit nobody
+# will merge spends a couple of minutes of a free runner deciding something no
+# one will read, and the newest push is the only one whose verdict can matter.
+# Cheap to abandon, worth nothing to finish.
 #
 # `main` is the reverse: every commit there must keep its own recorded verdict.
 # A cancelled run leaves a commit in history that CI never judged — the "nobody
@@ -53,23 +55,35 @@ on:
 #
 # So for a push the group is keyed on the COMMIT, and that is deliberate rather
 # than the obvious `github.ref`. `cancel-in-progress` governs only the RUNNING
-# member of a group; a *pending* one is a separate rule — "any existing pending
-# job or workflow in the same concurrency group will be canceled and the new
-# queued job or workflow will take its place" — and it applies whatever the flag
-# says. A branch-keyed group puts every main push in one group, so three merges
-# inside one pg-gate would cancel the middle commit's run while it queued, by
-# exactly the mechanism this block was added to prevent. Keyed per commit the
-# group has one possible member, so nothing on `main` ever queues and nothing is
-# ever cancelled. (`queue: max` would also fix it, but it cannot be combined with
+# member of a group; a *pending* one is a separate rule — "By default, any
+# existing pending job or workflow in the same concurrency group will be
+# canceled and the new queued job or workflow will take its place" — and that
+# default holds whatever the flag says. A branch-keyed group would put every
+# push to `main` in one group, so three merges inside one pg-gate would cancel
+# the middle commit's run while it queued, by exactly the mechanism this block
+# was added to prevent. Keyed per commit the group has one possible member, so
+# nothing on `main` ever queues and nothing is ever cancelled. (`queue: max`
+# raises that default to 100 waiting runs, but it is rejected outright next to
 # `cancel-in-progress: true`, and the PR half needs true.)
 #
-# Cancelling is safe against branch protection only because it can never touch a
-# SHA a rule is still looking at: the push that triggers the new run is the same
-# push that stopped the old commit being the PR head, and the rule evaluates the
-# head. This is worth stating because a cancelled required check does NOT merely
-# fail to report — `cancelled` is not among the successful/skipped/neutral
-# conclusions protection accepts, so it blocks. That is the cost the `main` half
-# is keyed to avoid, not a risk it was talked out of.
+# What a cancellation costs is worth stating exactly, because `cancelled` is NOT
+# among the successful/skipped/neutral conclusions branch protection accepts: a
+# cancelled required check BLOCKS, it does not merely fail to report. In the
+# ordinary case that is harmless — a `synchronize` push is itself what triggers
+# the replacement run, so the run being cancelled belongs to the commit that
+# just stopped being the PR head, and the rule only ever evaluates the head.
+# Two cases escape that reasoning and are worth knowing rather than discovering:
+#
+#   `reopened` is a default `pull_request` activity type and does NOT move the
+#   head, so closing and reopening mid-run cancels a run on the SHA still being
+#   evaluated. It self-heals: the replacement reports the same two contexts
+#   against the same SHA.
+#
+#   Re-running an OLDER run rejoins this group and cancels the current head's
+#   run, then reports its own conclusions against the older SHA. That one does
+#   not self-heal — the head is left holding two cancelled checks and the PR is
+#   unmergeable until it is pushed to or re-run. Loud and recoverable, but it is
+#   the reason to re-run the newest run rather than an older one.
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
