@@ -264,8 +264,8 @@ jobs:
   # makes the Store seam more than an interface nobody tests twice.
   #
   # A SEPARATE JOB rather than three more steps on fast-gate, and the reason is
-  # not wall-clock (though it does now run alongside it). It is that this job is
-  # the only part of CI that depends on something outside the repository:
+  # not wall-clock (though it does now run alongside it). It is that this job
+  # depends on something outside the repository:
   # `ghcr.io/timowilhelm/local-neon-http-proxy:main`, a mutable tag in a third
   # party's personal namespace. When that breaks — and it can break with no
   # commit of ours — a separate check means the failure names itself, and
@@ -273,6 +273,22 @@ jobs:
   # read as "the code is broken", which is a lie of exactly the kind this
   # workflow exists to stop. (See "Not yet specified" on #17 for the standing
   # question of pinning that image by digest.)
+  #
+  # This used to say pg-gate was "the ONLY part of CI that depends on something
+  # outside the repository", and that was false for as long as it stood.
+  # `app/layout.tsx` pulled two families through `next/font/google`, which
+  # serves them from our origin at runtime but FETCHES them from
+  # fonts.gstatic.com during `next build` — inside fast-gate, a required check.
+  # It cost a red run on #50 (`NextFontError: Failed to fetch 'Fredoka'`) on a
+  # PR that changed one dependency version: 331 tests green, build red, nothing
+  # to do with the diff.
+  #
+  # Now it IS true again, and by construction rather than by assertion: the
+  # fonts are vendored in `app/fonts/` and loaded with `next/font/local`, so
+  # fast-gate reaches the network for exactly one thing — the pnpm registry, at
+  # install. Proven rather than claimed: the build emits both woff2 files, the
+  # output contains zero references to gstatic, and deleting a vendored file
+  # fails the build, so the local file is demonstrably the source.
   pg-gate:
     runs-on: ubuntu-latest
 
