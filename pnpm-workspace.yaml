@@ -2,3 +2,35 @@ allowBuilds:
   core-js: true
   esbuild: true
   sharp: true
+
+# Forced transitive versions, each one closing a Dependabot alert that the
+# direct dependency's own range cannot reach. These are NOT preferences — every
+# entry below exists because a parent pins a vulnerable version and the only
+# alternatives were a major bump of the parent or leaving the alert open.
+#
+# An override is a claim that the parent works against a version it never
+# declared. `fast-gate` and `pg-gate` are what make that claim checkable, so an
+# entry here is only as trustworthy as the suite that ran over it. Remove each
+# one once the parent's own range covers the patched version, and confirm with
+# `pnpm why <pkg>` rather than by assuming — a stale override silently pins a
+# package the tree has already moved past.
+overrides:
+  # `next` depends on postcss 8.4.31 EXACTLY (not a range), so no amount of
+  # updating `next` within v15 moves it. Four alerts, two of them HIGH:
+  # GHSA-r28c-9q8g-f849, GHSA-6g55-p6wh-862q, GHSA-fxqj-rqcc-2cmp,
+  # GHSA-qx2v-qp2m-jg93. Build-time only — postcss never runs at request time.
+  postcss: "^8.5.26"
+
+  # sharp is `next`'s optional image-optimization dependency, pinned below the
+  # 0.35.0 that fixes GHSA-f88m-g3jw-g9cj (HIGH). Note this is a 0.x MINOR bump,
+  # which for a 0.x package is a breaking-change slot — it is here rather than in
+  # the "needs a person" list only because sharp is invoked by `next` alone and
+  # never by this repo's own code, so `next build` exercises the whole surface.
+  sharp: "^0.35.0"
+
+  # vitest 3 ACCEPTS vite 5, 6 or 7, so bumping vitest alone left the resolved
+  # vite at 5.4.21 — a lockfile carry-over, not a constraint. Three alerts
+  # (GHSA-fx2h-pf6j-xcff HIGH, GHSA-v6wh-96g9-6wx3, GHSA-4w7w-66w2-5vf9) need
+  # 6.4.3, and vite 6 also drags esbuild from 0.21.5 to 0.25.x, closing
+  # GHSA-67mh-4wv8-2f99 on that path. Test-time only; nothing ships it.
+  vite: "^6.4.3"
