@@ -45,13 +45,39 @@ actual configuration (`src/auth/config.ts`, `middleware.ts`, `src/features/auth/
 sign-in flow"*. This app configures `providers: [Google]` and no Email provider, so that code path
 does not run. The identity it trusts is a Google-verified account, not a user-typed address.
 
-> **But a related weakness in this repo's OWN code is worth noting**, because it is the same class and
-> is not covered by the upstream fix: `isParentEmail` (`src/features/auth/policy.ts`) normalizes with
-> `trim().toLowerCase()` and **no Unicode normalization**, then does an exact `includes`. The
-> allowlist is the app's only real authorization boundary. It is defended today by the fact that the
-> address arrives from a verified Google account rather than from an attacker's keyboard — which is a
-> property of the *provider*, not of this function. Adding `.normalize("NFKC")` costs one call and
-> removes the dependence. Not a live vulnerability; a cheap hardening with an obvious test.
+> ### ❌ RETRACTED 2026-08-12 — the "cheap hardening" recommended here was backwards
+>
+> This section originally said `isParentEmail` (`src/features/auth/policy.ts`) normalizes with
+> `trim().toLowerCase()` and no Unicode normalization, and that **adding `.normalize("NFKC")` was a
+> cheap hardening**. That was wrong, and it would have opened the hole it claimed to close. Caught
+> when implementing it, by testing the direction of the change instead of assuming it.
+>
+> **The two code shapes are mirror images, not the same bug:**
+>
+> | | Auth.js (the real bug) | `isParentEmail` (here) |
+> |---|---|---|
+> | Shape | validate the address, **then** normalize it, then use the normalized value | **exact match** against a fixed allowlist |
+> | Failure | the thing checked is not the thing used | — nothing downstream to diverge from |
+> | NFKC | **closes** the gap | **widens** what is accepted |
+>
+> Every normalization applied to untrusted input maps *more* distinct strings onto the allowlisted
+> value. Verified both directions:
+>
+> ```
+> "parent＠example.com"                    (U+FF20 FULLWIDTH COMMERCIAL AT)
+>   .normalize("NFKC")  →  "parent@example.com"     ← would MATCH the allowlist
+>   today (lowercase only)  →  no match             ← denied, fail-closed
+> ```
+>
+> So the current implementation is **correct as written**, and the homoglyph address is already
+> rejected. `toLowerCase` widens deliberately and is bounded — ASCII case is not meaningful in the
+> addresses Google issues. NFKC is not bounded: it folds fullwidth forms, ligatures and compatibility
+> characters onto ASCII.
+>
+> **Pinned rather than left to judgement**, since the change looks like an improvement and the next
+> reader of that advisory will reach for it too: `tests/auth-policy.pbt.test.ts` now asserts the
+> lookalike is denied and carries the reasoning, and adding `.normalize("NFKC")` makes it go red —
+> confirmed by mutation.
 
 **GHSA-xmf8 (`getToken()` Bearer) — not reachable.** The app never calls `getToken`. `middleware.ts`
 wraps `auth()`, and every server check goes through `auth()`/`requireParent()`. Verified by grep
@@ -82,6 +108,10 @@ emergency — not as a reason to skip it.
 cannot drift in CI or in a Vercel build, so it is not urgent; but the declared range says the security
 boundary may float across prereleases, which is not what anyone intends. It is also how the installed
 version arrived at beta.31 while the file still says beta.25.
+
+> **Done** — both landed in `chore/next-auth-beta-32`: `next-auth@5.0.0-beta.32` pulling
+> `@auth/core@0.41.3`, pinned **exactly** rather than restoring the caret range, so the declared
+> version now matches the installed one.
 
 ## 5. What OQ-T-3 should be replaced with
 
