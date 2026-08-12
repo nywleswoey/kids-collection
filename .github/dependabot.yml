@@ -1,5 +1,6 @@
-# Watches the FOUR action pins in .github/workflows/ and opens a PR when any of
-# them moves. That is the whole scope.
+# Watches the action pins in .github/workflows/ and the npm tree, and opens a PR
+# when either moves. Repo-level Dependabot ALERTS and SECURITY UPDATES are the
+# third leg and are NOT configured here — they are repository settings (#52).
 #
 # Why this exists, precisely: when the actions were bumped off the deprecated
 # Node 20 majors (#31), editing the pins was cheap — three files, one commit.
@@ -11,14 +12,6 @@
 # A required check is the worst place to discover that a forced runtime has
 # stopped being forced, because the check that would fail is the one blocking
 # the fix.
-#
-# NPM IS DELIBERATELY NOT WATCHED. This is a three-user side project with a
-# large Next.js dependency tree; that ecosystem would open a stream of PRs, each
-# costing a ~3.5 minute gate run, and the judgement about which of them matter
-# is real work rather than a rubber stamp. The action pins are four lines that
-# rot on GitHub's schedule rather than the maintainer's, which is exactly the
-# case a robot is better at than a person. Adding npm later is a separate
-# decision with its own tradeoffs — see #45.
 version: 2
 
 updates:
@@ -59,3 +52,79 @@ updates:
     # red before it reaches `main`. #31 is the worked example — a straight
     # v4→v5 `setup-node` bump had a hard step failure latent in it, and the gates
     # are what would have caught it.
+
+  # ---------------------------------------------------------------------------
+  # npm. This entry REVERSES the decision this file shipped with (#48), which
+  # read "NPM IS DELIBERATELY NOT WATCHED" on the grounds that a large Next.js
+  # tree would open a stream of PRs nobody would triage. That reasoning was
+  # sound about *noise* and wrong about *cost*, and the counter-example was
+  # already on the record when it was written:
+  #
+  #   next-auth@5.0.0-beta.31 / @auth/core@0.41.2 sat inside three advisories,
+  #   two HIGH (GHSA-7rqj-j65f-68wh, GHSA-xmf8-cvqr-rfgj, GHSA-x445-f3h2-j279),
+  #   published 2026-07-20 and still unnoticed on 2026-08-12 — on the only real
+  #   security boundary in the app. #50 fixed it. Nothing would have told anyone.
+  #
+  # That is the same shape as the stale action pins: rot on someone else's
+  # schedule, discovered by accident. The noise argument is answered by
+  # configuration (monthly, grouped, majors held back) rather than by declining
+  # to look, which is what the rest of this entry is.
+  - package-ecosystem: "npm"
+    # Root, and root only. `pnpm-workspace.yaml` exists but declares no
+    # `packages:` — it carries `allowBuilds` alone — so there is exactly one
+    # tracked manifest (`package.json`) and one lockfile. If a workspace package
+    # is ever added, this needs a second directory or it will silently not cover
+    # it. Dependabot reads `pnpm-lock.yaml` natively; nothing extra is required.
+    directory: "/"
+
+    # Monthly, matching the actions entry. Weekly on a tree this size is the
+    # stream the original decision was right to refuse.
+    schedule:
+      interval: "monthly"
+
+    # ONE grouped PR per month for prod and dev dependencies together. The point
+    # is a single review with a single gate run, not per-package bookkeeping.
+    #
+    # `applies-to` is left at its default of `version-updates` ON PURPOSE.
+    # Security PRs must stay individual and immediate — grouping them would
+    # delay a fix to the next scheduled window and bundle it with unrelated
+    # churn, which is the opposite of what an advisory calls for.
+    groups:
+      npm:
+        patterns:
+          - "*"
+
+    # Majors held back — the opposite call from the actions entry above, and for
+    # the opposite reason. An action major is usually a forced runtime bump with
+    # no API surface; `next` 15→16 or `react` 19→20 is a migration. A green
+    # `fast-gate` proves the build and the suite survived, NOT that the app is
+    # right, so a major here wants a person who chose to do it.
+    #
+    # This does NOT weaken security coverage, which is the only reason it is
+    # acceptable: an `ignore` scoped by `update-types` filters version updates
+    # only, so a security update still opens a PR even when the patched version
+    # is a major. (A bare `dependency-name` ignore with no `update-types` WOULD
+    # suppress security PRs for that package — so never add one here.)
+    #
+    # Held back, not handled. Majors accumulate silently under this rule and
+    # nothing surfaces them; the mechanism that notices a stale major is a
+    # person reading `pnpm outdated`, which is exactly the arrangement the rest
+    # of this file exists to distrust.
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+
+    # A backstop, not a target — with grouping there should only ever be one.
+    # Security PRs are exempt from this limit and do not count toward it, so
+    # this cannot throttle an advisory.
+    open-pull-requests-limit: 2
+
+    labels:
+      - "dependencies"
+
+    # `chore(deps):` / `chore(deps-dev):`, matching the conventional-commit
+    # prefixes already in the history (`chore(auth):`, `chore(fonts):`).
+    commit-message:
+      prefix: "chore"
+      include: "scope"
