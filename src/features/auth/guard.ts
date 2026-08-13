@@ -2,13 +2,18 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth/config";
 import { isAllowlistedParent } from "./access";
+import { hasFreshAuth } from "./fresh-auth";
 
 export interface ParentIdentity {
   /** Stable Google account sub — use as PostHog distinct id. */
   id: string;
   email: string;
   name?: string | null;
+  /** Epoch SECONDS of the last real Google authentication; undefined on sessions
+   *  issued before this claim existed. */
+  authTime?: number;
 }
+
 
 /** Resolve the authenticated, allowlisted parent — or null. Server-only. */
 export async function getParent(): Promise<ParentIdentity | null> {
@@ -17,7 +22,7 @@ export async function getParent(): Promise<ParentIdentity | null> {
   if (email && isAllowlistedParent(email)) {
     const id = session?.user?.id;
     if (!id) return null;
-    return { id, email, name: session?.user?.name };
+    return { id, email, name: session?.user?.name, authTime: session?.authTime };
   }
   return null;
 }
@@ -29,5 +34,19 @@ export async function getParent(): Promise<ParentIdentity | null> {
 export async function requireParent(): Promise<ParentIdentity> {
   const parent = await getParent();
   if (!parent) redirect("/signin");
+  return parent;
+}
+
+/**
+ * Enforce a RECENT Google authentication, not merely a live session. Used only by
+ * passkey enrolment. A stale session is sent back through Google with
+ * `prompt=login`, which forces a real re-authentication rather than silently
+ * reusing the existing Google session.
+ */
+export async function requireFreshParent(): Promise<ParentIdentity> {
+  const parent = await requireParent();
+  if (!hasFreshAuth(parent.authTime, Date.now())) {
+    redirect(`/admin/enrol/reauth`);
+  }
   return parent;
 }
