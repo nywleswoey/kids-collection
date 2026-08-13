@@ -25,4 +25,18 @@ export const env = {
   get authSecret(): string {
     return process.env.AUTH_SECRET ?? "";
   },
+  /**
+   * WebAuthn Relying Party ID for the admin gate — the EXACT hostname passkeys
+   * are bound to (`kids-collection.vercel.app` in production). Defaults to
+   * `localhost` for local dev, which WebAuthn accepts as a secure context.
+   *
+   * Any request whose host is not this value has no passkey path at all; see
+   * `features/admin/webauthn/rp.ts`.
+   */
+  get webauthnRpId(): string {
+    // `||`, not `??`: the variable is present-but-empty in `.env.example`, and an
+    // empty rpID matches no host at all — it would disable passkeys silently for
+    // anyone who copied that file rather than falling back to the dev default.
+    return process.env.WEBAUTHN_RP_ID || "localhost";
+  },
 };

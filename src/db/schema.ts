@@ -175,6 +175,48 @@ export const collectionRewards = pgTable(
   ],
 );
 
+/**
+ * Admin gate WebAuthn credentials (parent-gate-auth). The first auth-related
+ * persistence in this schema — everything else here is game state.
+ *
+ * One row per enrolled passkey. `parentId` is the Google `sub` already copied
+ * into the session by `auth/config.ts`: "there is only one parent" is true today
+ * and cheap not to depend on.
+ *
+ * `counter` is the WebAuthn signature counter. It is STORED BUT NOT ENFORCED:
+ * synced-passkey providers (1Password, iCloud Keychain, Google Password Manager)
+ * always report 0, so the anti-cloning check is inert for this setup and
+ * enforcing it would break the intended flow. Kept for a future device-bound
+ * authenticator. See `Product-Definition/features/parent-gate-auth/`.
+ */
+export const adminCredentials = pgTable(
+  "admin_credentials",
+  {
+    id: text("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    /** Google account `sub` of the owning parent. */
+    parentId: text("parent_id").notNull(),
+    /** base64url credential id as returned by the authenticator. */
+    credentialId: text("credential_id").notNull(),
+    /** base64url COSE public key. */
+    publicKey: text("public_key").notNull(),
+    counter: integer("counter").notNull().default(0),
+    /** Comma-joined AuthenticatorTransport hints ("internal,hybrid"); may be "". */
+    transports: text("transports").notNull().default(""),
+    /** Human label shown in the admin list, e.g. "1Password". */
+    label: text("label").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("admin_credentials_credential_id_idx").on(t.credentialId),
+    index("admin_credentials_parent_idx").on(t.parentId),
+  ],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
@@ -182,3 +224,4 @@ export type CollectionRow = typeof collections.$inferSelect;
 export type QuizCompletionRow = typeof quizCompletions.$inferSelect;
 export type QuizSeenQuestionRow = typeof quizSeenQuestions.$inferSelect;
 export type CollectionRewardRow = typeof collectionRewards.$inferSelect;
+export type AdminCredentialRow = typeof adminCredentials.$inferSelect;
