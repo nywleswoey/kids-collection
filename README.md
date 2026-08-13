@@ -27,10 +27,14 @@ v2 (`/aidlc-discovery`).
 - **U7 Admin** — ✅ parent dashboard, token grants, oversight
 
 ## Seeding the card pool
+
+To add a whole new theme, hand `seed/NEW-THEME-RUNBOOK.md` and a theme name to an agent — it authors the
+30 cards, generates the art, and stops for your approval before publishing.
+
 ```bash
-# author data: paste seed/AUTHORING_PROMPT.md into claude.ai → save seed/cards.json
-pnpm seed --review     # generate preview images to seed/review/
-pnpm seed --publish    # upload to Blob + insert cards (idempotent)
+pnpm seed --check-urls # schema + every sourceUrl must return 200
+pnpm seed --review     # generate preview images for NEW cards to seed/review/
+pnpm seed --sync       # publish reviewed bytes to Blob + insert cards (idempotent)
 ```
 
 ## Getting started
