@@ -22,7 +22,7 @@ export default async function AdminEnrolPage() {
       className="flex min-h-screen flex-col items-center justify-center p-8"
       data-testid="admin-enrol-page"
     >
-      <EnrolForm hasExisting={status.enrolled > 0} />
+      <EnrolForm credentials={status.credentials} />
     </main>
   );
 }

@@ -5,16 +5,24 @@ import { captureServerException } from "@/lib/posthog-server";
 import { pgAdminCredentialStore } from "@/db/stores/credential-store.pg";
 import { passkeyRp } from "./rp";
 
+/** Client-safe view of an enrolled passkey (dates flattened to ISO strings). */
+export interface PasskeySummary {
+  id: string;
+  label: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
 export interface PasskeyStatus {
   /** False on any host that is not the configured rpID — e.g. a preview deployment. */
   availableOnThisHost: boolean;
-  /** How many passkeys this parent has enrolled. 0 if the lookup failed — see below. */
-  enrolled: number;
+  /** Enrolled passkeys, newest first. Empty if the lookup failed — see below. */
+  credentials: PasskeySummary[];
 }
 
 /**
  * What the unlock and enrolment pages need to know before rendering: whether this
- * host can do passkeys at all, and whether anything is enrolled yet.
+ * host can do passkeys at all, and what is enrolled.
  *
  * Kept out of `passkey-actions.ts` because that file is `"use server"`, where
  * every export must be a Server Action.
@@ -33,11 +41,19 @@ export interface PasskeyStatus {
 export async function passkeyStatus(parentId: string): Promise<PasskeyStatus> {
   const h = await headers();
   const rp = passkeyRp(env.webauthnRpId, h.get("host"));
-  if (!rp) return { availableOnThisHost: false, enrolled: 0 };
+  if (!rp) return { availableOnThisHost: false, credentials: [] };
 
   try {
-    const credentials = await pgAdminCredentialStore.listByParent(parentId);
-    return { availableOnThisHost: true, enrolled: credentials.length };
+    const rows = await pgAdminCredentialStore.listByParent(parentId);
+    return {
+      availableOnThisHost: true,
+      credentials: rows.map((r) => ({
+        id: r.id,
+        label: r.label,
+        createdAt: r.createdAt.toISOString(),
+        lastUsedAt: r.lastUsedAt?.toISOString() ?? null,
+      })),
+    };
   } catch (error) {
     // Reported, never silent: a failure here means the passkey path is invisible
     // to the parent, which must not pass unnoticed just because the page renders.
@@ -45,6 +61,6 @@ export async function passkeyStatus(parentId: string): Promise<PasskeyStatus> {
       distinctId: parentId,
       action: "passkey_status",
     });
-    return { availableOnThisHost: true, enrolled: 0 };
+    return { availableOnThisHost: true, credentials: [] };
   }
 }

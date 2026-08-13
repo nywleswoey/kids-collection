@@ -62,6 +62,18 @@ export function UnlockForm({
         </Link>
       )}
 
+      {passkeyAvailable && passkeyEnrolled && (
+        // Reachable even once a passkey exists: adding a per-assertion-verifying
+        // platform passkey, and removing a weaker one, both live behind this link.
+        <Link
+          href="/admin/enrol"
+          data-testid="admin-passkey-manage-link"
+          className="text-center text-xs text-[color:var(--ink-soft)] underline"
+        >
+          Manage passkeys
+        </Link>
+      )}
+
       <div className="flex items-center gap-3 text-xs text-[color:var(--ink-soft)]">
         <span className="h-px flex-1 bg-white/15" />
         <span>or use the passcode</span>

@@ -12,26 +12,25 @@ Background and the reasoning behind each decision: `Product-Definition/features/
 
 ## 1. Before you start
 
-### 1.1 The blocking check (OQ-PG-4)
+### 1.1 The measured result (OQ-PG-4) — read this first
 
-The entire justification for this change is that a passkey prompt is **unobservable** — a child standing
-next to you learns nothing, whereas they can watch you type a passcode. That property depends on
-1Password performing a real user-verification check on each assertion rather than serving silently from
-an already-unlocked vault.
+This was tested on production on 2026-08-13, and **it came back negative.** With 1Password already
+unlocked, the passkey assertion completed on a **single button click, with no biometric prompt.**
 
-`requireUserVerification: true` is set on both ceremonies, which is the lever. Whether 1Password honours
-it per assertion is **unverified**.
+That is not a bug. `requireUserVerification: true` is set, and `verifyAuthenticationResponse` rejects any
+assertion whose UV flag is false — so 1Password asserted UV=true. It treats an unlocked vault as the user
+having already been verified. A legitimate reading of the spec, just a weaker one than assumed. WebAuthn
+gives a relying party no way to demand a *fresh* check; the authenticator alone decides what counts.
 
-**Do this after deploy 1 and before deploy 2:**
+**What still holds.** Nothing is typed, so nothing is observable. A child watching learns nothing
+reusable — that was the decisive argument for this whole change, and it survives intact.
 
-1. Unlock 1Password and leave it unlocked.
-2. Go to `/admin` and let the 20-second window lapse.
-3. Unlock with the passkey.
+**What does not.** An unattended device with an unlocked vault now opens the gate on one click. Under the
+passcode that required having *seen* the passcode. The risk shifts from *observation, permanent once
+seen* to *physical access, transient* — and both sit inside the stated threat model of a curious child at
+your desk.
 
-| What happens | Meaning | Do |
-|---|---|---|
-| 1Password asks for Face ID / Touch ID / Windows Hello | The property holds | Continue to deploy 2 |
-| It authorises with no verification prompt | **The property does not hold.** An unattended device with an unlocked vault lets a child through | Stop. See §6 |
+**Consequence: §3.5 is now a required step before deploy 2**, not an optional hardening.
 
 ### 1.2 What must be true
 
@@ -139,13 +138,46 @@ WebAuthn ceremony. This checklist is the compensating control. Work through all 
 If step 11 fails, 1Password sync is not covering both devices. Enrol a second passkey on that device
 (repeat 3–7) before continuing — it is why the schema is multi-credential.
 
-**Do not proceed to deploy 2 until every row passes.**
+**Do not proceed to §3.5 until every row passes.**
+
+---
+
+## 3.5 Swap to platform passkeys — required before deploy 2
+
+Because of the §1.1 result, a 1Password passkey opens the gate on one click. The fix is not in code —
+WebAuthn cannot force a fresh check — it is **which authenticator is enrolled**. A platform authenticator
+(Touch ID, Windows Hello, Android biometric) verifies per assertion.
+
+Do this **on each device you use `/admin` from**:
+
+| # | Step | Notes |
+|---|---|---|
+| 1 | `/admin/unlock` → **Manage passkeys** | Sends you through Google re-auth again |
+| 2 | Name it for the device, e.g. "MacBook Touch ID" | Optional; defaults to "This device" |
+| 3 | **Add this device (Touch ID / Windows Hello)** | Restricts the picker to a platform authenticator |
+| 4 | **Confirm the prompt actually asked for a biometric** | `authenticatorAttachment: "platform"` is a hint, not a guarantee — some systems register a password manager as a platform provider |
+| 5 | Repeat on your other device | Platform passkeys do **not** sync across ecosystems. That is the cost of this route |
+
+Then, **once every device you use has its own platform passkey**:
+
+| # | Step | Notes |
+|---|---|---|
+| 6 | `/admin/unlock` → **Manage passkeys** → **Remove** the 1Password entry | Leaving it enrolled defeats the point: it stays offerable at the unlock prompt, so anyone at an unlocked device can just pick it |
+| 7 | Unlock again on each device | The biometric must fire every time |
+
+> **Do not do step 6 before step 5 on every device.** Removing the synced credential while a device has
+> no platform passkey of its own leaves that device with no passkey at all. Not a lockout — Google
+> re-auth still enrols a new one — but an avoidable detour.
+
+If a device cannot do platform passkeys at all, keep a 1Password credential for it and accept the
+one-click behaviour there, or reconsider removing the passcode (§6.3).
 
 ---
 
 ## 4. Deploy 2 — remove the passcode
 
-Only after §3 is fully green and §1.1 came out clean.
+Only after §3 is fully green **and** §3.5 is complete — every device has its own platform passkey and
+the 1Password credential has been removed.
 
 ### 4.1 Code removals
 
@@ -238,16 +270,19 @@ Before that, try the cheaper things:
 | Enrolment loops back to "Confirm it's you" | The Google re-auth is not stamping `authTime`. Sign out completely and sign in again |
 | Nothing works, but Google sign-in does | Enrol a fresh passkey via `/admin/enrol` — this is the designed recovery path and needs no passcode |
 
-### 6.3 If §1.1 failed
+### 6.3 If §3.5 cannot be completed
 
-If 1Password authorises without a verification prompt, **do not do deploy 2**. The passkey is still a
-large ergonomic win and is no weaker than the passcode, but the shoulder-surfing property does not hold,
-so removing the passcode buys less than the discovery assumed. Options, in rough order of cost:
+§3.5 is the chosen answer to the §1.1 result. If a device cannot do platform passkeys, or the per-device
+enrolment is not worth it to you, these are the alternatives that were weighed:
 
-- Set 1Password's vault auto-lock to a short interval — makes the unlocked-vault window small.
-- Keep the passcode as a second factor rather than deleting it (revisit OQ-PG-2).
-- Enrol a **platform** passkey (Touch ID / Windows Hello directly) instead of a 1Password one. Device-bound,
-  always verifies — at the cost of one enrolment per device, which is what 1Password was avoiding.
+| Option | What it buys | What it costs |
+|---|---|---|
+| **Shorten 1Password's auto-lock** to ~1–5 min | Shrinks the unlocked window | Does not close it — while unlocked, one click still opens the gate |
+| **Keep the passcode** as a second factor; cancel deploy 2 | Defence in depth | Keeps a secret the kids may already have seen. Reopens OQ-PG-2 |
+| **Accept the one-click behaviour** and do deploy 2 anyway | Simplest end state, no standing secret | An unattended unlocked device opens the gate |
+
+None of these is wrong. The first is cheapest, the second most conservative, the third cleanest. What
+would be wrong is doing deploy 2 while believing the biometric fires when it does not.
 
 ---
 

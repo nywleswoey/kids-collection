@@ -132,3 +132,55 @@ convert it from an untested assumption into a verified one. Cheap; nothing to bu
 4. **OQ-PG-5** — recorded for the future reader; no action.
 AI-DLC should load this file during Requirements Analysis and resolve each entry before proceeding to
 User Stories or Application Design.
+
+---
+
+## OQ-PG-4 — RESOLVED 2026-08-13, negatively
+
+Tested on production per `docs/PASSKEY-CUTOVER.md` §1.1: with 1Password already unlocked, the passkey
+assertion completed on a **single button click, with no biometric or password prompt**.
+
+**This is not a code defect and not a spec violation.** `requireUserVerification: true` is set on both
+ceremonies, and `verifyAuthenticationResponse` rejects any assertion whose UV flag is false — so
+1Password asserted UV=true. It treats an unlocked vault as the user having already been verified. That
+is a legitimate but weaker reading than this discovery assumed. WebAuthn has no way to demand a *fresh*
+verification; the authenticator alone decides what counts.
+
+### What survives
+- **Q1(c), the decisive argument, still holds.** Nothing is typed, so nothing is observable. A child
+  watching learns nothing reusable.
+- No standing shared secret once `ADMIN_PASSCODE` is removed.
+- Ergonomics are as promised (Q1a).
+
+### What does not
+- **The residual risk changes shape, and lands inside threat model Q2(a).** An unattended device with an
+  unlocked vault admits anyone with one click. Under the passcode this required having *seen* the
+  passcode. Observation-permanent becomes physical-access-transient.
+- The 20s sliding window is doing much less work than intended: it re-prompts, but the prompt costs a
+  click.
+
+### Consequence for the cutover
+Deploy 1 is unaffected and correct as shipped. What this bears on is **deploy 2** — whether removing
+`ADMIN_PASSCODE` is still the right end state, which is OQ-PG-2 restated with better information.
+See `docs/PASSKEY-CUTOVER.md` §6.3.
+
+### Decision taken 2026-08-13 (user)
+
+**Enrol a platform passkey on each device, then remove the 1Password credential, then deploy 2.**
+
+Rejected: shortening 1Password's auto-lock (shrinks the window without closing it); keeping the passcode
+as a second factor (would reopen OQ-PG-2 and retain a secret the children may have seen); accepting the
+one-click behaviour as-is.
+
+**Consequence — the deferred management UI is no longer deferrable.** Enrolling a platform passkey is not
+sufficient on its own: while the 1Password credential remains enrolled it stays offerable at the unlock
+prompt, so anyone at an unlocked device can simply choose it. Retiring the weaker credential requires a
+list and a remove action, which OQ-PG-1 had scoped out of the first slice on the grounds that 1Password's
+sync made multi-credential *management* unnecessary. That reasoning no longer holds — the sync is exactly
+what has to be given up. The multi-credential **schema**, retained despite Amendment 1, is what makes this
+a UI addition rather than a migration.
+
+**Also reopened in effect: the per-device enrolment cost that Amendment 1 removed.** Platform passkeys do
+not sync across ecosystems, so the mixed-ecosystem cost returns — one enrolment per device. Amendment 1's
+conclusion was correct for the situation as understood at the time; the OQ-PG-4 result changed the
+situation, not the reasoning.
