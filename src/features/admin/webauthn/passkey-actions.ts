@@ -28,11 +28,13 @@ import { signChallenge, verifyChallenge } from "./challenge";
  * re-authentication rather than by the gate itself, which is what breaks the
  * chicken-and-egg of "the enrolment page lives behind the gate the passkey opens".
  *
- * `requireUserVerification: true` on both ceremonies is deliberate and
- * load-bearing: it is what asks the authenticator (1Password, Touch ID, Windows
- * Hello) to actually verify the human, rather than silently asserting from an
- * already-unlocked vault. Whether every provider honours it per-assertion is the
- * open question OQ-PG-4 — verify by trial before trusting the property.
+ * `requireUserVerification: true` on both ceremonies rejects any assertion whose
+ * UV flag is false. Note what it does NOT buy, measured on production and now
+ * settled (OQ-PG-4): **1Password treats an unlocked vault as user verification**,
+ * so it sets UV=true and its assertions complete on one click with no biometric
+ * prompt. That is a legitimate reading of the spec, and WebAuthn gives a relying
+ * party no way to demand a *fresh* check — the authenticator alone decides what
+ * counts. The only lever is which authenticator is enrolled; see `EnrolTarget`.
  */
 
 const store = pgAdminCredentialStore;
@@ -172,8 +174,27 @@ export async function finishPasskeyUnlockAction(
 
 /* --------------------------------------------------------------- enrolment */
 
+/**
+ * Which kind of authenticator to enrol.
+ *
+ * This choice exists because of a measured result, not a preference. 1Password
+ * treats an unlocked vault as user verification, so its assertions complete on a
+ * single click with no biometric prompt (OQ-PG-4). A **platform** authenticator —
+ * Touch ID, Windows Hello, Android biometric — verifies per assertion, which is
+ * the behaviour the admin gate was assumed to have. WebAuthn cannot demand a
+ * fresh check from an authenticator that says it already verified, so the only
+ * lever is which authenticator gets enrolled.
+ *
+ * `"platform"` restricts the browser's picker to this device. It is a *hint*, not
+ * a guarantee: on some systems a password manager registers itself as a platform
+ * provider, so confirm the prompt actually asked for a biometric.
+ */
+export type EnrolTarget = "platform" | "any";
+
 /** Step 1 of enrolling: options for `navigator.credentials.create()` + a signed challenge. */
-export async function beginPasskeyEnrolAction(): Promise<
+export async function beginPasskeyEnrolAction(
+  target: EnrolTarget = "any",
+): Promise<
   PasskeyResult<{ options: PublicKeyCredentialCreationOptionsJSON; token: string }>
 > {
   // Fresh Google re-auth, not merely a live session — see requireFreshParent.
@@ -200,6 +221,7 @@ export async function beginPasskeyEnrolAction(): Promise<
     authenticatorSelection: {
       residentKey: "preferred",
       userVerification: "required",
+      ...(target === "platform" ? { authenticatorAttachment: "platform" as const } : {}),
     },
   });
 
@@ -265,6 +287,45 @@ export async function finishPasskeyEnrolAction(
     await captureServerException(error, {
       distinctId: parent.id,
       action: "passkey_enrol",
+    });
+    throw error;
+  }
+}
+
+/* -------------------------------------------------------------- management */
+
+/**
+ * Remove an enrolled passkey.
+ *
+ * Guarded by the same fresh Google re-auth as enrolment, not by the admin gate.
+ * Removal is how a *weaker* credential gets retired — the whole point of the
+ * management UI is dropping the one-click 1Password credential once a
+ * per-assertion-verifying platform passkey exists (OQ-PG-4). Letting that happen
+ * behind a gate the weak credential itself opens would be circular.
+ *
+ * Removing the last credential is permitted: enrolment is reachable through
+ * Google re-auth, so it is recoverable rather than a lockout.
+ */
+export async function removePasskeyAction(id: string): Promise<PasskeyResult> {
+  const parent = await requireFreshParent();
+  try {
+    // Ownership check before deleting: `id` is client-supplied and must not be
+    // able to name another parent's credential.
+    const owned = await store.listByParent(parent.id);
+    if (!owned.some((c) => c.id === id)) return { ok: false, reason: "rejected" };
+
+    await store.remove(id);
+
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({ distinctId: parent.id, event: "admin_passkey_removed" });
+      await posthog.flush();
+    }
+    return { ok: true };
+  } catch (error) {
+    await captureServerException(error, {
+      distinctId: parent.id,
+      action: "passkey_remove",
     });
     throw error;
   }

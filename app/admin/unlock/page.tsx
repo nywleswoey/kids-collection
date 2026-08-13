@@ -20,7 +20,7 @@ export default async function AdminUnlockPage() {
     >
       <UnlockForm
         passkeyAvailable={status.availableOnThisHost}
-        passkeyEnrolled={status.enrolled > 0}
+        passkeyEnrolled={status.credentials.length > 0}
       />
     </main>
   );
