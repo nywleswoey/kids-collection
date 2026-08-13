@@ -125,6 +125,42 @@ Card shape (all five fields required):
   view"), put it somewhere plain ("parked on grass"). Sleek aircraft photographed in flight are the shape
   it most often renders as two overlapping copies.
 
+### What the image model can and cannot draw
+
+Learned the hard way on *Warriors*, where the first pass returned 3 usable images out of 28. Read this
+**before** you pick subjects, not after — some of it is a constraint on Step 3, not on your wording.
+
+`ART_STYLE` asks for a bright cartoon. Long, photo-real prompts fight it and come back as dim resin
+statuettes on display bases. The prompts that land look like the ones already in `cards.json`: a short
+noun phrase, **one** cheerful subject, outdoors in daylight, **at most one** held object.
+
+Three kinds of subject fail no matter how you word them. Prefer subjects that dodge all three:
+
+| Failure class | What you get | Seen on |
+|---|---|---|
+| Identity rests on a **small held object** | the object renders as a bent wire or a smear, or duplicates | Longbowman, Crossbowman, Chainmail |
+| Identity rests on **niche uniform accuracy** | a plausible costume from the wrong century or country | Swiss Guard (modern police), Ashigaru (farmer with a broom), Spartan Hoplite (19th-c dragoon helmet) |
+| **Multi-object scene** | the parts recombine into something else entirely | Egyptian Charioteer (a Victorian pony-trap), Terracotta Army (one figurine, not an army) |
+
+Wording levers, in the order worth trying:
+
+- **Lead with the defining object** when a subject needs one — "a tall wooden longbow held upright by a
+  cheerful archer…" beats "an archer holding a longbow". It moves the odds; it does not fix the class.
+- **Drop the weapon entirely** and let clothing carry the subject. This rescued more cards than any
+  other change.
+- **Say "cheerful" / "smiling"**, and put it "on green grass under a blue sky". Dark or indoor settings
+  come back gloomy and sometimes frightening.
+- **Never say "on a display stand"** — objects photograph fine simply lying on grass.
+- Watch for **monochrome**: a red subject on a red ground renders as a red blur. Contrast the two.
+
+**Reverting an `imagePrompt` restores that exact earlier image.** The service is deterministic — same
+prompt, same bytes — so if round 3 is worse than round 2, paste round 2's prompt back and the picture
+returns verbatim. Keep the superseded prompts somewhere until the theme ships.
+
+Expect **429 rate-limit failures** on a 30-card run. They are retryable and cost you nothing: re-run
+`pnpm seed --review` and it resumes. A 429 is not a prompt problem and does not count as a re-prompt
+round.
+
 **Append** the theme object to the `themes` array of `seed/cards.json`. Array position **is** the theme's
 display order and `themes.sort_order` is a contract: never insert mid-array, never reorder existing
 entries — that reshuffles what the children already know.
