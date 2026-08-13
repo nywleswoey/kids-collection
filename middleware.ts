@@ -16,9 +16,14 @@ export default auth(async (req) => {
     return Response.redirect(new URL("/signin", req.nextUrl.origin));
   }
 
-  // Admin passcode gate (U4-FR1): /admin/* except the unlock page needs a valid
-  // gate cookie. First layer; admin pages re-check via requireAdminGate().
-  if (path.startsWith("/admin") && !path.startsWith("/admin/unlock")) {
+  // Admin gate (U4-FR1): /admin/* needs a valid gate cookie, except the two
+  // routes that EXIST to open it — the unlock prompt and passkey enrolment.
+  // Enrolment is guarded by a fresh Google re-auth instead (requireFreshParent);
+  // gating it behind the very gate a passkey opens would be circular.
+  const isGateEntryRoute =
+    path.startsWith("/admin/unlock") || path.startsWith("/admin/enrol");
+
+  if (path.startsWith("/admin") && !isGateEntryRoute) {
     const secret = process.env.AUTH_SECRET ?? "";
     const token = req.cookies.get(GATE_COOKIE)?.value;
     const ok = await verifyGateToken(token, secret, Date.now());

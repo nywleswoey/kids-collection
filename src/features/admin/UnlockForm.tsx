@@ -1,12 +1,29 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { unlockAdminAction } from "./unlock-action";
 import { ErrorBanner } from "@/features/ui/ErrorBanner";
 import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
+import { PasskeyUnlockButton } from "./webauthn/PasskeyUnlockButton";
 
-/** Passcode entry for the admin gate (U4-FR1). Generic error on failure. */
-export function UnlockForm() {
+/**
+ * Admin gate unlock (U4-FR1). Passkey is the primary path; the passcode below it
+ * is the CUTOVER FALLBACK ONLY.
+ *
+ * Deploy 2 of the parent-gate-auth cutover deletes the passcode half of this
+ * component along with `verifyPasscode()` and `ADMIN_PASSCODE`. It ships in
+ * deploy 1 purely so the passkey flow can be verified against production —
+ * there is no staging environment and no browser E2E, so production is first
+ * contact. See `Product-Definition/features/parent-gate-auth/`.
+ */
+export function UnlockForm({
+  passkeyAvailable,
+  passkeyEnrolled,
+}: {
+  passkeyAvailable: boolean;
+  passkeyEnrolled: boolean;
+}) {
   const [error, setError] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -20,45 +37,62 @@ export function UnlockForm() {
   }
 
   return (
-    <form
-      action={onSubmit}
-      className="panel flex w-full max-w-sm flex-col gap-4 p-8"
-      data-testid="admin-unlock-form"
-    >
+    <div className="panel flex w-full max-w-sm flex-col gap-5 p-8">
       <div className="flex flex-col items-center gap-1 text-center">
         <div className="text-5xl" aria-hidden>
           🔒
         </div>
-        <h1 className="text-2xl font-bold">Parent passcode</h1>
+        <h1 className="text-2xl font-bold">Parent unlock</h1>
         <p className="text-sm text-[color:var(--ink-soft)]">
-          Enter the admin passcode to continue.
+          {passkeyAvailable && passkeyEnrolled
+            ? "Use your passkey to continue."
+            : "Enter the admin passcode to continue."}
         </p>
       </div>
 
-      <input
-        name="passcode"
-        type="password"
-        autoComplete="off"
-        autoFocus
-        placeholder="Passcode"
-        data-testid="admin-passcode-input"
-        className={`${TEXT_INPUT_CLASS} text-center`}
-      />
+      {passkeyAvailable && passkeyEnrolled && <PasskeyUnlockButton />}
 
-      <ErrorBanner
-        testId="admin-passcode-error"
-        message={error ? "Incorrect passcode." : null}
-        className="text-center text-sm text-red-300"
-      />
+      {passkeyAvailable && !passkeyEnrolled && (
+        <Link
+          href="/admin/enrol"
+          data-testid="admin-passkey-setup-link"
+          className="btn btn--primary text-center"
+        >
+          Set up a passkey
+        </Link>
+      )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        data-testid="admin-unlock-button"
-        className="btn btn--primary"
-      >
-        {pending ? "Checking…" : "Unlock"}
-      </button>
-    </form>
+      <div className="flex items-center gap-3 text-xs text-[color:var(--ink-soft)]">
+        <span className="h-px flex-1 bg-white/15" />
+        <span>or use the passcode</span>
+        <span className="h-px flex-1 bg-white/15" />
+      </div>
+
+      <form action={onSubmit} className="flex flex-col gap-4" data-testid="admin-unlock-form">
+        <input
+          name="passcode"
+          type="password"
+          autoComplete="off"
+          placeholder="Passcode"
+          data-testid="admin-passcode-input"
+          className={`${TEXT_INPUT_CLASS} text-center`}
+        />
+
+        <ErrorBanner
+          testId="admin-passcode-error"
+          message={error ? "Incorrect passcode." : null}
+          className="text-center text-sm text-red-300"
+        />
+
+        <button
+          type="submit"
+          disabled={pending}
+          data-testid="admin-unlock-button"
+          className="btn btn--ghost"
+        >
+          {pending ? "Checking…" : "Unlock with passcode"}
+        </button>
+      </form>
+    </div>
   );
 }
