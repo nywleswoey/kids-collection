@@ -2579,6 +2579,221 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Seawise_Giant"
         }
       ]
+    },
+    {
+      "name": "Warriors",
+      "cards": [
+        {
+          "name": "Samurai",
+          "rarity": "legendary",
+          "eduText": "Samurai served Japan's lords for nearly 700 years and followed a code of honour called bushido.",
+          "imagePrompt": "a smiling samurai in bright red and gold armour standing in a green field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Samurai"
+        },
+        {
+          "name": "Terracotta Army",
+          "rarity": "legendary",
+          "eduText": "Farmers digging a well in 1974 found over 8,000 life-size clay warriors buried in China.",
+          "imagePrompt": "long straight rows of detailed grey clay soldier statues with topknots and armour standing in a deep earth trench",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Terracotta_Army"
+        },
+        {
+          "name": "Ninja",
+          "rarity": "epic",
+          "eduText": "Ninja were the spies of old Japan, trained to climb walls and move silently rather than be seen.",
+          "imagePrompt": "a friendly ninja in a dark blue outfit standing on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ninja"
+        },
+        {
+          "name": "Medieval Knight",
+          "rarity": "epic",
+          "eduText": "A knight's plate armour weighed about 25 kilograms, yet he could still run, jump and climb on a horse.",
+          "imagePrompt": "a single knight in shining steel plate armour standing still, full body side view, on plain grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Knight"
+        },
+        {
+          "name": "Viking Warrior",
+          "rarity": "epic",
+          "eduText": "Vikings sailed from Scandinavia to North America 500 years before Columbus, and their helmets had no horns.",
+          "imagePrompt": "a cheerful viking boy with a red beard, a fur cloak and a round silver helmet standing on green grass under a blue sky, hands at his sides",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Vikings"
+        },
+        {
+          "name": "Spartan Hoplite",
+          "rarity": "epic",
+          "eduText": "Spartan boys began training at the age of seven, and their big round bronze shield was called a hoplon.",
+          "imagePrompt": "a shiny bronze helmet with a tall red horsehair crest worn by a cheerful greek soldier in a red cloak on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hoplite"
+        },
+        {
+          "name": "Roman Legionary",
+          "rarity": "epic",
+          "eduText": "A Roman legionary marched about 30 kilometres a day carrying his own tent, tools and food.",
+          "imagePrompt": "a large curved rectangular red shield held by a cheerful roman soldier in silver segmented armour on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Legionary"
+        },
+        {
+          "name": "Mongol Horse Archer",
+          "rarity": "rare",
+          "eduText": "Mongol riders could shoot a bow while galloping, and often ate and slept in the saddle.",
+          "imagePrompt": "a curved wooden bow held up by a smiling mongol rider in a fur hat sitting on a brown horse on a green grassy plain",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mounted_archery"
+        },
+        {
+          "name": "Winged Hussar",
+          "rarity": "rare",
+          "eduText": "Polish hussars wore tall wooden frames of feathers on their backs, which made them look enormous.",
+          "imagePrompt": "a polish hussar in silver armour with tall white feathered wings on his back, standing on grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Polish_hussars"
+        },
+        {
+          "name": "War Elephant",
+          "rarity": "rare",
+          "eduText": "Hannibal marched elephants over the snowy Alps into Italy more than 2,000 years ago.",
+          "imagePrompt": "a single elephant wearing a decorated cloth and a small wooden seat on its back, side view, standing on plain dry ground",
+          "sourceUrl": "https://en.wikipedia.org/wiki/War_elephant"
+        },
+        {
+          "name": "Gladiator",
+          "rarity": "rare",
+          "eduText": "Gladiators trained at special schools in Rome, and the best of them became famous like sports stars.",
+          "imagePrompt": "a cheerful roman gladiator boy in a bronze helmet and a leather shoulder guard standing on golden sand under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gladiator"
+        },
+        {
+          "name": "Aztec Eagle Warrior",
+          "rarity": "rare",
+          "eduText": "Aztec eagle warriors wore feathered suits and a helmet shaped like an open eagle's beak.",
+          "imagePrompt": "a smiling aztec warrior boy in a bright green and red feather costume standing on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eagle_warrior"
+        },
+        {
+          "name": "Zulu Warrior",
+          "rarity": "rare",
+          "eduText": "Zulu regiments were famous for marching barefoot as far as 80 kilometres in a single day.",
+          "imagePrompt": "a smiling zulu warrior holding one tall oval cowhide shield on dry grassland",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Impi"
+        },
+        {
+          "name": "Maasai Warrior",
+          "rarity": "rare",
+          "eduText": "Young Maasai men in Kenya wear bright red cloth and show their strength with a high jumping dance.",
+          "imagePrompt": "a smiling maasai boy in a bright red robe with colourful beaded necklaces standing on green savanna grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Maasai_people"
+        },
+        {
+          "name": "Persian Immortal",
+          "rarity": "rare",
+          "eduText": "The Persian Immortals always numbered exactly 10,000, because a new man stepped in the moment one left.",
+          "imagePrompt": "a smiling ancient persian soldier in a long blue and gold embroidered robe and a tall soft cloth headwrap on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Immortals_(Achaemenid_Empire)"
+        },
+        {
+          "name": "Longbowman",
+          "rarity": "common",
+          "eduText": "An English longbow stood taller than the archer holding it and took years of practice to master.",
+          "imagePrompt": "a tall wooden longbow held upright by a cheerful medieval archer in a green tunic on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/English_longbow"
+        },
+        {
+          "name": "Crossbowman",
+          "rarity": "common",
+          "eduText": "A crossbow holds its string ready for you, so a beginner could learn it in days rather than years.",
+          "imagePrompt": "a wooden crossbow held in both hands by a cheerful medieval soldier in a brown tunic and a round steel cap on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Crossbow"
+        },
+        {
+          "name": "Pikeman",
+          "rarity": "common",
+          "eduText": "A pike was a spear up to six metres long, about three times the height of a grown-up.",
+          "imagePrompt": "a very long straight wooden spear held upright by a cheerful soldier in a shiny steel breastplate on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pike_(weapon)"
+        },
+        {
+          "name": "Ashigaru",
+          "rarity": "common",
+          "eduText": "Ashigaru were Japan's foot soldiers, farmers who wore simple armour and a wide cone-shaped hat.",
+          "imagePrompt": "a smiling japanese foot soldier in a black lacquered chest plate and a wide flat metal war hat standing on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ashigaru"
+        },
+        {
+          "name": "Squire",
+          "rarity": "common",
+          "eduText": "A squire carried a knight's shield and looked after his horse while learning to become a knight.",
+          "imagePrompt": "a single young squire in a simple tunic holding a polished helmet, standing still, full body front view, on plain grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Squire"
+        },
+        {
+          "name": "Standard Bearer",
+          "rarity": "common",
+          "eduText": "The standard bearer carried the tall flag so that everyone could see where their own side was.",
+          "imagePrompt": "a cheerful medieval boy holding one tall red flag on a wooden pole in a grassy field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Standard-bearer"
+        },
+        {
+          "name": "Celtic Warrior",
+          "rarity": "common",
+          "eduText": "Celtic warriors wore twisted metal neck rings called torcs and washed their hair into stiff spikes.",
+          "imagePrompt": "a smiling celtic warrior with spiky blond hair and a gold neck ring standing on grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Celts"
+        },
+        {
+          "name": "Egyptian Charioteer",
+          "rarity": "common",
+          "eduText": "Egyptian chariots were so light that one person could lift one, which made them very fast.",
+          "imagePrompt": "two brown horses pulling a small golden two-wheeled chariot with a smiling egyptian driver holding the reins, on sand",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chariot"
+        },
+        {
+          "name": "Swiss Guard",
+          "rarity": "common",
+          "eduText": "The Swiss Guard has looked after the Pope since 1506 and still wears blue and yellow striped uniforms.",
+          "imagePrompt": "a cheerful young guard in a puffy blue and yellow striped renaissance costume with a white ruff collar and a black beret on grey cobblestones",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pontifical_Swiss_Guard"
+        },
+        {
+          "name": "Warhorse",
+          "rarity": "common",
+          "eduText": "A knight's warhorse was called a destrier, and it was trained not to be startled by noise or crowds.",
+          "imagePrompt": "a friendly brown horse wearing a red and gold cloth blanket standing on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Destrier"
+        },
+        {
+          "name": "Suit of Armour",
+          "rarity": "common",
+          "eduText": "A full suit of plate armour was made of about 200 pieces, each one shaped to fit a single person.",
+          "imagePrompt": "an empty knight's silver armour suit standing on green grass in bright sunshine",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Plate_armour"
+        },
+        {
+          "name": "Chainmail",
+          "rarity": "common",
+          "eduText": "One chainmail shirt could hold 30,000 tiny iron rings, with every ring linked to four others.",
+          "imagePrompt": "a silver chainmail shirt of tiny linked steel rings worn on a plain wooden mannequin on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chain_mail"
+        },
+        {
+          "name": "Round Shield",
+          "rarity": "common",
+          "eduText": "Viking round shields were built from thin wooden planks and painted in bright patterns.",
+          "imagePrompt": "one round wooden viking shield painted red and yellow leaning on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Shield"
+        },
+        {
+          "name": "Katana",
+          "rarity": "common",
+          "eduText": "A katana blade was folded and hammered again and again, which is what gives it its famous curve.",
+          "imagePrompt": "one japanese sword with a curved silver blade and a black handle lying on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Katana"
+        },
+        {
+          "name": "Kabuto Helmet",
+          "rarity": "common",
+          "eduText": "A kabuto helmet often had a crest shaped like horns or a crab, so its owner was easy to spot.",
+          "imagePrompt": "a japanese samurai helmet with golden horns on a wooden stand",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kabuto"
+        }
+      ]
     }
   ]
 }
