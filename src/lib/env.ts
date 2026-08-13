@@ -34,6 +34,9 @@ export const env = {
    * `features/admin/webauthn/rp.ts`.
    */
   get webauthnRpId(): string {
-    return process.env.WEBAUTHN_RP_ID ?? "localhost";
+    // `||`, not `??`: the variable is present-but-empty in `.env.example`, and an
+    // empty rpID matches no host at all — it would disable passkeys silently for
+    // anyone who copied that file rather than falling back to the dev default.
+    return process.env.WEBAUTHN_RP_ID || "localhost";
   },
 };
