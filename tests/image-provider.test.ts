@@ -150,10 +150,36 @@ describe("pollinations adapter", () => {
     expect(seen).toContain(`width=${CARD_SIZE.width}&height=${CARD_SIZE.height}`);
   });
 
-  it("is unconfigured without a token — the seed tier is not optional", () => {
+  it("needs no credential — the free registered tier no longer exists (#69)", () => {
+    // #67 originally required POLLINATIONS_TOKEN, on the premise that the "seed"
+    // tier bought 3x the anonymous rate. Measured live: auth.pollinations.ai is
+    // gone, the tiers are replaced by prepaid Pollen, and every image model is
+    // priced — so the credentialled path is a paywall #72 forbids crossing.
     delete process.env.POLLINATIONS_TOKEN;
-    expect(pollinations().isConfigured()).toBe(false);
-    expect(pollinations().requiredEnv).toContain("POLLINATIONS_TOKEN");
+    expect(pollinations().isConfigured()).toBe(true);
+    expect(pollinations().requiredEnv).toEqual([]);
+  });
+
+  it("sends no credential — the legacy host ignores one", () => {
+    process.env.POLLINATIONS_TOKEN = "sk_should_not_be_sent";
+    let sentAuth: unknown = "unset";
+    const provider = pollinations({
+      fetchImpl: async (_input, init) => {
+        sentAuth = (init?.headers as Record<string, string> | undefined)?.Authorization;
+        return imageResponse(syntheticJpeg(768, 768));
+      },
+    });
+    return provider.generate("x", CARD_SIZE).then(() => {
+      // Sending a secret somewhere that ignores it is worse than sending none.
+      expect(sentAuth).toBeUndefined();
+    });
+  });
+
+  it("paces as a serial cap, not a rate — one queued request per IP", () => {
+    // The anonymous limit is no longer "one request every 15s": a second
+    // concurrent request answers 429 "Queue full for IP … (max: 1)".
+    expect(pollinations().concurrency).toBe(1);
+    expect(pollinations().minIntervalMs).toBeGreaterThanOrEqual(15_000);
   });
 });
 
@@ -195,47 +221,5 @@ describe("cloudflare-sdxl adapter", () => {
     delete process.env.CLOUDFLARE_ACCOUNT_ID;
     process.env.CLOUDFLARE_API_TOKEN = "tok";
     expect(cloudflareSdxl().isConfigured()).toBe(false);
-  });
-});
-
-describe("pollinations auth (measured live, #67)", () => {
-  const saved = { ...process.env };
-  afterEach(() => {
-    process.env = { ...saved };
-  });
-
-  const ok = (headers: Record<string, string>) =>
-    new Response(syntheticJpeg(768, 768) as unknown as BodyInit, { status: 200, headers });
-
-  it("refuses a response that reports the token was not accepted", async () => {
-    // A key being SET is not a key being ACCEPTED. isConfigured() can only see
-    // that the variable is non-empty, so without this the lane runs anonymous on
-    // seed-tier pacing — three times the permitted rate, the whole run in 429
-    // backoff, and the startup check green throughout.
-    process.env.POLLINATIONS_TOKEN = "bad";
-    const provider = pollinations({
-      fetchImpl: async () => ok({ "x-auth-status": "unauthenticated" }),
-    });
-    await expect(provider.generate("x", CARD_SIZE)).rejects.toThrow(/rejected/);
-  });
-
-  it("does not retry a rejected credential — it is rejected every time", async () => {
-    process.env.POLLINATIONS_TOKEN = "bad";
-    const provider = pollinations({
-      fetchImpl: async () => ok({ "x-auth-status": "unauthenticated" }),
-    });
-    const err = await provider.generate("x", CARD_SIZE).catch((e: unknown) => e);
-    expect(err).not.toBeInstanceOf(ProviderRetryable);
-  });
-
-  it("accepts a cache hit, which carries no auth headers at all", async () => {
-    // Absence is not failure: a HIT carries neither x-auth-status nor
-    // x-model-used, and reading that as a rejected token would fail every
-    // cached generation.
-    process.env.POLLINATIONS_TOKEN = "good";
-    const provider = pollinations({ fetchImpl: async () => ok({ "x-cache": "HIT" }) });
-    const image = await provider.generate("x", CARD_SIZE);
-    expect(image.model).toBeUndefined();
-    expect(image.bytes.byteLength).toBeGreaterThan(0);
   });
 });

@@ -2,14 +2,47 @@
  * Pollinations adapter — the provider this repo already spoke, now behind the
  * port (#67).
  *
- * ── Why the token is REQUIRED, not optional ──────────────────────────────────
- * Pollinations works anonymously, so an optional token is tempting. It is the
- * wrong call. The registered "seed" tier is one request per 5s against the
- * anonymous tier's one per 15s (#62), so falling back silently would make the
- * lane three times slower with nothing on screen to say why — and #67 rejected
- * exactly that class of invisible narrowing when it chose a code registry over
- * credential auto-detection. Registration is free and takes no payment method,
- * which is what keeps #68's "$0 is structural" intact.
+ * ── Anonymous, and why the token is gone ─────────────────────────────────────
+ * #62 shortlisted the free registered "seed" tier, and #67 made its token
+ * REQUIRED on the reasoning that registration bought 3x the anonymous rate and
+ * that falling back silently would hide a threefold slowdown. Measured against
+ * the live service while verifying #67, both halves of that premise are false:
+ *
+ *   - `auth.pollinations.ai` no longer resolves. Auth moved to
+ *     `enter.pollinations.ai` and the authenticated image API to
+ *     `gen.pollinations.ai`. Pollinations' own APIDOCS still document the dead
+ *     host — the same stale-docs pattern #64 caught with FLUX and `sana`.
+ *   - The Seed/Flower/Nectar tiers are replaced by **Pollen**, prepaid credit at
+ *     roughly $1 = 1 Pollen. Their FAQ still claims "flux: infinite images per
+ *     Pollen (always free!)"; `GET gen.pollinations.ai/image/models` prices all
+ *     21 image models, `flux` among them at 0.002 Pollen. An authenticated
+ *     768x768 request answers `402 PAYMENT_REQUIRED`.
+ *
+ * Buying Pollen needs a card, which #72 forbids outright and #68 made
+ * structural — the card-free account state IS the cost control. So the
+ * authenticated path is closed to this map by a decision already taken, not by a
+ * missing credential. #69 chose the consequence: stay anonymous on the legacy
+ * host, which is free, still works, and drew every one of the ~360 cards already
+ * in the pool.
+ *
+ * No credential is sent. `POLLINATIONS_TOKEN` may still sit in `.env.local` for
+ * #65's records, but this host ignores it, and sending a secret to somewhere
+ * that ignores it is worse than sending nothing.
+ *
+ * ── Pacing is a hard serial cap, not a rate ──────────────────────────────────
+ * The anonymous limit is no longer #62's documented "one request every 15s". A
+ * second concurrent request now answers:
+ *
+ *     429 {"error":"Too Many Requests","message":"Queue full for IP: …
+ *          1 requests already queued (max: 1). Get unlimited access at …"}
+ *
+ * One queued request per IP — a concurrency cap with an upsell attached, so
+ * `concurrency` is 1 and not tunable upward. 15s between starts keeps the lane
+ * inside the documented rate as well. This makes Pollinations the slow lane of
+ * the bake-off; a 30-card theme costs roughly 8 minutes here against Cloudflare
+ * SDXL's latency-bound run. It stays a lane rather than an escape hatch because
+ * the map's first driver is IMAGE QUALITY, and a bake-off needs something to
+ * compare Cloudflare against.
  *
  * ── Why the seed is pinned ───────────────────────────────────────────────────
  * #64 measured the omitted `seed` taking a fixed server-side default of 42 and
@@ -19,19 +52,21 @@
  * changing it invalidates the reviews it would change.
  *
  * ── `x-model-used` is absent on a cache hit ──────────────────────────────────
- * Measured live: a MISS carries `x-model-used`, a HIT carries no auth or model
- * headers at all. Pollinations' cache is durable and normalised across users
- * (#64), so a common subject is likely to be served from it — which means the
- * model is unwitnessed precisely when the bytes are oldest and most likely to
- * predate a model swap. `model` is therefore optional and undefined means
- * "unwitnessed", never "the requested model answered".
+ * Measured live: a MISS carries `x-model-used`, a HIT carries no model header at
+ * all. Pollinations' cache is durable and normalised across users (#64), so a
+ * common subject is likely to be served from it — which means the model is
+ * unwitnessed precisely when the bytes are oldest and most likely to predate a
+ * model swap. `model` is therefore optional, and undefined means "unwitnessed",
+ * never "the requested model answered".
  *
  * ── What `model` is for ──────────────────────────────────────────────────────
  * #64 caught Pollinations serving `sana` for a request that asked for `flux`,
  * with no changelog and no announcement — the docs still say FLUX. The only
  * witness was the `x-model-used` response header, so it is read here and carried
  * out on the result. `params.model` records what was ASKED FOR; the header
- * records what actually drew the card, and they are not the same fact.
+ * records what actually drew the card, and they are not the same fact. `sana` is
+ * not in the new gateway's catalogue at all, so what the legacy host serves for
+ * a `flux` request is now doubly unpinned.
  */
 import {
   assertOk,
@@ -43,32 +78,6 @@ import {
 import type { GeneratedImage, ImageProvider, ImageSizeRequest } from "./provider";
 
 const ENDPOINT = "https://image.pollinations.ai/prompt/";
-
-/**
- * Refuse a response that says, in as many words, that the token did not work.
- *
- * A key being SET is not a key being ACCEPTED, and the gap between those two is
- * not cosmetic here: the registered tier is one request per 5s where anonymous
- * is one per 15s, and this adapter declares 5s pacing. Running unauthenticated
- * on seed-tier pacing means pushing three times the permitted rate, so the lane
- * spends the whole run in 429 backoff — and the seam's own startup check would
- * have passed, because `isConfigured()` can only see that the variable is
- * non-empty.
- *
- * Non-retryable on purpose: a rejected credential is rejected on every attempt,
- * so the retry ladder would only delay the diagnosis.
- *
- * Only fires on an EXPLICIT `unauthenticated`. A cache hit carries no auth
- * headers at all, and absence must not be read as failure.
- */
-function assertAuthenticated(headers?: Headers): void {
-  if (headers?.get?.("x-auth-status") !== "unauthenticated") return;
-  throw new Error(
-    "pollinations: POLLINATIONS_TOKEN was rejected (x-auth-status: unauthenticated). " +
-      "The request ran on the anonymous tier, which is rate-limited 3x harder than the " +
-      "pacing this adapter declares. Check the token at auth.pollinations.ai.",
-  );
-}
 
 export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
@@ -82,23 +91,21 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
       seed: 42,
       nologo: true,
     },
-    // Registered "seed" tier: one request every 5s. Serial by construction, so
-    // one worker is all the lane can use.
-    minIntervalMs: 5_000,
+    // A serial cap with an upsell attached, not a tunable rate — see above.
+    minIntervalMs: 15_000,
     concurrency: 1,
-    requiredEnv: ["POLLINATIONS_TOKEN"],
-    isConfigured: () => Boolean(process.env.POLLINATIONS_TOKEN),
+    // Nothing to configure: the anonymous tier needs no credential, and the
+    // credentialled one is behind a paywall this map may not cross (#72).
+    requiredEnv: [],
+    isConfigured: () => true,
 
     async generate(prompt: string, size: ImageSizeRequest): Promise<GeneratedImage> {
       const url =
         `${ENDPOINT}${encodeURIComponent(prompt)}` +
         `?width=${size.width}&height=${size.height}` +
         `&model=${this.params.model}&seed=${this.params.seed}&nologo=${this.params.nologo}`;
-      const res = await fetchImpl(url, {
-        headers: { Authorization: `Bearer ${process.env.POLLINATIONS_TOKEN ?? ""}` },
-      });
+      const res = await fetchImpl(url);
       assertOk(this.id, res);
-      assertAuthenticated(res.headers);
       const bytes = await readBytes(this.id, res);
       // Absent on a cache hit — see the header note. Undefined then means
       // "unwitnessed", never "the requested model answered".
