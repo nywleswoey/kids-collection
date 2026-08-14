@@ -37,8 +37,11 @@
  * `aidlc-docs/construction/build-and-test/increment24-vehicle-themes-build-and-test.md`
  * §3); this header just never caught up. Re-measured in #64: the request does omit
  * the seed, but the omitted seed takes a fixed server-side default, and generation
- * is reproducible — the same prompt at the same size returns a byte-identical JPEG
- * across independent, uncached generations.
+ * is reproducible for a given model — while one model is deployed behind the prompt,
+ * the same prompt at the same size returns a byte-identical JPEG across independent,
+ * uncached generations. That bound is the claim, not an unconditional guarantee:
+ * reproducibility is a property of the currently deployed model rather than something
+ * Pollinations offers, and across a model swap the same prompt returns different bytes.
  *
  * Two narrower cases survive that correction, and each justifies a different half of
  * the machinery. An EDITED `imagePrompt` is the first: under the old slug-only
