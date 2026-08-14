@@ -27,12 +27,27 @@
  * `.env.local` — the same file that supplies the production credential.
  *
  * ── Review→publish integrity (Inc24) ─────────────────────────────────────────
- * Pollinations is non-deterministic and the request carries no seed, so before
- * Inc24 `--review` generated image A and `--sync` generated image B: the parent
- * reviewed one picture and the child received another. Now review filenames are
- * content-addressed by prompt hash, `--sync` publishes the reviewed BYTES, and it
- * refuses to insert a card that has no reviewed image. `--review` and that refusal
- * compute their card set from the same plan, so they cannot disagree.
+ * The parent could review one picture and the child receive another. Now review
+ * filenames are content-addressed by prompt hash, `--sync` publishes the reviewed
+ * BYTES, and it refuses to insert a card that has no reviewed image. `--review`
+ * and that refusal compute their card set from the same plan, so they cannot
+ * disagree.
+ *
+ * The reason once given here — "Pollinations is non-deterministic and the request
+ * carries no seed" — is wrong, and was already corrected during Inc24 itself (see
+ * `aidlc-docs/construction/build-and-test/increment24-vehicle-themes-build-and-test.md`
+ * §3); this header just never caught up. Re-measured in #64: the request does omit
+ * the seed, but the omitted seed takes a fixed server-side default, and generation
+ * is reproducible — the same prompt at the same size returns a byte-identical JPEG
+ * across independent, uncached generations.
+ *
+ * What is NOT stable is the model behind the prompt, and Inc24's hypothetical there
+ * has since come true: Pollinations silently swapped its model (its docs still say
+ * FLUX; responses report `sana`), so a prompt whose art shipped six weeks ago now
+ * regenerates to different bytes. That is what keeps this machinery load-bearing —
+ * it makes review→publish integrity independent of what the provider does to its
+ * models. Any additional provider is held to the same rule: publish the reviewed
+ * bytes, never regenerate at publish time, however deterministic it claims to be.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

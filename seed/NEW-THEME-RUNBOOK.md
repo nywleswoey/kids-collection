@@ -153,9 +153,15 @@ Wording levers, in the order worth trying:
 - **Never say "on a display stand"** — objects photograph fine simply lying on grass.
 - Watch for **monochrome**: a red subject on a red ground renders as a red blur. Contrast the two.
 
-**Reverting an `imagePrompt` restores that exact earlier image.** The service is deterministic — same
-prompt, same bytes — so if round 3 is worse than round 2, paste round 2's prompt back and the picture
-returns verbatim. Keep the superseded prompts somewhere until the theme ships.
+**Reverting an `imagePrompt` restores that exact earlier image.** Generation is reproducible — same
+prompt, same size, same bytes — so if round 3 is worse than round 2, paste round 2's prompt back and the
+picture returns verbatim. Keep the superseded prompts somewhere until the theme ships.
+
+That trick is reliable *within* a theme run, which is the only place you need it. It is **not** a
+long-term guarantee: the provider can change the model behind a prompt without notice, and has (#64), so
+a prompt that drew one picture in July draws a different one weeks later. Never use it to recover art
+that has already shipped — the reviewed bytes in `seed/review/`, which `--sync` publishes verbatim, are
+what protect published cards.
 
 Expect **429 rate-limit failures** on a 30-card run. They are retryable and cost you nothing: re-run
 `pnpm seed --review` and it resumes. A 429 is not a prompt problem and does not count as a re-prompt
@@ -200,7 +206,8 @@ Open all 30 (`seed/review/<theme-slug>-*.jpg`) and look at each one. Reject on:
 - Text baked into the image (`ART_STYLE` asks for none; the model sometimes disagrees).
 
 **To fix a reject, edit its `imagePrompt`** — deleting the file is not enough. The image service returns
-the *same bytes for the same prompt* (verified: identical sha256 across calls), so deleting a review file
+the *same bytes for the same prompt* (verified in #64: the omitted `seed` takes a fixed server-side
+default, and identical prompts return an identical sha256), so deleting a review file
 and re-running regenerates the picture you just rejected. Editing the prompt changes the content hash,
 which both asks for a different picture and makes the stale review file stop matching. Delete the stale
 file too, to keep the folder honest.
