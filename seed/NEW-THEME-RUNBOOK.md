@@ -278,6 +278,7 @@ Abort the run and report. Do not improvise past any of these.
 | A `sourceUrl` you cannot make resolve for a subject you consider essential | Ditto. |
 | An image still failing after 2 re-prompt rounds | Take it to the checkpoint, named. |
 | `DATABASE_URL` / `BLOB_READ_WRITE_TOKEN` missing | Report it; do not go hunting for credentials. |
+| An image provider gives up after its retries — rate limit, quota, refusal, anything | That is the free allocation working as designed, not a fault. Abort and resume later. **Never attach a payment method to unblock it.** |
 
 ## Never
 
@@ -287,3 +288,8 @@ Abort the run and report. Do not improvise past any of these.
 - Never pass `--allow-prune`, `--allow-unreviewed`, or `--reset`.
 - Never answer a checkpoint on the human's behalf.
 - Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- **Never attach a payment method to an image-provider account, and never sign in to one that already
+  has a card.** Recurring cost for this pipeline is $0, and the guarantee is the account state, not a
+  budget: a card-free account can only ever refuse a request, whereas a carded one bills silently and you
+  find out by invoice. A quota wall is the ceiling doing its job — wait it out, thin the run, or take it
+  to the human. Upgrading the plan is never the fix.
