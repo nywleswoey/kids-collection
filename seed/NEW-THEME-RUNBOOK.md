@@ -159,7 +159,8 @@ returns verbatim. Keep the superseded prompts somewhere until the theme ships.
 
 Expect **429 rate-limit failures** on a 30-card run. They are retryable and cost you nothing: re-run
 `pnpm seed --review` and it resumes. A 429 is not a prompt problem and does not count as a re-prompt
-round.
+round. If they persist, that is the free allocation's ceiling doing its job — wait and resume later.
+**Never attach a payment method to unblock it.**
 
 **Append** the theme object to the `themes` array of `seed/cards.json`. Array position **is** the theme's
 display order and `themes.sort_order` is a contract: never insert mid-array, never reorder existing
@@ -278,7 +279,6 @@ Abort the run and report. Do not improvise past any of these.
 | A `sourceUrl` you cannot make resolve for a subject you consider essential | Ditto. |
 | An image still failing after 2 re-prompt rounds | Take it to the checkpoint, named. |
 | `DATABASE_URL` / `BLOB_READ_WRITE_TOKEN` missing | Report it; do not go hunting for credentials. |
-| An image provider gives up after its retries — rate limit, quota, refusal, anything | That is the free allocation working as designed, not a fault. Abort and resume later. **Never attach a payment method to unblock it.** |
 
 ## Never
 
