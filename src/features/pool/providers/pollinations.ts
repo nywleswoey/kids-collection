@@ -66,7 +66,7 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
       assertOk(this.id, res);
       const bytes = await readBytes(this.id, res);
       return finishGeneration(
-        this.id,
+        this,
         bytes,
         size,
         res.headers?.get?.("x-model-used") ?? undefined,

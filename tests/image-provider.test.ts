@@ -51,10 +51,15 @@ function imageResponse(bytes: Uint8Array): Response {
   return new Response(bytes as unknown as BodyInit, { status: 200 });
 }
 
-function makeFixtures(image: (w: number, h: number) => Uint8Array): ContractFixtures {
+function makeFixtures(
+  image: (w: number, h: number) => Uint8Array,
+  otherFormat: (w: number, h: number) => Uint8Array,
+): ContractFixtures {
   return {
     ok: () => imageResponse(image(CARD_SIZE.width, CARD_SIZE.height)),
     wrongSize: () => imageResponse(image(512, 512)),
+    // Right size, right everything — except the encoding the adapter promises.
+    wrongFormat: () => imageResponse(otherFormat(CARD_SIZE.width, CARD_SIZE.height)),
     notAnImage: () =>
       new Response("<html><body>upstream error</body></html>", {
         status: 200,
@@ -73,8 +78,8 @@ function makeFixtures(image: (w: number, h: number) => Uint8Array): ContractFixt
   };
 }
 
-const jpegFixtures = makeFixtures(syntheticJpeg);
-const pngFixtures = makeFixtures(solidPng);
+const jpegFixtures = makeFixtures(syntheticJpeg, solidPng);
+const pngFixtures = makeFixtures(solidPng, syntheticJpeg);
 
 // ── the runs ─────────────────────────────────────────────────────────────────
 

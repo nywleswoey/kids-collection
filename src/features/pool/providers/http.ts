@@ -11,6 +11,7 @@ import { readImageSize } from "../image-size";
 import {
   ProviderRetryable,
   type GeneratedImage,
+  type ImageProvider,
   type ImageSizeRequest,
 } from "./provider";
 
@@ -90,7 +91,7 @@ export function fromBase64(providerId: string, b64: string): Uint8Array {
  * adapter written against it returns a plausible image of the wrong size.
  */
 export function finishGeneration(
-  providerId: string,
+  provider: Pick<ImageProvider, "id" | "format">,
   bytes: Uint8Array,
   size: ImageSizeRequest,
   model?: string,
@@ -98,12 +99,28 @@ export function finishGeneration(
   const measured = readImageSize(bytes);
   if (!measured) {
     throw new Error(
-      `${providerId}: response was not a recognisable PNG/JPEG/WebP (${bytes.byteLength} bytes)`,
+      `${provider.id}: response was not a recognisable PNG/JPEG/WebP (${bytes.byteLength} bytes)`,
     );
   }
   if (measured.width !== size.width || measured.height !== size.height) {
     throw new Error(
-      `${providerId}: returned ${measured.width}x${measured.height}, expected ${size.width}x${size.height}`,
+      `${provider.id}: returned ${measured.width}x${measured.height}, expected ${size.width}x${size.height}`,
+    );
+  }
+  // The DECLARED format is not decoration — `reviewFileName` names the file from
+  // it, so an adapter that declares png and returns jpeg produces a folder of
+  // files whose extensions lie. Publishing survives (the path is built the same
+  // way both times, and `uploadImage` sniffs the bytes for the content type), so
+  // nothing downstream would ever complain; a human reading seed/review/ would
+  // simply be misled, indefinitely.
+  //
+  // Adapter formats are written from provider docs and cannot be verified until
+  // a key exists, so this is the check that catches a wrong one on the first
+  // real generation rather than leaving it resting on a live test nobody has run.
+  if (measured.format !== provider.format) {
+    throw new Error(
+      `${provider.id}: declares format "${provider.format}" but returned ${measured.format}. ` +
+        `Fix the adapter's \`format\` — review filenames are named from it.`,
     );
   }
   return { bytes, format: measured.format, model };

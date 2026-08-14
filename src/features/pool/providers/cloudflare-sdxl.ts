@@ -80,7 +80,7 @@ export function cloudflareSdxl(opts: HttpAdapterOptions = {}): ImageProvider {
       // sniff in finishGeneration is what rejects it — deliberately not a
       // content-type check, since the bytes are the only thing worth trusting.
       const bytes = await readBytes(this.id, res);
-      return finishGeneration(this.id, bytes, size);
+      return finishGeneration(this, bytes, size);
     },
   };
 }

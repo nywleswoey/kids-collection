@@ -128,6 +128,8 @@ export interface ContractFixtures {
   notAnImage(): Response;
   /** HTTP 200 with a real image of the wrong dimensions. */
   wrongSize(): Response;
+  /** HTTP 200 with a correctly-sized image in a format the adapter does not declare. */
+  wrongFormat(): Response;
 }
 
 /** Fresh HTTP adapter per call, wired to the supplied responder. */
@@ -153,6 +155,15 @@ export function runHttpProviderContract(
     it("refuses a 200 response whose body is not an image", async () => {
       const provider = makeProvider(fixtures.notAnImage);
       await expect(provider.generate("x", CARD_SIZE)).rejects.toThrow();
+    });
+
+    it("refuses an image in a format it does not declare", async () => {
+      // The declared format names the review file, so an adapter declaring png
+      // and returning jpeg fills seed/review/ with extensions that lie. Nothing
+      // downstream complains — the path is built the same way both times and
+      // uploadImage sniffs the bytes — so only this catches it.
+      const provider = makeProvider(fixtures.wrongFormat);
+      await expect(provider.generate("x", CARD_SIZE)).rejects.toThrow(/declares format/);
     });
 
     it("throws ProviderRetryable on 429, so a rate limit is not a dead lane", async () => {
