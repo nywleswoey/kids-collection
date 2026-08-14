@@ -150,7 +150,7 @@ The ways an AI agent most plausibly breaks this codebase *while writing perfectl
 | PostHog | Analytics + error capture. **Session replay is restricted**: enabled only inside the child play area, `maskAllInputs: true`, `recordCrossOriginIframes: false`, off by default so parent/admin pages (including the passcode screen) are never recorded. **Any change to this scoping is a kid-safety decision, not a config tweak.** |
 | Pollinations.ai | **Seed-time only, never at runtime.** Free, and **anonymous — there is no free keyed tier left to register for**. Re-measured after #65 issued keys: `auth.pollinations.ai` is **NXDOMAIN**, the Seed/Flower/Nectar tiers are replaced by prepaid **Pollen** credit, all 21 image models on `gen.pollinations.ai` are priced (flux at 0.002 pollen), and an authenticated request against a zero balance returns **402 PAYMENT_REQUIRED**. Buying credit needs a card, which #72 forbids and #68 made structural — so the adapter targets the legacy `image.pollinations.ai` host and **sends no credential**. `POLLINATIONS_TOKEN` is read by no code and is retained in `.env.example` only as a record from #65; do not reintroduce a token path without re-measuring the endpoint. Paced at **concurrency 1, 15s interval**, because a second concurrent request returns 429 `Queue full for IP` — a serial cap rather than a tunable rate. Generates card images offline before parent review. **Reproducible per prompt, but only for a given model** — re-measured in #64: the omitted `seed` takes a fixed server-side default, so the same prompt at the same size returns a byte-identical JPEG while one model is deployed, and different bytes across a model swap (which has already happened — docs say FLUX, responses report `sana`). Two consequences: rejecting an image means *changing the `imagePrompt`*, since deleting the review file and regenerating returns the same picture; and the model behind a prompt is not stable, so `--sync` publishes reviewed **bytes** rather than re-requesting the prompt. Full rationale lives in the `scripts/seed/index.ts` header. |
 | Cloudflare Workers AI | **Seed-time only, never at runtime.** Free allocation of 10,000 neurons/day, **on a dedicated single-purpose account with no payment method**. Use `stable-diffusion-xl-base-1.0`, *not* `flux-1-schnell` — the latter has no `width`/`height` and cannot produce the 768×768 the binder renders at. Two hazards worth knowing before debugging one: an **undocumented NSFW input filter** (error 3030) that rejects prompts as ordinary as "hamburger" with no way to tune it, and **SDXL's absence from the published pricing page** despite a `$0.00/step` listing — so its price is not guaranteed to stay zero. On a card-free account both resolve to a refused request. |
-| AI Horde | **Seed-time only, never at runtime**, and an **escape hatch rather than a lane** — it is deliberately excluded from the per-card fan-out (#71). Volunteer-run, AGPL, **no payment surface at all**, so $0 is structural here rather than a policy. Registered **pseudonymously** — no OAuth, no email — because volunteer operators can read prompts and there is no reason to bind an identity to that stream. Two settings are load-bearing: `slow_workers: true` (mandatory — the account lives permanently in kudos deficit), and an SDXL-baseline model **pinned**, which is what makes 768×768 a guarantee instead of a coin-flip against live queue depth. `replacement_filter` stays **off**: it silently rewrites triggering words and returns an image drawn from a prompt we never sent, with no signal in the response. |
+| AI Horde | **Seed-time only, never at runtime**, and an **escape hatch rather than a lane** — it is deliberately excluded from the per-card fan-out (#71). **No adapter is registered yet**: #74 must pin the model first, because `params` is hashed into the review filename and an unpinned model would name files after a request never made. Volunteer-run, AGPL, **no payment surface at all**, so $0 is structural here rather than a policy. Registered **pseudonymously** — no OAuth, no email — because volunteer operators can read prompts and there is no reason to bind an identity to that stream. Two settings are load-bearing: `slow_workers: true` (mandatory — the account lives permanently in kudos deficit), and an SDXL-baseline model **pinned**, which is what makes 768×768 a guarantee instead of a coin-flip against live queue depth. `replacement_filter` stays **off**: it silently rewrites triggering words and returns an image drawn from a prompt we never sent, with no signal in the response. |
 
 ### Disallow List
 
@@ -218,6 +218,12 @@ Single repo, single app, organised by **feature module** with a deliberate persi
   (`makeTradeService(deps)`) that bind ports once; production wires a singleton, tests construct with fakes.
 - **Contract suite** — one shared property-based conformance spec runs against **both** adapters (fake in
   Vitest, pg in `test:pg`), proving they agree on the atomicity contracts.
+- **The image-provider seam** — the seed-time bake-off's adapters live in
+  `src/features/pool/providers/`, one per provider, behind an `ImageProvider` interface whose `generate()`
+  is a single logical attempt: retry, pacing and concurrency belong to the lane runner above the seam, and
+  the adapter only *declares* its limits. The registry is code, not credential detection. Nothing under
+  `app/`, `middleware.ts` or the other request-path entry points may reach a provider, transitively or
+  otherwise — `tests/provider-boundary.test.ts` reds the required test gate if it does.
 
 **Constraints**: keep pure logic separate from persistence so it stays testable without a database; don't
 reach for the `db` singleton inside a feature service; a new persistence operation gets a port method
@@ -286,6 +292,9 @@ gitignored and untracked (verified); `.env.example` carries placeholders only an
 
 - **Server-only secrets**: `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `PARENT_EMAILS`,
   `ADMIN_PASSCODE`, `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`.
+- **Seed-time-only provider credentials** — `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` live in
+  `.env.local` for the offline seed CLI and are **never set on the deployed app**, which has no image
+  provider in any code path. Per-provider notes are in `.env.example`.
 - **Deliberately public** (`NEXT_PUBLIC_` prefix): the PostHog project token and host.
 - **GitHub Actions repository secrets** — a separate surface from the app's, and deliberately small
   because the repository is public. Exactly two, both belonging to `backup.yml`:
@@ -348,8 +357,8 @@ contradictions**; this is a strict technical superset.
 
 ### Test Types
 
-- **Unit** — 52 files under `tests/` (329 tests), run by `pnpm test` (Vitest, node env, no database
-  needed). 23 of the 52 are property-based; see below.
+- **Unit** — 63 files under `tests/`, run by `pnpm test` (Vitest, node env, no database needed). 23 of
+  the 63 are property-based; see below.
 - **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 17 in Docker via a
   local Neon HTTP proxy (`tests-pg/`, 7 suites — the 5 store adapters, the pool writer, and the
   delete-path cascades — serial execution, 30s timeout; 57 tests pass and 3 skip). The container
@@ -359,9 +368,15 @@ contradictions**; this is a strict technical superset.
   here depends on. ⚠️ **Known flake**: the suite intermittently stalls on one test until the 30s timeout
   fires. Reproduced on Postgres 16 and 17 alike, so it is not a property of the version; seen only on
   local Docker Desktop so far, never on a CI runner.
-- **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds 5 conformance
-  specs run against **both** adapters (in-memory fake in Vitest, pg adapter in `test:pg`), proving they
-  agree on the atomicity contracts.
+- **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds 6 store
+  conformance specs run against **both** adapters (in-memory fake in Vitest, pg adapter in `test:pg`),
+  proving they agree on the atomicity contracts, plus the `ImageProvider` spec
+  (`image-provider-contract.ts`) — structural half against every provider including the in-memory fake,
+  wire-behaviour half against the HTTP adapters via recorded fixtures.
+- **Live provider** — `pnpm test:providers` (`vitest.live.config.ts`, `tests-live/`) runs that same
+  `ImageProvider` spec against the **real** endpoints. Opt-in and **deliberately not in CI**: live calls
+  would spend quota on every push and sit against the "$0 stays $0 structurally" rule. Needs the provider
+  keys in `.env.local`; it reports which providers it skipped rather than passing on an empty set.
 - **Property-based — REQUIRED and BLOCKING** — **22** `*.pbt.test.ts` files carrying **100** `fc.assert`
   call sites, covering the logic where a wrong answer costs the children real cards: `auth-policy`,
   `collection-reward`, `count-report`, `db-target`, `easter-egg`, `gate-token`, `logic`, `offer`,
@@ -402,7 +417,8 @@ typed confirmation stands in the way. That is pinned as behaviour, not fixed.
 | Unit | Vitest 2 (`pnpm test`, node environment, `tests/**/*.test.ts`) |
 | Property-based | fast-check 3, via Vitest (`tests/**/*.pbt.test.ts`) |
 | Integration (real DB) | Vitest with `vitest.pg.config.ts` (`pnpm test:pg`) against Postgres 17 in Docker + `local-neon-http-proxy`; `fileParallelism: false` because the DB is shared |
-| Adapter contract | One shared conformance spec in `tests/contracts/`, run against the in-memory fake **and** the pg adapter |
+| Adapter contract | Shared conformance specs in `tests/contracts/`: the store specs run against the in-memory fake **and** the pg adapter; the `ImageProvider` spec runs against every provider (fixtures in `pnpm test`, live endpoints in `pnpm test:providers`) |
+| Live provider (opt-in, not in CI) | Vitest with `vitest.live.config.ts` (`pnpm test:providers`) against the real image endpoints; `retry: 0`, 180s timeout, serial |
 | Type checking | `tsc --noEmit` (`pnpm typecheck`) — with `allowJs: false`, so untyped source cannot slip in |
 | Local DB lifecycle | `pnpm pg:up` / `pnpm pg:down` (docker compose; applies all migrations in order) |
 

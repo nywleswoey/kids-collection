@@ -112,6 +112,9 @@ Card shape (all five fields required):
 }
 ```
 
+A sixth field, `provider`, is optional and is **not** authored here: it records the bake-off winner and is
+added at Step 6, on the theme and — sparsely — on individual cards.
+
 - **Theme name** — short, title-case, matching the existing set (*Animals*, *Mythic Creatures*,
   *Dinosaurs*, *Superheroes*, *Country*, *Famous People*, *Weird Insects*, *Special Plants*,
   *Spooky Legends*, *Deep Sea Creatures*, *Flying Machines*, *Ocean Machines*).
@@ -217,7 +220,7 @@ Re-run to resume: images already on disk are never regenerated.
 ### Screen every image yourself, first
 
 Build the contact sheet (Step 7) and screen from it — it is a grid, so you are comparing a row rather than
-opening 90 files. Reject a candidate on:
+opening every candidate file (30 × however many providers ran). Reject a candidate on:
 
 - **Two overlapping copies of the subject**, or a subject fused with scenery. The most common failure.
 - Gore, damage, fire, combat, casualties — anything from the prohibited list above.

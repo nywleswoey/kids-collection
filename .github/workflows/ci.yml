@@ -5,7 +5,7 @@
 #
 # Why this file exists: Property-Based Testing is a *blocking* constraint carried
 # from the product definition, and until now it was enforced by one person
-# remembering to run `pnpm test` — 22 of the 51 test files are `*.pbt.test.ts`.
+# remembering to run `pnpm test` — 23 of the 63 test files are `*.pbt.test.ts`.
 # This workflow is what turns that discipline into mechanism.
 #
 # This file only *supplies* checks. What makes them binding is branch protection
