@@ -83,7 +83,7 @@ import { loadSeed } from "@/features/pool/loader";
 import { buildPrompt } from "@/features/pool/prompt";
 import { uploadImage } from "@/features/pool/image";
 import { blobKey } from "@/features/pool/keys";
-import { runBakeOff, makeGate, type BakeOffJob } from "@/features/pool/bake-off";
+import { runBakeOff, makeGate, withRetry, type BakeOffJob } from "@/features/pool/bake-off";
 import {
   buildSidecar,
   missingReviews,
@@ -123,9 +123,10 @@ import type { Rarity } from "@/lib/types";
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed", "review");
 
-// Retry budget per (card, provider) attempt. Concurrency and pacing are NOT here
+// Retry budget per (card, provider) attempt, honoured by both generation paths —
+// the lane runner and `--allow-unreviewed`. Concurrency and pacing are NOT here
 // any more: they differ per provider by orders of magnitude — Pollinations is
-// capped at one request per 5s where Cloudflare tolerates 720 a minute — so each
+// capped at one request per 15s where Cloudflare tolerates 720 a minute — so each
 // adapter declares its own and the lane runner enforces it (#63, #67). The env
 // knobs this replaces existed "so a keyed tier can crank them up", which is now
 // what a committed adapter constant says out loud.
@@ -383,8 +384,18 @@ async function main() {
             );
           }
           console.log(`🖼️  generating image: ${theme.name} / ${card.name} [${provider.id}]…`);
-          await publishGate(provider)();
-          bytes = (await provider.generate(buildPrompt(card), CARD_SIZE)).bytes;
+          // Same bounded ladder the lane runner uses, so SEED_RETRIES means the
+          // same thing on both generation paths. `generate()` is still one
+          // logical attempt; the gate is re-entered per attempt so a retry pays
+          // the provider's pacing rather than jumping it.
+          const gate = publishGate(provider);
+          bytes = (
+            await withRetry(
+              provider,
+              () => gate().then(() => provider.generate(buildPrompt(card), CARD_SIZE)),
+              { retries: RETRIES },
+            )
+          ).bytes;
         }
 
         const imageUrl = await uploadImage(blobKey(theme.name, card.name), bytes);

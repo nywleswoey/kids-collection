@@ -142,6 +142,22 @@ describe("planContactSheet — the three absences it must not hide", () => {
     const sheet = planContactSheet(theme, PROVIDERS, deps([...allFiles(theme), "ocean-machines-alvin-a-b-c.png"]));
     expect(sheet.orphans).toEqual([]);
   });
+
+  it("does not claim a sibling theme whose slug it merely prefixes", () => {
+    // "Ocean" prefixes "Ocean Machines", and a filename's theme and card slugs
+    // both admit dashes, so nothing in the name alone separates them. Told about
+    // the sibling, the shorter theme stops reporting the longer one's candidates
+    // as its own orphans.
+    const ocean: SheetTheme = { name: "Ocean", provider: "pollinations", cards };
+    const sibling = "ocean-machines-alvin-deadbeef-pollinations-1234.jpg";
+    const own = "ocean-stray-deadbeef-pollinations-1234.jpg";
+
+    const files = [...allFiles(ocean), sibling, own];
+    expect(planContactSheet(ocean, PROVIDERS, deps(files)).orphans).toEqual([own, sibling].sort());
+    expect(planContactSheet(ocean, PROVIDERS, deps(files), ["Ocean Machines"]).orphans).toEqual([
+      own,
+    ]);
+  });
 });
 
 describe("renderContactSheet", () => {
@@ -162,7 +178,7 @@ describe("renderContactSheet", () => {
       planContactSheet(unjudged, PROVIDERS, deps(["nope.png", "warriors-stray-a-b-c.png"])),
     );
     expect(html).toContain("no provider chosen");
-    expect(html).toContain("candidate(s) missing");
+    expect(html).toContain("have no candidate on disk");
     expect(html).toContain("no registered provider");
     expect(html).toContain("MISSING");
   });

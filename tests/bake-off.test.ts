@@ -155,6 +155,16 @@ describe("runBakeOff — retry", () => {
     expect(limited[0]).toBeGreaterThan(transient[0]);
   });
 
+  it("reports the attempts actually spent, not the whole budget", async () => {
+    // A non-retryable 4xx leaves after one call. Saying "6 attempt(s)" would
+    // send the operator looking for five requests that were never made.
+    let seen = "";
+    const p = fakeProvider({ script: [new Error("400 rejected prompt")] });
+    const { deps: d } = deps({ retries: 5, error: (m: string) => void (seen = m) });
+    await runBakeOff(jobs("A"), [p], d);
+    expect(seen).toContain("after 1 attempt(s)");
+  });
+
   it("reports a terminal failure as ProviderFailedTerminally, with no cause classification", async () => {
     // #68: no quota-vs-rate classifier. Whatever went wrong, what escapes is the
     // same type, because the breaker counts these rather than reading them.
@@ -216,6 +226,29 @@ describe("runBakeOff — circuit breaker (#67)", () => {
       abandoned: false,
     });
     expect(saved.filter((s) => s.provider === "healthy")).toHaveLength(4);
+  });
+
+  it("does not blame the provider for a local write failure", async () => {
+    // The breaker counts provider failures and reports a dead lane. A full disk
+    // or a bad permission on seed/review/ is neither, and must not be described
+    // as one — the operator would go looking at the wrong end of the pipe.
+    const p = fakeProvider({ id: "cloudflare-sdxl" });
+    const errors: string[] = [];
+    const { deps: d, warnings } = deps({
+      retries: 0,
+      breakerThreshold: 3,
+      save: () => {
+        throw new Error("ENOSPC: no space left on device");
+      },
+      error: (m: string) => void errors.push(m),
+    });
+
+    const [outcome] = await runBakeOff(jobs("a", "b", "c", "d"), [p], d);
+
+    expect(outcome).toMatchObject({ abandoned: false, generated: 0, failed: 4, notAttempted: 0 });
+    expect(p.calls).toHaveLength(4); // every card still attempted
+    expect(warnings.join()).not.toContain("abandoned");
+    expect(errors.join()).toContain("writing the candidate to disk failed");
   });
 
   it("accounts for every job exactly once", async () => {

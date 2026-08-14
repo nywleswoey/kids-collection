@@ -19,8 +19,11 @@
  * Three absences, and none of them may be silent:
  *
  *   - a MISSING cell — that provider has no candidate for that card, because its
- *     lane died or was never run. #63's grid is only readable if a blank cell is
- *     distinguishable from a provider that drew badly.
+ *     lane died, was never run, or the card was already published and so was
+ *     never part of the bake-off (this reads no database, deliberately, so it
+ *     cannot tell those apart and says so instead of implying one). #63's grid
+ *     is only readable if a blank cell is distinguishable from a provider that
+ *     drew badly.
  *   - an UNPICKED row — no `provider` resolved, so `--sync` will refuse the card.
  *     Better learned here than at the publish gate.
  *   - an ORPHAN file — a candidate on disk belonging to no registered provider,
@@ -93,10 +96,20 @@ export interface SheetDeps {
   listFiles(): readonly string[];
 }
 
+/**
+ * @param siblingThemeNames Every OTHER theme in the seed. A review filename is
+ * `<themeSlug>-<cardSlug>-…` and both halves may contain dashes, so a bare
+ * prefix match cannot tell `ocean-machines-alvin-…` (a card of "Ocean Machines")
+ * from a card named "Machines Alvin" in a theme called "Ocean". Without the
+ * sibling names, the shorter-slugged theme claims every candidate of the longer
+ * one as an orphan. Knowing them is the only way to disambiguate, so they are an
+ * input rather than something to guess at.
+ */
 export function planContactSheet(
   theme: SheetTheme,
   providers: readonly NamingProvider[],
   deps: SheetDeps,
+  siblingThemeNames: readonly string[] = [],
 ): ContactSheet {
   const expected = new Set<string>();
   let missing = 0;
@@ -134,13 +147,18 @@ export function planContactSheet(
     });
 
   // Orphans are found by scanning rather than by column, because a column can
-  // only ever show providers that still exist.
+  // only ever show providers that still exist. A file another theme's longer
+  // slug also claims is that theme's business, not this one's.
   const prefix = `${slug(theme.name)}-`;
+  const claimedElsewhere = siblingThemeNames
+    .map((n) => `${slug(n)}-`)
+    .filter((p) => p.length > prefix.length);
   const orphans = deps
     .listFiles()
     .filter(
       (f) =>
         f.startsWith(prefix) &&
+        !claimedElsewhere.some((p) => f.startsWith(p)) &&
         !f.endsWith(".json") &&
         !f.endsWith(".html") &&
         !expected.has(f),
@@ -164,7 +182,7 @@ export function renderContactSheet(sheet: ContactSheet): string {
       ? `<p class="warn">⚠ ${sheet.unpicked} card(s) have no provider chosen. <code>--sync</code> will refuse them until a <code>provider</code> is set on the card or the theme.</p>`
       : "",
     sheet.missing > 0
-      ? `<p class="warn">⚠ ${sheet.missing} candidate(s) missing. A blank cell means that provider produced nothing for that card — a dead lane or a run that was narrowed — NOT that it drew badly.</p>`
+      ? `<p class="warn">⚠ ${sheet.missing} of ${sheet.rows.length * (sheet.providerIds.length || 1)} cell(s) have no candidate on disk. A blank cell means that provider produced nothing for that card — a dead lane, a run that was narrowed, or a card <code>--review</code> never generated because it is already published — NOT that it drew badly.</p>`
       : "",
     sheet.orphans.length > 0
       ? `<p class="warn">⚠ ${sheet.orphans.length} file(s) in seed/review/ belong to no registered provider (a rename or a retirement): ${sheet.orphans.map(esc).join(", ")}</p>`
@@ -210,8 +228,8 @@ img{width:100%;border-radius:8px;display:block;background:#222}
 .miss{color:#f66;border:1px dashed #f66;border-radius:8px;padding:24px;text-align:center}
 td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 </style>
-<h1>${esc(sheet.theme)} — ${sheet.rows.length} new cards</h1>
-<p class="sub">One row per subject, one column per provider. The outlined cell is what <code>--sync</code> would publish.</p>
+<h1>${esc(sheet.theme)} — ${sheet.rows.length} card(s) in the seed</h1>
+<p class="sub">Every card this theme declares in <code>seed/cards.json</code>, not just the unpublished ones — this sheet reads no database. One row per subject, one column per provider. The outlined cell is what <code>--sync</code> would publish.</p>
 ${banner}
 <table>
 <thead><tr><th>Card</th>${sheet.providerIds.map((p) => `<th>${esc(p)}</th>`).join("")}</tr></thead>

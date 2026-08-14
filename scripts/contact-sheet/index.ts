@@ -57,17 +57,24 @@ function main() {
   // Every REGISTERED provider gets a column, including one with no candidates at
   // all — an empty column is the loud version of a lane that never ran, where
   // omitting it would look like a bake-off that was never meant to include it.
-  const sheet = planContactSheet(theme, PROVIDERS, {
-    exists: (f) => existsSync(join(REVIEW_DIR, f)),
-    readSidecar: (f) => {
-      try {
-        return JSON.parse(readFileSync(join(REVIEW_DIR, f), "utf8")) as { model?: string };
-      } catch {
-        return undefined;
-      }
+  const sheet = planContactSheet(
+    theme,
+    PROVIDERS,
+    {
+      exists: (f) => existsSync(join(REVIEW_DIR, f)),
+      readSidecar: (f) => {
+        try {
+          return JSON.parse(readFileSync(join(REVIEW_DIR, f), "utf8")) as { model?: string };
+        } catch {
+          return undefined;
+        }
+      },
+      listFiles: () => files,
     },
-    listFiles: () => files,
-  });
+    // The other themes, so a theme whose slug prefixes another's does not report
+    // that other theme's candidates as its own orphans.
+    seed.themes.filter((t) => t.name !== theme.name).map((t) => t.name),
+  );
 
   const out = join(REVIEW_DIR, `${slug(theme.name)}-review.html`);
   writeFileSync(out, renderContactSheet(sheet));
@@ -80,8 +87,10 @@ function main() {
   );
   if (sheet.missing > 0) {
     console.warn(
-      `⚠️  ${sheet.missing} candidate(s) missing — a blank cell means that provider\n` +
-        `   produced nothing for that card, NOT that it drew badly.`,
+      `⚠️  ${sheet.missing} cell(s) have no candidate on disk — a blank cell means that\n` +
+        `   provider produced nothing for that card, NOT that it drew badly. Every card\n` +
+        `   in the theme gets a row, including ones already published, which \`--review\`\n` +
+        `   does not generate; this script reads no database and cannot tell them apart.`,
     );
   }
   if (sheet.unpicked > 0) {

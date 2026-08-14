@@ -16,7 +16,7 @@
  * the lanes run alongside each other. Wall-clock becomes the slowest single lane
  * rather than the sum, which is what makes 90 images cost roughly what 30 cost
  * before. The pacing numbers differ by orders of magnitude — Pollinations is
- * capped at one request per 5s, Cloudflare tolerates 720 a minute — which is why
+ * capped at one request per 15s, Cloudflare tolerates 720 a minute — which is why
  * they are declared by the adapter and not by one global env var.
  *
  * ── The circuit breaker, and why it is not a #68 classifier ──────────────────
@@ -125,17 +125,14 @@ async function runLane<T>(
         continue;
       }
 
+      let image: GeneratedImage;
       try {
-        const image = await withRetry(
+        image = await withRetry(
           provider,
           () => gate().then(() => provider.generate(deps.buildPrompt(job.card), deps.size)),
           deps,
           sleep,
         );
-        await deps.save(job, provider, image);
-        outcome.generated++;
-        consecutiveFailures = 0;
-        deps.log(`  ✓ ${job.theme} / ${describe(job.card)} [${provider.id}]`);
       } catch (err) {
         outcome.failed++;
         consecutiveFailures++;
@@ -147,7 +144,27 @@ async function runLane<T>(
               `remaining cards skipped, not retried.`,
           );
         }
+        continue;
       }
+
+      // The provider answered, so the lane is demonstrably alive — the breaker
+      // tallies only what it claims to, and a full disk under seed/review/ is a
+      // local problem reported as one rather than as a dead lane.
+      consecutiveFailures = 0;
+
+      try {
+        await deps.save(job, provider, image);
+      } catch (err) {
+        outcome.failed++;
+        deps.error(
+          `  ✗ ${job.theme} / ${describe(job.card)} [${provider.id}]: ` +
+            `generated, but writing the candidate to disk failed — ${String(err)}`,
+        );
+        continue;
+      }
+
+      outcome.generated++;
+      deps.log(`  ✓ ${job.theme} / ${describe(job.card)} [${provider.id}]`);
     }
   };
 
@@ -170,19 +187,27 @@ async function runLane<T>(
  * the provider has already judged just spends the lane's budget on a guaranteed
  * failure. Either way what escapes is `ProviderFailedTerminally` carrying no
  * classification of the cause (#68).
+ *
+ * Exported because `--publish --allow-unreviewed` generates outside a lane and
+ * must honour the same `SEED_RETRIES` budget. A second ladder there would drift
+ * from this one, and `generate()` stays ONE logical attempt either way.
  */
-async function withRetry<T>(
-  provider: ImageProvider,
+export async function withRetry<T>(
+  provider: Pick<ImageProvider, "id">,
   attempt: () => Promise<T>,
   deps: Pick<BakeOffDeps<never>, "retries" | "baseDelayMs" | "rateLimitDelayMs">,
-  sleep: (ms: number) => Promise<void>,
+  sleep: (ms: number) => Promise<void> = realSleep,
 ): Promise<T> {
   const retries = deps.retries;
   const baseDelayMs = deps.baseDelayMs ?? 500;
   const rateLimitDelayMs = deps.rateLimitDelayMs ?? 8000;
 
   let lastErr: unknown;
+  // Counted rather than derived from `retries`, so a non-retryable 4xx that
+  // breaks out on the first pass is reported as the one attempt it spent.
+  let attempts = 0;
   for (let n = 0; n <= retries; n++) {
+    attempts++;
     try {
       return await attempt();
     } catch (err) {
@@ -195,7 +220,7 @@ async function withRetry<T>(
       );
     }
   }
-  throw new ProviderFailedTerminally(provider.id, retries + 1, lastErr);
+  throw new ProviderFailedTerminally(provider.id, attempts, lastErr);
 }
 
 /**
