@@ -159,7 +159,8 @@ returns verbatim. Keep the superseded prompts somewhere until the theme ships.
 
 Expect **429 rate-limit failures** on a 30-card run. They are retryable and cost you nothing: re-run
 `pnpm seed --review` and it resumes. A 429 is not a prompt problem and does not count as a re-prompt
-round.
+round. If they persist, that is the free allocation's ceiling doing its job — wait and resume later.
+**Never attach a payment method to unblock it.**
 
 **Append** the theme object to the `themes` array of `seed/cards.json`. Array position **is** the theme's
 display order and `themes.sort_order` is a contract: never insert mid-array, never reorder existing
@@ -287,3 +288,8 @@ Abort the run and report. Do not improvise past any of these.
 - Never pass `--allow-prune`, `--allow-unreviewed`, or `--reset`.
 - Never answer a checkpoint on the human's behalf.
 - Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- **Never attach a payment method to an image-provider account, and never sign in to one that already
+  has a card.** Recurring cost for this pipeline is $0, and the guarantee is the account state, not a
+  budget: a card-free account can only ever refuse a request, whereas a carded one bills silently and you
+  find out by invoice. A quota wall is the ceiling doing its job — wait it out, thin the run, or take it
+  to the human. Upgrading the plan is never the fix.
