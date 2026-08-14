@@ -22,6 +22,12 @@ import { CARD_SIZE, PROVIDERS } from "@/features/pool/providers";
  * because a green run over zero providers proves nothing.
  */
 
+/**
+ * Run-unique salt, so a salted prompt has never been requested before and is
+ * therefore guaranteed to be generated rather than served from a provider cache.
+ */
+const SALT = `kc-live-${Date.now()}`;
+
 const configured = PROVIDERS.filter((p) => p.isConfigured());
 const skipped = PROVIDERS.filter((p) => !p.isConfigured());
 
@@ -47,11 +53,18 @@ for (const provider of configured) {
   runImageProviderContract(`${provider.id} (live)`, () => provider);
 
   describe(`${provider.id} — live specifics`, () => {
-    it("draws a realistic card prompt at 768x768", async () => {
-      // The contract's prompt is a toy. This is a real one, through buildPrompt,
-      // so ART_STYLE and the actual prompt length are exercised too.
+    it("draws a realistic card prompt at 768x768, freshly generated", async () => {
+      // Salted so this is a genuine generation rather than a cache replay.
+      //
+      // Measured while resolving #67: Pollinations serves a repeated prompt from
+      // a durable, cross-user cache, and a cached response carries neither
+      // `x-auth-status` nor `x-model-used`. So an unsalted live suite quietly
+      // degrades into replaying bytes it generated on a previous run — every
+      // assertion green, nothing actually exercised, and a rejected credential
+      // invisible. The contract's own prompts have that weakness by nature;
+      // these two are where it is bought back.
       const image = await provider.generate(
-        buildPrompt({ imagePrompt: "an English longbowman holding a longbow" }),
+        buildPrompt({ imagePrompt: `an English longbowman holding a longbow, ${SALT}` }),
         CARD_SIZE,
       );
       const measured = readImageSize(image.bytes);
@@ -63,8 +76,12 @@ for (const provider of configured) {
       // #64 caught Pollinations swapping FLUX for `sana` with no changelog. If
       // this prints something other than what `params.model` asked for, that is
       // the finding — and it means every review file predating the swap is art
-      // from a different model.
-      const image = await provider.generate(buildPrompt({ imagePrompt: "a red panda" }), CARD_SIZE);
+      // from a different model. Salted, because the header only rides on a real
+      // generation.
+      const image = await provider.generate(
+        buildPrompt({ imagePrompt: `a red panda, ${SALT}` }),
+        CARD_SIZE,
+      );
       console.log(
         `   ${provider.id}: requested ${String(provider.params.model)}, ` +
           `served ${image.model ?? "(not reported)"}`,

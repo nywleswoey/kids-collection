@@ -7,7 +7,7 @@ import {
 import { fakeProvider, solidPng } from "@/features/pool/providers/fake";
 import { pollinations } from "@/features/pool/providers/pollinations";
 import { cloudflareSdxl } from "@/features/pool/providers/cloudflare-sdxl";
-import { CARD_SIZE } from "@/features/pool/providers";
+import { CARD_SIZE, ProviderRetryable } from "@/features/pool/providers";
 
 /**
  * The provider contract, run against every implementation (#67).
@@ -195,5 +195,47 @@ describe("cloudflare-sdxl adapter", () => {
     delete process.env.CLOUDFLARE_ACCOUNT_ID;
     process.env.CLOUDFLARE_API_TOKEN = "tok";
     expect(cloudflareSdxl().isConfigured()).toBe(false);
+  });
+});
+
+describe("pollinations auth (measured live, #67)", () => {
+  const saved = { ...process.env };
+  afterEach(() => {
+    process.env = { ...saved };
+  });
+
+  const ok = (headers: Record<string, string>) =>
+    new Response(syntheticJpeg(768, 768) as unknown as BodyInit, { status: 200, headers });
+
+  it("refuses a response that reports the token was not accepted", async () => {
+    // A key being SET is not a key being ACCEPTED. isConfigured() can only see
+    // that the variable is non-empty, so without this the lane runs anonymous on
+    // seed-tier pacing — three times the permitted rate, the whole run in 429
+    // backoff, and the startup check green throughout.
+    process.env.POLLINATIONS_TOKEN = "bad";
+    const provider = pollinations({
+      fetchImpl: async () => ok({ "x-auth-status": "unauthenticated" }),
+    });
+    await expect(provider.generate("x", CARD_SIZE)).rejects.toThrow(/rejected/);
+  });
+
+  it("does not retry a rejected credential — it is rejected every time", async () => {
+    process.env.POLLINATIONS_TOKEN = "bad";
+    const provider = pollinations({
+      fetchImpl: async () => ok({ "x-auth-status": "unauthenticated" }),
+    });
+    const err = await provider.generate("x", CARD_SIZE).catch((e: unknown) => e);
+    expect(err).not.toBeInstanceOf(ProviderRetryable);
+  });
+
+  it("accepts a cache hit, which carries no auth headers at all", async () => {
+    // Absence is not failure: a HIT carries neither x-auth-status nor
+    // x-model-used, and reading that as a rejected token would fail every
+    // cached generation.
+    process.env.POLLINATIONS_TOKEN = "good";
+    const provider = pollinations({ fetchImpl: async () => ok({ "x-cache": "HIT" }) });
+    const image = await provider.generate("x", CARD_SIZE);
+    expect(image.model).toBeUndefined();
+    expect(image.bytes.byteLength).toBeGreaterThan(0);
   });
 });

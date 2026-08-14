@@ -18,6 +18,14 @@
  * inherit it. Pinned in `params`, so it is inside the review filename's hash and
  * changing it invalidates the reviews it would change.
  *
+ * ── `x-model-used` is absent on a cache hit ──────────────────────────────────
+ * Measured live: a MISS carries `x-model-used`, a HIT carries no auth or model
+ * headers at all. Pollinations' cache is durable and normalised across users
+ * (#64), so a common subject is likely to be served from it — which means the
+ * model is unwitnessed precisely when the bytes are oldest and most likely to
+ * predate a model swap. `model` is therefore optional and undefined means
+ * "unwitnessed", never "the requested model answered".
+ *
  * ── What `model` is for ──────────────────────────────────────────────────────
  * #64 caught Pollinations serving `sana` for a request that asked for `flux`,
  * with no changelog and no announcement — the docs still say FLUX. The only
@@ -35,6 +43,32 @@ import {
 import type { GeneratedImage, ImageProvider, ImageSizeRequest } from "./provider";
 
 const ENDPOINT = "https://image.pollinations.ai/prompt/";
+
+/**
+ * Refuse a response that says, in as many words, that the token did not work.
+ *
+ * A key being SET is not a key being ACCEPTED, and the gap between those two is
+ * not cosmetic here: the registered tier is one request per 5s where anonymous
+ * is one per 15s, and this adapter declares 5s pacing. Running unauthenticated
+ * on seed-tier pacing means pushing three times the permitted rate, so the lane
+ * spends the whole run in 429 backoff — and the seam's own startup check would
+ * have passed, because `isConfigured()` can only see that the variable is
+ * non-empty.
+ *
+ * Non-retryable on purpose: a rejected credential is rejected on every attempt,
+ * so the retry ladder would only delay the diagnosis.
+ *
+ * Only fires on an EXPLICIT `unauthenticated`. A cache hit carries no auth
+ * headers at all, and absence must not be read as failure.
+ */
+function assertAuthenticated(headers?: Headers): void {
+  if (headers?.get?.("x-auth-status") !== "unauthenticated") return;
+  throw new Error(
+    "pollinations: POLLINATIONS_TOKEN was rejected (x-auth-status: unauthenticated). " +
+      "The request ran on the anonymous tier, which is rate-limited 3x harder than the " +
+      "pacing this adapter declares. Check the token at auth.pollinations.ai.",
+  );
+}
 
 export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
@@ -64,7 +98,10 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
         headers: { Authorization: `Bearer ${process.env.POLLINATIONS_TOKEN ?? ""}` },
       });
       assertOk(this.id, res);
+      assertAuthenticated(res.headers);
       const bytes = await readBytes(this.id, res);
+      // Absent on a cache hit — see the header note. Undefined then means
+      // "unwitnessed", never "the requested model answered".
       return finishGeneration(
         this,
         bytes,
