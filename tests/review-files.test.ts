@@ -12,6 +12,7 @@ import { promptHash } from "@/features/pool/keys";
 import { cardKey } from "@/features/pool/publish-plan";
 import { fakeProvider } from "@/features/pool/providers/fake";
 import {
+  LANES,
   PROVIDERS,
   PROVIDER_IDS,
   ProviderSelectionError,
@@ -225,9 +226,20 @@ describe("the registry (#67)", () => {
     for (const id of PROVIDER_IDS) expect(providerById(id)!.id).toBe(id);
   });
 
-  it("does not register AI Horde while #71 is open", () => {
-    // #62 shortlisted it, but its acceptability for a kids' app is an open
-    // decision. Registering it here would ship a call that ticket has not made.
+  it("every registered provider declares a role", () => {
+    for (const p of PROVIDERS) expect(["lane", "escape-hatch"]).toContain(p.role);
+  });
+
+  it("the default fan-out is lanes only — escape hatches sit out (#71)", () => {
+    configureAll();
+    expect(selectLanes().every((p) => p.role === "lane")).toBe(true);
+    expect(LANES.length).toBeLessThanOrEqual(PROVIDERS.length);
+  });
+
+  it("does not yet register AI Horde — #71 keyed it, #74 picks its model", () => {
+    // #71 settled the hatch's role and its request parameters but left the model
+    // to #74, and an unpinned model would make 768x768 a coin-flip against live
+    // queue depth — and would name review files after a request never made.
     expect(PROVIDER_IDS).not.toContain("ai-horde");
   });
 
@@ -254,6 +266,23 @@ describe("the registry (#67)", () => {
       expect(message).toContain("CLOUDFLARE_API_TOKEN"); // names what to set
       expect(message).toContain("--providers=pollinations"); // and the way past it
     }
+  });
+
+  it("leaves an escape hatch out of the default fan-out, but reachable by name (#71)", () => {
+    // #71's shape exactly: AI Horde is keyed and wired, excluded from #63's
+    // eager per-card generation, and invoked deliberately for cards the lanes
+    // refused or drew badly. Injected registry — no hatch is registered yet,
+    // because #74 has not picked its model.
+    const lane = fakeProvider({ id: "lane-a" });
+    const hatch = fakeProvider({ id: "hatch-a", role: "escape-hatch" });
+    const registry = [lane, hatch];
+
+    expect(selectLanes(undefined, registry).map((p) => p.id)).toEqual(["lane-a"]);
+    expect(selectLanes(["hatch-a"], registry).map((p) => p.id)).toEqual(["hatch-a"]);
+    expect(selectLanes(["lane-a", "hatch-a"], registry).map((p) => p.id)).toEqual([
+      "lane-a",
+      "hatch-a",
+    ]);
   });
 
   it("rejects an unknown id in --providers", () => {

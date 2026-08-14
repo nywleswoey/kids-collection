@@ -25,6 +25,7 @@ import type {
 
 export interface FakeProviderOptions {
   id?: string;
+  role?: ImageProvider["role"];
   params?: ProviderParams;
   minIntervalMs?: number;
   concurrency?: number;
@@ -48,6 +49,7 @@ export function fakeProvider(opts: FakeProviderOptions = {}): FakeProvider {
   let n = 0;
   return {
     id: opts.id ?? "fake",
+    role: opts.role ?? "lane",
     format: "png",
     params: opts.params ?? { model: "fake-1", seed: 42 },
     minIntervalMs: opts.minIntervalMs ?? 0,

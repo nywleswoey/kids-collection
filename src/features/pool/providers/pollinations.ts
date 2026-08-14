@@ -40,6 +40,7 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   return {
     id: "pollinations",
+    role: "lane",
     format: "jpeg",
     params: {
       model: "flux",

@@ -15,12 +15,22 @@
  * which is explicit on the command line, and an unconfigured provider aborts at
  * startup before a single image is generated rather than vanishing from the run.
  *
- * ── AI Horde is deliberately absent ──────────────────────────────────────────
- * #62 shortlisted it, but #71 ("Is AI Horde acceptable for a kids' app?") is
- * open: anonymous requests are permanently shared with LAION, and censorship is
- * per-worker and non-deterministic. Registering it here would be shipping a
- * decision that ticket has not made. It is one file plus one array entry when
- * #71 clears it — which is the point of the seam.
+ * ── Lanes and escape hatches ─────────────────────────────────────────────────
+ * #71 resolved AI Horde to "keyed and wired, but NOT a bake-off lane", and made
+ * expressing that this seam's job. So `role` splits the registry: the default
+ * fan-out is the lanes, while an escape hatch is reachable only by naming it.
+ * Everything else about a hatch is identical — `--sync` resolves it, and its
+ * candidates are named the same way — because a card published from the hatch
+ * must be as traceable as any other.
+ *
+ * ── AI Horde's adapter is not here yet ───────────────────────────────────────
+ * #71 settled its request parameters (`slow_workers: true` mandatory,
+ * `allow_downgrade` never set, `replacement_filter: false`) but explicitly left
+ * the model to #74 — and pinning an SDXL-baseline model is what makes 768x768 a
+ * guarantee rather than a coin-flip against live queue depth. `params` must be
+ * total and hashed, so an adapter with an unpinned model would name its review
+ * files after a request it did not make. It lands with #74; the role above is
+ * the part #71 made binding here.
  */
 import { cloudflareSdxl } from "./cloudflare-sdxl";
 import { pollinations } from "./pollinations";
@@ -30,10 +40,13 @@ export * from "./provider";
 export { pollinations } from "./pollinations";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
 
-/** Every lane that exists. Adding or removing one is a reviewable code change. */
+/** Every provider that exists. Adding or removing one is a reviewable code change. */
 export const PROVIDERS: readonly ImageProvider[] = [pollinations(), cloudflareSdxl()];
 
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
+
+/** The default fan-out: bake-off lanes only, escape hatches excluded (#71). */
+export const LANES: readonly ImageProvider[] = PROVIDERS.filter((p) => p.role === "lane");
 
 /**
  * Look up a registered adapter.
@@ -61,14 +74,23 @@ export class ProviderSelectionError extends Error {
  * message. Called before anything is generated, so a misconfigured run costs
  * nothing and writes nothing — the `DATABASE_URL` treatment, applied to keys.
  *
+ * Naming a provider explicitly reaches an escape hatch too — that IS how #71
+ * intends the hatch to be invoked, for cards the lanes refused or drew badly.
+ * The role only decides the DEFAULT set.
+ *
  * @param requested ids from `--providers=a,b`; undefined means every lane.
+ * @param registry defaults to the real one; injectable so the escape-hatch path
+ *   is testable before an escape hatch is registered.
  */
-export function selectLanes(requested?: readonly string[]): readonly ImageProvider[] {
-  const known = PROVIDER_IDS.join(", ");
-  let lanes = PROVIDERS;
+export function selectLanes(
+  requested?: readonly string[],
+  registry: readonly ImageProvider[] = PROVIDERS,
+): readonly ImageProvider[] {
+  const known = registry.map((p) => p.id).join(", ");
+  let lanes = registry.filter((p) => p.role === "lane");
 
   if (requested) {
-    const unknown = requested.filter((id) => !providerById(id));
+    const unknown = requested.filter((id) => !registry.some((p) => p.id === id));
     if (unknown.length > 0) {
       throw new ProviderSelectionError(
         `--providers names ${unknown.length} unknown provider(s): ${unknown.join(", ")}.\n` +
@@ -78,7 +100,7 @@ export function selectLanes(requested?: readonly string[]): readonly ImageProvid
     if (requested.length === 0) {
       throw new ProviderSelectionError(`--providers was given no ids. Registered: ${known}`);
     }
-    lanes = PROVIDERS.filter((p) => requested.includes(p.id));
+    lanes = registry.filter((p) => requested.includes(p.id));
   }
 
   const unconfigured = lanes.filter((p) => !p.isConfigured());

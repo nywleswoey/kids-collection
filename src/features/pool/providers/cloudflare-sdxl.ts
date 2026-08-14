@@ -43,6 +43,7 @@ export function cloudflareSdxl(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   return {
     id: "cloudflare-sdxl",
+    role: "lane",
     format: "png",
     params: {
       model: "@cf/stabilityai/stable-diffusion-xl-base-1.0",

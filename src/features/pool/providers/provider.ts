@@ -79,9 +79,29 @@ export interface GeneratedImage {
  */
 export type ProviderParams = Readonly<Record<string, string | number | boolean>>;
 
+/**
+ * Whether a provider takes part in the eager bake-off (#71).
+ *
+ * #63 fans `--review` out across every provider. #71 carved out an exception and
+ * made expressing it this ticket's job: AI Horde is keyed and wired, but it is
+ * NOT a lane. Registration buys about one image of kudos permanently, a 30-card
+ * burst costs ~720, and 768x768 is conditional on live queue depth — so it loses
+ * the throughput driver outright, and its claim on quality is permission rather
+ * than skill. It earns its place as insurance for cards the lanes refused or
+ * drew badly, invoked deliberately.
+ *
+ * The distinction is only about the DEFAULT set. An escape hatch is still
+ * selectable by name (`--providers=ai-horde`), still resolvable by `--sync`, and
+ * still names its candidates the same way — because a card published from the
+ * hatch must be as traceable as any other.
+ */
+export type ProviderRole = "lane" | "escape-hatch";
+
 export interface ImageProvider {
   /** Stable slug, unique in the registry. Appears in review filenames and in `seed/cards.json`. */
   readonly id: string;
+  /** In the eager bake-off, or invoked on demand only (#71)? */
+  readonly role: ProviderRole;
   /** What this provider encodes to. Decides the review file's extension. */
   readonly format: ImageFormat;
   /** TOTAL set of request parameters. Hashed into the review filename. */
