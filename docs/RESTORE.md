@@ -149,9 +149,11 @@ exist in the target.
 
 ## 4. What the backup does not cover
 
-- **Card images.** They live in Vercel Blob, not Postgres, and no `pg_dump` includes them. They are
-  reproducible from `seed/cards.json` via the seeding pipeline. A restored database points at Blob
-  URLs that are still live — image loss is a separate, independent failure.
+- **Card images.** They live in Vercel Blob, not Postgres, and no `pg_dump` includes them. The pool can
+  be re-generated from `seed/cards.json` via the seeding pipeline, but **not the shipped pictures**: the
+  image provider swaps the model behind a prompt without notice (#64), so a re-seed draws new art rather
+  than restoring the originals. A restored database points at Blob URLs that are still live — image loss
+  is a separate, independent failure, and it is not recoverable byte-for-byte.
 - **Anything older than 90 days.** Artifact retention is the hard horizon.
 - **The 6–24 hour window**, as above — no point-in-time recovery there.
 - **Per-child restore.** The dump is whole-database and restores all-or-nothing. Recovering one
