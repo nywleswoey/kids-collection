@@ -160,8 +160,10 @@ picture returns verbatim. Keep the superseded prompts somewhere until the theme 
 That trick is reliable *within* a theme run, which is the only place you need it. It is **not** a
 long-term guarantee: the provider can change the model behind a prompt without notice, and has (#64), so
 a prompt that drew one picture in July draws a different one weeks later. Never use it to recover art
-that has already shipped — the reviewed bytes in `seed/review/`, which `--sync` publishes verbatim, are
-what protect published cards.
+that has already shipped — a published card is protected by the Blob URL already stored in the database,
+and `--sync` only updates text on an existing card, never regenerating or re-uploading its image. The
+reviewed bytes in `seed/review/` protect a card at insert time only, and that directory is gitignored
+local scratch a fresh clone will not have.
 
 Expect **429 rate-limit failures** on a 30-card run. They are retryable and cost you nothing: re-run
 `pnpm seed --review` and it resumes. A 429 is not a prompt problem and does not count as a re-prompt
