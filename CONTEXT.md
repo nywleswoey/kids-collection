@@ -49,3 +49,41 @@ Terms introduced by the Store-seam design (see
   adapters (fake in Vitest, pg in Build & Test) to prove they agree on the atomicity
   contracts (`spendOne` null-on-guard-fail, `clampedGrant` floors at 0, `swapCards`
   all-or-nothing). This is what makes the seam real rather than hypothetical.
+
+## Architecture — the image-provider seam (#67, on map #61)
+
+Terms introduced by putting the seed CLI's art generation behind a port
+(`src/features/pool/providers/`), so a theme can be baked off across more than one
+free provider:
+
+- **Image provider (port)** — the interface in `providers/provider.ts`. One method,
+  `generate(prompt, size)`, owning **one logical attempt** however many HTTP
+  round-trips that takes (a submit-then-poll provider hides its loop behind it).
+  Retry, backoff, concurrency and pacing live **above** the seam in the lane runner
+  (`scripts/seed/index.ts`); the adapter only *declares* `minIntervalMs` and
+  `concurrency` as data, because a throttle is cross-card scheduling that cannot
+  live inside a single call.
+- **Lane vs escape hatch** — the `role` field on a provider. A **lane** is in the
+  default `--review` fan-out; an **escape hatch** is registered and resolvable but
+  sits out the fan-out, reached only by naming it (`--providers=<id>`). Everything
+  else about a hatch is identical, so a card published from one is as traceable as
+  any other (`providers/index.ts`, #71).
+- **Bake-off candidate** — one generated image for a `(card, provider)` pair, named
+  `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed/review/`,
+  with a `.json` **sidecar** recording the model the response actually *named*
+  (`src/features/pool/review-files.ts`).
+- **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
+  (`src/features/pool/contact-sheet.ts`), **CHECKPOINT 2** of
+  `seed/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
+- **`params`** — an adapter's declared, **total** request-parameter bag, hashed into
+  the candidate filename so a parameter change invalidates exactly the reviews it
+  would change. Pacing (`minIntervalMs`, `concurrency`) is deliberately excluded,
+  because it does not change the bytes.
+- **Adapter, disambiguated** — two families now share the word. **Persistence
+  adapters** (pg + in-memory fake, one pair per Store port, above) and **provider
+  adapters** (one per image provider, plus a fake in `providers/fake.ts`). Both are
+  backed by a shared **contract suite** — that is the property that makes each seam
+  real rather than hypothetical. The provider contract
+  (`tests/contracts/image-provider-contract.ts`) runs against recorded fixtures in
+  CI, and against live endpoints only via the opt-in `pnpm test:providers`
+  (`tests-live/`), because live calls in CI would spend provider quota on every push.

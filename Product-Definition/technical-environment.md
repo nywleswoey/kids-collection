@@ -377,7 +377,7 @@ contradictions**; this is a strict technical superset.
   `ImageProvider` spec against the **real** endpoints. Opt-in and **deliberately not in CI**: live calls
   would spend quota on every push and sit against the "$0 stays $0 structurally" rule. Needs the provider
   keys in `.env.local`; it reports which providers it skipped rather than passing on an empty set.
-- **Property-based — REQUIRED and BLOCKING** — **22** `*.pbt.test.ts` files carrying **100** `fc.assert`
+- **Property-based — REQUIRED and BLOCKING** — **23** `*.pbt.test.ts` files carrying **106** `fc.assert`
   call sites, covering the logic where a wrong answer costs the children real cards: `auth-policy`,
   `collection-reward`, `count-report`, `db-target`, `easter-egg`, `gate-token`, `logic`, `offer`,
   `pull-categories`, `quiz-cap`, `quiz-daily-topics`, `quiz-fraction-gen`, `quiz-math-gen`, `quiz-offer`,
@@ -505,7 +505,7 @@ wearing this one's clothes. Revisit as its own piece of work if it is ever wante
 > role, and it used to be enforced only by developer discipline. It is now enforced by mechanism:
 > `pnpm test` runs on `fast-gate` on every pull request and `fast-gate` is a required check, so a PR whose
 > properties fail cannot be merged. **Enforced depth**: CI sets `FC_NUM_RUNS: 1000` — ten times
-> fast-check's default — so a run explores ~100,000 cases across the suite's 100 `fc.assert` sites, while
+> fast-check's default — so a run explores ~106,000 cases across the suite's 106 `fc.assert` sites, while
 > a local run stays at the default 100 for a fast inner loop. `FC_NUM_RUNS=1000 pnpm test` reproduces CI
 > exactly, and a malformed value **throws**: `numRuns: NaN` would otherwise run every property zero times
 > and report a pass. No property has failed at any depth up to 10,000 runs each.
