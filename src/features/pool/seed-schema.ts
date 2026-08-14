@@ -34,12 +34,35 @@ export const seedCardSchema = z.object({
   imagePrompt: z.string().trim().min(1),
   // Source backing the fact / legend origin — must be a real URL (U4-FR5, NFR4).
   sourceUrl: z.string().url(),
+  /**
+   * Which provider's bake-off candidate `--sync` should publish for this card
+   * (#63, #67). A sparse OVERRIDE — a card without one inherits its theme's
+   * default, and most cards will not have one.
+   *
+   * Optional and unvalidated-against-the-registry ON PURPOSE, twice over:
+   *
+   *   - `loadSeed` runs this schema on EVERY seed command, including while a
+   *     theme is being authored and before any bake-off has happened. Requiring
+   *     it would make a half-authored theme unloadable and break Steps 4 and 5
+   *     of the runbook.
+   *   - A `z.enum` of registered ids would tie a committed, version-controlled
+   *     seed file's validity to whatever adapters exist today, so retiring one
+   *     would break `--check-urls` and `--review` for themes that shipped long
+   *     before.
+   *
+   * Same split the repo already uses for `sourceUrl`: shape in the schema,
+   * resolution at the gate that needs it. `--sync` resolves it against the
+   * registry and refuses, by name, before any write.
+   */
+  provider: z.string().trim().min(1).optional(),
 });
 
 export const themeSeedSchema = z
   .object({
     name: z.string().trim().min(1),
     cards: z.array(seedCardSchema).min(1),
+    /** Default provider for this theme's cards; a card's own `provider` wins (#63). */
+    provider: z.string().trim().min(1).optional(),
   })
   .superRefine((theme, ctx) => {
     // FR2 — exactly 30 cards.

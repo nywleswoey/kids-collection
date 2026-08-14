@@ -2,7 +2,10 @@
  * Offline seed CLI — builds the card pool. NOT in the request path.
  *
  *   pnpm seed --check-urls        check every sourceUrl in the seed file, then exit
- *   pnpm seed --review            generate images for NEW cards to seed/review/
+ *   pnpm seed --review            generate images for NEW cards to seed/review/,
+ *                                 from EVERY registered provider (the bake-off)
+ *   pnpm seed --review --providers=pollinations
+ *                                 narrow the bake-off to named provider(s)
  *   pnpm seed --publish           generate -> upload to Blob -> insert NEW cards (idempotent)
  *   pnpm seed --publish --reset   wipe the whole pool first, then republish everything
  *   pnpm seed --sync              DELTA: image-generate only NEW cards, update text
@@ -17,6 +20,7 @@
  *                                 reviewed image. Defeats the kid-safety guarantee.
  *
  * Requires DATABASE_URL (all modes) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
+ * `--review` additionally requires each provider's key; see `.env.example`.
  *
  * ── Destructive-operation guards (Inc23) ─────────────────────────────────────
  * `cards.theme_id` and `collections.card_id` both cascade, so deleting pool rows
@@ -58,14 +62,48 @@
  * integrity independent of what the provider does to its models. Any additional
  * provider is held to the same rule: publish the reviewed bytes, never regenerate at
  * publish time, however deterministic it claims to be.
+ *
+ * ── The bake-off (#63, #67) ──────────────────────────────────────────────────
+ * `--review` no longer generates one image per card. It generates one per card PER
+ * PROVIDER, in parallel lanes, so a human compares a subject x provider row and
+ * records the winner in `seed/cards.json` — a theme-level `provider` default plus
+ * sparse per-card overrides. `--sync` resolves `card.provider ?? theme.provider` and
+ * publishes THAT provider's reviewed bytes.
+ *
+ * The integrity guarantee is unchanged in meaning and stronger in practice. Review
+ * filenames now carry the provider and a hash of its request parameters, so
+ * switching provider — or drifting a provider's `steps` or `seed` — makes `--sync`
+ * look for a file that does not exist, and FR9 refuses the insert. An UNRESOLVED
+ * provider matches no file either, so a theme whose bake-off was never judged
+ * publishes nothing. Fail-safe by construction, not by a new check.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadSeed } from "@/features/pool/loader";
 import { buildPrompt } from "@/features/pool/prompt";
-import { generateImage, uploadImage } from "@/features/pool/image";
-import { blobKey, reviewKey } from "@/features/pool/keys";
-import { planInserts, cardKey, type PlannedInsert } from "@/features/pool/publish-plan";
+import { uploadImage } from "@/features/pool/image";
+import { blobKey } from "@/features/pool/keys";
+import { runBakeOff, makeGate, type BakeOffJob } from "@/features/pool/bake-off";
+import {
+  buildSidecar,
+  missingReviews,
+  reviewFileName,
+  resolveProviderId,
+  sidecarFileName,
+  unknownProviders,
+  type NamedCard,
+} from "@/features/pool/review-files";
+import type { SeedCard, ThemeSeed } from "@/features/pool/seed-schema";
+import {
+  CARD_SIZE,
+  PROVIDER_IDS,
+  ProviderSelectionError,
+  parseProvidersFlag,
+  providerById,
+  selectLanes,
+  type ImageProvider,
+} from "@/features/pool/providers";
+import { planInserts, cardKey } from "@/features/pool/publish-plan";
 import { comparePoolShape } from "@/features/pool/completeness";
 import { listPublishedCardKeys, readPublishedShape } from "@/features/pool/pool-reads";
 import { checkSourceUrls } from "@/features/pool/url-check";
@@ -85,18 +123,26 @@ import type { Rarity } from "@/lib/types";
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed", "review");
 
-// Pollinations' anonymous tier rate-limits (HTTP 429) under parallel bursts.
-// Keep a low concurrency and space request *starts* apart; all env-tunable so a
-// keyed/higher tier can crank them up. Defaults recover cleanly from 429.
-const CONCURRENCY = intEnv("SEED_CONCURRENCY", 2);
-const THROTTLE_MS = intEnv("SEED_THROTTLE_MS", 3000);
+// Retry budget per (card, provider) attempt. Concurrency and pacing are NOT here
+// any more: they differ per provider by orders of magnitude — Pollinations is
+// capped at one request per 5s where Cloudflare tolerates 720 a minute — so each
+// adapter declares its own and the lane runner enforces it (#63, #67). The env
+// knobs this replaces existed "so a keyed tier can crank them up", which is now
+// what a committed adapter constant says out loud.
 const RETRIES = intEnv("SEED_RETRIES", 5);
+
+/**
+ * Publish concurrency. Unrelated to generation pacing — this bounds Blob uploads
+ * and database inserts, which have no provider and no rate limit worth modelling.
+ * The old default of 2 was tuned around Pollinations' 429s and has no bearing here.
+ */
+const PUBLISH_CONCURRENCY = intEnv("SEED_CONCURRENCY", 4);
 
 type Mode = "review" | "publish" | "sync";
 
-/** Absolute path of a card's reviewed image, if it were reviewed (Inc24 FR7). */
-function reviewPath(themeName: string, card: { name: string; imagePrompt: string }): string {
-  return join(REVIEW_DIR, `${reviewKey(themeName, card)}.jpg`);
+/** Absolute path of one bake-off candidate. */
+function reviewPath(themeName: string, card: NamedCard, provider: ImageProvider): string {
+  return join(REVIEW_DIR, reviewFileName(themeName, card, provider));
 }
 
 async function main() {
@@ -148,6 +194,23 @@ async function main() {
     );
   }
 
+  // Which lanes will this run generate through? Resolved BEFORE any destructive
+  // guard or network call so a missing key costs nothing, and aborts rather than
+  // quietly narrowing the bake-off — a lane silently absent from a comparison
+  // looks like a provider that drew badly (#67).
+  let lanes: readonly ImageProvider[] = [];
+  if (mode === "review") {
+    try {
+      lanes = selectLanes(parseProvidersFlag(process.argv));
+    } catch (err) {
+      if (!(err instanceof ProviderSelectionError)) throw err;
+      console.error(`\n⛔ ${err.message}\n`);
+      process.exitCode = 1;
+      return;
+    }
+    console.log(`Providers: ${lanes.map((p) => p.id).join(", ")}`);
+  }
+
   // Destructive-operation guards (Inc23 FR3–FR8). Both run BEFORE any write:
   // every pool delete cascades into `collections`, so the decision to proceed
   // has to be made while nothing has happened yet.
@@ -193,6 +256,16 @@ async function main() {
   const published = await listPublishedCardKeys();
   const plan = planInserts(seed, published);
   const planned = new Set(plan.map((p) => cardKey(p.theme, p.card)));
+  const themes: readonly ThemeSeed[] = seed.themes;
+
+  // ── --review: the eager bake-off. Lane-major, so it does not share the
+  // publish path's per-theme loop — nothing here writes to the database, and a
+  // lane spans every theme in one queue so its pacing is spent on generating
+  // rather than on waiting at theme boundaries.
+  if (mode === "review") {
+    await review(themes, planned, lanes);
+    return;
+  }
 
   // ── FR9: refuse to publish an image no human has seen. Before any write, on
   // every insert path — --publish reaches insertCardIfNew too, and the invariant
@@ -203,26 +276,47 @@ async function main() {
   //
   // Same idiom as --allow-prune: named flag, printed blast radius, non-zero exit
   // by default, nothing written.
-  if (mode !== "review") {
-    const unreviewed = missingReviews(seed, planned);
-    if (unreviewed.length > 0 && !process.argv.includes("--allow-unreviewed")) {
-      console.error(
-        `\n⛔ ${unreviewed.length} card(s) would be inserted with no reviewed image:\n`,
-      );
-      for (const p of unreviewed) console.error(`   ${p.theme} / ${p.card}`);
-      console.error(
-        `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
-          `   every image. \`--allow-unreviewed\` exists but defeats the guarantee that\n` +
-          `   no unreviewed image reaches a child.\n`,
-      );
-      process.exitCode = 1;
-      return;
+  //
+  // An unknown provider id is checked FIRST and is not overridable. It is an
+  // authoring mistake — a typo, or an adapter that has since been retired — and
+  // reporting it as "no reviewed image" would send the author to re-run a review
+  // that could never satisfy the guard (#67).
+  const unknown = unknownProviders(themes, planned, providerById);
+  if (unknown.length > 0) {
+    console.error(`\n⛔ ${unknown.length} card(s) name a provider that is not registered:\n`);
+    for (const u of unknown) console.error(`   ${u.theme} / ${u.card} → "${u.providerId}"`);
+    console.error(
+      `\n   Registered: ${PROVIDER_IDS.join(", ")}\n` +
+        `   Nothing has been written. Fix the \`provider\` value in seed/cards.json.\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  const unreviewed = missingReviews(themes, planned, providerById, (name) =>
+    existsSync(join(REVIEW_DIR, name)),
+  );
+  if (unreviewed.length > 0 && !process.argv.includes("--allow-unreviewed")) {
+    console.error(
+      `\n⛔ ${unreviewed.length} card(s) would be inserted with no reviewed image:\n`,
+    );
+    for (const p of unreviewed) {
+      console.error(`   ${p.theme} / ${p.card} — ${p.reason}`);
     }
-    if (unreviewed.length > 0) {
-      console.warn(
-        `⚠️  --allow-unreviewed: publishing ${unreviewed.length} card(s) no human has seen.`,
-      );
-    }
+    console.error(
+      `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
+        `   every image. Cards marked "no provider chosen" need a \`provider\` on the\n` +
+        `   card or its theme in seed/cards.json — that is the bake-off pick.\n` +
+        `   \`--allow-unreviewed\` exists but defeats the guarantee that no unreviewed\n` +
+        `   image reaches a child.\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+  if (unreviewed.length > 0) {
+    console.warn(
+      `⚠️  --allow-unreviewed: publishing ${unreviewed.length} card(s) no human has seen.`,
+    );
   }
 
   const report = {
@@ -230,7 +324,6 @@ async function main() {
     updated: 0,
     skipped: 0,
     failed: 0,
-    reviewed: 0,
     reused: 0,
     prunedThemes: 0,
     prunedCards: 0,
@@ -238,15 +331,12 @@ async function main() {
 
   // Array position is the theme's display order — appending a theme to
   // seed/cards.json makes it the most recent (Inc21 FR2).
-  for (const [sortOrder, theme] of seed.themes.entries()) {
-    // review mode must not write: no upsert, and the plan needed no theme id.
-    const themeId =
-      mode === "review" ? "(review)" : await upsertTheme(theme.name, sortOrder);
+  for (const [sortOrder, theme] of themes.entries()) {
+    const themeId = await upsertTheme(theme.name, sortOrder);
 
-    await runPool(theme.cards, CONCURRENCY, async (card) => {
+    await runPool(theme.cards, PUBLISH_CONCURRENCY, async (card) => {
       try {
         const isNew = planned.has(cardKey(theme.name, card.name));
-        const reviewFile = reviewPath(theme.name, card);
 
         // Already published.
         if (!isNew) {
@@ -262,25 +352,8 @@ async function main() {
             console.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
             return;
           }
-          // Publish and review: leave it alone. Skipping in review mode is what
-          // turns a 360-image run back into one sitting's worth (FR10).
+          // Publish: leave it alone.
           report.skipped++;
-          return;
-        }
-
-        // ── New card.
-        if (mode === "review") {
-          // Already reviewed under this exact prompt — resume rather than restart
-          // after a rate-limited run (FR10).
-          if (existsSync(reviewFile)) {
-            report.skipped++;
-            return;
-          }
-          console.log(`🖼️  generating image: ${theme.name} / ${card.name}…`);
-          await throttle();
-          const bytes = await generateImage(buildPrompt(card), { retries: RETRIES });
-          writeFileSync(reviewFile, bytes);
-          report.reviewed++;
           return;
         }
 
@@ -288,15 +361,30 @@ async function main() {
         // image for a card that has a matching review file is a regression, not
         // an optimisation — it re-opens the gap where the parent reviewed image A
         // and the child received image B.
+        const provider = resolveProvider(theme, card);
+        const reviewFile = provider && reviewPath(theme.name, card, provider);
+
         let bytes: Uint8Array;
-        if (existsSync(reviewFile)) {
+        if (reviewFile && existsSync(reviewFile)) {
           bytes = new Uint8Array(readFileSync(reviewFile));
           report.reused++;
         } else {
-          // Only reachable via --allow-unreviewed.
-          console.log(`🖼️  generating image: ${theme.name} / ${card.name}…`);
-          await throttle();
-          bytes = await generateImage(buildPrompt(card), { retries: RETRIES });
+          // Only reachable via --allow-unreviewed, which needs a live provider —
+          // the one path in the CLI that generates at publish time, and the flag
+          // already announces that it defeats the review guarantee.
+          if (!provider) {
+            throw new Error(
+              `no provider resolved (set \`provider\` on the card or its theme; registered: ${PROVIDER_IDS.join(", ")})`,
+            );
+          }
+          if (!provider.isConfigured()) {
+            throw new Error(
+              `provider ${provider.id} is not configured (set ${provider.requiredEnv.join(" and ")})`,
+            );
+          }
+          console.log(`🖼️  generating image: ${theme.name} / ${card.name} [${provider.id}]…`);
+          await publishGate(provider)();
+          bytes = (await provider.generate(buildPrompt(card), CARD_SIZE)).bytes;
         }
 
         const imageUrl = await uploadImage(blobKey(theme.name, card.name), bytes);
@@ -333,14 +421,13 @@ async function main() {
 
   // Sync: prune whole themes dropped from the seed (e.g. Superheroes).
   if (mode === "sync") {
-    report.prunedThemes = await deleteThemesNotIn(seed.themes.map((t) => t.name));
+    report.prunedThemes = await deleteThemesNotIn(themes.map((t) => t.name));
     if (report.prunedThemes > 0) {
       console.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
     }
   }
 
   console.log(`\nSeed (${mode}) complete:`, report);
-  if (mode === "review") console.log(`Review images in: ${REVIEW_DIR}`);
 
   // ── FR12: did every theme actually land? In-band, so it cannot be forgotten.
   // The schema already proved the FILE is correct, so a shortfall here is a failed
@@ -366,21 +453,94 @@ async function main() {
   }
 }
 
-/** Planned inserts that have no reviewed image on disk (FR9). */
-function missingReviews(
-  seed: { themes: { name: string; cards: { name: string; imagePrompt: string }[] }[] },
-  planned: Set<string>,
-): PlannedInsert[] {
-  const missing: PlannedInsert[] = [];
-  for (const theme of seed.themes) {
+/**
+ * `--review`: generate every NEW card from every selected provider.
+ *
+ * The report is per lane rather than per run, because that is the number a human
+ * needs at checkpoint 2: a lane showing 9/30 explains a contact sheet with gaps
+ * in it, where a single aggregate "39 reviewed" would not.
+ */
+async function review(
+  themes: readonly ThemeSeed[],
+  planned: ReadonlySet<string>,
+  lanes: readonly ImageProvider[],
+): Promise<void> {
+  const jobs: BakeOffJob<SeedCard>[] = [];
+  let alreadyPublished = 0;
+  for (const theme of themes) {
     for (const card of theme.cards) {
-      if (!planned.has(cardKey(theme.name, card.name))) continue;
-      if (!existsSync(reviewPath(theme.name, card))) {
-        missing.push({ theme: theme.name, card: card.name });
-      }
+      if (planned.has(cardKey(theme.name, card.name))) jobs.push({ theme: theme.name, card });
+      else alreadyPublished++;
     }
   }
-  return missing;
+
+  console.log(
+    `${jobs.length} new card(s) x ${lanes.length} provider(s) = ${jobs.length * lanes.length} image(s); ` +
+      `${alreadyPublished} already-published card(s) skipped.`,
+  );
+
+  const outcomes = await runBakeOff(jobs, lanes, {
+    size: CARD_SIZE,
+    retries: RETRIES,
+    buildPrompt: (card) => buildPrompt(card),
+    isReviewed: (job, provider) => existsSync(reviewPath(job.theme, job.card, provider)),
+    save: (job, provider, image) => {
+      writeFileSync(reviewPath(job.theme, job.card, provider), image.bytes);
+      writeFileSync(
+        join(REVIEW_DIR, sidecarFileName(job.theme, job.card, provider)),
+        `${JSON.stringify(buildSidecar(provider, image), null, 2)}\n`,
+      );
+    },
+    log: (m) => console.log(m),
+    warn: (m) => console.warn(m),
+    error: (m) => console.error(m),
+  });
+
+  console.log(`\nSeed (review) complete:`);
+  for (const o of outcomes) {
+    const parts = [
+      `generated ${o.generated}`,
+      `already had ${o.skipped}`,
+      `failed ${o.failed}`,
+    ];
+    if (o.abandoned) parts.push(`ABANDONED, ${o.notAttempted} not attempted`);
+    console.log(`   ${o.providerId}: ${parts.join(", ")} (of ${jobs.length})`);
+  }
+  console.log(`Review images in: ${REVIEW_DIR}`);
+
+  // A lane that died leaves the contact sheet with holes. Say so here rather
+  // than letting the human infer "that provider draws badly" from a blank cell.
+  const dead = outcomes.filter((o) => o.abandoned);
+  if (dead.length > 0) {
+    console.warn(
+      `\n⚠️  ${dead.length} lane(s) abandoned: ${dead.map((o) => o.providerId).join(", ")}.\n` +
+        `   Those providers are missing from some rows of the contact sheet because\n` +
+        `   they stopped answering, NOT because they drew badly. Re-run to resume —\n` +
+        `   candidates already on disk are not regenerated.`,
+    );
+  }
+}
+
+/** Resolve a card's provider to a registered adapter, or undefined. */
+function resolveProvider(theme: ThemeSeed, card: SeedCard): ImageProvider | undefined {
+  const id = resolveProviderId(theme, card);
+  return id === undefined ? undefined : providerById(id);
+}
+
+/**
+ * Publish-time pacing, one gate per provider, created on first use.
+ *
+ * Only ever reached via `--allow-unreviewed`. Kept per-provider anyway so that
+ * path cannot become the one place a global gate survives.
+ */
+const publishGates = new Map<string, () => Promise<void>>();
+function publishGate(provider: ImageProvider): () => Promise<void> {
+  let gate = publishGates.get(provider.id);
+  if (!gate) {
+    gate = makeGate(provider.minIntervalMs);
+    publishGates.set(provider.id, gate);
+  }
+  return gate;
 }
 
 /** Read a non-negative integer from env, falling back to `def` if unset/invalid. */
@@ -391,26 +551,9 @@ function intEnv(name: string, def: number): number {
   return Number.isInteger(n) && n >= 0 ? n : def;
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-// Global gate: hands out request "slots" at least THROTTLE_MS apart, so all
-// pool workers across all themes collectively stay under the rate limit. Called
-// only on paths that actually generate, so a resumed run pays nothing per card
-// it skips.
-let nextSlot = 0;
-async function throttle(): Promise<void> {
-  if (THROTTLE_MS <= 0) return;
-  const now = Date.now();
-  const wait = Math.max(0, nextSlot - now);
-  nextSlot = Math.max(now, nextSlot) + THROTTLE_MS;
-  if (wait > 0) await sleep(wait);
-}
-
 /** Run tasks with a small concurrency cap (U3-PERF). */
 async function runPool<T>(
-  items: T[],
+  items: readonly T[],
   limit: number,
   fn: (item: T) => Promise<void>,
 ): Promise<void> {
