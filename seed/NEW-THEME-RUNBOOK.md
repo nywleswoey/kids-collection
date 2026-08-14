@@ -194,12 +194,30 @@ pnpm seed --review         # generates images for NEW cards only, into seed/revi
 nothing to it. It skips cards already published and already-reviewed prompts, so an interrupted or
 rate-limited run resumes rather than restarting.
 
-Review files land at `seed/review/<theme-slug>-<card-slug>-<hash8>.jpg`, where the hash covers the *full*
-prompt including `ART_STYLE`.
+`--review` generates each new card from **every registered provider**, in parallel lanes, so you can compare
+them side by side and pick the best draughtsman per subject. A 30-card theme is 30 images *per provider*.
+
+If a provider's key is missing the run **aborts and generates nothing**, rather than quietly leaving that
+provider out — a lane absent from a comparison looks like a provider that drew badly. Add the key, or narrow
+the run on purpose:
+
+```bash
+pnpm seed --review --providers=pollinations
+```
+
+Review files land at `seed/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
+covers the *full* prompt including `ART_STYLE` and is identical across providers, so a subject's candidates
+sort together. `<params4>` covers that provider's request settings, so changing them invalidates the reviews
+they would change. The extension follows the provider — Pollinations writes JPEG, Cloudflare PNG. Each image
+has a `.json` sidecar recording which model actually answered.
+
+If a provider stops responding, its lane is abandoned after 3 consecutive failures and the run reports it.
+Re-run to resume: images already on disk are never regenerated.
 
 ### Screen every image yourself, first
 
-Open all 30 (`seed/review/<theme-slug>-*.jpg`) and look at each one. Reject on:
+Build the contact sheet (Step 7) and screen from it — it is a grid, so you are comparing a row rather than
+opening 90 files. Reject a candidate on:
 
 - **Two overlapping copies of the subject**, or a subject fused with scenery. The most common failure.
 - Gore, damage, fire, combat, casualties — anything from the prohibited list above.
@@ -214,40 +232,33 @@ and re-running regenerates the picture you just rejected. Editing the prompt cha
 which both asks for a different picture and makes the stale review file stop matching. Delete the stale
 file too, to keep the folder honest.
 
-Then re-run `pnpm seed --review`. **Cap this at 2 re-prompt rounds.** If an image still fails, take it to
-the human at the checkpoint with the problem named — do not swap the subject silently, and do not spend
-the session fighting the model.
+Then re-run `pnpm seed --review`. **Re-prompt only the cards that NO provider drew acceptably** — where one
+provider drew the subject well, that is a pick, not a re-prompt (#63). **Cap this at 2 re-prompt rounds.** If
+an image still fails everywhere, take it to the human at the checkpoint with the problem named — do not swap
+the subject silently, and do not spend the session fighting the model.
+
+**Record the pick.** Set `provider` on the theme for whichever provider wins most of the time, and add
+`provider` to individual cards only where a different one wins. `--sync` publishes the resolved provider's
+bytes and refuses any card with no pick.
 
 Amend the commit if you changed any `imagePrompt`.
 
 ## Step 7 — Build the contact sheet → **CHECKPOINT 2**
 
-Generate one HTML page showing all 30 new images with their names and rarities, so the human reviews them
-in one pass instead of opening a folder:
-
 ```bash
-node -e '
-const fs=require("fs"),p="seed/review";
-const theme=process.argv[1];                       // exact theme name, e.g. "Ocean Machines"
-const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
-const cards=require("./seed/cards.json").themes.find(t=>t.name===theme).cards;
-const files=fs.readdirSync(p).filter(f=>f.startsWith(slug(theme)+"-")&&f.endsWith(".jpg"));
-const find=c=>files.find(f=>f.startsWith(slug(theme+"-"+c.name)+"-"));
-const order={legendary:0,epic:1,rare:2,common:3};
-const html=`<!doctype html><meta charset=utf-8><title>${theme} — review</title>
-<style>body{font:14px system-ui;background:#111;color:#eee;margin:24px}
-h1{font-size:20px}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-figure{margin:0}img{width:100%;border-radius:8px;display:block;background:#222}
-figcaption{margin-top:6px}.r{opacity:.6;text-transform:uppercase;font-size:11px;letter-spacing:.08em}
-.miss{color:#f66}</style><h1>${theme} — ${cards.length} new cards</h1><div class=g>` +
-[...cards].sort((a,b)=>order[a.rarity]-order[b.rarity]).map(c=>{const f=find(c);
-return `<figure>${f?`<img src="${f}" loading=lazy>`:`<div class=miss>NO IMAGE</div>`}
-<figcaption><b>${c.name}</b><div class="r">${c.rarity}</div>
-<div>${c.eduText}</div></figcaption></figure>`}).join("")+"</div>";
-fs.writeFileSync(p+"/"+slug(theme)+"-review.html",html);
-console.log("→ seed/review/"+slug(theme)+"-review.html");
-' "<Theme Name>"
+pnpm contact-sheet "<Theme Name>"      # exact theme name, e.g. "Ocean Machines"
 ```
+
+One HTML page: **one row per subject, one column per provider**, so the human compares a row rather than
+opening a folder. Each cell is labelled with the model that actually answered, and the cell `--sync` would
+publish is outlined.
+
+The page states three things rather than hiding them, and so does the command:
+
+- **MISSING cells** — that provider produced nothing for that card. A dead lane or a narrowed run, *not* a
+  provider that drew badly.
+- **cards with no pick** — `--sync` will refuse these until a `provider` is set on the card or the theme.
+- **orphan files** — candidates on disk from a provider no longer registered.
 
 Give the human the file path, tell them anything you re-prompted and anything you are unsure about, and
 **stop and wait for an explicit approval.** The human holds the kid-safety veto; your screening only
