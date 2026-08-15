@@ -379,10 +379,11 @@ contradictions**; this is a strict technical superset.
   keys in `.env.local`; it reports which providers it skipped rather than passing on an empty set.
 - **Property-based — REQUIRED and BLOCKING** — **23** `*.pbt.test.ts` files carrying **106** `fc.assert`
   call sites, covering the logic where a wrong answer costs the children real cards: `auth-policy`,
-  `collection-reward`, `count-report`, `db-target`, `easter-egg`, `gate-token`, `logic`, `offer`,
-  `pull-categories`, `quiz-cap`, `quiz-daily-topics`, `quiz-fraction-gen`, `quiz-math-gen`, `quiz-offer`,
-  `quiz-seen-select`, `rarity-filter`, `sacrifice`, `sacrifice-filter`, `seed-rules`, `signed-token`,
-  `trade-board`, `trade-logic`. **Now enforced in CI** — see *CI/CD Gates*, including the depth it runs at.
+  `collection-reward`, `count-report`, `db-target`, `delete-path`, `easter-egg`, `gate-token`, `logic`,
+  `offer`, `pull-categories`, `quiz-cap`, `quiz-daily-topics`, `quiz-fraction-gen`, `quiz-math-gen`,
+  `quiz-offer`, `quiz-seen-select`, `rarity-filter`, `sacrifice`, `sacrifice-filter`, `seed-rules`,
+  `signed-token`, `trade-board`, `trade-logic`. **Now enforced in CI** — see *CI/CD Gates*, including
+  the depth it runs at.
 
 **Explicitly not required**: end-to-end (no browser harness; the manual visual check covers it),
 performance/load (three users — there is no load), SAST/DAST (no public attack surface; the app sits
