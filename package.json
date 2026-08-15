@@ -23,6 +23,7 @@
     "db:studio": "drizzle-kit studio",
     "seed": "tsx --env-file-if-exists=.env.local scripts/seed/index.ts",
     "contact-sheet": "tsx --env-file-if-exists=.env.local scripts/contact-sheet/index.ts",
+    "prototype:66": "tsx --env-file-if-exists=.env.local scripts/prototype-66-bakeoff/index.ts",
     "reconcile": "tsx --env-file-if-exists=.env.local scripts/reconcile/index.ts"
   },
   "dependencies": {
