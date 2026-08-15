@@ -7,6 +7,7 @@
  * private constructor argument, so the contract suite can drive a real adapter
  * from recorded fixtures while the seed runner injects a whole fake *provider*.
  */
+import { MIN_BYTES_PER_PIXEL, bytesPerPixel, looksBlank } from "../blank-frame";
 import { readImageSize } from "../image-size";
 import {
   ProviderRetryable,
@@ -71,8 +72,8 @@ export async function readBytes(
 
 /**
  * Turn raw bytes into a `GeneratedImage`, refusing anything that is not a usable
- * card. Every adapter ends here, which is what makes these two checks uniform
- * rather than something each adapter's author had to remember.
+ * card. Every adapter ends here, which is what makes these checks uniform rather
+ * than something each adapter's author had to remember.
  *
  * The format sniff also catches the sneakiest failure: a provider returning an
  * HTML or JSON error page with HTTP 200. That has a non-zero length, so the
@@ -82,6 +83,12 @@ export async function readBytes(
  * The size check enforces the map's 768x768 invariant at runtime, and is not
  * hypothetical: `flux-1-schnell` has no `width`/`height` parameter at all, so an
  * adapter written against it returns a plausible image of the wrong size.
+ *
+ * The blank check (#78) is the one that judges the picture rather than the
+ * envelope. Everything above proves an image is WELL-FORMED, and a pure black
+ * 768x768 PNG is well-formed — Cloudflare SDXL returned one for ~40% of attempts
+ * on a shipped prompt, and it reached `seed/review/` looking like a candidate.
+ * `../blank-frame.ts` holds the threshold and the measurements behind it.
  */
 export function finishGeneration(
   provider: Pick<ImageProvider, "id" | "format">,
@@ -114,6 +121,22 @@ export function finishGeneration(
     throw new Error(
       `${provider.id}: declares format "${provider.format}" but returned ${measured.format}. ` +
         `Fix the adapter's \`format\` — review filenames are named from it.`,
+    );
+  }
+  // Last, because it is the only check here that judges the PICTURE rather than
+  // the envelope, and the checks above give sharper messages when they apply.
+  //
+  // Retryable, on measurement rather than principle: #78 saw ~40% of attempts on
+  // one prompt come back blank and attempt 2 succeed both times it was tried, so
+  // another attempt is a real remedy where the 4xx above is not. A lane that
+  // blanks persistently is not retried forever — `withRetry` exhausts the same
+  // SEED_RETRIES ladder every other transient failure gets, and what escapes is
+  // the `ProviderFailedTerminally` the circuit breaker counts.
+  if (looksBlank(bytes, size)) {
+    throw new ProviderRetryable(
+      `${provider.id}: returned a blank frame — ${bytes.byteLength} bytes for ` +
+        `${size.width}x${size.height} is ${bytesPerPixel(bytes.byteLength, size).toFixed(4)} bytes/pixel, ` +
+        `below the ${MIN_BYTES_PER_PIXEL} floor, so it carries no subject`,
     );
   }
   return { bytes, format: measured.format, model };

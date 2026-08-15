@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readImageSize } from "@/features/pool/image-size";
+import { looksBlank } from "@/features/pool/blank-frame";
 import {
   CARD_SIZE,
   ProviderRetryable,
@@ -30,9 +31,22 @@ import {
  *   4. `paramHash(params)` is stable across processes and independent of key
  *      order. If it were not, a run would invalidate every review file on disk
  *      and demand a full re-review for no reason.
+ *   5. The image is a picture of SOMETHING (#78). Well-formed is not drawn: a
+ *      pure black 768x768 PNG satisfies 1 and 2 completely, and Cloudflare SDXL
+ *      returned one for ~40% of attempts on a shipped prompt.
  *
  * Deliberately NOT here: anything about content, style or subject fidelity.
- * That is the bake-off's job (#66) and a human's judgement, not a test's.
+ * That is the bake-off's job (#66) and a human's judgement, not a test's. Item 5
+ * is the narrow exception, and only because "carries no subject at all" is
+ * measurable without opinion.
+ *
+ * Item 5 lands in both halves, split by what each half can force. The structural
+ * half asserts a healthy provider's output is dense enough to be a drawing —
+ * which is what stops the fake emitting the pathology. FORCING a blank needs a
+ * transport to serve one, so the REFUSAL is asserted in the wire half. Every
+ * adapter funnels through `finishGeneration`, so an adapter that is not
+ * HTTP-shaped still inherits the guard; what it would not inherit is this proof
+ * of it, and that is worth knowing when one is written.
  *
  * ── Two halves, because the fake has no wire ─────────────────────────────────
  * Everything structural applies to every provider including the in-memory fake —
@@ -76,6 +90,15 @@ export function runImageProviderContract(label: string, makeProvider: MakeProvid
         expect(image.format).toBe(provider.format);
         expect(readImageSize(image.bytes)!.format).toBe(image.format);
       });
+    });
+
+    it("returns a frame dense enough to carry a subject (#78)", async () => {
+      // Well-formed is not the same as drawn. A provider can answer 200 with a
+      // real, exactly-768x768 image of nothing at all, and every other assertion
+      // here passes. This one is why the fake draws a picture rather than the
+      // all-black frame it used to.
+      const image = await makeProvider().generate("a friendly panda", CARD_SIZE);
+      expect(looksBlank(image.bytes, CARD_SIZE)).toBe(false);
     });
 
     it("declares a non-empty, slug-shaped id", () => {
@@ -130,6 +153,11 @@ export interface ContractFixtures {
   wrongSize(): Response;
   /** HTTP 200 with a correctly-sized image in a format the adapter does not declare. */
   wrongFormat(): Response;
+  /**
+   * HTTP 200 with a real, correctly-sized, correctly-formatted image that is a
+   * picture of nothing — the all-black frame #78 measured on Cloudflare SDXL.
+   */
+  blank(): Response;
 }
 
 /** Fresh HTTP adapter per call, wired to the supplied responder. */
@@ -164,6 +192,20 @@ export function runHttpProviderContract(
       // uploadImage sniffs the bytes — so only this catches it.
       const provider = makeProvider(fixtures.wrongFormat);
       await expect(provider.generate("x", CARD_SIZE)).rejects.toThrow(/declares format/);
+    });
+
+    it("refuses a blank frame, and treats it as worth another attempt (#78)", async () => {
+      // The one failure that passes every OTHER check in this list: a real PNG,
+      // exactly 768x768, non-empty, in the declared format — and a picture of
+      // nothing. Measured at ~40% of attempts on one shipped prompt, where
+      // attempt 2 succeeded both times it was tried, so the remedy is another
+      // attempt rather than failing the card. A lane that keeps blanking still
+      // exhausts the ladder and is reported: `withRetry` turns the last one into
+      // `ProviderFailedTerminally` and the breaker counts it like any other.
+      const provider = makeProvider(fixtures.blank);
+      const err = await provider.generate("x", CARD_SIZE).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(ProviderRetryable);
+      expect(String(err)).toMatch(/blank/i);
     });
 
     it("throws ProviderRetryable on 429, so a rate limit is not a dead lane", async () => {

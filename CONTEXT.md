@@ -80,6 +80,18 @@ free provider:
   response *named* and is **`null`** where a provider names nothing (Cloudflare), never
   back-filled from the `params.model` that was *asked for*; its `reviewed` flag is FR9's
   durable receipt, false only on the `--allow-unreviewed` path.
+- **Blank frame** — a response that is a well-formed image of *nothing*: a real,
+  exactly-768×768, correctly-formatted frame carrying no subject (Cloudflare SDXL
+  returned a pure black PNG for ~40% of attempts on the one prompt where it was
+  measured, and never on the others tried, #78). Detected at
+  the seam as an information-density floor — encoded **bytes per pixel**, no decoder
+  — in `src/features/pool/blank-frame.ts`, which holds the threshold and the
+  measurements that set it. Refused by `finishGeneration` as `ProviderRetryable`,
+  because another attempt is a real remedy; a lane that keeps blanking exhausts the
+  ordinary retry ladder and is counted by the circuit breaker like any other failure.
+  The already-published pool was swept once against the same floor
+  (`pnpm seed --check-images`, `blank-audit.ts`): **390 of 390 weighed, none blank**,
+  2026-08-15.
 - **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
   (`src/features/pool/contact-sheet.ts`), **CHECKPOINT 2** of
   `seed/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.

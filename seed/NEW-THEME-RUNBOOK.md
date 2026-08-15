@@ -15,7 +15,7 @@ This file supersedes the old `seed/AUTHORING_PROMPT.md`. It is the only card-aut
 | **Input** | A theme name. Nothing else. Any extra steer from the human (e.g. "lean historical") overrides this document's defaults where they conflict. |
 | **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed/cards.json`, committed on a branch, a PR open. |
 | **Human checkpoints** | Exactly **two**: the 30-name list (Step 3), and the image contact sheet (Step 7). Still two — the bake-off did **not** add a third; it changed what the second one *is*, from approve/reject to **choose among N candidates**. Stop dead at both — do not proceed on silence, and never answer them yourself. |
-| **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls` and `--review` do not write to it. |
+| **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. |
 | **Session** | One theme per run. Do not batch two themes. |
 
 ## Rules the schema enforces
@@ -184,7 +184,7 @@ Wording levers, in the order worth trying — these apply to every provider:
 So: **keep every superseded `imagePrompt` in the session** until the theme ships — that is the only
 recovery mechanism that spans all three. On a non-deterministic lane, deleting a candidate and re-running
 is a **re-roll**: you get a different picture and you cannot get the old one back. That is occasionally the
-right move (it is how you clear a blank frame, below); it is never reversible.
+right move (it is how you clear a near-empty frame, below); it is never reversible.
 
 Even on Pollinations the trick is bounded: the provider can change the model behind a prompt without notice,
 and has (#64) — a request for `flux` is served by `sana` today — so a prompt that drew one picture in July
@@ -284,10 +284,15 @@ Rule out a candidate on:
   binder. This is the one style question settled on sight; **every other one is a pick, not a rejection.**
   It bites the Pollinations lane hardest — `sana` leans semi-real, per the table in Step 4.
 - **A blank frame.** Cloudflare can return a *pure black* 768×768 PNG for a perfectly innocuous prompt —
-  ~40% of attempts on one measured prompt. It is a valid PNG at exactly the right size, so the seam accepts
-  it and it lands looking like a real candidate; the tell is file size, ~2 KB against a normal 750–900 KB.
-  Known and open as **#78**. The fix is a re-roll, not a re-prompt: delete that one file and re-run
-  `--review`. Retrying cleared it both times it was tried.
+  ~40% of attempts on one measured prompt. It is a valid PNG at exactly the right size, so it used to reach
+  `seed/review/` looking like a real candidate, with file size (~2 KB against a normal 750–900 KB) the only
+  tell. **Closed by #78**: the seam now measures encoded bytes per pixel and refuses anything below
+  0.02 B/px as retryable, so the lane simply draws again and the blank never lands. A card that blanks every
+  attempt fails the ladder, prints a `✗` line naming it during the run, and counts as a failure in that
+  lane's summary — so it reaches you as a *missing* candidate, never a black one.
+  You may still meet a frame that is nearly empty but textured enough to clear the floor: that is a re-roll,
+  not a re-prompt (delete that one file, re-run `--review`), and it is the one judgement the guard leaves to
+  you. See `src/features/pool/blank-frame.ts` for what the floor is measured against.
 
 Then, for each row, write down one of three outcomes: **a recommended provider with a one-line reason**,
 **a genuine tie** (say so — the human may have a taste preference), or **nothing usable**. Only the third
@@ -324,7 +329,8 @@ re-prompting fixes the wrong words.**
 | Every candidate is the same subject drawn in a style you dislike | **Pick**, or accept. Style is a property of the lane, not of your wording — see the per-provider table in Step 4 |
 | Every candidate misreads the *subject* — wrong object, fused parts, duplicated weapon | **Re-prompt.** Apply Step 4's wording levers |
 | Every candidate fails and the subject is a small held object | **The escape hatch**, below. Re-prompting this class has never fixed it on either lane |
-| One candidate is blank/black, the rest are fine | **Re-roll** that one file (#78). Not a re-prompt round |
+| One candidate is nearly empty, the rest are fine | **Re-roll** that one file. Not a re-prompt round. An outright *black* frame no longer reaches you — the seam refuses it and the lane redraws (#78) |
+| One cell is missing from the sheet entirely | Not a judgement call: that lane failed the card and printed a `✗` line naming it. Re-run `--review` |
 
 **To re-prompt, edit the `imagePrompt`** — deleting files is not enough on the Pollinations lane, which
 returns the same bytes for the same prompt (#64), so a delete-and-rerun there regenerates the picture you
@@ -410,7 +416,8 @@ chooser needs and nothing more:
 - your **recommendation per row** — provider and a one-line reason — and which rows you think are ties;
 - every card you re-prompted, and how many rounds it took;
 - every card **nothing drew acceptably**, named as such;
-- anything you are unsure about, including any cell you suspect is a blank frame (#78).
+- anything you are unsure about, including any cell that looks nearly empty (an outright blank one
+  cannot reach you any more — #78).
 
 Then **stop and wait for an explicit approval.** The human holds the kid-safety veto and the taste call;
 your screening only removes their grind, it does not replace them. This is the **second and last**
@@ -455,6 +462,15 @@ pnpm seed --sync           # publishes the REVIEWED bytes -> Blob -> DB insert; 
 
 `--sync` is delta-only: it inserts new cards, updates text on existing ones, and republishes nothing it
 does not have to. It refuses to insert any card lacking a reviewed image from its resolved provider.
+
+Optionally, once the theme is in:
+
+```bash
+pnpm seed --check-images   # weigh every PUBLISHED card's art; reports any blank frame (#78)
+```
+
+Read-only, no writes, and it covers the whole pool rather than your theme — a published card is never
+re-generated and never re-audited by any other command, so this is the only pass over those bytes.
 
 **The fail-safe, stated so nobody works around it:** a theme with **no pick recorded publishes nothing.**
 `--sync` reports each such card as *"no provider chosen (bake-off not judged)"* and exits without writing.

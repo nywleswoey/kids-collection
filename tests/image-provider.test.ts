@@ -4,7 +4,7 @@ import {
   runImageProviderContract,
   type ContractFixtures,
 } from "./contracts/image-provider-contract";
-import { fakeProvider, solidPng } from "@/features/pool/providers/fake";
+import { fakeProvider, picturePng, solidPng } from "@/features/pool/providers/fake";
 import { pollinations } from "@/features/pool/providers/pollinations";
 import { cloudflareSdxl } from "@/features/pool/providers/cloudflare-sdxl";
 import { aiHorde } from "@/features/pool/providers/ai-horde";
@@ -70,8 +70,32 @@ function imageResponse(bytes: Uint8Array): Response {
   return new Response(bytes as unknown as BodyInit, { status: 200 });
 }
 
+/**
+ * A synthetic image is a header and nothing else — a few dozen bytes — and the
+ * seam now measures whether the bytes are dense enough to be a drawing (#78).
+ * So the ones standing in for a REAL response are padded to what a real card of
+ * that size weighs: 0.15 B/px, between Pollinations' measured 0.119 for a card
+ * and the 0.78 the fake's `picturePng` reaches.
+ *
+ * Trailing bytes are safe: `readImageSize` returns at the JPEG frame header and
+ * at the WebP chunk header, both inside the first 32 bytes, and nothing anywhere
+ * decodes a picture.
+ */
+function padToCardWeight(bytes: Uint8Array, width: number, height: number): Uint8Array {
+  const target = Math.round(width * height * 0.15);
+  if (bytes.byteLength >= target) return bytes;
+  const out = new Uint8Array(target);
+  out.set(bytes);
+  return out;
+}
+
+function drawn(synthetic: (w: number, h: number) => Uint8Array) {
+  return (w: number, h: number) => padToCardWeight(synthetic(w, h), w, h);
+}
+
 function makeFixtures(
   image: (w: number, h: number) => Uint8Array,
+  blankImage: (w: number, h: number) => Uint8Array,
   otherFormat: (w: number, h: number) => Uint8Array,
 ): ContractFixtures {
   return {
@@ -79,6 +103,8 @@ function makeFixtures(
     wrongSize: () => imageResponse(image(512, 512)),
     // Right size, right everything — except the encoding the adapter promises.
     wrongFormat: () => imageResponse(otherFormat(CARD_SIZE.width, CARD_SIZE.height)),
+    // Right size, right format, right everything — and a picture of nothing.
+    blank: () => imageResponse(blankImage(CARD_SIZE.width, CARD_SIZE.height)),
     notAnImage: () =>
       new Response("<html><body>upstream error</body></html>", {
         status: 200,
@@ -97,9 +123,13 @@ function makeFixtures(
   };
 }
 
-const jpegFixtures = makeFixtures(syntheticJpeg, solidPng);
-const pngFixtures = makeFixtures(solidPng, syntheticJpeg);
-const webpFixtures = makeFixtures(syntheticWebp, solidPng);
+/** The synthetic headers at the weight of a real card — see `padToCardWeight`. */
+const cardJpeg = drawn(syntheticJpeg);
+const cardWebp = drawn(syntheticWebp);
+
+const jpegFixtures = makeFixtures(cardJpeg, syntheticJpeg, picturePng);
+const pngFixtures = makeFixtures(picturePng, solidPng, drawn(syntheticJpeg));
+const webpFixtures = makeFixtures(cardWebp, syntheticWebp, picturePng);
 
 /**
  * AI Horde needs four round-trips where the others need one, so the shared
@@ -195,7 +225,7 @@ describe("pollinations adapter", () => {
     process.env.POLLINATIONS_TOKEN = "t";
     const provider = pollinations({
       fetchImpl: async () =>
-        new Response(syntheticJpeg(768, 768) as unknown as BodyInit, {
+        new Response(cardJpeg(768, 768) as unknown as BodyInit, {
           status: 200,
           headers: { "x-model-used": "sana" },
         }),
@@ -213,7 +243,7 @@ describe("pollinations adapter", () => {
     const provider = pollinations({
       fetchImpl: async (url) => {
         seen = String(url);
-        return imageResponse(syntheticJpeg(768, 768));
+        return imageResponse(cardJpeg(768, 768));
       },
     });
     await provider.generate("a panda", CARD_SIZE);
@@ -237,7 +267,7 @@ describe("pollinations adapter", () => {
     const provider = pollinations({
       fetchImpl: async (_input, init) => {
         sentAuth = (init?.headers as Record<string, string> | undefined)?.Authorization;
-        return imageResponse(syntheticJpeg(768, 768));
+        return imageResponse(cardJpeg(768, 768));
       },
     });
     return provider.generate("x", CARD_SIZE).then(() => {
@@ -269,7 +299,7 @@ describe("cloudflare-sdxl adapter", () => {
       fetchImpl: async (input, init) => {
         url = String(input);
         body = JSON.parse(String(init?.body));
-        return imageResponse(solidPng(768, 768));
+        return imageResponse(picturePng(768, 768));
       },
     });
     await provider.generate("a panda", CARD_SIZE);
@@ -283,7 +313,7 @@ describe("cloudflare-sdxl adapter", () => {
     process.env.CLOUDFLARE_ACCOUNT_ID = "acct";
     process.env.CLOUDFLARE_API_TOKEN = "tok";
     const provider = cloudflareSdxl({
-      fetchImpl: async () => imageResponse(solidPng(768, 768)),
+      fetchImpl: async () => imageResponse(picturePng(768, 768)),
     });
     expect((await provider.generate("x", CARD_SIZE)).model).toBeUndefined();
   });
@@ -304,7 +334,7 @@ describe("ai-horde adapter (#74)", () => {
     process.env = { ...saved };
   });
 
-  const okWebp = () => imageResponse(syntheticWebp(768, 768));
+  const okWebp = () => imageResponse(cardWebp(768, 768));
 
   /** Run one generation and hand back the body the adapter POSTed to /generate/async. */
   async function capturedSubmit(): Promise<Record<string, unknown>> {
