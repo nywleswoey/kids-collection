@@ -100,29 +100,30 @@ describe("buildPrompt (U3-BR5)", () => {
   });
 
   /**
-   * #81 — ART_STYLE must not name a physical card, frame or border.
+   * #81 — ART_STYLE must not name the object a card's picture sits inside.
    *
    * The style string used to read "cartoon TRADING-CARD illustration", and
    * `cloudflare-sdxl` drew that literally: a wooden picture frame, a tan mat
-   * with a gold rule, a rounded panel, with the subject inset inside it. #81
-   * measured 7/20 framed against 1/20 once the words came out, and the residual
-   * one is a flat colour margin rather than a decorative frame.
+   * with a gold rule, a rounded panel, with the subject inset inside it. The
+   * measurements, and why a negative prompt is not the fix, are in
+   * `src/features/pool/prompt.ts`.
    *
    * This is a REGRESSION GUARD, not a restatement of the constant. The removed
    * words are the natural way to describe what these images are for, so the
-   * likeliest future edit — someone making the style read better, or adding a
-   * card-ish word to another lane's prompt — is exactly the one that brings the
-   * frames back. It would be invisible: a framed card is a valid 768x768 PNG,
-   * so `finishGeneration` passes it and only a human at checkpoint 2 sees it.
+   * likeliest future edit — someone making the style read better — is exactly
+   * the one that brings the frames back, and it would be invisible: a framed
+   * card is a valid 768x768 PNG, so `finishGeneration` passes it and only a
+   * human at checkpoint 2 sees it.
    *
-   * Naming the border to forbid it does NOT work and must not be the fix — #81
-   * measured "full-bleed edge-to-edge artwork, no border" appended to the style
-   * at 6/20, no better than saying nothing. Diffusion models weight the noun,
-   * not the negation. Neither does `negative_prompt` on the Cloudflare adapter
-   * (5/20 against a 7/20 baseline), which is why no such param was added.
+   * Scope, stated so the gap is deliberate rather than forgotten: this guards
+   * `ART_STYLE` only. The same rule binds a card author writing an
+   * `imagePrompt`, and nothing enforces it there — `seed-schema.ts` takes any
+   * non-empty string. That stays a runbook instruction under Step 3, because a
+   * blocklist over free-text prompts would fail both ways: "a knight holding a
+   * shield" is fine and "a card" never appears literally.
    */
-  it("names no physical card, frame or border — the words SDXL drew literally (#81)", () => {
-    expect(ART_STYLE).not.toMatch(/trading[ -]?card|\bcard\b|\bframe|\bborder|\bmat(te)?\b/i);
+  it("names no card, frame, border or mat — the objects SDXL draws literally (#81)", () => {
+    expect(ART_STYLE).not.toMatch(/\bcards?\b|\bfram(e|es|ed|ing)\b|\bborders?\b|\bmat(te|tes|ted)?\b/i);
   });
 });
 

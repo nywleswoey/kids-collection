@@ -26,13 +26,17 @@
  *
  * ── The frame this lane used to draw, and why the fix is not here (#81) ──────
  * This adapter was where a decorative frame border — a wooden picture frame, a
- * tan mat with a gold rule — got baked into roughly a third of its candidates.
- * It reads like an adapter problem and is not: the cause was the words
- * "trading-card" in `ART_STYLE` (`../prompt.ts`), which SDXL drew literally
- * while Pollinations' `sana` ignored them. The fix is that edit, not a parameter
- * here. #81 measured `negative_prompt` at 5/20 against a 7/20 baseline, so it
- * buys nothing — and every entry in `params` is hashed into review filenames, so
- * a parameter that buys nothing still costs a folder of reviewed images.
+ * tan mat with a gold rule — got baked into most of its candidates. It reads
+ * like an adapter problem and is not: the cause was the words "trading-card" in
+ * `ART_STYLE`, which SDXL drew literally while Pollinations' `sana` ignored
+ * them. The fix is that edit, and `../prompt.ts` carries the measurements.
+ *
+ * What belongs here is why this adapter has no `negative_prompt`. It was
+ * measured, and it is not inert — it roughly halves the frame rate. It is still
+ * not the fix, because deleting two words from the prompt does far better and
+ * addresses the cause. And every entry in `params` is hashed into review
+ * filenames, so adding one invalidates a folder of reviewed images: a partial
+ * fix, at that price, stacked on top of the real one.
  *
  * ── Provenance ───────────────────────────────────────────────────────────────
  * Cloudflare reports no serving-model header, so `model` comes back undefined
