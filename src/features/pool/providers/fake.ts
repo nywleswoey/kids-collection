@@ -61,7 +61,7 @@ export function fakeProvider(opts: FakeProviderOptions = {}): FakeProvider {
       calls.push(prompt);
       const step = script[n++];
       if (step instanceof Error) throw step;
-      return { bytes: solidPng(size.width, size.height), format: "png", model: opts.model };
+      return { bytes: picturePng(size.width, size.height), format: "png", model: opts.model };
     },
   };
 }
@@ -71,9 +71,49 @@ export function fakeProvider(opts: FakeProviderOptions = {}): FakeProvider {
  * scanlines, one IEND. `node:zlib` is already in the runtime, so this adds no
  * dependency — which matters, because the alternative was checking a binary
  * fixture into the repo for every size a test wants.
+ *
+ * Zeroed scanlines are an ALL-BLACK frame, which is the exact artefact #78 is
+ * about: at 768x768 this encodes to ~1.7 KB, against the 1.8 KB Cloudflare SDXL
+ * actually returned. So this is no longer a stand-in for a card — it is the
+ * fixture for the failure, and `picturePng` is what a provider is supposed to
+ * return.
  */
 export function solidPng(width: number, height: number): Uint8Array {
-  const raw = Buffer.alloc(height * (1 + width * 3)); // filter byte + RGB per row
+  return encodePng(width, height, Buffer.alloc(height * (1 + width * 3)));
+}
+
+/**
+ * A PNG with the information density of an actual drawing (#78).
+ *
+ * The seam now refuses a frame that carries no subject, measured as encoded
+ * bytes per pixel, so a fake emitting `solidPng` would emit precisely the thing
+ * every real adapter is now required to reject — and every seed-runner test
+ * would be pushing bytes through the port that no lane could ever produce.
+ *
+ * A diagonal gradient plus a low-amplitude dither, which is not a picture of
+ * anything but compresses like one: ~0.78 bytes/pixel at 768x768, against
+ * 1.27-1.53 for a real Cloudflare card and 0.02 for the floor. The dither is
+ * what buys that — a clean gradient compresses almost as far as a flat frame.
+ */
+export function picturePng(width: number, height: number): Uint8Array {
+  const raw = Buffer.alloc(height * (1 + width * 3));
+  let p = 0;
+  let noise = 1;
+  for (let y = 0; y < height; y++) {
+    raw[p++] = 0; // filter: none
+    for (let x = 0; x < width; x++) {
+      noise = (Math.imul(noise, 1664525) + 1013904223) >>> 0;
+      const dither = noise & 3;
+      raw[p++] = ((x >> 1) + dither) & 0xff;
+      raw[p++] = ((y >> 1) + dither) & 0xff;
+      raw[p++] = (128 + dither) & 0xff;
+    }
+  }
+  return encodePng(width, height, raw);
+}
+
+/** Wrap already-filtered scanlines as a truecolour 8-bit PNG. */
+function encodePng(width: number, height: number, raw: Buffer): Uint8Array {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(width, 0);
   ihdr.writeUInt32BE(height, 4);

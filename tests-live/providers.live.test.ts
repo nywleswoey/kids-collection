@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { runImageProviderContract } from "../tests/contracts/image-provider-contract";
 import { readImageSize } from "@/features/pool/image-size";
+import { looksBlank } from "@/features/pool/blank-frame";
 import { buildPrompt } from "@/features/pool/prompt";
 import { CARD_SIZE, PROVIDERS } from "@/features/pool/providers";
 
@@ -102,7 +103,9 @@ for (const provider of configured) {
       );
       const measured = readImageSize(image.bytes);
       expect(measured).toMatchObject({ width: 768, height: 768 });
-      expect(image.bytes.byteLength).toBeGreaterThan(1024);
+      // Not a byte-count floor: #78's blank frame was 1.8 KB and would have
+      // cleared one. Density, at the same threshold the seam enforces.
+      expect(looksBlank(image.bytes, CARD_SIZE)).toBe(false);
     });
 
     it("reports which model actually served the request, where it can", async () => {

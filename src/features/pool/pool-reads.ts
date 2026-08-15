@@ -6,9 +6,12 @@
  * them pulls in `env.databaseUrl` at module load, which fails in Vitest. Same
  * split as Inc23's `backup/count-report.ts` (pure) vs `scripts/backup/verify.ts`.
  *
- * Both queries are strictly reads. `--review` calls the first one and writes
- * nothing at all — which is why neither uses `upsertTheme`, whose lookup would
- * have inserted a row.
+ * Every query here is strictly a read. `--review` calls the first one and writes
+ * nothing at all — which is why none of them uses `upsertTheme`, whose lookup
+ * would have inserted a row.
+ *
+ * `readPublishedImages` is the odd one out and says so: it serves `--check-images`
+ * (#78), which audits art already in the pool rather than planning anything.
  */
 import { count, eq } from "drizzle-orm";
 import { db } from "@/db";
@@ -29,6 +32,23 @@ export async function listPublishedCardKeys(): Promise<Set<string>> {
     .from(cards)
     .innerJoin(themes, eq(themes.id, cards.themeId));
   return new Set(rows.map((r) => cardKey(r.theme, r.card)));
+}
+
+/**
+ * Every published card's art, as `(theme, card, imageUrl)` in display order.
+ *
+ * Read-only, and the only consumer is `--check-images` (#78): a published card's
+ * bytes are never looked at again by any other seed path.
+ */
+export async function readPublishedImages(): Promise<
+  Array<{ theme: string; card: string; url: string }>
+> {
+  const rows = await db
+    .select({ theme: themes.name, card: cards.name, url: cards.imageUrl })
+    .from(cards)
+    .innerJoin(themes, eq(themes.id, cards.themeId))
+    .orderBy(themes.sortOrder, cards.name);
+  return rows.map((r) => ({ theme: r.theme, card: r.card, url: r.url }));
 }
 
 /** Per-theme, per-rarity published counts. One grouped query. */
