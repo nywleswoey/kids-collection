@@ -28,10 +28,23 @@
  * carries the winning model is landed separately, from this run's verdict.
  *
  *   pnpm prototype:74 --dry-run    price it, check the models are online, submit nothing
- *   pnpm prototype:74              run it; resumes, so an interrupted run is cheap
- *   pnpm prototype:74 --hard-only  skip the control in the HORDE columns only, once
- *                                  it has drawn the control at least once
+ *   pnpm prototype:74              run it end to end; resumes, so an interrupt is cheap
  *   pnpm prototype:74 --sheet-only rebuild the sheet from disk, generate nothing
+ *
+ * The one-shot run above is only usable when the horde is quiet. When it is
+ * not — and during #74 it was not — use the two-command form instead, and see
+ * the submit/collect note further down for why:
+ *
+ *   pnpm prototype:74 --submit --columns=horde-fustercluck --samples=1
+ *   pnpm prototype:74 --collect          # repeat until it says 0 jobs queued
+ *
+ * Narrowing flags, all of which exist because a full run costs hours:
+ *
+ *   --hard-only     skip the control in the HORDE columns, once it has drawn
+ *                   the control at least once
+ *   --columns=a,b   only these horde columns
+ *   --samples=N     images per horde job (default 3); 1 survives a deep queue
+ *   --max-jobs=N    how many jobs --submit may have in flight (default 1)
  *
  * Output (gitignored scratch): seed/review/prototype-74/
  */
@@ -48,6 +61,22 @@ const CLIENT_AGENT = "kids-collection-prototype-74:1.0:github.com/nywleswoey/kid
 
 /** Samples per (subject, column). One sample is noise — these failures are probabilistic. */
 const SAMPLES = 3;
+
+/**
+ * How many images ONE horde job asks for. Lower than SAMPLES when the queue is
+ * winning.
+ *
+ * Kudos buy queue POSITION, and a request the horde has not handed to a worker
+ * within ~10 minutes is dropped. At a balance of 14 against an 800-deep queue
+ * those two facts collide: a 3-image job for a 4-worker model was dropped twice
+ * at position ~104, roughly four minutes from the front. A 1-image job is a
+ * third of the work and any free worker can take it, so it clears the front
+ * sooner. Fewer samples is a real loss of signal — it is the price of getting
+ * any signal at all from a model the queue keeps starving.
+ */
+const HORDE_SAMPLES = Number(
+  process.argv.find((a) => a.startsWith("--samples="))?.slice("--samples=".length) ?? SAMPLES,
+);
 /** Fixed so a re-run redraws the same grid rather than a new lottery. */
 const BASE_SEED = 74;
 
@@ -156,6 +185,15 @@ async function main() {
   const dryRun = process.argv.includes("--dry-run");
   const hardOnly = process.argv.includes("--hard-only");
   const sheetOnly = process.argv.includes("--sheet-only");
+  // `--columns=a,b` narrows the HORDE columns. A run at this queue depth is
+  // measured in hours and gets interrupted, so being able to aim it at the one
+  // model still in question is what makes a follow-up affordable.
+  const onlyColumns = process.argv
+    .find((a) => a.startsWith("--columns="))
+    ?.slice("--columns=".length)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
   mkdirSync(OUT_DIR, { recursive: true });
 
   const cards = loadSubjects();
@@ -172,6 +210,18 @@ async function main() {
     writeFileSync(join(OUT_DIR, "sheet.html"), renderSheet(cards, cells));
     console.log(`${cells.length} cell(s) on disk`);
     console.log(`open ${join(OUT_DIR, "sheet.html")}`);
+    return;
+  }
+
+  if (process.argv.includes("--submit")) {
+    const max = Number(
+      process.argv.find((a) => a.startsWith("--max-jobs="))?.slice("--max-jobs=".length) ?? 1,
+    );
+    await submitOnly(hardOnly ? cards.filter((c) => !c.control) : cards, onlyColumns, max);
+    return;
+  }
+  if (process.argv.includes("--collect")) {
+    await collectOnly(cards);
     return;
   }
   await preflight(cards, dryRun);
@@ -199,7 +249,9 @@ async function main() {
       // time not spent on the question the ticket actually asks.
       const forHorde = hardOnly ? cards.filter((c) => !c.control) : cards;
       for (const col of COLUMNS) {
-        if (col.kind === "horde") await hordeLane(col, forHorde, cells);
+        if (col.kind !== "horde") continue;
+        if (onlyColumns && !onlyColumns.includes(col.id)) continue;
+        await hordeLane(col, forHorde, cells);
       }
     })(),
     ...COLUMNS.filter((c) => c.kind === "ref").map((col) => refLane(col as RefColumn, cards, cells)),
@@ -251,6 +303,149 @@ function cellsFromDisk(cards: readonly Subject[]): Cell[] {
     }
   }
   return cells;
+}
+
+// ── submit / collect ────────────────────────────────────────────────────────
+//
+// Two short commands instead of one long one.
+//
+// A cell at this queue depth needs ~10 minutes of waiting, and a process that
+// waits that long does not reliably survive in every environment — three runs
+// of this prototype were killed mid-poll, each losing the job it was watching.
+// But the WAITING does not have to happen in our process: the horde is
+// perfectly happy to be asked later.
+//
+//   pnpm prototype:74 --submit --columns=horde-fustercluck   seconds; records job ids
+//   pnpm prototype:74 --collect                              seconds; saves whatever is ready
+//
+// Run `--collect` again for anything still queued. `jobs.json` is the handoff.
+
+interface PendingJob {
+  subject: string;
+  columnId: string;
+  jobId: string;
+}
+
+function readJobs(): PendingJob[] {
+  try {
+    return JSON.parse(readFileSync(join(OUT_DIR, "jobs.json"), "utf8")) as PendingJob[];
+  } catch {
+    return [];
+  }
+}
+
+function writeJobs(jobs: readonly PendingJob[]): void {
+  writeFileSync(join(OUT_DIR, "jobs.json"), JSON.stringify(jobs, null, 2));
+}
+
+/** Queue every missing cell and exit. Does not wait for anything. */
+async function submitOnly(
+  cards: readonly Subject[],
+  onlyColumns?: readonly string[],
+  maxJobs = Infinity,
+) {
+  const key = requireKey();
+  const jobs = readJobs();
+
+  for (const col of COLUMNS) {
+    if (col.kind !== "horde") continue;
+    if (onlyColumns && !onlyColumns.includes(col.id)) continue;
+    for (const card of cards) {
+      // The cap exists because the horde silently DROPS work a requester cannot
+      // cover, and three jobs at once is ~210 kudos against a balance of 14.
+      // Submitting all three "cheaply and in seconds" just loses all three in
+      // seconds instead — measured twice, in two different shapes.
+      if (jobs.length >= maxJobs) break;
+      if (allSamplesOnDisk(col.id, card.name)) continue;
+      if (jobs.some((j) => j.subject === card.name && j.columnId === col.id)) {
+        console.log(`  · ${card.name} [${col.id}] already queued`);
+        continue;
+      }
+      const submitted = (await postJson(
+        `${HORDE}/generate/async`,
+        key,
+        hordePayload(col, card.prompt),
+      )) as { id?: string; message?: string };
+      if (!submitted.id) {
+        console.error(`  ✗ ${card.name} [${col.id}]: ${submitted.message ?? "no id"}`);
+        continue;
+      }
+      jobs.push({ subject: card.name, columnId: col.id, jobId: submitted.id });
+      console.log(`  → ${card.name} [${col.id}] queued as ${submitted.id}`);
+    }
+  }
+
+  writeJobs(jobs);
+  console.log(`\n${jobs.length} job(s) pending. Run: pnpm prototype:74 --collect`);
+}
+
+/** Check each pending job once, save what is ready, and exit. */
+async function collectOnly(cards: Subject[]) {
+  const key = requireKey();
+  const jobs = readJobs();
+  if (jobs.length === 0) {
+    console.log("no pending jobs (jobs.json is empty)");
+    return;
+  }
+
+  const cells = cellsFromDisk(cards);
+  const stillPending: PendingJob[] = [];
+
+  for (const job of jobs) {
+    const label = `${job.subject} [${job.columnId}]`;
+    let check: { done?: boolean; faulted?: boolean; queue_position?: number; wait_time?: number };
+    try {
+      check = (await getJson(`${HORDE}/generate/check/${job.jobId}`, {
+        apikey: key,
+      })) as typeof check;
+    } catch (err) {
+      // 404 is the horde having dropped the job — forget it so a later
+      // --submit re-queues rather than polling a ghost forever.
+      console.warn(`  ⟳ ${label}: ${String(err).includes("404") ? "dropped by the horde" : String(err)}`);
+      continue;
+    }
+    if (check.faulted) {
+      console.error(`  ✗ ${label}: faulted`);
+      continue;
+    }
+    if (!check.done) {
+      console.log(`    … ${label}: queue position ${check.queue_position}, ~${check.wait_time}s`);
+      stillPending.push(job);
+      continue;
+    }
+
+    const status = (await getJson(`${HORDE}/generate/status/${job.jobId}`, { apikey: key })) as {
+      generations?: { img?: string; model?: string; worker_name?: string; seed?: string; censored?: boolean }[];
+    };
+    let saved = 0;
+    for (const [i, gen] of (status.generations ?? []).entries()) {
+      if (!gen.img) continue;
+      const cell: Cell = {
+        subject: job.subject,
+        columnId: job.columnId,
+        sample: i,
+        model: gen.model,
+        worker: gen.worker_name,
+        seed: gen.seed,
+        censored: gen.censored === true,
+      };
+      try {
+        cell.file = await saveImage(job.columnId, job.subject, i, await downloadBytes(gen.img));
+        saved++;
+      } catch (err) {
+        cell.error = String(err);
+      }
+      cells.push(cell);
+    }
+    console.log(`  ✓ ${label} — ${saved} image(s)`);
+  }
+
+  writeJobs(stillPending);
+  writeFileSync(join(OUT_DIR, "sheet.html"), renderSheet(cards, cells));
+  console.log(
+    `\n${stillPending.length} job(s) still queued. ` +
+      `Sheet rebuilt: ${join(OUT_DIR, "sheet.html")}`,
+  );
 }
 
 // ── subjects ────────────────────────────────────────────────────────────────
@@ -402,7 +597,7 @@ function hordePayload(col: HordeColumn, prompt: string) {
       cfg_scale: col.cfgScale,
       sampler_name: "k_euler_a",
       karras: true,
-      n: SAMPLES,
+      n: HORDE_SAMPLES,
       seed: String(BASE_SEED),
     },
     nsfw: false,

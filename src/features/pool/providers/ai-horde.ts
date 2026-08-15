@@ -59,6 +59,19 @@
  * inside the adapter so the runner never learns that one provider is
  * asynchronous and the others are not.
  *
+ * ── Expect to wait, and expect jobs to be dropped ────────────────────────────
+ * This account holds ~14 kudos and contributes no worker, which puts every
+ * request near the back of a global queue measured at 488-809 during #74. The
+ * horde drops a request it has not handed to a worker in time, so a dropped job
+ * is an ORDINARY outcome here, not an error — hence the `ProviderRetryable` on
+ * the 404 below, and hence `concurrency: 1`. Work the horde cannot cover is the
+ * first thing it sheds: three concurrent 3-image jobs (~600 kudos of work) lost
+ * all three, where one job at a time survives.
+ *
+ * The practical consequence for a caller: reach for the hatch one card at a
+ * time, and expect 30-45 minutes for it. #74 measured 12 images landing from a
+ * 6-8 worker model, and zero from a 3-4 worker one.
+ *
  * ── Pacing is per-IP, not per-endpoint ───────────────────────────────────────
  * Measured on #74's first run: the horde answers `429 {"message": "2 per 1
  * second"}`, and it counts every call — submits and polls together — against one
@@ -157,9 +170,26 @@ export function aiHorde(opts: AiHordeOptions = {}): ImageProvider {
        * Per-worker censorship (#71's accepted risk) fired ZERO times across the
        * run, including on the weapon-bearing Longbowman.
        *
-       * `Fustercluck` (style=artistic) is the live alternative and is UNTESTED —
-       * the run was interrupted before it drew a hard subject. If the photo-real
-       * drift above shows up on more subjects, it is the next thing to try.
+       * `Fustercluck` (style=artistic) is the obvious alternative — its catalogue
+       * style reads closest to ART_STYLE's cartoon, which is exactly the axis
+       * AlbedoBase loses on above. It remains UNTESTED, and not for want of
+       * trying: four attempts, every one dropped by the horde before a worker
+       * took it, at global queue positions 104, 38 and lower.
+       *
+       * The cause is structural rather than a fault in the model, and it is the
+       * thing to understand before anyone retries. Kudos buy QUEUE POSITION, and
+       * a request the horde has not handed to a worker in time is dropped. At
+       * this account's balance (14 kudos, no worker contributed) we sit near the
+       * back of a 500-800 deep global queue, so whether a job survives comes down
+       * to how fast its model's own workers drain: AlbedoBase's 6-8 workers reach
+       * us, Fustercluck's 3-4 do not. Shrinking the job from 3 images to 1 got it
+       * measurably further and still not to a worker.
+       *
+       * So the honest state is: AlbedoBase is pinned on a complete grid,
+       * Fustercluck is unjudged and unreachable at this kudos balance. If the
+       * photo-real drift matters enough to settle, the lever is kudos (run a
+       * horde worker), not another retry — or simply retry in a quiet window,
+       * since the global queue has been seen between 488 and 809.
        */
       model: "AlbedoBase XL (SDXL)",
       steps: 25,
