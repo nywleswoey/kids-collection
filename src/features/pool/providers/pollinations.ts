@@ -95,8 +95,16 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
     minIntervalMs: 15_000,
     concurrency: 1,
     // The published pool's own mean: 390 cards, every one of them drawn by this
-    // lane, weighed in Blob 2026-08-15 (median 77.2 KB, max 136.3 KB). A better
-    // witness than any fresh sample, because it is the whole population.
+    // lane, weighed in Blob 2026-08-15 (median 77.2 KB, max 136.3 KB).
+    //
+    // A population rather than a sample, which is its strength and its catch.
+    // #64 caught this host swapping models underneath a fixed prompt, so those
+    // 390 cards span at least two of them and this is the mean of an era rather
+    // than of what the lane returns today — fresh generations on the same day
+    // came back at 41.5 and 44.1 KB, and #79's own figure was 57 KB. Kept as the
+    // HEAVIEST of those numbers on purpose: a headroom projection that
+    // over-estimates per-card weight under-estimates how many themes fit, which
+    // is the safe direction to be wrong in.
     typicalCardBytes: 77_800,
     // Nothing to configure: the anonymous tier needs no credential, and the
     // credentialled one is behind a paywall this map may not cross (#72).

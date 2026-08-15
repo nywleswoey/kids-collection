@@ -217,17 +217,28 @@ entries — that reshuffles what the children already know.
 
 ```bash
 pnpm seed --check-urls     # schema runs first; then every sourceUrl in the file must return 200
-pnpm seed --blob-budget    # is there room in Blob for another 30 cards? (#79)
 ```
 
 Schema failure → fix the JSON. A 404 → find a URL that resolves, or change the subject; **never** delete
 the field or point at a search page. Re-run until clean. This is network-only and touches no database.
 
-`--blob-budget` is read-only and prints how much of the plan's storage allowance the pool has spent, plus
-how many more 30-card themes fit **at each lane's measured weight**. Run it here rather than after
-publishing, because it is only useful while you can still act on it. On 2026-08-15 it read *31.36 MB of
-1.00 GB, 415 more Pollinations themes or 39 Cloudflare ones* — so the honest summary is **there is room,
-and the lanes differ by an order of magnitude in how fast it goes**. If it warns, stop: see *Hard stops*.
+Then, separately — this one **does** read the database and needs `DATABASE_URL` and
+`BLOB_READ_WRITE_TOKEN`:
+
+```bash
+pnpm seed --blob-budget    # is there room in Blob for another 30 cards? (#79)
+```
+
+Read-only. It prints how much of the plan's storage allowance the pool has spent, plus how many more
+30-card themes fit **at each lane's measured weight**. Run it here rather than after publishing, because
+it is only useful while you can still act on it. On 2026-08-15 it read *31.36 MB of 1.00 GB, 415 more
+Pollinations themes or 39 Cloudflare ones* — so the honest summary is **there is room, and the lanes
+differ by an order of magnitude in how fast it goes**. If it warns, stop: see *Hard stops*.
+
+Two things it does **not** cover, so you know what it is not telling you. It watches Blob **storage**
+only; image transformations are a deployment meter with no read path from the CLI, and on 2026-08-15 that
+was the meter nearest its cap (2,998 of 5,000 per 30 days) — check the team's usage page for that one. And
+its ceiling is the **Hobby** allowance hardcoded; if the plan has changed since, the number is wrong.
 
 ## Step 6 — Commit, then generate the art
 

@@ -31,12 +31,28 @@
  * ceiling below is where it becomes urgent. The meter actually near its cap is
  * **image transformations at 60%**, and that one is indifferent to how heavy a
  * source image is: it is billed per cache MISS, so a 30-card theme costs at most
- * 30 x 4 requested widths = 120 transformations whichever lane drew it.
+ * 30 x 4 requested widths = 120 transformations whichever lane drew it. (Four,
+ * because `CardImage` renders at dim 110/200/256/512 and `next.config.ts` allows
+ * imageSizes 128/256/512 plus deviceSizes 640/1080, so 128/256/512/1080 are the
+ * only widths a card is ever asked for.)
+ *
+ * **This command does not watch that meter, and cannot.** It is a deployment
+ * fact rather than a store fact, with no read path from here — Vercel's usage
+ * API is dashboard-only. So the 60% figure is a dated observation, not something
+ * this will notice moving, and the place to check it is the team's usage page.
+ * Said out loud because a report that covers one meter well is exactly how the
+ * other one gets assumed instead of measured, which is what #79 was about.
+ *
+ * ── This number is a PLAN fact, and nothing here detects a plan change ───────
+ * The ceiling below is Hobby's. On Pro it becomes 5 GB with paid overage above
+ * it, at which point exceeding it is a bill rather than an outage and the 80%
+ * warning is measuring the wrong thing. Nothing in this process can see the
+ * plan, so the constant carries its date and this paragraph carries the caveat.
  *
  * ── Why this reads the STORE and not the pool ────────────────────────────────
  * `readPublishedImages` would be the cheaper source, and it under-reports.
  * `put()` adds a random suffix, so re-publishing a card writes a NEW object and
- * strands the old one: 403 objects against 390 cards, 1.02 MB of bytes nothing
+ * strands the old one: 403 objects against 390 cards, 1.07 MB of bytes nothing
  * points at, still charged. `list()` is the only view that sees them, so the
  * report reconciles the two and names the difference rather than hiding it.
  *
@@ -50,6 +66,16 @@
  * Decimal, because Vercel's dashboard is: it prints 31,363,297 bytes as
  * "31.36 MB / 1 GB". Using binary units here would put this report and the page
  * it has to be reconciled against 5% apart for no reason.
+ *
+ * ── Why the I/O is in here rather than in a sibling ─────────────────────────
+ * The repo's standing split is pure module + I/O module (`blank-frame.ts` /
+ * `blank-audit.ts`), and `pool-reads.ts` states the reason: importing the `db`
+ * singleton pulls `env.databaseUrl` in at MODULE LOAD, which fails in Vitest.
+ * That reason does not reach `@vercel/blob` — `list` reads its token when
+ * called, so importing it costs a test nothing, and the tests here construct no
+ * store at all. `readStoreObjects` takes an injectable `listImpl` for the same
+ * reason `auditPublishedImages` takes a `fetchImpl`, which is what actually
+ * buys the testability the split was for.
  */
 import { list } from "@vercel/blob";
 import { CARDS_PER_THEME } from "./seed-schema";
@@ -152,6 +178,9 @@ export function summariseWeights(sizes: readonly number[]): WeightSummary {
     count: sorted.length,
     totalBytes,
     meanBytes: Math.round(totalBytes / sorted.length),
+    // Lower median on an even count, rather than the mean of the middle two: it
+    // is a weight some real card actually has, and this report exists to be
+    // reconciled against individual objects.
     medianBytes: sorted[Math.floor((sorted.length - 1) / 2)],
     maxBytes: sorted[sorted.length - 1],
   };

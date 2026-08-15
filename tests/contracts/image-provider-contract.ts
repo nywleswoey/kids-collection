@@ -138,17 +138,24 @@ export function runImageProviderContract(label: string, makeProvider: MakeProvid
 
     it("declares a card weight that is a picture's weight, or none at all (#79)", () => {
       // `typicalCardBytes` feeds `blob-budget.ts`'s projection, so a wrong one
-      // silently mis-states how many themes are left. The two ends worth pinning
-      // are the ones that would make it nonsense rather than merely stale: a
-      // weight BELOW the blank-frame floor describes an image with no subject in
-      // it, and one above 16 MB is past what Vercel will even cache. Undefined
-      // stays legal — an unweighed lane reports UNMEASURED, which is true.
+      // silently mis-states how many themes are left. Both ends are DERIVED
+      // rather than picked, because the useful assertion is "this is the weight
+      // of an encoded card" and not "this is the number someone typed":
+      //
+      //   below — the blank-frame floor. Under it, the declared weight
+      //   describes an image the seam would itself refuse as carrying no
+      //   subject (#78).
+      //   above — the card's own pixels at 4 bytes each, i.e. uncompressed
+      //   RGBA. Every codec here exists to beat that, so a weight above it is
+      //   not a compressed image of anything.
+      //
+      // Undefined stays legal — an unweighed lane reports UNMEASURED, which is
+      // a true statement rather than a gap to be filled.
       const { typicalCardBytes } = makeProvider();
       if (typicalCardBytes === undefined) return;
-      expect(typicalCardBytes).toBeGreaterThan(
-        MIN_BYTES_PER_PIXEL * CARD_SIZE.width * CARD_SIZE.height,
-      );
-      expect(typicalCardBytes).toBeLessThan(16_000_000);
+      const pixels = CARD_SIZE.width * CARD_SIZE.height;
+      expect(typicalCardBytes).toBeGreaterThan(MIN_BYTES_PER_PIXEL * pixels);
+      expect(typicalCardBytes).toBeLessThan(pixels * 4);
     });
   });
 }

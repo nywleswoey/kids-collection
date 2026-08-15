@@ -136,6 +136,7 @@ import {
   formatBytes,
   readStoreObjects,
   WARN_FRACTION,
+  type BlobBudget,
 } from "@/features/pool/blob-budget";
 import {
   upsertTheme,
@@ -176,6 +177,66 @@ type Mode = "review" | "publish" | "sync";
 /** Absolute path of one bake-off candidate. */
 function reviewPath(themeName: string, card: NamedCard, provider: ImageProvider): string {
   return join(REVIEW_DIR, reviewFileName(themeName, card, provider));
+}
+
+/**
+ * Print a store budget (#79). Returns true when the run should exit non-zero,
+ * which is how the runbook's Hard stop is detectable from a script.
+ *
+ * Extracted rather than inlined in `main`, for the reason the neighbouring
+ * commands are: presentation is the bulk of it, and `main` is already the
+ * longest thing here.
+ */
+function reportBlobBudget(budget: BlobBudget, publishedCount: number): boolean {
+  const pct = (budget.usedFraction * 100).toFixed(1);
+  console.log(
+    `\n   stored     ${formatBytes(budget.store.totalBytes)} of ` +
+      `${formatBytes(budget.ceilingBytes)}  (${pct}%)\n` +
+      `   objects    ${budget.store.count}  for ${publishedCount} published card(s)\n` +
+      `   per card   mean ${formatBytes(budget.store.meanBytes)}, ` +
+      `median ${formatBytes(budget.store.medianBytes)}, ` +
+      `max ${formatBytes(budget.store.maxBytes)}\n` +
+      `   free       ${formatBytes(budget.freeBytes)}`,
+  );
+
+  if (budget.orphans.count > 0) {
+    console.log(
+      `\n   ${budget.orphans.count} object(s), ${formatBytes(budget.orphans.bytes)}, that no ` +
+        `published card points at.\n` +
+        `   Re-publishing a card writes a NEW object rather than replacing the old\n` +
+        `   one, and the allowance is charged for both. Reported, not deleted: look\n` +
+        `   before removing anything, because a card whose row was pruned and whose\n` +
+        `   bytes were kept looks exactly the same from here.`,
+    );
+  }
+
+  console.log(`\n   Themes of ${CARDS_PER_THEME} cards that still fit, per lane:`);
+  for (const p of budget.projections) {
+    const weight = p.perCardBytes === null ? "UNMEASURED" : `${formatBytes(p.perCardBytes)}/card`;
+    console.log(`     ${p.id.padEnd(18)} ${weight.padEnd(16)} ${p.themes ?? "—"}`);
+  }
+  // Said every run, not only when it warns: this covers Blob storage and
+  // nothing else, and the meter nearest its cap when #79 measured was one it
+  // cannot see. A report silently scoped to one meter is how the others get
+  // assumed instead of measured.
+  console.log(
+    `\n   Storage only. Image transformations are a deployment meter with no read\n` +
+      `   path from here (2,998 of 5,000 per 30 days on 2026-08-15, the tightest of\n` +
+      `   them) — check the team's usage page for that one. The ceiling above is the\n` +
+      `   Hobby allowance, hardcoded; on a different plan it is wrong.`,
+  );
+
+  if (budget.overWarnLine) {
+    console.warn(
+      `\n⚠️  past ${(WARN_FRACTION * 100).toFixed(0)}% of the storage allowance.\n` +
+        `   Exceeding it does not produce a bill on the Hobby plan — it cuts off access\n` +
+        `   to the store until the 30-day window rolls, so cards whose optimized variant\n` +
+        `   is not already cached render as their alt text. Publish nothing further\n` +
+        `   until this is dealt with.`,
+    );
+    return true;
+  }
+  return false;
 }
 
 async function main() {
@@ -266,45 +327,7 @@ async function main() {
       liveUrls: new Set(published.map((p) => p.url)),
       lanes: PROVIDERS,
     });
-
-    const pct = (budget.usedFraction * 100).toFixed(1);
-    console.log(
-      `\n   stored     ${formatBytes(budget.store.totalBytes)} of ` +
-        `${formatBytes(budget.ceilingBytes)}  (${pct}%)\n` +
-        `   objects    ${budget.store.count}  for ${published.length} published card(s)\n` +
-        `   per card   mean ${formatBytes(budget.store.meanBytes)}, ` +
-        `median ${formatBytes(budget.store.medianBytes)}, ` +
-        `max ${formatBytes(budget.store.maxBytes)}\n` +
-        `   free       ${formatBytes(budget.freeBytes)}`,
-    );
-
-    if (budget.orphans.count > 0) {
-      console.log(
-        `\n   ${budget.orphans.count} object(s), ${formatBytes(budget.orphans.bytes)}, that no ` +
-          `published card points at.\n` +
-          `   Re-publishing a card writes a NEW object rather than replacing the old\n` +
-          `   one, and the allowance is charged for both. Reported, not deleted: look\n` +
-          `   before removing anything, because a card whose row was pruned and whose\n` +
-          `   bytes were kept looks exactly the same from here.`,
-      );
-    }
-
-    console.log(`\n   Themes of ${CARDS_PER_THEME} cards that still fit, per lane:`);
-    for (const p of budget.projections) {
-      const weight = p.perCardBytes === null ? "UNMEASURED" : `${formatBytes(p.perCardBytes)}/card`;
-      console.log(`     ${p.id.padEnd(18)} ${weight.padEnd(16)} ${p.themes ?? "—"}`);
-    }
-
-    if (budget.overWarnLine) {
-      console.warn(
-        `\n⚠️  past ${(WARN_FRACTION * 100).toFixed(0)}% of the storage allowance.\n` +
-          `   Exceeding it does not produce a bill on this plan — it cuts off access to\n` +
-          `   the store until the 30-day window rolls, so cards whose optimized variant\n` +
-          `   is not already cached render as their alt text. Publish nothing further\n` +
-          `   until this is dealt with.`,
-      );
-      process.exitCode = 1;
-    }
+    if (reportBlobBudget(budget, published.length)) process.exitCode = 1;
     return;
   }
 
