@@ -2797,6 +2797,7 @@
     },
     {
       "name": "Artillery",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Catapult",
@@ -2950,7 +2951,8 @@
           "rarity": "rare",
           "eduText": "Ski patrols fire these at snowy slopes early, bringing small avalanches down before anyone arrives.",
           "imagePrompt": "a single small yellow gun on a metal mount pointing at a snowy mountain slope under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Avalanche_control"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Avalanche_control",
+          "provider": "pollinations"
         },
         {
           "name": "Line-Throwing Gun",
