@@ -92,6 +92,45 @@ free provider:
   The already-published pool was swept once against the same floor
   (`pnpm seed --check-images`, `blank-audit.ts`): **390 of 390 weighed, none blank**,
   2026-08-15.
+- **Store budget** — how much of the plan's Blob **storage allowance** the pool has spent,
+  and how many more 30-card themes fit at each lane's declared weight
+  (`src/features/pool/blob-budget.ts`, `pnpm seed --blob-budget`, #79). Reads the
+  STORE via `list()` rather than the pool's own image URLs, because `put()` adds a
+  random suffix: re-publishing a card writes a new object and strands the old one,
+  and the allowance is charged for both (**403 objects for 390 cards, 1.07 MB
+  stranded**, 2026-08-15). Stranded bytes are reported, never deleted. Measured
+  that day: **31.36 MB of 1 GB**, i.e. 415 more Pollinations-weight themes or 39
+  Cloudflare-weight ones. The plan is **Hobby**, so exceeding an allowance is not a
+  bill — it cuts off the store for the rest of the 30-day window, and a card whose
+  optimized variant is not already cached then renders as its `alt` text. Covers
+  **storage only**: image transformations are a deployment meter with no read path
+  from the CLI, and were the tightest of them all at **2,998 of 5,000 per 30 days** —
+  a dated observation, not something the command will notice moving. The ceiling is a
+  **plan** fact, hardcoded, and nothing detects a plan change.
+- **Mixed-weight pool** — since #79 accepted Cloudflare's weight and the map rules
+  re-rendering the ~360 published cards out of scope, the pool is permanently mixed:
+  light Pollinations-era cards alongside ~10× heavier Cloudflare ones. That is a fact
+  about the store's growth **rate** (how fast `--blob-budget` moves) and about nothing
+  a child sees, since delivered weight is decided by the optimizer either way.
+- **`typicalCardBytes`** — an adapter's declared, *measured* weight for an ordinary
+  768×768 card. Not in `params` and not hashed, for `minIntervalMs`'s reason twice
+  over: it does not change the request, and it is an observation of the response. A
+  lane nobody has weighed leaves it undefined and projects as **UNMEASURED**, the
+  same discipline as a `null` `model`.
+- **Delivered weight vs stored weight** — not the same number, and #79 turned on the
+  difference. Every card surface renders through `next/image`, so a child downloads a
+  re-encoded WebP at the requested width, never the stored bytes. Measured through the
+  production optimizer at `w=512 q=75` (2026-08-15): a 937.9 KB Cloudflare PNG
+  delivered **39.5 KB**, a 147.9 KB JPEG delivered **68.4 KB**, a 41.5 KB Pollinations
+  JPEG delivered **9.6 KB**. Delivered weight tracks picture complexity, not source
+  encoding — so a heavier lane is a *storage* question and not a child-facing
+  performance one. Replicated on a second run, where the inversion held (924.7 KB →
+  32.2 KB against 108.7 KB → 44.2 KB). Reproduce with `pnpm prototype:79 --delivered`
+  (`scripts/prototype-79-weight/`), which also carries `--steer`: Cloudflare SDXL has
+  **no output-format parameter** — `Accept: image/jpeg` and an invented
+  `response_format` are both silently dropped — while
+  `stable-diffusion-xl-lightning` answers **JPEG at 88–107 KB**, unregistered because
+  a model swap is a roster decision (#69), not a file-size one.
 - **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
   (`src/features/pool/contact-sheet.ts`), **CHECKPOINT 2** of
   `seed/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.

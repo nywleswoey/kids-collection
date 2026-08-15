@@ -27,6 +27,22 @@ import { contentTypeFor, readImageSize } from "./image-size";
  *
  * Sniffing rather than trusting a caller-supplied type is deliberate: the bytes
  * are the only thing that cannot be wrong.
+ *
+ * ── No re-encoding here, and it is not only about FR8 (#79) ──────────────────
+ * Cloudflare SDXL's cards are ~10x heavier than Pollinations', and the obvious
+ * remedy is to JPEG-encode on the way past. It does not happen here, and the
+ * first reason is the rule: publish ships the bytes a parent APPROVED, so
+ * re-encoding at this line hands a child bytes no one reviewed. Re-encoding at
+ * REVIEW time would keep the rule intact and is the better change if one is ever
+ * needed.
+ *
+ * The second reason is that none is needed yet, which is the measurement rather
+ * than the principle. `blob-budget.ts` weighed the store against its allowance:
+ * 3% spent, 39 more Cloudflare-weight themes of room. And the child was never
+ * downloading these bytes anyway — every card renders through `next/image`, so a
+ * 937.9 KB PNG reaches a browser as a 39.5 KB WebP. An encoder would be a new
+ * dependency (#67 kept this seam dependency-free) bought to fix a number nobody
+ * is paying.
  */
 export async function uploadImage(
   key: string,

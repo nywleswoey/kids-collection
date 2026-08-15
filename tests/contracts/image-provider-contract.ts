@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readImageSize } from "@/features/pool/image-size";
-import { looksBlank } from "@/features/pool/blank-frame";
+import { MIN_BYTES_PER_PIXEL, looksBlank } from "@/features/pool/blank-frame";
 import {
   CARD_SIZE,
   ProviderRetryable,
@@ -134,6 +134,28 @@ export function runImageProviderContract(label: string, makeProvider: MakeProvid
       const provider = makeProvider();
       expect(provider.minIntervalMs).toBeGreaterThanOrEqual(0);
       expect(provider.concurrency).toBeGreaterThanOrEqual(1);
+    });
+
+    it("declares a card weight that is a picture's weight, or none at all (#79)", () => {
+      // `typicalCardBytes` feeds `blob-budget.ts`'s projection, so a wrong one
+      // silently mis-states how many themes are left. Both ends are DERIVED
+      // rather than picked, because the useful assertion is "this is the weight
+      // of an encoded card" and not "this is the number someone typed":
+      //
+      //   below — the blank-frame floor. Under it, the declared weight
+      //   describes an image the seam would itself refuse as carrying no
+      //   subject (#78).
+      //   above — the card's own pixels at 4 bytes each, i.e. uncompressed
+      //   RGBA. Every codec here exists to beat that, so a weight above it is
+      //   not a compressed image of anything.
+      //
+      // Undefined stays legal — an unweighed lane reports UNMEASURED, which is
+      // a true statement rather than a gap to be filled.
+      const { typicalCardBytes } = makeProvider();
+      if (typicalCardBytes === undefined) return;
+      const pixels = CARD_SIZE.width * CARD_SIZE.height;
+      expect(typicalCardBytes).toBeGreaterThan(MIN_BYTES_PER_PIXEL * pixels);
+      expect(typicalCardBytes).toBeLessThan(pixels * 4);
     });
   });
 }
