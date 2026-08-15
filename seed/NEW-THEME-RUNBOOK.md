@@ -126,10 +126,12 @@ added at Step 6, on the theme and — sparsely — on individual cards.
 - **`imagePrompt`** — concrete, kid-friendly, **no art-style words**: `buildPrompt()` appends `ART_STYLE`
   for you. What works across every provider: name **one** subject ("a single …"), give a viewpoint ("side
   view"), put it somewhere plain ("parked on grass"). Sleek aircraft photographed in flight are the shape
-  most often rendered as two overlapping copies. Name **no object the picture sits inside** — card,
-  frame, border, poster, sticker, mat. Cloudflare's SDXL draws those literally and insets the real subject
-  within them; that was #81, and it came from `ART_STYLE` saying "trading-card" rather than from any
-  card's own wording.
+  most often rendered as two overlapping copies. And name **no object the picture sits inside** — a card,
+  a frame, a border, a mat. Cloudflare's SDXL draws those literally, insetting the real subject within
+  them. That was #81, and it came from `ART_STYLE` itself saying "trading-card" rather than from any
+  card's own wording — but the same words in an `imagePrompt` reach the same model, and nothing checks
+  for them. Note the rule is about **naming the object at all**: "no border" is a border cue, not a
+  prohibition (#81 measured it).
 
 ### What the providers can and cannot draw
 
@@ -143,7 +145,7 @@ ran them through the escape hatch. What survives is narrower than the old blanke
 
 | Failure class | `pollinations` (asks for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) |
 |---|---|---|---|
-| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had |
+| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had |
 | Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` |
 | **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounts (one horse where the prompt says two) |
 
@@ -270,12 +272,12 @@ Rule out a candidate on:
 - Gore, damage, fire, combat, casualties — anything from the prohibited list above.
 - Scary rather than friendly.
 - Wrong subject, or unreadable mush.
-- Text baked into the image, or a decorative frame border. Cloudflare drew frames on roughly a third of
-  candidates until **#81** found the cause in `ART_STYLE` itself — it used to say "trading-**card**
-  illustration", and SDXL drew the card: a wooden frame or a tan mat with the subject inset inside it. The
-  words are gone and the rate fell to ~1 in 20, so a frame is now rare rather than expected. If you see one,
-  it is a re-roll, **not** a re-prompt — and do not try to word your way out of it by asking for "no border",
-  which #81 measured as no better than saying nothing.
+- Text baked into the image, or a decorative frame border. Cloudflare framed **most** candidates until
+  **#81** found the cause in `ART_STYLE` itself — it used to say "trading-**card** illustration", and SDXL
+  drew the card: a wooden frame or a tan mat with the subject inset inside it. The words are gone and the
+  rate fell to about 1 in 20, so a frame is now rare rather than expected. If you see one it is a
+  **re-roll, not a re-prompt** — and do not try to word your way out of it by asking for "no border",
+  which is a border cue rather than a prohibition. Measurements in `src/features/pool/prompt.ts`.
 - **A photograph or a 3D render**, whichever lane drew it (#77). The published set varies enormously in
   style, but it is always an *illustration*, so photoreal skin, camera depth-of-field blur, a naturalistic
   cast shadow, or the look of a glazed figurine on a surface reads as a different product sitting in the
