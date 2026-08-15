@@ -2794,6 +2794,223 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Kabuto"
         }
       ]
+    },
+    {
+      "name": "Artillery",
+      "provider": "cloudflare-sdxl",
+      "cards": [
+        {
+          "name": "Catapult",
+          "rarity": "common",
+          "eduText": "A catapult stores energy in a bundle of tightly twisted rope, then lets it all go at once.",
+          "imagePrompt": "a single wooden catapult with a long throwing arm, standing on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Catapult"
+        },
+        {
+          "name": "Naval Cannon",
+          "rarity": "common",
+          "eduText": "Ship cannons sat on little wooden wheels so they could roll backwards instead of hurting the deck.",
+          "imagePrompt": "a single black iron ship cannon on a small wooden wheeled carriage, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Naval_artillery"
+        },
+        {
+          "name": "Field Gun",
+          "rarity": "common",
+          "eduText": "A field gun has tall wheels and a light frame so horses or trucks can tow it across open country.",
+          "imagePrompt": "a single dark green field gun with two large spoked wheels and a long barrel, on a pale sandy gravel path under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Field_gun"
+        },
+        {
+          "name": "Howitzer",
+          "rarity": "common",
+          "eduText": "A howitzer points its barrel high so its shell arcs up and over a hill instead of going straight.",
+          "imagePrompt": "a single sand-coloured howitzer with a long barrel raised high, standing on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Howitzer"
+        },
+        {
+          "name": "Mortar",
+          "rarity": "common",
+          "eduText": "A mortar is a short fat tube that lobs its shell almost straight up, so it comes down steeply.",
+          "imagePrompt": "a single short fat metal mortar tube on a flat round baseplate, tilted upward on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mortar_(weapon)"
+        },
+        {
+          "name": "Anti-Aircraft Gun",
+          "rarity": "common",
+          "eduText": "An anti-aircraft gun swivels and tilts nearly straight up so it can follow something moving fast.",
+          "imagePrompt": "a single grey anti-aircraft gun with four thin barrels pointing up at the sky, on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Anti-aircraft_warfare"
+        },
+        {
+          "name": "Mountain Gun",
+          "rarity": "common",
+          "eduText": "A mountain gun comes apart into pieces light enough for mules to carry up a narrow path.",
+          "imagePrompt": "a single small mountain gun with a short barrel and two small wheels, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mountain_gun"
+        },
+        {
+          "name": "Swivel Gun",
+          "rarity": "common",
+          "eduText": "A swivel gun sits on a post like a spinning telescope, so one person can turn it any way at all.",
+          "imagePrompt": "a single small bronze swivel gun mounted on top of a wooden post, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Swivel_gun"
+        },
+        {
+          "name": "Organ Gun",
+          "rarity": "common",
+          "eduText": "An organ gun bolted many small barrels side by side in a row, like the pipes of a church organ.",
+          "imagePrompt": "a single wooden cart holding a row of many small metal barrels side by side, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ribauldequin"
+        },
+        {
+          "name": "Gatling Gun",
+          "rarity": "common",
+          "eduText": "Turning the crank spins a ring of barrels, so each one can cool while the others come round.",
+          "imagePrompt": "a single Gatling gun with a bundle of six barrels and two tall spoked wheels, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gatling_gun"
+        },
+        {
+          "name": "Signal Cannon",
+          "rarity": "common",
+          "eduText": "A signal cannon carries nothing at all inside: the bang by itself says start, or stop, or come home.",
+          "imagePrompt": "a single small shiny brass signal cannon on a little wooden carriage, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saluting_gun"
+        },
+        {
+          "name": "Noon Gun",
+          "rarity": "common",
+          "eduText": "Cape Town's Noon Gun has banged at midday since 1806 so the whole city can set its clocks by it.",
+          "imagePrompt": "a single old black cannon on a stone wall high above a sunny city, under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Noon_Gun"
+        },
+        {
+          "name": "Fireworks Mortar",
+          "rarity": "common",
+          "eduText": "Fireworks are launched from short tubes called mortars, which aim each shell neatly straight up.",
+          "imagePrompt": "a single thick cardboard firework launch tube standing straight up on green grass, with a fuse at its base, under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fireworks"
+        },
+        {
+          "name": "Hail Cannon",
+          "rarity": "common",
+          "eduText": "Farmers aim hail cannons at storm clouds, hoping the shock waves stop hailstones from forming.",
+          "imagePrompt": "a single tall cone-shaped metal hail cannon pointing up at the sky, standing in a green field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hail_cannon"
+        },
+        {
+          "name": "Potato Cannon",
+          "rarity": "common",
+          "eduText": "A potato cannon is just a tube, some air pressure and a spud, and it shows how every gun works.",
+          "imagePrompt": "a single homemade potato cannon made from wide white plastic pipe, lying on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Potato_cannon"
+        },
+        {
+          "name": "Ballista",
+          "rarity": "rare",
+          "eduText": "A ballista works like a giant crossbow, but its power comes from two twisted bundles of rope.",
+          "imagePrompt": "a single large wooden ballista like a giant crossbow on a sturdy frame, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ballista"
+        },
+        {
+          "name": "Carronade",
+          "rarity": "rare",
+          "eduText": "The carronade was short, fat and light, so a small crew could work it on a crowded ship's deck.",
+          "imagePrompt": "a single short stubby black iron carronade on a low wooden sliding carriage, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Carronade"
+        },
+        {
+          "name": "Culverin",
+          "rarity": "rare",
+          "eduText": "A culverin had a long slim barrel, which sent its ball much further and straighter than a fat gun.",
+          "imagePrompt": "a single long slim bronze culverin cannon on a wooden wheeled carriage, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Culverin"
+        },
+        {
+          "name": "Katyusha Rocket Launcher",
+          "rarity": "rare",
+          "eduText": "The Katyusha was a rack of rails on a truck, so its rockets needed no heavy barrel at all.",
+          "imagePrompt": "an army truck carrying a slanted rack of long thin steel launch rails on its back, side view, parked in a green field under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Katyusha_rocket_launcher"
+        },
+        {
+          "name": "Self-Propelled Howitzer",
+          "rarity": "rare",
+          "eduText": "A self-propelled howitzer drives itself along on tracks, so it never has to wait to be towed.",
+          "imagePrompt": "a single olive-green tracked self-propelled howitzer with a long barrel, parked on a pale sandy field under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Self-propelled_artillery"
+        },
+        {
+          "name": "Coastal Defence Gun",
+          "rarity": "rare",
+          "eduText": "Coastal guns sat in concrete forts on clifftops, turning slowly to watch the whole horizon.",
+          "imagePrompt": "a single large grey coastal gun on a round concrete base, on a green clifftop under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coastal_artillery"
+        },
+        {
+          "name": "Avalanche Control Gun",
+          "rarity": "rare",
+          "eduText": "Ski patrols fire these at snowy slopes early, bringing small avalanches down before anyone arrives.",
+          "imagePrompt": "a single small yellow gun on a metal mount pointing at a snowy mountain slope under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Avalanche_control",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Line-Throwing Gun",
+          "rarity": "rare",
+          "eduText": "A line-throwing gun shoots a thin rope out to a ship in trouble, so a thick rescue line can follow.",
+          "imagePrompt": "a bright orange rescue line-throwing gun with a short wide tube, standing on a small tripod on green grass beside a coil of white rope, under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Line-throwing_gun"
+        },
+        {
+          "name": "Mons Meg",
+          "rarity": "epic",
+          "eduText": "Mons Meg was built in 1449 and threw stone balls that weighed as much as two grown-ups.",
+          "imagePrompt": "a single huge ancient iron bombard cannon resting on a low wooden frame, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mons_Meg"
+        },
+        {
+          "name": "Hwacha",
+          "rarity": "epic",
+          "eduText": "Korea's hwacha was a wooden cart holding two hundred small rockets, each in its own little tube.",
+          "imagePrompt": "a single wooden two-wheeled cart holding a large square block full of many small tubes, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hwacha"
+        },
+        {
+          "name": "Railway Gun",
+          "rarity": "epic",
+          "eduText": "Some guns grew far too heavy for wheels, so engineers built them onto railway carriages instead.",
+          "imagePrompt": "a giant long cannon resting on a low flat rail wagon with small wheels, side view, on straight train tracks in a green field under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Railway_gun"
+        },
+        {
+          "name": "Circus Cannon",
+          "rarity": "epic",
+          "eduText": "A circus cannon hides a spring or an air ram inside, and the bang and smoke are just for show.",
+          "imagePrompt": "a single bright red and gold circus cannon on wheels with a wide mouth, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Human_cannonball"
+        },
+        {
+          "name": "HARP Space Gun",
+          "rarity": "epic",
+          "eduText": "In 1966 the HARP gun fired a shell 180 km up, the highest anything has ever been shot from Earth.",
+          "imagePrompt": "a single enormously long steel gun barrel on a large mount pointing up at the sky, on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Project_HARP"
+        },
+        {
+          "name": "Trebuchet",
+          "rarity": "legendary",
+          "eduText": "A trebuchet needs no rope or spring: one huge falling weight swings the long arm right over.",
+          "imagePrompt": "a single tall wooden trebuchet with a long arm and a heavy box counterweight, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Trebuchet"
+        },
+        {
+          "name": "Tsar Cannon",
+          "rarity": "legendary",
+          "eduText": "The Tsar Cannon has the widest barrel ever cast, and has stood in Moscow since 1586.",
+          "imagePrompt": "a single gigantic decorated bronze cannon with a very wide mouth on an ornate carriage, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tsar_Cannon"
+        }
+      ]
     }
   ]
 }
