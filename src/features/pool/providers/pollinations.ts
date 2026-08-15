@@ -94,6 +94,10 @@ export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
     // A serial cap with an upsell attached, not a tunable rate — see above.
     minIntervalMs: 15_000,
     concurrency: 1,
+    // The published pool's own mean: 390 cards, every one of them drawn by this
+    // lane, weighed in Blob 2026-08-15 (median 77.2 KB, max 136.3 KB). A better
+    // witness than any fresh sample, because it is the whole population.
+    typicalCardBytes: 77_800,
     // Nothing to configure: the anonymous tier needs no credential, and the
     // credentialled one is behind a paywall this map may not cross (#72).
     requiredEnv: [],

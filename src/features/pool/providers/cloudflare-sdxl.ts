@@ -38,6 +38,32 @@
  * filenames, so adding one invalidates a folder of reviewed images: a partial
  * fix, at that price, stacked on top of the real one.
  *
+ * ── Weight: ~826 KB a card, and why it ships anyway (#79) ───────────────────
+ * This lane returns PNG at roughly 10x Pollinations' JPEG — 826 KB against the
+ * published pool's measured 77.8 KB mean. #79 asked who pays for that, on two
+ * counts, and measurement answered both.
+ *
+ * The CHILD does not. Every card surface renders through `next/image`, so a
+ * browser downloads a re-encoded WebP at the width it asked for and never the
+ * stored bytes. Through the production optimizer at `w=512 q=75`, 2026-08-15:
+ * a 937.9 KB PNG from here delivered 39.5 KB, a 147.9 KB JPEG delivered 68.4 KB,
+ * a 41.5 KB Pollinations JPEG delivered 9.6 KB. The ordering INVERTS — delivered
+ * weight tracks how busy the picture is, not how heavy the source was.
+ *
+ * The STORE does, and `blob-budget.ts` says by how much: 39 more themes from
+ * this lane against 415 from Pollinations, out of the same 968 MB. That is a
+ * real difference and not yet a constraint, so nothing here re-encodes.
+ *
+ * There is also no cheaper thing to ask THIS model for. Measured against the
+ * live endpoint on the same day: `Accept: image/jpeg` is ignored (PNG back), and
+ * an invented `response_format: "jpeg"` is ignored too — SDXL's schema has no
+ * output-format parameter and the endpoint drops what it does not know rather
+ * than refusing it, so an unrecognised key looks like it worked. The lever that
+ * DOES exist is a different model: `@cf/bytedance/stable-diffusion-xl-lightning`
+ * answers **JPEG** at 88-148 KB from the identical request. It is not registered
+ * here, because a model swap is a quality decision that belongs to a bake-off
+ * and to the roster (#69), not to a file-size ticket.
+ *
  * ── Provenance ───────────────────────────────────────────────────────────────
  * Cloudflare reports no serving-model header, so `model` comes back undefined
  * and the sidecar records only what was requested. That is an honest gap, and
@@ -67,6 +93,9 @@ export function cloudflareSdxl(opts: HttpAdapterOptions = {}): ImageProvider {
     },
     minIntervalMs: 100,
     concurrency: 4,
+    // #66's six-subject average; corroborated 2026-08-15 at 712-938 KB across
+    // four fresh generations. See the weight note above for why this stays.
+    typicalCardBytes: 826_000,
     requiredEnv: ["CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"],
     isConfigured: () =>
       Boolean(process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_API_TOKEN),

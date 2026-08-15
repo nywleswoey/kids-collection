@@ -4,6 +4,9 @@
  *   pnpm seed --check-urls        check every sourceUrl in the seed file, then exit
  *   pnpm seed --check-images      weigh every PUBLISHED card image and report any that
  *                                 is too sparse to be a picture (#78), then exit
+ *   pnpm seed --blob-budget       weigh the whole Blob store against the plan's storage
+ *                                 allowance and project how many themes still fit, per
+ *                                 lane (#79), then exit
  *   pnpm seed --review            generate images for NEW cards to seed/review/,
  *                                 from EVERY registered provider (the bake-off)
  *   pnpm seed --review --providers=pollinations
@@ -107,10 +110,12 @@ import {
   type ProvenanceFile,
   type PublishedCard,
 } from "@/features/pool/provenance";
+import { CARDS_PER_THEME } from "@/features/pool/seed-schema";
 import type { SeedCard, ThemeSeed } from "@/features/pool/seed-schema";
 import {
   CARD_SIZE,
   PROVIDER_IDS,
+  PROVIDERS,
   ProviderSelectionError,
   parseProvidersFlag,
   providerById,
@@ -126,6 +131,12 @@ import {
 } from "@/features/pool/pool-reads";
 import { checkSourceUrls } from "@/features/pool/url-check";
 import { auditPublishedImages } from "@/features/pool/blank-audit";
+import {
+  buildBlobBudget,
+  formatBytes,
+  readStoreObjects,
+  WARN_FRACTION,
+} from "@/features/pool/blob-budget";
 import {
   upsertTheme,
   insertCardIfNew,
@@ -226,6 +237,74 @@ async function main() {
         `   blast-radius guard first.\n`,
     );
     process.exitCode = 1;
+    return;
+  }
+
+  // ── --blob-budget: weigh the whole store against the plan's allowance and say
+  // how many more themes fit, per lane (#79). Standalone; runs and exits.
+  //
+  // Standalone rather than in-band on --sync, which is the opposite of
+  // `comparePoolShape`'s choice and for the opposite reason. A short theme is a
+  // fault of the run that just happened, so it has to be caught inside it. Store
+  // pressure is a slow trend across many runs, and wiring it into --sync would
+  // add a `list()` to every publish and give a publish a new way to fail for a
+  // reason that has nothing to do with the cards being published. The runbook
+  // calls this before a bake-off instead, which is the moment the answer can
+  // still change what you do.
+  //
+  // Reads the STORE, not the pool: `put()` adds a random suffix, so a re-publish
+  // strands the old object and the pool's own URLs cannot see it. Read-only —
+  // stranded bytes are reported and never deleted.
+  if (process.argv.includes("--blob-budget")) {
+    console.log(`Weighing the Blob store…`);
+    const [objects, published] = await Promise.all([
+      readStoreObjects(),
+      readPublishedImages(),
+    ]);
+    const budget = buildBlobBudget({
+      objects,
+      liveUrls: new Set(published.map((p) => p.url)),
+      lanes: PROVIDERS,
+    });
+
+    const pct = (budget.usedFraction * 100).toFixed(1);
+    console.log(
+      `\n   stored     ${formatBytes(budget.store.totalBytes)} of ` +
+        `${formatBytes(budget.ceilingBytes)}  (${pct}%)\n` +
+        `   objects    ${budget.store.count}  for ${published.length} published card(s)\n` +
+        `   per card   mean ${formatBytes(budget.store.meanBytes)}, ` +
+        `median ${formatBytes(budget.store.medianBytes)}, ` +
+        `max ${formatBytes(budget.store.maxBytes)}\n` +
+        `   free       ${formatBytes(budget.freeBytes)}`,
+    );
+
+    if (budget.orphans.count > 0) {
+      console.log(
+        `\n   ${budget.orphans.count} object(s), ${formatBytes(budget.orphans.bytes)}, that no ` +
+          `published card points at.\n` +
+          `   Re-publishing a card writes a NEW object rather than replacing the old\n` +
+          `   one, and the allowance is charged for both. Reported, not deleted: look\n` +
+          `   before removing anything, because a card whose row was pruned and whose\n` +
+          `   bytes were kept looks exactly the same from here.`,
+      );
+    }
+
+    console.log(`\n   Themes of ${CARDS_PER_THEME} cards that still fit, per lane:`);
+    for (const p of budget.projections) {
+      const weight = p.perCardBytes === null ? "UNMEASURED" : `${formatBytes(p.perCardBytes)}/card`;
+      console.log(`     ${p.id.padEnd(18)} ${weight.padEnd(16)} ${p.themes ?? "—"}`);
+    }
+
+    if (budget.overWarnLine) {
+      console.warn(
+        `\n⚠️  past ${(WARN_FRACTION * 100).toFixed(0)}% of the storage allowance.\n` +
+          `   Exceeding it does not produce a bill on this plan — it cuts off access to\n` +
+          `   the store until the 30-day window rolls, so cards whose optimized variant\n` +
+          `   is not already cached render as their alt text. Publish nothing further\n` +
+          `   until this is dealt with.`,
+      );
+      process.exitCode = 1;
+    }
     return;
   }
 

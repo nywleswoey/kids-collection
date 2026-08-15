@@ -243,6 +243,12 @@ export function aiHorde(opts: AiHordeOptions = {}): ImageProvider {
     // See the pacing note: the limit is per-IP across the whole API.
     minIntervalMs: 1_200,
     concurrency: 1,
+    // No `typicalCardBytes`, deliberately (#79). It would be a WebP number, and
+    // the twelve images this hatch has ever delivered came from one model on one
+    // day at one worker's encoder settings — too thin to project a store budget
+    // from, and getting a real sample means another 30-45 minute queue wait that
+    // #74 showed is as likely to be dropped as answered. `blob-budget.ts` reports
+    // it as UNMEASURED, which is the true statement.
     requiredEnv: ["AIHORDE_API_KEY"],
     isConfigured: () => Boolean(process.env.AIHORDE_API_KEY),
 

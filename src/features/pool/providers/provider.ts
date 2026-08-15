@@ -110,6 +110,23 @@ export interface ImageProvider {
   readonly minIntervalMs: number;
   /** Workers in this provider's lane. Not hashed. */
   readonly concurrency: number;
+  /**
+   * Encoded bytes an ordinary 768x768 card from this lane weighs. Not hashed,
+   * for `minIntervalMs`'s reason twice over: it does not change the request, and
+   * it is an OBSERVATION of the response rather than an instruction to it.
+   *
+   * Declared here so `blob-budget.ts` projects the store's remaining headroom
+   * from the roster rather than from a table that has to be edited alongside it
+   * (#79). Every adapter that declares one records the measurement and its date
+   * in its own header; a lane nobody has weighed leaves it undefined and is
+   * reported as UNMEASURED, never given a neighbouring lane's number.
+   *
+   * Approximate by construction — a diffusion model's output size varies with
+   * subject complexity by roughly a factor of two either way — so it is only
+   * ever used for an order-of-magnitude projection, never for a check that
+   * refuses anything.
+   */
+  readonly typicalCardBytes?: number;
   /** True when this provider's credentials are present in the environment. */
   isConfigured(): boolean;
   /** Env vars a caller must set to configure it — used by the startup error. */

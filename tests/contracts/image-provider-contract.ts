@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readImageSize } from "@/features/pool/image-size";
-import { looksBlank } from "@/features/pool/blank-frame";
+import { MIN_BYTES_PER_PIXEL, looksBlank } from "@/features/pool/blank-frame";
 import {
   CARD_SIZE,
   ProviderRetryable,
@@ -134,6 +134,21 @@ export function runImageProviderContract(label: string, makeProvider: MakeProvid
       const provider = makeProvider();
       expect(provider.minIntervalMs).toBeGreaterThanOrEqual(0);
       expect(provider.concurrency).toBeGreaterThanOrEqual(1);
+    });
+
+    it("declares a card weight that is a picture's weight, or none at all (#79)", () => {
+      // `typicalCardBytes` feeds `blob-budget.ts`'s projection, so a wrong one
+      // silently mis-states how many themes are left. The two ends worth pinning
+      // are the ones that would make it nonsense rather than merely stale: a
+      // weight BELOW the blank-frame floor describes an image with no subject in
+      // it, and one above 16 MB is past what Vercel will even cache. Undefined
+      // stays legal — an unweighed lane reports UNMEASURED, which is true.
+      const { typicalCardBytes } = makeProvider();
+      if (typicalCardBytes === undefined) return;
+      expect(typicalCardBytes).toBeGreaterThan(
+        MIN_BYTES_PER_PIXEL * CARD_SIZE.width * CARD_SIZE.height,
+      );
+      expect(typicalCardBytes).toBeLessThan(16_000_000);
     });
   });
 }
