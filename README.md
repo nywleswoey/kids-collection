@@ -15,12 +15,13 @@ v2 (`/aidlc-discovery`).
 - Postgres (Neon) via Drizzle ORM, migrations with drizzle-kit
 - Vercel Blob for card images
 - Google OAuth (parent) — added in U2
-- Card images generated once (seed-time) via a free service — added in U3
+- Card images generated once (seed-time) via free image providers behind a
+  provider seam (`src/features/pool/providers/`) — added in U3
 
 ## Status (build units)
 - **U1 Foundation & Data** — ✅ scaffold, schema, DB client, pure logic, tests
 - **U2 Auth & Profiles** — ✅ Google sign-in (allowlist), child profiles, picker
-- **U3 Pool & Seeding** — ✅ seed pipeline (Pollinations → Blob → DB), pool reader
+- **U3 Pool & Seeding** — ✅ seed pipeline (image providers → Blob → DB), pool reader
 - **U4 Pull & Rewards** — ✅ atomic pull (no double-spend), duplicates, token grants
 - **U5 Binder** — ✅ collection by theme, progress, card detail
 - **U6 Card UI & Effects** — ✅ holographic + 3D tilt cards, rarity styling, pull reveal
@@ -33,8 +34,11 @@ To add a whole new theme, hand `seed/NEW-THEME-RUNBOOK.md` and a theme name to a
 
 ```bash
 pnpm seed --check-urls # schema + every sourceUrl must return 200
-pnpm seed --review     # generate preview images for NEW cards to seed/review/
-pnpm seed --sync       # publish reviewed bytes to Blob + insert cards (idempotent)
+pnpm seed --review     # generate preview images for NEW cards to seed/review/,
+                       #   one per card PER PROVIDER (the bake-off)
+pnpm contact-sheet "<Theme Name>"
+                       # subject x provider grid to review, into seed/review/
+pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent)
 ```
 
 ## Getting started

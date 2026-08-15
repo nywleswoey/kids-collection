@@ -51,10 +51,29 @@ export function promptHash(card: Pick<SeedCard, "imagePrompt">): string {
  * Filename stem under seed/review/. Editing a card's imagePrompt changes the hash,
  * so `--sync` finds no matching file and regenerates instead of republishing an
  * image that was reviewed against a prompt that no longer exists.
+ *
+ * `providerSegment` (#67) is `<provider-id>-<paramHash4>`, built by
+ * `providers/provider.ts`. It is a SEPARATE segment rather than another input to
+ * `promptHash`, and that distinction is load-bearing twice over:
+ *
+ *   - Staleness is still impossible. A provider switch, or a drifted adapter
+ *     parameter, changes this stem, so `--sync` finds no file and FR9 refuses
+ *     the insert. Same mechanism D4 uses for ART_STYLE, one segment along.
+ *   - The bake-off can still be read. #63 turned review into a subject x
+ *     provider grid, and a grid needs a key that groups a row. Folding the
+ *     provider into `promptHash` would give the same prompt a different hash per
+ *     provider, so nothing on disk would show that three candidates answer one
+ *     prompt.
+ *
+ * The segment is REQUIRED rather than optional-with-a-default. An optional one
+ * would let a caller silently produce the pre-#67 name — a filename that matches
+ * whatever provider drew it, which is the precise staleness this exists to make
+ * impossible.
  */
 export function reviewKey(
   themeName: string,
   card: Pick<SeedCard, "name" | "imagePrompt">,
+  providerSegment: string,
 ): string {
-  return `${slug(`${themeName}-${card.name}`)}-${promptHash(card)}`;
+  return `${slug(`${themeName}-${card.name}`)}-${promptHash(card)}-${providerSegment}`;
 }
