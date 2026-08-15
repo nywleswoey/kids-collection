@@ -23,15 +23,20 @@
  * candidates are named the same way — because a card published from the hatch
  * must be as traceable as any other.
  *
- * ── AI Horde's adapter is not here yet ───────────────────────────────────────
+ * ── AI Horde, and why its model is in code rather than in the environment ────
  * #71 settled its request parameters (`slow_workers: true` mandatory,
  * `allow_downgrade` never set, `replacement_filter: false`) but explicitly left
- * the model to #74 — and pinning an SDXL-baseline model is what makes 768x768 a
- * guarantee rather than a coin-flip against live queue depth. `params` must be
- * total and hashed, so an adapter with an unpinned model would name its review
- * files after a request it did not make. It lands with #74; the role above is
- * the part #71 made binding here.
+ * the model to #74. #74 pinned it, so the hatch registers here.
+ *
+ * The model lives in `ai-horde.ts` and NOT in `AIHORDE_MODEL`, for this file's
+ * own reason one level down. The environment carries secrets; anything that
+ * changes the BYTES belongs in a diff. A model name changes the bytes twice
+ * over: `params` is hashed into the review filename, so an env-driven model
+ * would silently rename every reviewed candidate when someone edited their
+ * `.env.local` — and on this provider a mistyped name is not a 404 but a
+ * DIFFERENT model, with the horde's most-served models being NSFW ones.
  */
+import { aiHorde } from "./ai-horde";
 import { cloudflareSdxl } from "./cloudflare-sdxl";
 import { pollinations } from "./pollinations";
 import type { ImageProvider } from "./provider";
@@ -39,9 +44,10 @@ import type { ImageProvider } from "./provider";
 export * from "./provider";
 export { pollinations } from "./pollinations";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
+export { aiHorde } from "./ai-horde";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [pollinations(), cloudflareSdxl()];
+export const PROVIDERS: readonly ImageProvider[] = [pollinations(), cloudflareSdxl(), aiHorde()];
 
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
 

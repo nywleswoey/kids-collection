@@ -240,6 +240,19 @@ provider drew the subject well, that is a pick, not a re-prompt (#63). **Cap thi
 an image still fails everywhere, take it to the human at the checkpoint with the problem named — do not swap
 the subject silently, and do not spend the session fighting the model.
 
+**The escape hatch, for a card the lanes refuse.** `ai-horde` is registered but sits out the fan-out (#71),
+so it never appears in a normal run. Reach it by name, for the handful of cards that need it:
+
+```bash
+pnpm seed --review --providers=ai-horde     # after the lanes have run; it resumes past what exists
+```
+
+It exists for **permission**, not for speed or quality: it is the only provider whose content policy plainly
+allows weapon-bearing subjects. It is also the slowest thing in this runbook by an order of magnitude —
+a volunteer queue, and this project's account holds no kudos, so **one image can take 30–45 minutes**. Use it
+for one or two cards, never for a theme. Its candidates land in `seed/review/` and appear in the contact
+sheet exactly like a lane's, so the pick is recorded the same way.
+
 **Record the pick.** Set `provider` on the theme for whichever provider wins most of the time, and add
 `provider` to individual cards only where a different one wins. `--sync` publishes the resolved provider's
 bytes and refuses any card with no pick.
@@ -258,8 +271,9 @@ publish is outlined.
 
 The page states three things rather than hiding them, and so does the command:
 
-- **MISSING cells** — that provider produced nothing for that card. A dead lane or a narrowed run, *not* a
-  provider that drew badly.
+- **MISSING cells** — that *lane* produced nothing for that card. A dead lane or a narrowed run, *not* a
+  provider that drew badly. An escape-hatch column (`ai-horde`) is labelled as such and blank by default —
+  that is the arrangement working, so it is not counted here.
 - **cards with no pick** — `--sync` will refuse these until a `provider` is set on the card or the theme.
 - **orphan files** — candidates on disk from a provider no longer registered.
 

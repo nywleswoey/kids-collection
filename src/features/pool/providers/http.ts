@@ -69,13 +69,6 @@ export async function readBytes(
   return bytes;
 }
 
-/** Decode a base64 payload (AI Horde returns images inline rather than as bytes). */
-export function fromBase64(providerId: string, b64: string): Uint8Array {
-  const bytes = new Uint8Array(Buffer.from(b64, "base64"));
-  if (bytes.byteLength === 0) throw new ProviderRetryable(`${providerId}: empty payload`);
-  return bytes;
-}
-
 /**
  * Turn raw bytes into a `GeneratedImage`, refusing anything that is not a usable
  * card. Every adapter ends here, which is what makes these two checks uniform

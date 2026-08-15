@@ -24,6 +24,14 @@
  *     cannot tell those apart and says so instead of implying one). #63's grid
  *     is only readable if a blank cell is distinguishable from a provider that
  *     drew badly.
+ *
+ *     An escape hatch (#71) is exempt from the COUNT but not from the GRID. It
+ *     sits out the fan-out by design, so it is blank for almost every card —
+ *     that is the arrangement working. Counting those blanks would fire the "N
+ *     candidate(s) missing" banner on every sheet forever, which teaches a
+ *     reviewer to ignore the one warning that says a lane died. Its column still
+ *     renders, because a hatch that WAS invoked for a card has to be visible
+ *     beside the lanes it beat.
  *   - an UNPICKED row — no `provider` resolved, so `--sync` will refuse the card.
  *     Better learned here than at the publish gate.
  *   - an ORPHAN file — a candidate on disk belonging to no registered provider,
@@ -35,6 +43,17 @@
  */
 import { slug } from "./keys";
 import { reviewFileName, resolveProviderId, type NamingProvider } from "./review-files";
+import type { ProviderRole } from "./providers/provider";
+
+/**
+ * What the grid needs to know about a provider: how to name its file, and
+ * whether a blank cell is a gap or the arrangement working.
+ *
+ * `role` is required rather than optional-with-a-default for the reason
+ * `reviewKey`'s provider segment is: an optional one would silently count a
+ * hatch as a lane, which is the exact miscount this type exists to prevent.
+ */
+export type SheetProvider = NamingProvider & { role: ProviderRole };
 
 /** Display order — legendary first, so the cards that matter most are seen first. */
 const RARITY_ORDER: Record<string, number> = {
@@ -79,6 +98,8 @@ export interface SheetRow {
 export interface ContactSheet {
   theme: string;
   providerIds: string[];
+  /** Of those, the ones that sit out the fan-out (#71) — expected to be sparse. */
+  escapeHatchIds: string[];
   rows: SheetRow[];
   /** (card, provider) pairs with no candidate on disk. */
   missing: number;
@@ -107,7 +128,7 @@ export interface SheetDeps {
  */
 export function planContactSheet(
   theme: SheetTheme,
-  providers: readonly NamingProvider[],
+  providers: readonly SheetProvider[],
   deps: SheetDeps,
   siblingThemeNames: readonly string[] = [],
 ): ContactSheet {
@@ -125,7 +146,8 @@ export function planContactSheet(
         const fileName = reviewFileName(theme.name, card, provider);
         expected.add(fileName);
         const present = deps.exists(fileName);
-        if (!present) missing++;
+        // A hatch's blank is not a gap — see the header note.
+        if (!present && provider.role === "lane") missing++;
         return {
           providerId: provider.id,
           fileName,
@@ -168,6 +190,7 @@ export function planContactSheet(
   return {
     theme: theme.name,
     providerIds: providers.map((p) => p.id),
+    escapeHatchIds: providers.filter((p) => p.role === "escape-hatch").map((p) => p.id),
     rows,
     missing,
     unpicked,
@@ -182,7 +205,10 @@ export function renderContactSheet(sheet: ContactSheet): string {
       ? `<p class="warn">⚠ ${sheet.unpicked} card(s) have no provider chosen. <code>--sync</code> will refuse them until a <code>provider</code> is set on the card or the theme.</p>`
       : "",
     sheet.missing > 0
-      ? `<p class="warn">⚠ ${sheet.missing} of ${sheet.rows.length * (sheet.providerIds.length || 1)} cell(s) have no candidate on disk. A blank cell means that provider produced nothing for that card — a dead lane, a run that was narrowed, or a card <code>--review</code> never generated because it is already published — NOT that it drew badly.</p>`
+      ? `<p class="warn">⚠ ${sheet.missing} lane cell(s) have no candidate on disk. A blank cell means that lane produced nothing for that card — a dead lane, a run that was narrowed, or a card <code>--review</code> never generated because it is already published — NOT that it drew badly.</p>`
+      : "",
+    sheet.escapeHatchIds.length > 0
+      ? `<p class="sub">${sheet.escapeHatchIds.map(esc).join(", ")} ${sheet.escapeHatchIds.length === 1 ? "is an escape hatch" : "are escape hatches"} (#71): not part of the fan-out, so blank is the normal state. A filled cell there means someone invoked it deliberately for that card.</p>`
       : "",
     sheet.orphans.length > 0
       ? `<p class="warn">⚠ ${sheet.orphans.length} file(s) in seed/review/ belong to no registered provider (a rename or a retirement): ${sheet.orphans.map(esc).join(", ")}</p>`
@@ -225,6 +251,7 @@ img{width:100%;border-radius:8px;display:block;background:#222}
 .e{opacity:.8;margin-top:6px}
 .p{margin-top:6px;font-size:12px;opacity:.8}
 .m{font-size:11px;opacity:.55;margin-top:4px}
+.hatch{font-size:10px;opacity:.6;font-weight:400;letter-spacing:.04em;margin-top:3px}
 .miss{color:#f66;border:1px dashed #f66;border-radius:8px;padding:24px;text-align:center}
 td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 </style>
@@ -232,7 +259,14 @@ td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 <p class="sub">Every card this theme declares in <code>seed/cards.json</code>, not just the unpublished ones — this sheet reads no database. One row per subject, one column per provider. The outlined cell is what <code>--sync</code> would publish.</p>
 ${banner}
 <table>
-<thead><tr><th>Card</th>${sheet.providerIds.map((p) => `<th>${esc(p)}</th>`).join("")}</tr></thead>
+<thead><tr><th>Card</th>${sheet.providerIds
+    .map(
+      (p) =>
+        `<th>${esc(p)}${
+          sheet.escapeHatchIds.includes(p) ? `<div class="hatch">escape hatch</div>` : ""
+        }</th>`,
+    )
+    .join("")}</tr></thead>
 <tbody>
 ${rows}
 </tbody>

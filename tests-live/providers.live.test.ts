@@ -28,8 +28,41 @@ import { CARD_SIZE, PROVIDERS } from "@/features/pool/providers";
  */
 const SALT = `kc-live-${Date.now()}`;
 
-const configured = PROVIDERS.filter((p) => p.isConfigured());
-const skipped = PROVIDERS.filter((p) => !p.isConfigured());
+/**
+ * Which providers this run covers.
+ *
+ * Lanes by default; an escape hatch only when NAMED — the same rule `selectLanes`
+ * applies to `--review`, for a sharper reason here. AI Horde is queue-backed and
+ * this project's account holds no kudos, so #74 measured a queue position of 352
+ * and a ~2850s wait for one generation. The contract makes several generations
+ * per provider. Including the hatch by default would turn `pnpm test:providers`
+ * from a ten-minute check into an all-afternoon one that times out anyway, and a
+ * suite nobody can afford to run is a suite nobody runs.
+ *
+ *   LIVE_PROVIDERS=ai-horde pnpm test:providers   # just the hatch
+ *   LIVE_PROVIDERS=ai-horde,pollinations ...      # both
+ *
+ * Set `testTimeout` accordingly when you do — the default 180s will not cover a
+ * cold horde queue.
+ */
+const named = process.env.LIVE_PROVIDERS?.split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const selected = named
+  ? PROVIDERS.filter((p) => named.includes(p.id))
+  : PROVIDERS.filter((p) => p.role === "lane");
+
+const sittingOut = PROVIDERS.filter((p) => !selected.includes(p));
+if (sittingOut.length > 0) {
+  console.warn(
+    `\n⚠️  Not covered by this run: ${sittingOut.map((p) => p.id).join(", ")}` +
+      `\n   Name them to include one: LIVE_PROVIDERS=${sittingOut[0]!.id} pnpm test:providers\n`,
+  );
+}
+
+const configured = selected.filter((p) => p.isConfigured());
+const skipped = selected.filter((p) => !p.isConfigured());
 
 if (skipped.length > 0) {
   console.warn(
@@ -42,10 +75,10 @@ if (skipped.length > 0) {
 describe("live providers", () => {
   it("reports what it actually exercised", () => {
     console.log(
-      `Live contract over ${configured.length}/${PROVIDERS.length} provider(s): ` +
+      `Live contract over ${configured.length}/${selected.length} selected provider(s): ` +
         `${configured.map((p) => p.id).join(", ") || "(none)"}`,
     );
-    expect(PROVIDERS.length).toBeGreaterThan(0);
+    expect(selected.length).toBeGreaterThan(0);
   });
 });
 
