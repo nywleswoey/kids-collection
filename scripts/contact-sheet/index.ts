@@ -20,6 +20,7 @@ import { join } from "node:path";
 import { loadSeed } from "@/features/pool/loader";
 import { slug } from "@/features/pool/keys";
 import { planContactSheet, renderContactSheet } from "@/features/pool/contact-sheet";
+import { parseSidecar } from "@/features/pool/review-files";
 import { PROVIDERS } from "@/features/pool/providers";
 
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
@@ -62,9 +63,12 @@ function main() {
     PROVIDERS,
     {
       exists: (f) => existsSync(join(REVIEW_DIR, f)),
+      // Through the same reader `--sync` uses for #75's durable record, so a
+      // sidecar this grid labels a cell from is one the publish path would
+      // accept — and neither renders nor records a shape the other rejects.
       readSidecar: (f) => {
         try {
-          return JSON.parse(readFileSync(join(REVIEW_DIR, f), "utf8")) as { model?: string };
+          return parseSidecar(readFileSync(join(REVIEW_DIR, f), "utf8"));
         } catch {
           return undefined;
         }

@@ -87,12 +87,24 @@ import { runBakeOff, makeGate, withRetry, type BakeOffJob } from "@/features/poo
 import {
   buildSidecar,
   missingReviews,
+  parseSidecar,
   reviewFileName,
+  reviewStem,
   resolveProviderId,
   sidecarFileName,
   unknownProviders,
   type NamedCard,
+  type ReviewSidecar,
 } from "@/features/pool/review-files";
+import {
+  emptyProvenance,
+  parseProvenance,
+  recordProvenance,
+  serializeProvenance,
+  toProvenance,
+  type ProvenanceFile,
+  type PublishedCard,
+} from "@/features/pool/provenance";
 import type { SeedCard, ThemeSeed } from "@/features/pool/seed-schema";
 import {
   CARD_SIZE,
@@ -122,6 +134,8 @@ import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed", "review");
+/** Committed, generated, never hand-edited — see `features/pool/provenance.ts` (#75). */
+const PROVENANCE_PATH = join(process.cwd(), "seed", "provenance.json");
 
 // Retry budget per (card, provider) attempt, honoured by both generation paths —
 // the lane runner and `--allow-unreviewed`. Concurrency and pacing are NOT here
@@ -268,6 +282,14 @@ async function main() {
     return;
   }
 
+  // Read the provenance file BEFORE anything is published (#75). It is loaded
+  // rather than merely appended to, so a corrupt one is a fail-fast with nothing
+  // written — the alternative, treating an unreadable file as empty, would clobber
+  // every record in it. Note this is the only way provenance can stop a run, and
+  // it stops it before the run starts; once cards are being published it never
+  // refuses one. That is FR9's job.
+  const provenanceBefore = loadProvenance();
+
   // ── FR9: refuse to publish an image no human has seen. Before any write, on
   // every insert path — --publish reaches insertCardIfNew too, and the invariant
   // ("no unreviewed content path to a child, ever") carries no mode qualifier.
@@ -320,6 +342,11 @@ async function main() {
     );
   }
 
+  // Every card whose bytes this run actually published, with what drew them.
+  // Collected during the loop and written once at the end: a file rewritten 30
+  // times mid-run would be a torn record if the run died halfway.
+  const publishedCards: PublishedCard[] = [];
+
   const report = {
     inserted: 0,
     updated: 0,
@@ -363,11 +390,26 @@ async function main() {
         // an optimisation — it re-opens the gap where the parent reviewed image A
         // and the child received image B.
         const provider = resolveProvider(theme, card);
-        const reviewFile = provider && reviewPath(theme.name, card, provider);
+        const reviewFile = provider ? reviewPath(theme.name, card, provider) : undefined;
 
         let bytes: Uint8Array;
-        if (reviewFile && existsSync(reviewFile)) {
+        // What drew these bytes, for the durable record (#75). Undefined only
+        // where nothing witnessed them — a candidate whose sidecar is gone —
+        // and that is reported, never guessed at from today's adapter.
+        let sidecar: ReviewSidecar | undefined;
+        // Did a human see them? True off the review folder, false on the
+        // --allow-unreviewed path below, and recorded either way.
+        let reviewed = false;
+        if (provider && reviewFile && existsSync(reviewFile)) {
           bytes = new Uint8Array(readFileSync(reviewFile));
+          reviewed = true;
+          sidecar = readSidecar(theme.name, card, provider);
+          if (!sidecar) {
+            console.warn(
+              `⚠️  ${theme.name} / ${card.name}: no readable sidecar beside the reviewed image — ` +
+                `publishing it, but nothing will record what drew it.`,
+            );
+          }
           report.reused++;
         } else {
           // Only reachable via --allow-unreviewed, which needs a live provider —
@@ -389,13 +431,16 @@ async function main() {
           // logical attempt; the gate is re-entered per attempt so a retry pays
           // the provider's pacing rather than jumping it.
           const gate = publishGate(provider);
-          bytes = (
-            await withRetry(
-              provider,
-              () => gate().then(() => provider.generate(buildPrompt(card), CARD_SIZE)),
-              { retries: RETRIES },
-            )
-          ).bytes;
+          const image = await withRetry(
+            provider,
+            () => gate().then(() => provider.generate(buildPrompt(card), CARD_SIZE)),
+            { retries: RETRIES },
+          );
+          bytes = image.bytes;
+          // Generated here, so the witness is in hand and needs no sidecar on
+          // disk. `--allow-unreviewed` defeats the review guarantee; it does not
+          // get to defeat the record as well.
+          sidecar = buildSidecar(provider, image);
         }
 
         const imageUrl = await uploadImage(blobKey(theme.name, card.name), bytes);
@@ -409,6 +454,20 @@ async function main() {
         });
         if (res === "inserted") {
           report.inserted++;
+          // Recorded on `inserted` only: this is the run that put these bytes in
+          // a child's binder (#75). A `skipped` card was published by some
+          // earlier run, whose record — or absence of one — is the true one.
+          if (provider && sidecar) {
+            publishedCards.push({
+              theme: theme.name,
+              card: card.name,
+              provenance: toProvenance(
+                sidecar,
+                reviewStem(theme.name, card, provider),
+                reviewed,
+              ),
+            });
+          }
           console.log(`✓ inserted ${theme.name} / ${card.name}`);
         } else {
           report.skipped++;
@@ -436,6 +495,22 @@ async function main() {
     if (report.prunedThemes > 0) {
       console.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
     }
+  }
+
+  // ── #75: what drew each card this run published, made durable.
+  //
+  // After the inserts rather than alongside them: a file rewritten per card is a
+  // torn record if the run dies halfway, and this one is a git artifact whose
+  // whole value is being reviewable as a single diff.
+  if (publishedCards.length > 0) {
+    writeFileSync(
+      PROVENANCE_PATH,
+      serializeProvenance(recordProvenance(provenanceBefore, publishedCards)),
+    );
+    console.log(
+      `✎ seed/provenance.json: recorded what drew ${publishedCards.length} newly published card(s). ` +
+        `Commit it with the theme.`,
+    );
   }
 
   console.log(`\nSeed (${mode}) complete:`, report);
@@ -530,6 +605,48 @@ async function review(
         `   candidates already on disk are not regenerated.`,
     );
   }
+}
+
+/**
+ * The committed provenance record as it stands, or an empty one on first run
+ * (#75).
+ *
+ * A missing file is normal — it is the state before any theme ships on this
+ * pipeline. A file that exists but does not parse is NOT normal, and throws:
+ * carrying on from empty would rewrite the file without the records it already
+ * holds, which is the one way this record can be lost.
+ */
+function loadProvenance(): ProvenanceFile {
+  if (!existsSync(PROVENANCE_PATH)) return emptyProvenance();
+  try {
+    return parseProvenance(JSON.parse(readFileSync(PROVENANCE_PATH, "utf8")));
+  } catch (err) {
+    throw new Error(
+      `seed/provenance.json is unreadable (${String(err)}).\n` +
+        `   Nothing has been written. It is a generated file — restore it with ` +
+        `\`git checkout seed/provenance.json\` rather than repairing it by hand.`,
+    );
+  }
+}
+
+/**
+ * The sidecar beside a reviewed candidate — the witness of what drew it.
+ *
+ * Undefined when it is absent or malformed, because there is no honest substitute:
+ * re-deriving `params` from the registered adapter would record the request that
+ * WOULD be made now rather than the one that was made then, and `model` cannot be
+ * re-derived at all. A card with no witness gets no record.
+ */
+function readSidecar(
+  themeName: string,
+  card: NamedCard,
+  provider: ImageProvider,
+): ReviewSidecar | undefined {
+  const path = join(REVIEW_DIR, sidecarFileName(themeName, card, provider));
+  if (!existsSync(path)) return undefined;
+  // Missing a record is a cost; failing to publish a reviewed card over a
+  // malformed file in scratch would not be. `parseSidecar` swallows both.
+  return parseSidecar(readFileSync(path, "utf8"));
 }
 
 /** Resolve a card's provider to a registered adapter, or undefined. */

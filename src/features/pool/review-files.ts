@@ -8,6 +8,7 @@
  * image lives in, or an honest review sitting can still leave the guard
  * unsatisfied.
  */
+import { z } from "zod";
 import { EXTENSIONS } from "./image-size";
 import { reviewKey } from "./keys";
 import { cardKey } from "./publish-plan";
@@ -25,8 +26,25 @@ export type NamedCard = Pick<SeedCard, "name" | "imagePrompt">;
 export type NamingProvider = Pick<ImageProvider, "id" | "params" | "format">;
 
 /**
- * Filename of one bake-off candidate:
- *   `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>`
+ * The stem every artifact of one bake-off candidate shares:
+ *   `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>`
+ *
+ * The single place `reviewKey` is composed with a provider. The image, the
+ * sidecar and #75's durable record all name the same candidate, so all three
+ * derive from here rather than each assembling the same three inputs — a
+ * second assembly is a second thing to drift, which is this module's whole
+ * reason for existing.
+ */
+export function reviewStem(
+  themeName: string,
+  card: NamedCard,
+  provider: NamingProvider,
+): string {
+  return reviewKey(themeName, card, providerSegment(provider));
+}
+
+/**
+ * Filename of one bake-off candidate: the stem, with the provider's extension.
  *
  * The extension follows the provider, because they do not agree: Pollinations
  * serves JPEG, Cloudflare Workers AI serves PNG. A fixed `.jpg` would be a lie
@@ -38,7 +56,7 @@ export function reviewFileName(
   card: NamedCard,
   provider: NamingProvider,
 ): string {
-  return `${reviewKey(themeName, card, providerSegment(provider))}.${EXTENSIONS[provider.format]}`;
+  return `${reviewStem(themeName, card, provider)}.${EXTENSIONS[provider.format]}`;
 }
 
 /**
@@ -59,16 +77,38 @@ export function sidecarFileName(
   card: NamedCard,
   provider: NamingProvider,
 ): string {
-  return `${reviewKey(themeName, card, providerSegment(provider))}.json`;
+  return `${reviewStem(themeName, card, provider)}.json`;
 }
 
-export interface ReviewSidecar {
-  provider: string;
+const reviewSidecarSchema = z.object({
+  provider: z.string().min(1),
   /** What the response named, where it named anything. Absent means unwitnessed. */
-  model?: string;
+  model: z.string().min(1).optional(),
   /** What was requested — the hashed bag, recorded so a stale file is explicable. */
-  params: Record<string, string | number | boolean>;
-  format: string;
+  params: z.record(z.union([z.string(), z.number(), z.boolean()])),
+  format: z.string().min(1),
+});
+
+export type ReviewSidecar = z.infer<typeof reviewSidecarSchema>;
+
+/**
+ * Read a sidecar's contents back, or undefined for anything that is not one.
+ *
+ * Both readers go through here — the contact sheet's model labels and #75's
+ * durable record — so neither can accept a shape the other would reject. Pure:
+ * the callers own the filesystem, this owns what a sidecar IS.
+ *
+ * Undefined rather than throwing, for both of them. A malformed file in
+ * gitignored scratch must not fail a publish, and must not put junk in a grid
+ * cell either.
+ */
+export function parseSidecar(raw: string): ReviewSidecar | undefined {
+  try {
+    const parsed = reviewSidecarSchema.safeParse(JSON.parse(raw));
+    return parsed.success ? parsed.data : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

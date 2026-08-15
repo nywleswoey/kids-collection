@@ -38,7 +38,8 @@ pnpm seed --review     # generate preview images for NEW cards to seed/review/,
                        #   one per card PER PROVIDER (the bake-off)
 pnpm contact-sheet "<Theme Name>"
                        # subject x provider grid to review, into seed/review/
-pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent)
+pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent),
+                       #   recording what drew them in seed/provenance.json
 ```
 
 ## Getting started

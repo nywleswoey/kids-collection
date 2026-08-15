@@ -461,12 +461,24 @@ does not have to. It refuses to insert any card lacking a reviewed image from it
 That is the design working — an unjudged bake-off has no reviewed image, only candidates — not a bug. The
 fix is always Step 8, never `--allow-unreviewed`.
 
-Then:
+`--sync` also rewrites **`seed/provenance.json`**, one entry per card it just published, recording what
+actually drew it — the model the response *named*, the parameters that were *asked for*, and the review key
+those bytes were reviewed under (#75). `seed/review/` is scratch and gets deleted; this is the only thing
+that outlives it. **Commit it with the theme** — it is generated, so never hand-edit it, and never write an
+entry for a card you did not just publish:
 
 ```bash
+git add seed/provenance.json && git commit -m "chore(seed): record what drew <Theme>"
 git push -u origin theme/<theme-slug>
 gh pr create --fill
 ```
+
+If a card publishes with *"no readable sidecar beside the reviewed image"*, that card gets no entry. Report
+it; do not invent one — a `params` bag copied from today's adapter is a guess, not a record.
+
+Every entry a runbook run produces reads `"reviewed": true`. A `false` there means the bytes were generated
+at publish time under `--allow-unreviewed` and no human ever saw them, which the *Never* list forbids — so
+if you see one in a diff, something went badly wrong and it is worth stopping over.
 
 Report to the human: cards inserted, images published, the PR URL.
 
@@ -482,6 +494,7 @@ Abort the run and report. Do not improvise past any of these.
 | `--sync` refuses: "would be inserted with no reviewed image" | Run `--review` first. **Never pass `--allow-unreviewed`** — it defeats the guarantee that no unreviewed image reaches a child. |
 | `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed/cards.json`. Never route around it with `--allow-unreviewed`. |
 | `--sync` refuses: "name a provider that is not registered" | A typo, or an adapter that was retired. Fix the `provider` value; re-running `--review` cannot satisfy this one. |
+| `--sync` refuses: "seed/provenance.json is unreadable" | The generated provenance record was hand-edited or truncated. Nothing has been written. Restore it with `git checkout seed/provenance.json`; never repair it by hand. |
 | `--review` aborts naming an unconfigured provider | Add the key, or narrow the run *on purpose* with `--providers=`. Never let a lane drop out silently — a blank column reads as a provider that drew badly. |
 | Schema failure you cannot resolve without dropping below 30 cards or off the pyramid | The theme is not viable as scoped. That is a human call. |
 | A `sourceUrl` you cannot make resolve for a subject you consider essential | Ditto. |
@@ -504,6 +517,9 @@ Abort the run and report. Do not improvise past any of these.
 - Never delete a current candidate to narrow a row. A missing cell means a lane failed; making a rival
   disappear is answering checkpoint 2 for the human.
 - Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- **Never hand-write or hand-edit `seed/provenance.json`.** It is what a publish *observed*, and a line
+  typed into it by hand is indistinguishable from one the pipeline recorded. A card with no entry has no
+  witness, and that is a true statement worth keeping.
 - Never move a provider between lane and escape hatch, or add one, to get a run through. The registry
   (`src/features/pool/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
 - **Never turn on AI Horde's `replacement_filter` to get a blocked prompt through.** It does make the
