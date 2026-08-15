@@ -98,6 +98,32 @@ describe("buildPrompt (U3-BR5)", () => {
     expect(p).toContain("a panda");
     expect(p).toContain(ART_STYLE);
   });
+
+  /**
+   * #81 — ART_STYLE must not name a physical card, frame or border.
+   *
+   * The style string used to read "cartoon TRADING-CARD illustration", and
+   * `cloudflare-sdxl` drew that literally: a wooden picture frame, a tan mat
+   * with a gold rule, a rounded panel, with the subject inset inside it. #81
+   * measured 7/20 framed against 1/20 once the words came out, and the residual
+   * one is a flat colour margin rather than a decorative frame.
+   *
+   * This is a REGRESSION GUARD, not a restatement of the constant. The removed
+   * words are the natural way to describe what these images are for, so the
+   * likeliest future edit — someone making the style read better, or adding a
+   * card-ish word to another lane's prompt — is exactly the one that brings the
+   * frames back. It would be invisible: a framed card is a valid 768x768 PNG,
+   * so `finishGeneration` passes it and only a human at checkpoint 2 sees it.
+   *
+   * Naming the border to forbid it does NOT work and must not be the fix — #81
+   * measured "full-bleed edge-to-edge artwork, no border" appended to the style
+   * at 6/20, no better than saying nothing. Diffusion models weight the noun,
+   * not the negation. Neither does `negative_prompt` on the Cloudflare adapter
+   * (5/20 against a 7/20 baseline), which is why no such param was added.
+   */
+  it("names no physical card, frame or border — the words SDXL drew literally (#81)", () => {
+    expect(ART_STYLE).not.toMatch(/trading[ -]?card|\bcard\b|\bframe|\bborder|\bmat(te)?\b/i);
+  });
 });
 
 // generateImage retry moved out with the provider seam (#67): retry, backoff and

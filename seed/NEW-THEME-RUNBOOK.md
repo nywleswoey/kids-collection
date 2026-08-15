@@ -126,7 +126,10 @@ added at Step 6, on the theme and — sparsely — on individual cards.
 - **`imagePrompt`** — concrete, kid-friendly, **no art-style words**: `buildPrompt()` appends `ART_STYLE`
   for you. What works across every provider: name **one** subject ("a single …"), give a viewpoint ("side
   view"), put it somewhere plain ("parked on grass"). Sleek aircraft photographed in flight are the shape
-  most often rendered as two overlapping copies.
+  most often rendered as two overlapping copies. Name **no object the picture sits inside** — card,
+  frame, border, poster, sticker, mat. Cloudflare's SDXL draws those literally and insets the real subject
+  within them; that was #81, and it came from `ART_STYLE` saying "trading-card" rather than from any
+  card's own wording.
 
 ### What the providers can and cannot draw
 
@@ -140,7 +143,7 @@ ran them through the escape hatch. What survives is narrower than the old blanke
 
 | Failure class | `pollinations` (asks for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) |
 |---|---|---|---|
-| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows, and has baked a decorative frame border in | **the one it fixes** — #74's single bow, single arrow, no frame: the first usable Longbowman this project has had |
+| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had |
 | Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` |
 | **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounts (one horse where the prompt says two) |
 
@@ -267,8 +270,17 @@ Rule out a candidate on:
 - Gore, damage, fire, combat, casualties — anything from the prohibited list above.
 - Scary rather than friendly.
 - Wrong subject, or unreadable mush.
-- Text baked into the image, or a decorative frame border (`ART_STYLE` asks for neither; the models
-  sometimes disagree — Cloudflare in particular has drawn frames).
+- Text baked into the image, or a decorative frame border. Cloudflare drew frames on roughly a third of
+  candidates until **#81** found the cause in `ART_STYLE` itself — it used to say "trading-**card**
+  illustration", and SDXL drew the card: a wooden frame or a tan mat with the subject inset inside it. The
+  words are gone and the rate fell to ~1 in 20, so a frame is now rare rather than expected. If you see one,
+  it is a re-roll, **not** a re-prompt — and do not try to word your way out of it by asking for "no border",
+  which #81 measured as no better than saying nothing.
+- **A photograph or a 3D render**, whichever lane drew it (#77). The published set varies enormously in
+  style, but it is always an *illustration*, so photoreal skin, camera depth-of-field blur, a naturalistic
+  cast shadow, or the look of a glazed figurine on a surface reads as a different product sitting in the
+  binder. This is the one style question settled on sight; **every other one is a pick, not a rejection.**
+  It bites the Pollinations lane hardest — `sana` leans semi-real, per the table in Step 4.
 - **A blank frame.** Cloudflare can return a *pure black* 768×768 PNG for a perfectly innocuous prompt —
   ~40% of attempts on one measured prompt. It is a valid PNG at exactly the right size, so the seam accepts
   it and it lands looking like a real candidate; the tell is file size, ~2 KB against a normal 750–900 KB.
@@ -278,6 +290,26 @@ Rule out a candidate on:
 Then, for each row, write down one of three outcomes: **a recommended provider with a one-line reason**,
 **a genuine tie** (say so — the human may have a taste preference), or **nothing usable**. Only the third
 one leads to more generation.
+
+### May one theme mix providers?
+
+Yes, and you do not need to ask. **Pick the best-drawn candidate for each card, from whichever lane drew
+it** (#77).
+
+Pick on what Step 4's per-provider table predicts — one lane draws a subject class the other cannot.
+"This candidate draws the longbow as one bow" is a reason; "this lane is my favourite" is not.
+
+Mixing costs less than it sounds like it should, because the published binder has never been uniform.
+`Animals` — one theme, one provider, one run, live in children's hands — carries a flat graphic tiger, a
+painterly red panda and a soft watercolour axolotl. The two lanes *do* differ, and visibly: Cloudflare is
+flat and outlined where Pollinations is semi-real and painterly. That gap is real, and it is no wider
+than the gap already sitting inside a single published theme.
+
+Do not keep a lane for **continuity**, either. Pollinations drew the published cards but no longer draws
+in the style that drew them (#64), so picking it buys nothing back. That is about which candidate you
+pick, not about which lanes run — the lane roster is #69's, and unchanged.
+
+Legendaries get no special rule. If two of them tie, say so at the checkpoint; do not settle it yourself.
 
 ### Which lever: pick another provider, or change the words?
 
@@ -389,7 +421,8 @@ The human has chosen; write it down. This is the one step with no counterpart in
 pipeline, and it is what stands between a reviewed image and a published one.
 
 In `seed/cards.json`, set **`provider` on the theme** to whichever provider won most rows, and add
-`provider` to **individual cards only where a different one won** — a sparse override list, not 30 repeats:
+`provider` to **individual cards only where a different one won** — a sparse override list, not 30 repeats.
+A theme carrying several lanes is normal (#77):
 
 Add one key to the theme object, and one key to each overridden card. Everything else in the file is left
 exactly as it is — no other field is touched by this step:
