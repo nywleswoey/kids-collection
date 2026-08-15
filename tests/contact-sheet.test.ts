@@ -114,6 +114,31 @@ describe("planContactSheet — the three absences it must not hide", () => {
     expect(cf.every((c) => !c.present)).toBe(true);
   });
 
+  it("does not count an escape hatch's blanks as missing candidates (#71, #74)", () => {
+    // An escape hatch sits out the fan-out by design, so it has no candidate for
+    // almost every card — that is the arrangement working, not a gap. Counting
+    // those blanks would fire the "N candidate(s) missing" banner on every sheet
+    // forever, which trains a reviewer to ignore the one warning that tells them
+    // a LANE died. The column still renders: a hatch that WAS invoked for a card
+    // has to be visible next to the lanes that lost to it.
+    const hatch = { ...fakeProvider({ id: "ai-horde", role: "escape-hatch" }), format: "webp" as const };
+    const sheet = planContactSheet(theme, [...PROVIDERS, hatch], deps(allFiles(theme)));
+    expect(sheet.providerIds).toContain("ai-horde");
+    expect(sheet.missing).toBe(0);
+    const cells = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "ai-horde"));
+    expect(cells).toHaveLength(2);
+    expect(cells.every((c) => !c.present)).toBe(true);
+  });
+
+  it("still counts a LANE's blanks when a hatch is in the grid too", () => {
+    // The exemption is about the hatch, not about the sheet giving up on
+    // counting. A dead lane must still be reported while a hatch sits out.
+    const hatch = { ...fakeProvider({ id: "ai-horde", role: "escape-hatch" }), format: "webp" as const };
+    const onlyJpeg = theme.cards.map((c) => reviewFileName(theme.name, c, jpegProvider));
+    const sheet = planContactSheet(theme, [...PROVIDERS, hatch], deps(onlyJpeg));
+    expect(sheet.missing).toBe(2);
+  });
+
   it("counts cards with no pick — the ones --sync will refuse", () => {
     const unjudged: SheetTheme = { name: "Warriors", cards };
     const sheet = planContactSheet(unjudged, PROVIDERS, deps(allFiles(unjudged)));

@@ -236,16 +236,33 @@ describe("the registry (#67)", () => {
     expect(LANES.length).toBeLessThanOrEqual(PROVIDERS.length);
   });
 
-  it("does not yet register AI Horde — #71 keyed it, #74 picks its model", () => {
+  it("registers AI Horde as an escape hatch with a pinned model (#74)", () => {
     // #71 settled the hatch's role and its request parameters but left the model
-    // to #74, and an unpinned model would make 768x768 a coin-flip against live
-    // queue depth — and would name review files after a request never made.
-    expect(PROVIDER_IDS).not.toContain("ai-horde");
+    // to #74, because an unpinned model makes 768x768 a coin-flip against live
+    // queue depth — measured at 456-529px during #74's run, where a 768 request
+    // is refused outright — and would name review files after a request never
+    // made. With the model pinned, the hatch can register.
+    expect(PROVIDER_IDS).toContain("ai-horde");
+    const horde = providerById("ai-horde")!;
+    expect(horde.role).toBe("escape-hatch");
+    expect(horde.params.model).toBeTruthy();
+    // Never in the default fan-out — reachable only by name (#71).
+    expect(LANES.map((p) => p.id)).not.toContain("ai-horde");
   });
 
-  it("selects every lane when --providers is absent", () => {
+  it("reaches the escape hatch when it is named, and only then (#71)", () => {
     configureAll();
-    expect(selectLanes().map((p) => p.id)).toEqual([...PROVIDER_IDS]);
+    process.env.AIHORDE_API_KEY = "k";
+    expect(selectLanes(["ai-horde"]).map((p) => p.id)).toEqual(["ai-horde"]);
+  });
+
+  it("selects every lane when --providers is absent — and no hatch", () => {
+    // Compared against LANES rather than PROVIDER_IDS. The two were the same set
+    // while the registry held only lanes; #74 registered the first escape hatch,
+    // and the whole point of the role is that they now differ.
+    configureAll();
+    expect(selectLanes().map((p) => p.id)).toEqual(LANES.map((p) => p.id));
+    expect(LANES.length).toBeLessThan(PROVIDER_IDS.length);
   });
 
   it("narrows deliberately when --providers names a subset", () => {
