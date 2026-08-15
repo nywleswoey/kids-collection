@@ -217,10 +217,17 @@ entries — that reshuffles what the children already know.
 
 ```bash
 pnpm seed --check-urls     # schema runs first; then every sourceUrl in the file must return 200
+pnpm seed --blob-budget    # is there room in Blob for another 30 cards? (#79)
 ```
 
 Schema failure → fix the JSON. A 404 → find a URL that resolves, or change the subject; **never** delete
 the field or point at a search page. Re-run until clean. This is network-only and touches no database.
+
+`--blob-budget` is read-only and prints how much of the plan's storage allowance the pool has spent, plus
+how many more 30-card themes fit **at each lane's measured weight**. Run it here rather than after
+publishing, because it is only useful while you can still act on it. On 2026-08-15 it read *31.36 MB of
+1.00 GB, 415 more Pollinations themes or 39 Cloudflare ones* — so the honest summary is **there is room,
+and the lanes differ by an order of magnitude in how fast it goes**. If it warns, stop: see *Hard stops*.
 
 ## Step 6 — Commit, then generate the art
 
@@ -317,6 +324,24 @@ in the style that drew them (#64), so picking it buys nothing back. That is abou
 pick, not about which lanes run — the lane roster is #69's, and unchanged.
 
 Legendaries get no special rule. If two of them tie, say so at the checkpoint; do not settle it yourself.
+
+### Does a lane's file size change the pick?
+
+**No. Pick on the picture (#79).** Cloudflare SDXL returns ~826 KB PNGs against Pollinations' ~78 KB
+JPEGs, and that 10× is real in the Blob store and nowhere else that matters:
+
+- **The child never receives it.** Every card surface renders through `next/image`, so what a browser
+  downloads is a re-encoded WebP at the width it asked for, and *the ordering inverts*. Measured through
+  the production optimizer on 2026-08-15, at `w=512 q=75`: a 937.9 KB Cloudflare PNG delivered **39.5 KB**,
+  a 147.9 KB JPEG delivered **68.4 KB**, a 41.5 KB Pollinations JPEG delivered **9.6 KB**. Delivered weight
+  tracks how busy the *picture* is, not how heavy the source file was.
+- **Image transformations don't care either.** They are billed per cache miss, so a 30-card theme costs at
+  most 30 × 4 requested widths = 120 of them whichever lane drew it.
+- **Storage is the one meter it moves**, and `--blob-budget` in Step 5 is where you find out whether that
+  matters this run. At the last reading it did not.
+
+So there is nothing to trade off at the checkpoint. If `--blob-budget` ever says otherwise, that is a
+decision about *how many more themes to publish*, not about which candidate is the better drawing.
 
 ### Which lever: pick another provider, or change the words?
 
@@ -515,6 +540,7 @@ Abort the run and report. Do not improvise past any of these.
 | Schema failure you cannot resolve without dropping below 30 cards or off the pyramid | The theme is not viable as scoped. That is a human call. |
 | A `sourceUrl` you cannot make resolve for a subject you consider essential | Ditto. |
 | An image still failing after 2 re-prompt rounds on every provider | Take it to the checkpoint, named. |
+| `--blob-budget` warns that the store is past 80% of its allowance | Publish nothing further. Exceeding it produces no bill on this plan — it **cuts off access to the Blob store** until the 30-day window rolls, and a card whose optimized variant is not already cached then renders as its alt text. Report it: the levers are a plan change or removing bytes, and both are human calls. |
 | `DATABASE_URL` / `BLOB_READ_WRITE_TOKEN` missing | Report it; do not go hunting for credentials. |
 
 ## Never
