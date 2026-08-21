@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "//": "⚠️ Never add --passWithNoTests to test, test:pg or test:providers. Vitest failing a zero-file run is load-bearing: a suite that passes while running nothing is indistinguishable from a real green. Full reasoning and evidence in vitest.config.ts.",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:pg": "vitest run --config vitest.pg.config.ts",

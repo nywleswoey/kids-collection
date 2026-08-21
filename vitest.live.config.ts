@@ -25,6 +25,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // ⚠️ Never add `--passWithNoTests`/`passWithNoTests: true` here either.
+    // Not a CI gate, but the same lie: this runner's whole point is that it
+    // reports what it skipped instead of passing on an empty set. Reasoning in
+    // vitest.config.ts.
     include: ["tests-live/**/*.live.test.ts"],
     setupFiles: ["./tests-live/setup.ts"],
     // A single 768x768 generation can take 30s on a loaded free tier, and a
