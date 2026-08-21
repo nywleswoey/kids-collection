@@ -3011,6 +3011,221 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Tsar_Cannon"
         }
       ]
+    },
+    {
+      "name": "Outer Space",
+      "cards": [
+        {
+          "name": "The Moon",
+          "rarity": "common",
+          "eduText": "The Moon always shows us the same side, because it spins once every time it circles the Earth.",
+          "imagePrompt": "one large grey moon seen close up, its pale surface covered with round craters, on a plain dark blue background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Moon"
+        },
+        {
+          "name": "Mars",
+          "rarity": "common",
+          "eduText": "Mars looks red because its dust is full of rust, the same stuff that turns old nails orange.",
+          "imagePrompt": "a single huge red-orange planet rising above a dark rocky horizon in the foreground, a small pale ice cap at its top, deep blue sky with a few small stars",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mars"
+        },
+        {
+          "name": "Venus",
+          "rarity": "common",
+          "eduText": "Venus spins the other way round, so there the Sun rises in the west and sets in the east.",
+          "imagePrompt": "a single round pale yellow planet wrapped in swirling cream clouds, floating against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Venus"
+        },
+        {
+          "name": "Mercury",
+          "rarity": "common",
+          "eduText": "Mercury is the quickest planet, racing all the way around the Sun in just eighty-eight days.",
+          "imagePrompt": "a single small round brownish-grey planet covered in craters, floating against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mercury_(planet)"
+        },
+        {
+          "name": "Asteroid",
+          "rarity": "common",
+          "eduText": "Most asteroids circle in a wide ring between Mars and Jupiter, far apart from one another.",
+          "imagePrompt": "a single lumpy grey potato-shaped space rock, side view, floating against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Asteroid"
+        },
+        {
+          "name": "Meteorite",
+          "rarity": "common",
+          "eduText": "A meteorite is a piece of space rock that survived the fall and landed, so you can hold one.",
+          "imagePrompt": "a single knobbly dark space rock with a shiny black crust, lying on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Meteorite"
+        },
+        {
+          "name": "Shooting Star",
+          "rarity": "common",
+          "eduText": "A shooting star is not a star at all, only a speck of space dust glowing high in the air.",
+          "imagePrompt": "a single bright white streak of light with a long glowing tail crossing a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Meteoroid"
+        },
+        {
+          "name": "Moon Crater",
+          "rarity": "common",
+          "eduText": "Craters keep their shape for billions of years, as the Moon has no wind or rain to wear them away.",
+          "imagePrompt": "one round bowl-shaped hollow with a raised rocky rim in pale grey dusty ground, seen at a low angle from nearby, bright daylight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Impact_crater"
+        },
+        {
+          "name": "Solar Eclipse",
+          "rarity": "common",
+          "eduText": "In a total eclipse the Moon covers the Sun so neatly that the Sun's faint outer glow appears.",
+          "imagePrompt": "a dark round disc covering a bright sun with a glowing white ring around it, in a deep blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Solar_eclipse"
+        },
+        {
+          "name": "Northern Lights",
+          "rarity": "common",
+          "eduText": "The lights glow when tiny specks from the Sun bump into the air high above the North Pole.",
+          "imagePrompt": "wide green and purple curtains of light glowing in a deep blue night sky above snowy white hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aurora"
+        },
+        {
+          "name": "Astronaut",
+          "rarity": "common",
+          "eduText": "An astronaut's suit is really a tiny spaceship, carrying its own air, water and cooling system.",
+          "imagePrompt": "a single cheerful astronaut in a white spacesuit standing on pale grey rocky ground, deep blue starry sky behind",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Astronaut"
+        },
+        {
+          "name": "Mars Rover",
+          "rarity": "common",
+          "eduText": "Rovers drive themselves, because a radio message from Earth takes many minutes to reach them.",
+          "imagePrompt": "a single six-wheeled rover with a tall camera mast, side view, parked on red rocky ground under a pink sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mars_rover"
+        },
+        {
+          "name": "Satellite",
+          "rarity": "common",
+          "eduText": "Satellites stay up by moving forwards so fast that they keep missing the Earth as they fall.",
+          "imagePrompt": "a single boxy silver satellite with two flat blue solar wings, side view, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Satellite"
+        },
+        {
+          "name": "Telescope",
+          "rarity": "common",
+          "eduText": "A telescope does not really magnify, it gathers light, so it shows things too faint for our eyes.",
+          "imagePrompt": "a single white telescope tube on a three-legged wooden tripod, side view, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Telescope"
+        },
+        {
+          "name": "Observatory",
+          "rarity": "common",
+          "eduText": "Observatories are built on high mountains, above most of the clouds and the wobbly warm air.",
+          "imagePrompt": "a single white domed observatory building with an open slit, on a green hilltop under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Observatory"
+        },
+        {
+          "name": "Uranus",
+          "rarity": "rare",
+          "eduText": "Uranus rolls around the Sun on its side, so each of its seasons lasts about twenty-one years.",
+          "imagePrompt": "a single smooth pale blue-green planet with faint thin sideways rings, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Uranus"
+        },
+        {
+          "name": "Neptune",
+          "rarity": "rare",
+          "eduText": "Neptune has the fastest winds in the solar system, quicker than any storm here on Earth.",
+          "imagePrompt": "a single deep blue planet with wispy white clouds, floating against a pale lilac starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Neptune"
+        },
+        {
+          "name": "Pluto",
+          "rarity": "rare",
+          "eduText": "Pluto has a huge pale heart shape on its surface, made of frozen nitrogen ice.",
+          "imagePrompt": "a single round tan and cream dwarf planet with a large pale heart-shaped patch, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pluto"
+        },
+        {
+          "name": "Europa",
+          "rarity": "rare",
+          "eduText": "Europa's icy shell is cracked all over, and a salty ocean is thought to slosh about underneath.",
+          "imagePrompt": "a single pale white icy moon rising above a dark rocky horizon in the foreground, its smooth surface marked with thin rust-red lines, deep blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Europa_(moon)"
+        },
+        {
+          "name": "Titan",
+          "rarity": "rare",
+          "eduText": "Titan has rivers, rain and lakes, but they are made of freezing cold methane instead of water.",
+          "imagePrompt": "a single hazy orange moon with a soft golden glow around it, floating against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Titan_(moon)"
+        },
+        {
+          "name": "Olympus Mons",
+          "rarity": "rare",
+          "eduText": "Olympus Mons is so enormously wide that standing on it, the slope would look almost flat.",
+          "imagePrompt": "a single huge wide reddish volcano mountain with gentle slopes, side view, on a red rocky plain under a pink sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Olympus_Mons"
+        },
+        {
+          "name": "Orion Nebula",
+          "rarity": "rare",
+          "eduText": "The Orion Nebula is a giant cloud of gas and dust where brand new stars are being born.",
+          "imagePrompt": "a wide soft pink and teal glowing mist spread sideways across a dark starry sky, with a few bright stars shining inside it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Orion_Nebula"
+        },
+        {
+          "name": "Andromeda Galaxy",
+          "rarity": "rare",
+          "eduText": "Andromeda is our nearest big galaxy, and it is slowly drifting towards us for a far-off meeting.",
+          "imagePrompt": "a single spiral galaxy with bright swirling arms seen at a tilted angle, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Andromeda_Galaxy"
+        },
+        {
+          "name": "Earth",
+          "rarity": "epic",
+          "eduText": "Earth is the only planet we know of with liquid water on its surface, and it covers most of it.",
+          "imagePrompt": "a single round planet with blue oceans, green continents and swirling white clouds, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Earth"
+        },
+        {
+          "name": "Jupiter",
+          "rarity": "epic",
+          "eduText": "Jupiter's Great Red Spot is a storm so wide that the whole of the Earth could fit inside it.",
+          "imagePrompt": "a single large planet with cream and orange stripes and one big red oval spot, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jupiter"
+        },
+        {
+          "name": "Saturn",
+          "rarity": "epic",
+          "eduText": "Saturn's rings are made of countless chunks of ice, some as small as dust and some as big as a house.",
+          "imagePrompt": "a single pale golden planet with one wide flat ring tilted around its middle, rising above a dark rocky horizon in the foreground, deep blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saturn"
+        },
+        {
+          "name": "Black Hole",
+          "rarity": "epic",
+          "eduText": "A black hole pulls so strongly that even light cannot travel quickly enough to get away from it.",
+          "imagePrompt": "a round pitch-black ball with one thin glowing orange ring of light circling around it, on a plain dark blue background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Black_hole"
+        },
+        {
+          "name": "Halley's Comet",
+          "rarity": "epic",
+          "eduText": "Halley's Comet sweeps past the Earth about every seventy-six years, so most people see it once.",
+          "imagePrompt": "a single icy blue-white comet with a long glowing tail, side view, crossing a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Halley%27s_Comet"
+        },
+        {
+          "name": "The Sun",
+          "rarity": "legendary",
+          "eduText": "The Sun holds more than ninety-nine parts out of a hundred of everything in the solar system.",
+          "imagePrompt": "a single bright yellow-orange sun with a glowing golden rim, against a deep blue starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sun"
+        },
+        {
+          "name": "Milky Way",
+          "rarity": "legendary",
+          "eduText": "Our galaxy is so wide that light, the fastest thing there is, takes 100,000 years to cross it.",
+          "imagePrompt": "a broad glowing band of pale starlight arching across a dark blue night sky above low rolling green hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Milky_Way"
+        }
+      ]
     }
   ]
 }
