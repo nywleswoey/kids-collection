@@ -3241,7 +3241,8 @@
           "rarity": "common",
           "eduText": "Fire engines carry their own water tank, so they can start work before hooking up to a hydrant.",
           "imagePrompt": "a single red fire engine with ladders along its roof, side view, parked on green grass under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_engine"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_engine",
+          "provider": "pollinations"
         },
         {
           "name": "Ambulance",
@@ -3255,7 +3256,8 @@
           "rarity": "common",
           "eduText": "School buses are the same bright yellow everywhere, because that colour is the easiest to spot early.",
           "imagePrompt": "a single bright yellow school bus, side view, parked on a grey road under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/School_bus"
+          "sourceUrl": "https://en.wikipedia.org/wiki/School_bus",
+          "provider": "pollinations"
         },
         {
           "name": "Bulldozer",
@@ -3297,7 +3299,8 @@
           "rarity": "common",
           "eduText": "A crane lowers strong legs called outriggers, spreading its feet wide so it cannot topple over.",
           "imagePrompt": "a single yellow mobile crane with a long boom raised, side view, on a grey gravel yard under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Mobile_crane"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mobile_crane",
+          "provider": "pollinations"
         },
         {
           "name": "Garbage Truck",
@@ -3325,21 +3328,24 @@
           "rarity": "common",
           "eduText": "Four fat low-pressure tyres let a quad bike float over sand and mud that would trap a car.",
           "imagePrompt": "a single red quad bike with four fat tyres, side view, on brown dirt under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/All-terrain_vehicle"
+          "sourceUrl": "https://en.wikipedia.org/wiki/All-terrain_vehicle",
+          "provider": "pollinations"
         },
         {
           "name": "Go-Kart",
           "rarity": "common",
           "eduText": "A go-kart has no springs at all, so every bump in the track travels straight up to the driver.",
           "imagePrompt": "a single small blue go-kart with four little wheels, side view, on a grey racetrack under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Go-kart"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Go-kart",
+          "provider": "pollinations"
         },
         {
           "name": "Taxi",
           "rarity": "common",
           "eduText": "Taxi comes from taximeter, the little clock on board that counts the fare up as you ride along.",
           "imagePrompt": "a single yellow taxi car with a small sign on its roof, side view, parked on a grey road under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Taxi"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taxi",
+          "provider": "pollinations"
         },
         {
           "name": "Tram",
@@ -3402,7 +3408,8 @@
           "rarity": "epic",
           "eduText": "A steam engine boils water to make steam, and it is the pushing steam that turns the wheels.",
           "imagePrompt": "a single black steam locomotive with large red wheels and a tall chimney, side view, on railway tracks under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Steam_locomotive"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Steam_locomotive",
+          "provider": "pollinations"
         },
         {
           "name": "Bullet Train",
@@ -3416,7 +3423,8 @@
           "rarity": "epic",
           "eduText": "Its wings push down instead of up, pressing the car onto the track hard enough to grip a ceiling.",
           "imagePrompt": "a single red formula one racing car with wide front and rear wings, side view, on a grey racetrack under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Formula_One_car"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Formula_One_car",
+          "provider": "pollinations"
         },
         {
           "name": "Monster Truck",
@@ -3444,9 +3452,11 @@
           "rarity": "legendary",
           "eduText": "Bagger 288 is the heaviest vehicle on Earth, and it crawls so slowly you can easily walk past it.",
           "imagePrompt": "a single enormous bucket-wheel excavator with a giant round wheel of buckets, side view, on brown earth under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Bagger_288"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bagger_288",
+          "provider": "pollinations"
         }
-      ]
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }

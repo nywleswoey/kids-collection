@@ -392,6 +392,389 @@
         "reviewed": true
       }
     },
+    "Land Machines": {
+      "Ambulance": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-ambulance-423d83fc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bagger 288": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-bagger-288-dffdf6c4-pollinations-dff2",
+        "reviewed": true
+      },
+      "Bicycle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-bicycle-9253f806-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bulldozer": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-bulldozer-e792914f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bullet Train": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-bullet-train-02b71644-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cement Mixer": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-cement-mixer-6a0d864b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Combine Harvester": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-combine-harvester-4d273431-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Dump Truck": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-dump-truck-eee24a28-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Excavator": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-excavator-6bcab395-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Fire Engine": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-fire-engine-1d0dd826-pollinations-dff2",
+        "reviewed": true
+      },
+      "Forklift": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-forklift-41a26910-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Formula One Car": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-formula-one-car-561308a0-pollinations-dff2",
+        "reviewed": true
+      },
+      "Garbage Truck": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-garbage-truck-cd6b097b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Go-Kart": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-go-kart-f32c3396-pollinations-dff2",
+        "reviewed": true
+      },
+      "Ice Resurfacer": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-ice-resurfacer-4ef9426e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mobile Crane": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-mobile-crane-577e8aa6-pollinations-dff2",
+        "reviewed": true
+      },
+      "Monster Truck": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-monster-truck-1c76dc58-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Motorcycle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-motorcycle-2dad4588-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Quad Bike": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-quad-bike-999b27c9-pollinations-dff2",
+        "reviewed": true
+      },
+      "Road Roller": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-road-roller-16407883-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "School Bus": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-school-bus-4b1b8292-pollinations-dff2",
+        "reviewed": true
+      },
+      "Snowplough": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-snowplough-74acf556-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Steam Locomotive": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-steam-locomotive-3ad66896-pollinations-dff2",
+        "reviewed": true
+      },
+      "Stephenson's Rocket": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-stephenson-s-rocket-e8dbd9ff-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Taxi": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "land-machines-taxi-8ebd5b4a-pollinations-dff2",
+        "reviewed": true
+      },
+      "Tow Truck": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-tow-truck-41e382a4-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tractor": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-tractor-459996d3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tram": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-tram-d0e098a7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tuk-Tuk": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-tuk-tuk-ac7ccb49-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tunnel Boring Machine": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "land-machines-tunnel-boring-machine-cf1303e2-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
+    },
     "Outer Space": {
       "Andromeda Galaxy": {
         "provider": "pollinations",
