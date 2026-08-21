@@ -10,7 +10,27 @@
 #
 # This file only *supplies* checks. What makes them binding is branch protection
 # on `main`, which is a repository setting rather than anything committed here.
-# Until that is switched on, this workflow reports and nothing more.
+# It has been on since 2026-08-09: repository ruleset `main protection`, active,
+# requiring a pull request and exactly two status checks — `fast-gate` and
+# `pg-gate`, the two job ids below.
+#
+# Those two are the ONLY checks that may ever be required, and the constraint
+# runs in both directions: renaming a job detaches the rule from its check (see
+# the note on the job ids below), and adding a third check to the ruleset is a
+# claim that the check can go red.
+#
+# In particular, `Vercel Preview Comments` must NEVER become a required check.
+# It is not merely redundant — it cannot fail. #23 broke each gate on purpose,
+# one breakage per commit, and Preview Comments reported `success` on ALL SIX of
+# those deliberately-broken commits: a failing unit assertion, a failing
+# property, a type error, a module-scope throw that broke the production build,
+# a failing `*.pg.test.ts`, and an `include` glob pointed at a dead suffix. It
+# reports on whether Vercel managed to post a comment, not on whether anything
+# in the tree works. Requiring it would add a required check that is green by
+# construction — "something checked" standing in for nothing having been
+# checked, which is the precise lie this whole file exists to stop, wearing a
+# green tick instead of a missing one. Fuller writeup lives in
+# `Product-Definition/technical-environment.md`, *Enforcement status*.
 #
 # No secrets, deliberately. The repository is public, and every gate below still
 # passes with the environment completely empty. There are exactly two `env:`

@@ -17,6 +17,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // ⚠️ Never add `--passWithNoTests`/`passWithNoTests: true` here either —
+    // this glob backs a *required* check. Reasoning in vitest.config.ts.
     include: ["tests-pg/**/*.pg.test.ts"],
     setupFiles: ["./tests-pg/setup.ts"],
     fileParallelism: false, // shared DB → run files serially
