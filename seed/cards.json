@@ -3034,7 +3034,8 @@
           "rarity": "common",
           "eduText": "Venus spins the other way round, so there the Sun rises in the west and sets in the east.",
           "imagePrompt": "a single round pale yellow planet wrapped in swirling cream clouds, floating against a deep blue starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Venus"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Venus",
+          "provider": "pollinations"
         },
         {
           "name": "Mercury",
@@ -3065,11 +3066,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Meteoroid"
         },
         {
-          "name": "Moon Crater",
+          "name": "Space Helmet",
           "rarity": "common",
-          "eduText": "Craters keep their shape for billions of years, as the Moon has no wind or rain to wear them away.",
-          "imagePrompt": "one round bowl-shaped hollow with a raised rocky rim in pale grey dusty ground, seen at a low angle from nearby, bright daylight",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Impact_crater"
+          "eduText": "An astronaut visor carries a whisper-thin layer of real gold, to keep the Sun's fierce glare out.",
+          "imagePrompt": "a single white space helmet with a shiny gold visor, side view, lying on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Space_helmet"
         },
         {
           "name": "Solar Eclipse",
@@ -3139,7 +3140,8 @@
           "rarity": "rare",
           "eduText": "Pluto has a huge pale heart shape on its surface, made of frozen nitrogen ice.",
           "imagePrompt": "a single round tan and cream dwarf planet with a large pale heart-shaped patch, against a deep blue starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Pluto"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pluto",
+          "provider": "pollinations"
         },
         {
           "name": "Europa",
@@ -3153,7 +3155,8 @@
           "rarity": "rare",
           "eduText": "Titan has rivers, rain and lakes, but they are made of freezing cold methane instead of water.",
           "imagePrompt": "a single hazy orange moon with a soft golden glow around it, floating against a deep blue starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Titan_(moon)"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Titan_(moon)",
+          "provider": "pollinations"
         },
         {
           "name": "Olympus Mons",
@@ -3174,7 +3177,8 @@
           "rarity": "rare",
           "eduText": "Andromeda is our nearest big galaxy, and it is slowly drifting towards us for a far-off meeting.",
           "imagePrompt": "a single spiral galaxy with bright swirling arms seen at a tilted angle, against a deep blue starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Andromeda_Galaxy"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Andromeda_Galaxy",
+          "provider": "pollinations"
         },
         {
           "name": "Earth",
@@ -3216,7 +3220,8 @@
           "rarity": "legendary",
           "eduText": "The Sun holds more than ninety-nine parts out of a hundred of everything in the solar system.",
           "imagePrompt": "a single bright yellow-orange sun with a glowing golden rim, against a deep blue starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Sun"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sun",
+          "provider": "pollinations"
         },
         {
           "name": "Milky Way",
@@ -3225,7 +3230,8 @@
           "imagePrompt": "a broad glowing band of pale starlight arching across a dark blue night sky above low rolling green hills",
           "sourceUrl": "https://en.wikipedia.org/wiki/Milky_Way"
         }
-      ]
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
