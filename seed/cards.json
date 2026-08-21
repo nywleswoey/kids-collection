@@ -3254,7 +3254,7 @@
         {
           "name": "School Bus",
           "rarity": "common",
-          "eduText": "School buses are the same bright yellow everywhere, because that colour is the easiest to spot early.",
+          "eduText": "School buses in the United States are the same bright yellow, because that colour is the easiest to spot early.",
           "imagePrompt": "a single bright yellow school bus, side view, parked on a grey road under a blue sky",
           "sourceUrl": "https://en.wikipedia.org/wiki/School_bus",
           "provider": "pollinations"
@@ -3450,7 +3450,7 @@
         {
           "name": "Bagger 288",
           "rarity": "legendary",
-          "eduText": "Bagger 288 is the heaviest vehicle on Earth, and it crawls so slowly you can easily walk past it.",
+          "eduText": "Bagger 288 is one of the heaviest vehicles on Earth, and it crawls so slowly you can easily walk past it.",
           "imagePrompt": "a single enormous bucket-wheel excavator with a giant round wheel of buckets, side view, on brown earth under a blue sky",
           "sourceUrl": "https://en.wikipedia.org/wiki/Bagger_288",
           "provider": "pollinations"
