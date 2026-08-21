@@ -391,6 +391,393 @@
         "reviewKey": "artillery-tsar-cannon-364908d7-cloudflare-sdxl-2211",
         "reviewed": true
       }
+    },
+    "Outer Space": {
+      "Andromeda Galaxy": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "outer-space-andromeda-galaxy-2c0b4aed-pollinations-dff2",
+        "reviewed": true
+      },
+      "Asteroid": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-asteroid-d320ec95-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Astronaut": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-astronaut-effc46b9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Black Hole": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-black-hole-8d804ce8-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Earth": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-earth-bcde1810-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Europa": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-europa-2c755175-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Halley's Comet": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-halley-s-comet-9db25c3c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Jupiter": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-jupiter-2ca00865-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mars": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-mars-cf4afb0e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mars Rover": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-mars-rover-4432b059-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mercury": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-mercury-c0192916-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Meteorite": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-meteorite-856cc292-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Milky Way": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-milky-way-7dabb5a3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Neptune": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-neptune-fab37c67-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Northern Lights": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-northern-lights-ebf59986-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Observatory": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-observatory-98dcdbd6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Olympus Mons": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-olympus-mons-57204c89-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Orion Nebula": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-orion-nebula-8b884e54-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pluto": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "outer-space-pluto-99e1d8c7-pollinations-dff2",
+        "reviewed": true
+      },
+      "Satellite": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-satellite-897e4221-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Saturn": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-saturn-8e9e524f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Shooting Star": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-shooting-star-f04f0d7c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Solar Eclipse": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-solar-eclipse-8f5093fb-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Space Helmet": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-space-helmet-3fd678f1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Telescope": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-telescope-333e988b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "The Moon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-the-moon-9f87262b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "The Sun": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "outer-space-the-sun-3213ae55-pollinations-dff2",
+        "reviewed": true
+      },
+      "Titan": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "outer-space-titan-79096ebe-pollinations-dff2",
+        "reviewed": true
+      },
+      "Uranus": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "outer-space-uranus-2f02ce57-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Venus": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "outer-space-venus-5ef3acea-pollinations-dff2",
+        "reviewed": true
+      }
     }
   }
 }
