@@ -3232,6 +3232,231 @@
         }
       ],
       "provider": "cloudflare-sdxl"
+    },
+    {
+      "name": "Land Machines",
+      "cards": [
+        {
+          "name": "Fire Engine",
+          "rarity": "common",
+          "eduText": "Fire engines carry their own water tank, so they can start work before hooking up to a hydrant.",
+          "imagePrompt": "a single red fire engine with ladders along its roof, side view, parked on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_engine",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Ambulance",
+          "rarity": "common",
+          "eduText": "The word AMBULANCE is often painted backwards on the front, so drivers read it in their mirror.",
+          "imagePrompt": "a single white ambulance with orange stripes along its side, side view, parked on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ambulance"
+        },
+        {
+          "name": "School Bus",
+          "rarity": "common",
+          "eduText": "School buses in the United States are the same bright yellow, because that colour is the easiest to spot early.",
+          "imagePrompt": "a single bright yellow school bus, side view, parked on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/School_bus",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Bulldozer",
+          "rarity": "common",
+          "eduText": "A bulldozer spreads its weight over wide tracks, so it can shove heavy soil without sinking in.",
+          "imagePrompt": "a single yellow bulldozer with a wide front blade and metal tracks, side view, on brown earth under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bulldozer"
+        },
+        {
+          "name": "Excavator",
+          "rarity": "common",
+          "eduText": "An excavator's arm copies your own: it has a shoulder, an elbow, and a wrist that curls the bucket.",
+          "imagePrompt": "a single orange excavator with a long digging arm and bucket, side view, on brown earth under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Excavator"
+        },
+        {
+          "name": "Tractor",
+          "rarity": "common",
+          "eduText": "A tractor's back wheels are huge so they grip soft mud, while the small front pair does the steering.",
+          "imagePrompt": "a single green tractor with very large rear wheels, side view, parked on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tractor"
+        },
+        {
+          "name": "Cement Mixer",
+          "rarity": "common",
+          "eduText": "The drum turns for the whole journey, because concrete sets hard if it is ever left standing still.",
+          "imagePrompt": "a single white cement mixer truck with a large drum on its back, side view, on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Concrete_mixer"
+        },
+        {
+          "name": "Dump Truck",
+          "rarity": "common",
+          "eduText": "A dump truck tips its whole body up on a hidden ram, and lets gravity slide the load out.",
+          "imagePrompt": "a single yellow dump truck with its tipping body raised, side view, on brown earth under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dump_truck"
+        },
+        {
+          "name": "Mobile Crane",
+          "rarity": "common",
+          "eduText": "A crane lowers strong legs called outriggers, spreading its feet wide so it cannot topple over.",
+          "imagePrompt": "a single yellow mobile crane with a long boom raised, side view, on a grey gravel yard under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mobile_crane",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Garbage Truck",
+          "rarity": "common",
+          "eduText": "A moving wall inside squashes the rubbish down, so one truck can swallow about three loads.",
+          "imagePrompt": "a single green garbage truck with a lifting arm at the back, side view, on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Garbage_truck"
+        },
+        {
+          "name": "Motorcycle",
+          "rarity": "common",
+          "eduText": "A motorcycle stays upright because its spinning wheels resist being tipped, like a rolling coin.",
+          "imagePrompt": "a single red motorcycle, side view, parked on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Motorcycle"
+        },
+        {
+          "name": "Bicycle",
+          "rarity": "common",
+          "eduText": "A bicycle is the most efficient machine ever built for turning muscle into distance travelled.",
+          "imagePrompt": "a single blue bicycle, side view, standing on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bicycle"
+        },
+        {
+          "name": "Quad Bike",
+          "rarity": "common",
+          "eduText": "Four fat low-pressure tyres let a quad bike float over sand and mud that would trap a car.",
+          "imagePrompt": "a single red quad bike with four fat tyres, side view, on brown dirt under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/All-terrain_vehicle",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Go-Kart",
+          "rarity": "common",
+          "eduText": "A go-kart has no springs at all, so every bump in the track travels straight up to the driver.",
+          "imagePrompt": "a single small blue go-kart with four little wheels, side view, on a grey racetrack under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Go-kart",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Taxi",
+          "rarity": "common",
+          "eduText": "Taxi comes from taximeter, the little clock on board that counts the fare up as you ride along.",
+          "imagePrompt": "a single yellow taxi car with a small sign on its roof, side view, parked on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taxi",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Tram",
+          "rarity": "rare",
+          "eduText": "Trams run on rails set flush into the street, so they always follow exactly the same path.",
+          "imagePrompt": "a single red and cream tram on street rails, side view, on a grey city street under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tram"
+        },
+        {
+          "name": "Combine Harvester",
+          "rarity": "rare",
+          "eduText": "A combine does three jobs at once: it cuts the crop, shakes the grain loose, and drops the straw.",
+          "imagePrompt": "a single green combine harvester with a wide cutting header at the front, side view, in a golden wheat field under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Combine_harvester"
+        },
+        {
+          "name": "Snowplough",
+          "rarity": "rare",
+          "eduText": "A plough blade is set at an angle, so the snow curls off to one side instead of piling up ahead.",
+          "imagePrompt": "a single orange snowplough truck with a wide angled blade at the front, side view, on white snowy ground under a pale blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snowplow"
+        },
+        {
+          "name": "Road Roller",
+          "rarity": "rare",
+          "eduText": "A road roller squeezes the tiny air pockets out of fresh tarmac, and that is what makes it last.",
+          "imagePrompt": "a single yellow road roller with a wide smooth drum at the front, side view, on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Road_roller"
+        },
+        {
+          "name": "Forklift",
+          "rarity": "rare",
+          "eduText": "A forklift carries a heavy weight in its tail, balancing the load out front like a see-saw.",
+          "imagePrompt": "a single orange forklift truck with two metal forks at the front, side view, on a grey concrete yard under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Forklift"
+        },
+        {
+          "name": "Tow Truck",
+          "rarity": "rare",
+          "eduText": "A tow truck lifts just two wheels clear of the ground, and lets the other two roll along behind.",
+          "imagePrompt": "a single blue tow truck with a lifting arm at the back, side view, on a grey road under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tow_truck"
+        },
+        {
+          "name": "Ice Resurfacer",
+          "rarity": "rare",
+          "eduText": "It shaves a thin layer off the ice and lays warm water down, which freezes into a smooth new top.",
+          "imagePrompt": "a single blue ice resurfacing machine, side view, on a pale white ice rink in bright daylight",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ice_resurfacer"
+        },
+        {
+          "name": "Tuk-Tuk",
+          "rarity": "rare",
+          "eduText": "A tuk-tuk is named after the put-put sound of its little engine, and it runs on just three wheels.",
+          "imagePrompt": "a single green and yellow three-wheeled tuk-tuk, side view, parked on a grey street under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Auto_rickshaw"
+        },
+        {
+          "name": "Steam Locomotive",
+          "rarity": "epic",
+          "eduText": "A steam engine boils water to make steam, and it is the pushing steam that turns the wheels.",
+          "imagePrompt": "a single black steam locomotive with large red wheels and a tall chimney, side view, on railway tracks under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Steam_locomotive",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Bullet Train",
+          "rarity": "epic",
+          "eduText": "Its long nose was shaped like a kingfisher's beak, to stop the bang as it leaves a tunnel.",
+          "imagePrompt": "a single white and blue bullet train with a long pointed nose, side view, on railway tracks under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Shinkansen"
+        },
+        {
+          "name": "Formula One Car",
+          "rarity": "epic",
+          "eduText": "Its wings push down instead of up, pressing the car onto the track hard enough to grip a ceiling.",
+          "imagePrompt": "a single red formula one racing car with wide front and rear wings, side view, on a grey racetrack under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Formula_One_car",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Monster Truck",
+          "rarity": "epic",
+          "eduText": "Each tyre stands taller than a grown-up, and one alone weighs about as much as a small car.",
+          "imagePrompt": "a single blue monster truck with four enormous tyres, side view, on brown dirt under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Monster_truck"
+        },
+        {
+          "name": "Tunnel Boring Machine",
+          "rarity": "epic",
+          "eduText": "It builds the tunnel wall behind itself as it chews forward, so it never has to reverse out.",
+          "imagePrompt": "a single huge tunnel boring machine with a round cutting wheel at the front, side view, on grey gravel under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tunnel_boring_machine"
+        },
+        {
+          "name": "Stephenson's Rocket",
+          "rarity": "legendary",
+          "eduText": "Rocket won a contest in 1829, and set the pattern that every steam locomotive followed after it.",
+          "imagePrompt": "a single early steam locomotive with a tall thin chimney and a yellow barrel body, side view, on railway tracks under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Stephenson%27s_Rocket"
+        },
+        {
+          "name": "Bagger 288",
+          "rarity": "legendary",
+          "eduText": "Bagger 288 is one of the heaviest vehicles on Earth, and it crawls so slowly you can easily walk past it.",
+          "imagePrompt": "a single enormous bucket-wheel excavator with a giant round wheel of buckets, side view, on brown earth under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bagger_288",
+          "provider": "pollinations"
+        }
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
