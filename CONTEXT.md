@@ -9,6 +9,21 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
 - **Child / profile** — a per-family player profile (`children` table). Selecting one
   is a post-auth convenience stored in an httpOnly cookie, re-validated against the
   DB; it is **not** a security boundary (all children belong to the one parent).
+- **Archived profile** — a child whose `children.archived_at` is stamped (#97). The
+  app's only "remove a profile": it deletes nothing, and a parent restores it from
+  Admin → Manage Profiles. `archived_at IS NULL` means active, and that predicate is
+  carried by `ProfileStore.list/find/update` and `findChildRow`, so an archived child
+  vanishes from the picker, the trade board, the admin overview **and** a still-set
+  `activeChildId` cookie. `listArchived` is the single read that sees the other half.
+  There is deliberately no hard delete behind the seam any more — a `DELETE FROM
+  children` still cascades into `collections`, `quiz_completions`,
+  `quiz_seen_questions` and `collection_rewards` (BR14, pinned), but nothing in the
+  app can reach it. The **write** ports carry no such predicate, because they are
+  reachable only with an id that came from a filtered read; the one exception is
+  `executeTrade`, which re-checks both participants, since a stale trade page is
+  the only way an active child could give a card to an invisible one. Offline tools
+  (`reconcile`, `blast-radius`) see archived children on purpose. Migration plan:
+  `docs/DATA-PRESERVATION-0009.md`.
 - **Collection** — a child's owned cards, one row per `(child, card)` with a `count`
   (`collections` table, `CHECK(count >= 1)`).
 - **Pull** — spending a token to draw a rarity-weighted card. May branch into an

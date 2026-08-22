@@ -106,6 +106,16 @@ export function makeTradeService({ collections, catalog, rewards, profiles }: Tr
   }): Promise<TradeResult> {
     const { aChildId, aCardId, bChildId, bCardId } = input;
 
+    // Both participants must still be active (#97). The board already filters
+    // archived children out, so reaching here needs a page rendered before the
+    // archive — but soft-delete is what made that reachable: a hard delete left no
+    // row for the foreign key to accept, and the swap failed on its own. Without
+    // this, a child still playing gives a card away to a profile nobody can see.
+    const activeIds = new Set((await profiles.listChildren()).map((c) => c.id));
+    if (!activeIds.has(aChildId) || !activeIds.has(bChildId)) {
+      return { ok: false, reason: "That player isn't available to trade with." };
+    }
+
     const [aCard, bCard] = await Promise.all([
       catalog.getCard(aCardId),
       catalog.getCard(bCardId),

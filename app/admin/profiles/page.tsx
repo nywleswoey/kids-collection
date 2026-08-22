@@ -3,6 +3,8 @@ import { requireParent } from "@/features/auth/guard";
 import { adminService } from "@/features/admin/service.prod";
 import { ProfileForm } from "@/features/profiles/ProfileForm";
 import { ProfileRow } from "@/features/profiles/ProfileRow";
+import { ArchivedProfileRow } from "@/features/profiles/ArchivedProfileRow";
+import { profileService } from "@/features/profiles/service.prod";
 import { requireAdminGate } from "@/features/admin/gate";
 
 export default async function ProfileManagerPage() {
@@ -10,8 +12,13 @@ export default async function ProfileManagerPage() {
   await requireAdminGate(); // U4-FR1 passcode gate
   // getAdminOverview already folds in each child's distinct-owned count via the
   // existing CollectionStore.ownedCardIds port method — no new read needed for
-  // the delete confirmation (Inc23 FR9 / D4=A).
-  const { children: rows } = await adminService.getAdminOverview();
+  // the archive confirmation (Inc23 FR9 / D4=A). It sees ACTIVE children only, so
+  // the undo list is a second read (#97) — the one place in the app that looks at
+  // the archived half.
+  const [{ children: rows }, archived] = await Promise.all([
+    adminService.getAdminOverview(),
+    profileService.listArchivedProfiles(),
+  ]);
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-8" data-testid="profile-manager">
@@ -45,6 +52,28 @@ export default async function ProfileManagerPage() {
         <h2 className="text-lg font-semibold">Add a profile</h2>
         <ProfileForm />
       </section>
+
+      {archived.length > 0 ? (
+        <section className="flex flex-col gap-3" data-testid="archived-profiles">
+          <h2 className="text-lg font-semibold">🗄️ Archived profiles</h2>
+          <p className="text-sm text-[color:var(--ink-mute)]">
+            Hidden from the player picker and the trade board. Their cards, tickets
+            and quiz history are all still here — restore to put them back exactly
+            as they were.
+          </p>
+          <ul className="flex flex-col gap-3">
+            {archived.map((c) => (
+              <ArchivedProfileRow
+                key={c.id}
+                id={c.id}
+                name={c.name}
+                avatar={c.avatar}
+                archivedAt={c.archivedAt}
+              />
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </main>
   );
 }

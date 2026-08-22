@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { ProfileForm } from "./ProfileForm";
-import { RemoveProfileButton } from "./RemoveProfileButton";
+import { ArchiveProfileButton } from "./ArchiveProfileButton";
 
 /**
- * Admin Manage-Profiles row (FR3). Read view with Edit + Remove; Edit toggles an
- * inline ProfileForm (reuses updateProfileAction) to change name/icon.
+ * Admin Manage-Profiles row (FR3). Read view with Edit + Archive; Edit toggles an
+ * inline ProfileForm (reuses updateProfileAction) to change name/icon. Archived
+ * profiles are listed separately by ArchivedProfileRow (#97).
  */
 export function ProfileRow({
   id,
@@ -22,7 +23,7 @@ export function ProfileRow({
   avatar: string;
   pullTokens: number;
   easterEggTickets?: number;
-  /** Distinct cards this child owns — shown in the delete confirmation (Inc23 FR9). */
+  /** Distinct cards this child owns — shown in the archive confirmation (Inc23 FR9). */
   ownedCount: number;
 }) {
   const [editing, setEditing] = useState(false);
@@ -70,7 +71,7 @@ export function ProfileRow({
         >
           Edit
         </button>
-        <RemoveProfileButton id={id} name={name} ownedCount={ownedCount} />
+        <ArchiveProfileButton id={id} name={name} ownedCount={ownedCount} />
       </span>
     </li>
   );

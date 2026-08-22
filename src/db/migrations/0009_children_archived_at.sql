@@ -1,0 +1,19 @@
+-- #97 (OQ-CS-2): soft-delete for child profiles.
+--
+-- Until now, removing a profile was `DELETE FROM children`, and the ON DELETE
+-- CASCADEs took `collections`, `quiz_completions`, `quiz_seen_questions` and
+-- `collection_rewards` with it — every card the child had ever pulled. Correct
+-- as designed (BR14, pinned in tests-pg/delete-path.pg.test.ts) and exactly the
+-- blast radius the project's "What Must Not Change" exists to prevent. After
+-- this migration no application path deletes a `children` row at all; removing a
+-- profile stamps this column instead, and a parent can clear it again.
+--
+-- NULLABLE with no default and NO backfill: NULL is the encoding of "active", so
+-- every existing row is already correct and the migration is a no-op for the
+-- children's visible state. Nothing is dropped, renamed, re-typed or re-seeded;
+-- no other table is touched; no constraint or FK is added.
+--
+-- Data-preservation plan (required for any migration touching `children`):
+-- docs/DATA-PRESERVATION-0009.md — including the verification queries to run
+-- after applying, and the one-statement rollback.
+ALTER TABLE "children" ADD COLUMN "archived_at" timestamp with time zone;
