@@ -8,7 +8,7 @@ import { inMemoryChildStore } from "@/db/stores/child-store.fake";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/features/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
-import type { Card, Rarity } from "@/lib/types";
+import type { Card, Child, Rarity } from "@/lib/types";
 
 /**
  * OQ-CS-3 — "no service path can delete a `collections` row it doesn't own."
@@ -133,12 +133,25 @@ const worldArb: fc.Arbitrary<CollectionSeed> = fc
 const childArb = fc.constantFrom(...CHILD_IDS);
 const cardArb = fc.constantFrom(...CARD_IDS);
 
+/**
+ * All four children, ACTIVE. `executeTrade` refuses a participant that is not in
+ * this directory (#97), so an empty one would refuse every generated trade — the
+ * exact silent-no-op the reachability guards below exist to catch, and did.
+ */
+const ALL_ACTIVE: Child[] = CHILD_IDS.map((id) => ({
+  id,
+  name: id,
+  avatar: "fox",
+  pullTokens: 0,
+  easterEggTickets: 0,
+}));
+
 function makeTrade(collections: CollectionStore) {
   return makeTradeService({
     collections,
     catalog: fakeCatalog(ALL_CARDS),
     rewards: noRewards,
-    profiles: { async listChildren() { return []; } },
+    profiles: { async listChildren() { return ALL_ACTIVE; } },
   });
 }
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { namesMatch } from "@/features/profiles/confirm-name";
 
-describe("namesMatch (profile-delete confirmation, Inc23 FR9)", () => {
+describe("namesMatch (profile-archive confirmation, Inc23 FR9)", () => {
   it("accepts the exact name", () => {
     expect(namesMatch("Ben", "Ben")).toBe(true);
   });

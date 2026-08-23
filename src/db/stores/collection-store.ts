@@ -40,7 +40,8 @@ export interface CollectionStore {
    * Two-sided swap: A gives aCard, B gives bCard, each receives the other's.
    * All-or-nothing — either all four writes apply, or none do. Returns `false`
    * when the swap could not commit atomically (a side no longer held a duplicate,
-   * or the store errored), leaving state untouched.
+   * either participant was archived #97, or the store errored), leaving state
+   * untouched. The archive guard is enforced atomically within the transaction.
    */
   swapCards(input: SwapInput): Promise<boolean>;
 

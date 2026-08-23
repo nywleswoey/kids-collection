@@ -48,4 +48,18 @@ describe("makeAdminService.getAdminOverview", () => {
     const ada = overview.children.find((r) => r.child.name === "Ada")!;
     expect(ada).toMatchObject({ balance: 0, owned: 1, total: 3 });
   });
+
+  it("omits archived children — the parent's oversight list is the active roster (#97)", async () => {
+    const profiles = inMemoryProfileStore([
+      { id: "k1", name: "Bea", avatar: "owl" },
+      { id: "k2", name: "Ada", avatar: "cat" },
+    ]);
+    await profiles.archive("k2");
+    const collections = inMemoryCollectionStore({ k1: { a: 1 }, k2: { a: 1 } });
+    const catalog = fakeCatalog([card("a", "t1")], [{ id: "t1", name: "Animals" }]);
+
+    const overview = await makeAdminService({ profiles, collections, catalog }).getAdminOverview();
+
+    expect(overview.children.map((r) => r.child.name)).toEqual(["Bea"]);
+  });
 });

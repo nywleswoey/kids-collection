@@ -23,5 +23,10 @@ export default defineConfig({
     setupFiles: ["./tests-pg/setup.ts"],
     fileParallelism: false, // shared DB → run files serially
     testTimeout: 30_000,
+    // Same budget for hooks. `beforeEach` here does exactly the same work as a
+    // test — a TRUNCATE plus a dozen seeding round trips over the HTTP proxy —
+    // so giving it Vitest's 10s default while tests get 30s meant a slow machine
+    // failed whole describe blocks in the seeding, with nothing wrong.
+    hookTimeout: 30_000,
   },
 });

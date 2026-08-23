@@ -54,13 +54,27 @@ const rowsOwnedBy = async (childId: string): Promise<number> => {
   return n;
 };
 
-describe("BR14: deleting a child takes their collection rows and nobody else's", () => {
+/**
+ * BR14, now reached by raw SQL rather than through the store. Since #97 there is
+ * NO hard delete in the port — `remove()` is gone and archiving replaced it — so
+ * the only way to fire this cascade is the SQL prompt.
+ *
+ * It is still worth pinning, for two reasons. It is the shape of a deliberate
+ * purge, which is a thing a human may still do; and it is the reasoning
+ * `docs/RESTORE.md` and `docs/DATA-PRESERVATION-0009.md` rest on when they say
+ * what soft-delete bought. A test that stopped running here would leave both
+ * documents asserting an unverified cascade.
+ */
+const hardDeleteChild = (childId: string) =>
+  sql`DELETE FROM children WHERE id = ${childId}`;
+
+describe("BR14: deleting a child row takes their collection rows and nobody else's", () => {
   beforeEach(seedTwoThemes);
 
-  it("cascades to exactly the removed child's rows", async () => {
+  it("cascades to exactly the deleted child's rows", async () => {
     expect(await countCollections()).toBe(5);
 
-    await pgProfileStore.remove("kid1");
+    await hardDeleteChild("kid1");
 
     // kid1's three rows are gone; kid2's two are untouched.
     expect(await rowsOwnedBy("kid1")).toBe(0);
@@ -73,12 +87,59 @@ describe("BR14: deleting a child takes their collection rows and nobody else's",
   });
 
   it("leaves a shared card's other owner alone", async () => {
-    // Both children hold a1. Removing one must not remove the card, nor the
+    // Both children hold a1. Deleting one must not remove the card, nor the
     // other child's copy of it — the case a per-child delete gets wrong when it
     // reaches for the card instead of the row.
-    await pgProfileStore.remove("kid1");
+    await hardDeleteChild("kid1");
     expect(await rowsFor("a1")).toBe(1);
     expect(await sql`SELECT count(*)::int AS n FROM cards WHERE id = 'a1'`.then((r) => r[0].n)).toBe(1);
+  });
+});
+
+describe("#97: archiving is the path the app actually takes, and it deletes nothing", () => {
+  beforeEach(seedTwoThemes);
+
+  // Which reads see an archived child is a PORT contract and lives in
+  // tests/contracts/profile-store-contract.ts, where it runs against both
+  // adapters. Everything below is the half a fake cannot state: the rows on the
+  // OTHER side of the four cascades, which only a real database has.
+
+  it("leaves every collection row in place — the rows a delete destroyed", async () => {
+    expect(await countCollections()).toBe(5);
+
+    await pgProfileStore.archive("kid1");
+
+    expect(await rowsOwnedBy("kid1")).toBe(3);
+    expect(await countCollections()).toBe(5);
+    const [{ n: childRows }] = await sql`SELECT count(*)::int AS n FROM children`;
+    expect(childRows).toBe(2);
+  });
+
+  it("restore gives the child their collection back untouched", async () => {
+    await pgProfileStore.archive("kid1");
+    await pgProfileStore.restore("kid1");
+
+    expect(await rowsOwnedBy("kid1")).toBe(3);
+    expect(await countCollections()).toBe(5);
+  });
+
+  it("survives the reward and quiz rows that a delete would have cascaded away", async () => {
+    // The other three tables that hang off `children` with ON DELETE CASCADE.
+    await sql`INSERT INTO collection_rewards (child_id, theme_id, rarity, card_id)
+      VALUES ('kid1', 't1', 'common'::rarity, 'a1')`;
+    await sql`INSERT INTO quiz_completions (child_id, topic, correct, total, passed, awarded)
+      VALUES ('kid1', 'maths', 5, 5, true, true)`;
+    await sql`INSERT INTO quiz_seen_questions (child_id, topic, question_id)
+      VALUES ('kid1', 'grammar', 'vt-1')`;
+
+    await pgProfileStore.archive("kid1");
+
+    const rewards = await sql`SELECT count(*)::int AS n FROM collection_rewards WHERE child_id = 'kid1'`;
+    const quizzes = await sql`SELECT count(*)::int AS n FROM quiz_completions WHERE child_id = 'kid1'`;
+    const seen = await sql`SELECT count(*)::int AS n FROM quiz_seen_questions WHERE child_id = 'kid1'`;
+    expect(rewards[0].n).toBe(1);
+    expect(quizzes[0].n).toBe(1);
+    expect(seen[0].n).toBe(1);
   });
 });
 

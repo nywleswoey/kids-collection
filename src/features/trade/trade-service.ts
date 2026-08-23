@@ -101,10 +101,24 @@ export function makeTradeService({ collections, catalog, rewards, profiles }: Tr
   async function executeTrade(input: {
     aChildId: string;
     aCardId: string;
-    bChildId: string;
     bCardId: string;
+    bChildId: string;
   }): Promise<TradeResult> {
     const { aChildId, aCardId, bChildId, bCardId } = input;
+
+    // #97: Both participants must be active. The board filters archived children
+    // out, so reaching here needs a page rendered before an archive — and soft-
+    // delete is what made that reachable: a hard delete left no row for the foreign
+    // key to accept. This early check is a fast-path UX optimization (surfaces a
+    // friendlier message immediately), but the REAL guard is atomic in swapCards:
+    // the swap transaction itself re-checks archived_at, closing the TOCTOU gap
+    // where archive commits between this check and the swap. If this passes but
+    // the swap guard fails, the user sees "no longer valid" instead of "not
+    // available", which is fine — both mean try again.
+    const activeIds = new Set((await profiles.listChildren()).map((c) => c.id));
+    if (!activeIds.has(aChildId) || !activeIds.has(bChildId)) {
+      return { ok: false, reason: "That player isn't available to trade with." };
+    }
 
     const [aCard, bCard] = await Promise.all([
       catalog.getCard(aCardId),

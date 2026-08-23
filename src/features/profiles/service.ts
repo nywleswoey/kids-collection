@@ -4,6 +4,16 @@ import { toChild } from "./child-mapper";
 import { AVATAR_KEYS } from "@/lib/avatars";
 import type { Child } from "@/lib/types";
 
+/**
+ * A child plus the moment they were archived (#97). Deliberately NOT a field on
+ * `Child`: no gameplay surface should be able to ask whether a player is
+ * archived, because no gameplay surface can reach one. Archived-ness exists only
+ * on the parent's undo screen, so it lives only in the shape that screen reads.
+ */
+export interface ArchivedProfile extends Child {
+  archivedAt: Date;
+}
+
 const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(40),
   avatar: z.enum(AVATAR_KEYS as [string, ...string[]]),
@@ -45,12 +55,39 @@ export function makeProfileService({ profiles }: ProfileDeps) {
     return toChild(row);
   }
 
-  /** Remove a child; cascades to their collection entries (BR14). */
-  async function removeChild(id: string): Promise<void> {
-    await profiles.remove(id);
+  /**
+   * Archive a child (#97). Reversible by `restoreChild`, and it deletes nothing:
+   * the profile drops out of `listChildren`, `getChild`, the trade board, the
+   * admin overview and the active-profile cookie check, while every collection,
+   * quiz and reward row it owns stays exactly where it is.
+   */
+  async function archiveChild(id: string): Promise<void> {
+    await profiles.archive(id);
   }
 
-  return { listChildren, getChild, createChild, updateChild, removeChild };
+  /** Undo an archive — the whole reason the stamp is a timestamp and not a DELETE. */
+  async function restoreChild(id: string): Promise<void> {
+    await profiles.restore(id);
+  }
+
+  /** The archived profiles, for the parent's restore screen. The only read in the
+   *  app that sees them. */
+  async function listArchivedProfiles(): Promise<ArchivedProfile[]> {
+    return (await profiles.listArchived()).map((row) => ({
+      ...toChild(row),
+      archivedAt: row.archivedAt,
+    }));
+  }
+
+  return {
+    listChildren,
+    getChild,
+    createChild,
+    updateChild,
+    archiveChild,
+    restoreChild,
+    listArchivedProfiles,
+  };
 }
 
 export type ProfileService = ReturnType<typeof makeProfileService>;

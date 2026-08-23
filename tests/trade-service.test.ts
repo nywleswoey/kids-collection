@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { makeTradeService } from "@/features/trade/trade-service";
+import { makeProfileService } from "@/features/profiles/service";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
+import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";
 import type { Catalog } from "@/features/pool/catalog";
 import type { Card, Child, Rarity } from "@/lib/types";
 
@@ -43,7 +45,17 @@ function kid(id: string, name = id): Child {
   return { id, name, avatar: "fox", pullTokens: 0, easterEggTickets: 0 };
 }
 
-function setup(seed: CollectionSeed, cards: Card[], children: Child[] = []) {
+/**
+ * The directory defaults to whoever the collection seed names, so a fixture that
+ * describes a world with children A and B says so — `executeTrade` re-checks that
+ * both participants are active (#97), and an empty directory would mean every one
+ * of these trades was between two children who do not exist.
+ */
+function setup(
+  seed: CollectionSeed,
+  cards: Card[],
+  children: Child[] = Object.keys(seed).map((id) => kid(id)),
+) {
   const collections = inMemoryCollectionStore(seed);
   const rewards = recordingRewards();
   const service = makeTradeService({
@@ -167,5 +179,114 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
 
     expect(batched).toBe(1);
     expect(perChild).toBe(0); // never one round trip per friend
+  });
+
+  it("an archived child is not a trade partner (#97)", async () => {
+    // Wired the way prod is — through the real profile service — because the
+    // filtering lives at that seam, and a hand-written `listChildren` stub would
+    // prove only that the stub filtered.
+    const profiles = inMemoryProfileStore([
+      { id: "A", name: "Ana", avatar: "fox" },
+      { id: "B", name: "Ben", avatar: "owl" },
+      { id: "C", name: "Cal", avatar: "cat" },
+    ]);
+    await profiles.archive("C");
+
+    const service = makeTradeService({
+      collections: inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 }, C: { z: 2 } }),
+      catalog: fakeCatalog([card("x", "rare"), card("y", "rare"), card("z", "rare")]),
+      rewards: recordingRewards(),
+      profiles: makeProfileService({ profiles }),
+    });
+
+    const friends = await service.listFriendSummaries("A");
+    expect(friends.map((f) => f.id)).toEqual(["B"]);
+  });
+
+  it("refuses a trade with a child archived since the page rendered (#97)", async () => {
+    // The board filters archived children out, so this needs a stale page — but a
+    // stale page is exactly what an archive creates, and before soft-delete the
+    // foreign key would have refused the swap. Without the guard, A gives a card
+    // away to a child nobody can see.
+    const profiles = inMemoryProfileStore([
+      { id: "A", name: "Ana", avatar: "fox" },
+      { id: "B", name: "Ben", avatar: "owl" },
+    ]);
+    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 } }, profiles);
+    const service = makeTradeService({
+      collections,
+      catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
+      rewards: recordingRewards(),
+      profiles: makeProfileService({ profiles }),
+    });
+
+    await profiles.archive("B");
+    const result = await service.executeTrade({
+      aChildId: "A",
+      aCardId: "x",
+      bChildId: "B",
+      bCardId: "y",
+    });
+
+    expect(result.ok).toBe(false);
+    // …and nothing moved.
+    expect(await collections.cardCount("A", "x")).toBe(2);
+    expect(await collections.cardCount("A", "y")).toBe(0);
+    expect(await collections.cardCount("B", "y")).toBe(2);
+  });
+
+  it("atomic guard: archive committing between listChildren check and swap fails the swap (#97 TOCTOU)", async () => {
+    // Regression test for the TOCTOU race where archive commits after the service's
+    // listChildren check (line 114) but before swapCards commits (line 137). The
+    // atomic guard in swapCards itself (EXISTS archived_at IS NULL) must catch this.
+    //
+    // We simulate the interleaving by archiving B *after* the service has already
+    // checked listChildren (which happens before catalog/cardCount calls). The swap
+    // transaction will see B as archived and must fail atomically.
+    const profiles = inMemoryProfileStore([
+      { id: "A", name: "Ana", avatar: "fox" },
+      { id: "B", name: "Ben", avatar: "owl" },
+    ]);
+    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 } }, profiles);
+
+    // Spy on listChildren to archive B immediately AFTER the check passes (simulating
+    // the deterministic interleaving where archive commits in the gap).
+    const profileService = makeProfileService({ profiles });
+    const originalList = profileService.listChildren.bind(profileService);
+    let checkCount = 0;
+    profileService.listChildren = async () => {
+      const result = await originalList();
+      checkCount += 1;
+      // Archive B after the first listChildren call (the active-child check in
+      // executeTrade), simulating archive committing in the TOCTOU window.
+      if (checkCount === 1) {
+        await profiles.archive("B");
+      }
+      return result;
+    };
+
+    const service = makeTradeService({
+      collections,
+      catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
+      rewards: recordingRewards(),
+      profiles: profileService,
+    });
+
+    const result = await service.executeTrade({
+      aChildId: "A",
+      aCardId: "x",
+      bChildId: "B",
+      bCardId: "y",
+    });
+
+    // The swap must fail because B was archived before the transaction committed,
+    // even though B was active when the pre-check ran. The atomic guard caught it.
+    expect(result.ok).toBe(false);
+    expect(result).toHaveProperty("reason");
+    // …and nothing moved.
+    expect(await collections.cardCount("A", "x")).toBe(2);
+    expect(await collections.cardCount("A", "y")).toBe(0);
+    expect(await collections.cardCount("B", "y")).toBe(2);
+    expect(await collections.cardCount("B", "x")).toBe(0);
   });
 });

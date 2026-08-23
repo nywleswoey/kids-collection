@@ -51,7 +51,16 @@ export const cards = pgTable(
   (t) => [index("cards_theme_idx").on(t.themeId)],
 );
 
-/** Children — per-family profiles. New child starts with 3 pull tokens (BR4). */
+/**
+ * Children — per-family profiles. New child starts with 3 pull tokens (BR4).
+ *
+ * Rows are SOFT-deleted (#97): removing a profile stamps `archivedAt` rather than
+ * issuing a DELETE, because a DELETE cascades into `collections`,
+ * `quiz_completions`, `quiz_seen_questions` and `collection_rewards` — every card
+ * the child has ever pulled. The cascades below are unchanged and still pinned
+ * (BR14, `tests-pg/delete-path.pg.test.ts`); no application path reaches them any
+ * more. Data-preservation plan: `docs/DATA-PRESERVATION-0009.md`.
+ */
 export const children = pgTable(
   "children",
   {
@@ -65,6 +74,11 @@ export const children = pgTable(
     // egg tickets and the four rarity-pick tickets. Redeemed for a weighted-roll
     // pick-1-of-5. Backfilled by migration 0005 as the sum of the six old columns.
     easterEggTickets: integer("easter_egg_tickets").notNull().default(0),
+    // Soft-delete stamp (#97). NULL = active, which is why the column is nullable
+    // rather than a boolean with a default: "when was this archived" is the fact a
+    // parent needs when deciding whether to undo, and NULL is the only value the
+    // pre-migration rows could honestly have.
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
   },
   (t) => [
     check("pull_tokens_non_negative", sql`${t.pullTokens} >= 0`), // BR5

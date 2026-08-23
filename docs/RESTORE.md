@@ -268,4 +268,12 @@ dumps and the wayfinder map said seven. Nothing survives to count.)*
   and requires the exact collection-row count typed in at an interactive terminal. It cannot be
   satisfied by an environment variable, a config file or a flag, and it always aborts when there is
   no TTY.
-- Removing a child profile requires typing that child's name, with the card count shown.
+- Removing a child profile **no longer deletes anything** (#97). It stamps `children.archived_at`,
+  which hides the profile everywhere a parent or child looks while leaving every `collections`,
+  `quiz_completions`, `quiz_seen_questions` and `collection_rewards` row untouched — and a parent
+  restores it from Admin → Manage Profiles. `ProfileStore` has no hard delete at all, so the cascade
+  that used to make this the sharpest edge in the app is unreachable from the running application. The
+  confirmation still asks for the child's name, with the card count shown, because archiving a profile
+  is disruptive even though it is undoable.
+  This also narrows §4's *per-child restore* gap for the one cause it used to be needed for most: an
+  accidental profile removal no longer needs the dump at all.

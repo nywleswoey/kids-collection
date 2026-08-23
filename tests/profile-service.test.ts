@@ -44,10 +44,43 @@ describe("makeProfileService", () => {
     await expect(service.updateChild("ghost", { name: "x", avatar: "cat" })).rejects.toThrow("not found");
   });
 
-  it("removeChild deletes the profile", async () => {
+  it("archiveChild hides the profile from every child-facing read", async () => {
     const { service, store } = setup([{ name: "kid", avatar: "cat" }]);
     const [row] = await store.list();
-    await service.removeChild(row.id);
+    await service.archiveChild(row.id);
     expect(await service.getChild(row.id)).toBeNull();
+    expect(await service.listChildren()).toEqual([]);
+  });
+
+  it("archiveChild is reversible — restoreChild brings the profile back intact", async () => {
+    const { service, store } = setup([
+      { name: "kid", avatar: "cat", pullTokens: 9, easterEggTickets: 4 },
+    ]);
+    const [row] = await store.list();
+
+    await service.archiveChild(row.id);
+    await service.restoreChild(row.id);
+
+    expect(await service.getChild(row.id)).toMatchObject({
+      name: "kid",
+      avatar: "cat",
+      pullTokens: 9,
+      easterEggTickets: 4,
+    });
+  });
+
+  it("listArchivedProfiles is the only read that sees archived children", async () => {
+    const { service, store } = setup([
+      { name: "Zoe", avatar: "cat" },
+      { name: "abe", avatar: "owl" },
+    ]);
+    const [abe] = await store.list();
+    await service.archiveChild(abe.id);
+
+    expect((await service.listChildren()).map((c) => c.name)).toEqual(["Zoe"]);
+
+    const archived = await service.listArchivedProfiles();
+    expect(archived.map((c) => c.name)).toEqual(["abe"]);
+    expect(archived[0].archivedAt).toBeInstanceOf(Date);
   });
 });
