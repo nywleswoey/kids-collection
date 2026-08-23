@@ -136,5 +136,9 @@ predicate. They are reachable only with a child id that came from an already-fil
 read, so the only way to write to an archived child is a page that was rendered before
 the archive. That is harmless by construction — nothing is deleted, and a restore
 shows whatever landed — with one exception, which is guarded rather than tolerated:
-`executeTrade` re-checks that both participants are active, because a trade is the one
-operation where a still-active child would give a card away to someone invisible.
+`executeTrade` re-checks that both participants are active. The check happens
+atomically within `swapCards` itself (the pg adapter's UPDATE statements join to
+`children WHERE archived_at IS NULL`), closing the TOCTOU gap where an archive could
+commit between an earlier check and the swap. A trade is the one operation where a
+still-active child would give a card away to someone invisible, so the atomic guard
+ensures the swap fails cleanly if either participant is archived when it commits.

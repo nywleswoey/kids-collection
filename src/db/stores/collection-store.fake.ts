@@ -1,4 +1,5 @@
 import type { CollectionStore } from "./collection-store";
+import type { ProfileStore } from "./profile-store";
 
 /** Seed shape: `{ [childId]: { [cardId]: count } }`. */
 export type CollectionSeed = Record<string, Record<string, number>>;
@@ -9,8 +10,15 @@ export type CollectionSeed = Record<string, Record<string, number>>;
  * removes, the `count >= 1` invariant (reducing below 1 throws, as the DB CHECK
  * would), and the guarded partial-apply of `swapCards`. Kept honest against the
  * pg adapter by the shared contract suite.
+ *
+ * #97: `swapCards` optionally accepts a ProfileStore to enforce the active-child
+ * guard atomically, mirroring the pg adapter's EXISTS clause. When omitted, the
+ * fake permits trades involving any child (backward-compatible for contract tests).
  */
-export function inMemoryCollectionStore(seed: CollectionSeed = {}): CollectionStore {
+export function inMemoryCollectionStore(
+  seed: CollectionSeed = {},
+  profiles?: ProfileStore,
+): CollectionStore {
   const state = new Map<string, Map<string, number>>();
   for (const [childId, cards] of Object.entries(seed)) {
     state.set(childId, new Map(Object.entries(cards)));
@@ -54,6 +62,18 @@ export function inMemoryCollectionStore(seed: CollectionSeed = {}): CollectionSt
       // All-or-nothing: both gives must keep count >= 1 (held >= 2), else nothing
       // applies — mirroring the CHECK-rollback of the pg batch.
       if (held(aChildId, aCardId) < 2 || held(bChildId, bCardId) < 2) return false;
+      // #97: Both children must be active (when a ProfileStore is wired). Mirrors
+      // the pg adapter's EXISTS(archived_at IS NULL) guard, which closes the TOCTOU
+      // gap where archive commits between the service's check and the swap.
+      if (profiles) {
+        const [aRow, bRow] = await Promise.all([
+          profiles.find(aChildId),
+          profiles.find(bChildId),
+        ]);
+        // `find` returns null for an archived child, so an archived participant
+        // fails the guard → rollback (returns false, no state change).
+        if (!aRow || !bRow) return false;
+      }
       setCount(aChildId, aCardId, held(aChildId, aCardId) - 1);
       setCount(aChildId, bCardId, held(aChildId, bCardId) + 1);
       setCount(bChildId, bCardId, held(bChildId, bCardId) - 1);

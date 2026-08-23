@@ -212,7 +212,7 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
       { id: "A", name: "Ana", avatar: "fox" },
       { id: "B", name: "Ben", avatar: "owl" },
     ]);
-    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 } });
+    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 } }, profiles);
     const service = makeTradeService({
       collections,
       catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
@@ -233,5 +233,60 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
     expect(await collections.cardCount("A", "x")).toBe(2);
     expect(await collections.cardCount("A", "y")).toBe(0);
     expect(await collections.cardCount("B", "y")).toBe(2);
+  });
+
+  it("atomic guard: archive committing between listChildren check and swap fails the swap (#97 TOCTOU)", async () => {
+    // Regression test for the TOCTOU race where archive commits after the service's
+    // listChildren check (line 114) but before swapCards commits (line 137). The
+    // atomic guard in swapCards itself (EXISTS archived_at IS NULL) must catch this.
+    //
+    // We simulate the interleaving by archiving B *after* the service has already
+    // checked listChildren (which happens before catalog/cardCount calls). The swap
+    // transaction will see B as archived and must fail atomically.
+    const profiles = inMemoryProfileStore([
+      { id: "A", name: "Ana", avatar: "fox" },
+      { id: "B", name: "Ben", avatar: "owl" },
+    ]);
+    const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { y: 2 } }, profiles);
+
+    // Spy on listChildren to archive B immediately AFTER the check passes (simulating
+    // the deterministic interleaving where archive commits in the gap).
+    const profileService = makeProfileService({ profiles });
+    const originalList = profileService.listChildren.bind(profileService);
+    let checkCount = 0;
+    profileService.listChildren = async () => {
+      const result = await originalList();
+      checkCount += 1;
+      // Archive B after the first listChildren call (the active-child check in
+      // executeTrade), simulating archive committing in the TOCTOU window.
+      if (checkCount === 1) {
+        await profiles.archive("B");
+      }
+      return result;
+    };
+
+    const service = makeTradeService({
+      collections,
+      catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
+      rewards: recordingRewards(),
+      profiles: profileService,
+    });
+
+    const result = await service.executeTrade({
+      aChildId: "A",
+      aCardId: "x",
+      bChildId: "B",
+      bCardId: "y",
+    });
+
+    // The swap must fail because B was archived before the transaction committed,
+    // even though B was active when the pre-check ran. The atomic guard caught it.
+    expect(result.ok).toBe(false);
+    expect(result).toHaveProperty("reason");
+    // …and nothing moved.
+    expect(await collections.cardCount("A", "x")).toBe(2);
+    expect(await collections.cardCount("A", "y")).toBe(0);
+    expect(await collections.cardCount("B", "y")).toBe(2);
+    expect(await collections.cardCount("B", "x")).toBe(0);
   });
 });

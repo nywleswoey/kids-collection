@@ -56,17 +56,30 @@ export const pgCollectionStore: CollectionStore = {
     // giver who raced away a copy (or never held one) matches zero rows → guard
     // fails → nothing commits, so no lopsided trade. The `1 / (CASE ...)` divisor
     // is column-derived so Postgres can't constant-fold it and pre-throw.
+    //
+    // #97: Both children must be active (archived_at IS NULL) at swap time. The
+    // decrements join to `children` to enforce this atomically, closing the TOCTOU
+    // gap where archive commits between the service's listChildren check and this
+    // transaction. An archived participant matches zero rows → guard fails → rollback.
     try {
       await db.execute(sql`
         WITH
           ga AS (
             UPDATE collections SET count = count - 1
             WHERE child_id = ${aChildId} AND card_id = ${aCardId} AND count >= 2
+              AND EXISTS (
+                SELECT 1 FROM children
+                WHERE id = ${aChildId} AND archived_at IS NULL
+              )
             RETURNING 1
           ),
           gb AS (
             UPDATE collections SET count = count - 1
             WHERE child_id = ${bChildId} AND card_id = ${bCardId} AND count >= 2
+              AND EXISTS (
+                SELECT 1 FROM children
+                WHERE id = ${bChildId} AND archived_at IS NULL
+              )
             RETURNING 1
           ),
           guard AS (
