@@ -20,7 +20,11 @@ export default async function BinderPage() {
     >
       <CollectionRewardModal rewards={pendingRewards} />
       <header
-        className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5"
+        // Pinned only from `sm:` up, where the row fits on one line (~84px) and
+        // `galaxy-tabs` can sit predictably below it. On a phone this header
+        // wraps to two rows (~155px); pinning that plus the tab bar would park
+        // a quarter of the viewport permanently, so the tab bar pins alone.
+        className="panel z-10 flex flex-wrap items-center justify-between gap-3 p-5 sm:sticky sm:top-3"
         style={{ background: "var(--bg-1)" }}
       >
         <div className="flex items-center gap-3">
