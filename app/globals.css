@@ -51,9 +51,7 @@ body {
   /* `clip`, not `hidden`: `overflow-x: hidden` forces the other axis to `auto`,
      making body a scroll container that never scrolls -- which leaves every
      `position: sticky` descendant with nothing to stick to. `clip` suppresses
-     the same horizontal overflow without establishing a scroll container.
-     The `hidden` line below it is the fallback for engines without `clip`. */
-  overflow-x: hidden;
+     the same horizontal overflow without establishing a scroll container. */
   overflow-x: clip;
 }
 
