@@ -20,22 +20,31 @@ export default async function BinderPage() {
     >
       <CollectionRewardModal rewards={pendingRewards} />
       <header
-        className="panel sticky top-3 z-10 flex flex-wrap items-center justify-between gap-3 p-5"
+        // Pinned only from `sm:` up, and `sm:flex-nowrap` there is what makes
+        // that safe: galaxy-tabs pins to a fixed offset below this header, so
+        // the header's height has to be a constant, not a function of the
+        // child's name. Names run to 40 chars (profiles/service.ts), which
+        // wrapped this to two rows (155px) and buried the tab bar underneath
+        // it. Nowrap + a truncating title holds it at one row (88px).
+        // On a phone it still wraps, which is fine -- it is not pinned there,
+        // because pinning 155px of header plus the tab bar would park a
+        // quarter of the viewport permanently.
+        className="panel z-10 flex flex-wrap items-center justify-between gap-3 p-5 sm:sticky sm:top-3 sm:flex-nowrap"
         style={{ background: "var(--bg-1)" }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <Link
             href="/play/home"
             data-testid="binder-back-home"
-            className="btn btn--ghost text-sm"
+            className="btn btn--ghost shrink-0 text-sm"
           >
             ← Home
           </Link>
-          <h1 className="text-2xl font-bold">
+          <h1 className="truncate text-2xl font-bold">
             <span className="title-pop">{child.name}</span>&apos;s Galaxy
           </h1>
         </div>
-        <span className="pill pill--gold">
+        <span className="pill pill--gold shrink-0">
           ⭐ {binder.totalOwned} / {binder.totalCards} stars
         </span>
       </header>

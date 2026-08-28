@@ -48,7 +48,11 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* `clip`, not `hidden`: `overflow-x: hidden` forces the other axis to `auto`,
+     making body a scroll container that never scrolls -- which leaves every
+     `position: sticky` descendant with nothing to stick to. `clip` suppresses
+     the same horizontal overflow without establishing a scroll container. */
+  overflow-x: clip;
 }
 
 body {
@@ -134,17 +138,26 @@ h3 {
 }
 
 /* ---------- Glass panels ---------- */
-.panel {
-  position: relative;
-  background: var(--glass);
-  border: 1px solid var(--glass-brd);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-.panel--glow {
-  box-shadow: var(--shadow-soft), var(--shadow-glow);
+/* Layered into `components` deliberately. Unlayered CSS outranks every Tailwind
+   utility, so a bare `.panel { position: relative }` silently beat `sticky` on
+   `panel sticky ...` elements -- they computed to `relative` and never pinned.
+   Inside the components layer `position: relative` is still the default, but a
+   position utility on the element now wins, which is what the markup expects. */
+@layer components {
+  .panel {
+    position: relative;
+    background: var(--glass);
+    border: 1px solid var(--glass-brd);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  /* Same layer as `.panel` so the pair keeps its source-order relationship
+     (glow wins over the soft shadow) while both still yield to a utility. */
+  .panel--glow {
+    box-shadow: var(--shadow-soft), var(--shadow-glow);
+  }
 }
 
 /* ---------- Buttons ---------- */
