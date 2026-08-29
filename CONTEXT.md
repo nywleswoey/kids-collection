@@ -46,7 +46,9 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
   swap-board columns are ordered (#109): **new** (they own none) → **one-away** (they
   hold `SACRIFICE_MIN - 1`, so this copy makes it burnable) → **rest**. Mirrored — each
   column is tiered against the *other* party's shelf. Never about acquisition recency:
-  `collections` has no timestamp.
+  `collections` has no timestamp. Said once as a band heading naming the receiver rather
+  than as a per-tile badge (#110) — a tier is a property of a group, so a column is cut
+  into bands (`bandsByTier`) whose order is exactly `orderByValue`'s.
 - **Offer** — an HMAC-signed, expiring token pinning the exact cards/rarity the server
   chose, so a claim can't be swapped for an un-offered card (pull eggs, quiz answers).
 - **Gate** — the admin passcode gate; issues a short-lived signed cookie.
