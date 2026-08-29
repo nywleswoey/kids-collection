@@ -3676,6 +3676,221 @@
         }
       ],
       "provider": "cloudflare-sdxl"
+    },
+    {
+      "name": "Trees",
+      "cards": [
+        {
+          "name": "Cherry Blossom Tree",
+          "rarity": "legendary",
+          "eduText": "In Japan people gather under these trees each spring to watch the pink petals fall like snow.",
+          "imagePrompt": "a single cherry blossom tree with a dark curving trunk and a wide spreading crown completely covered in masses of soft pink flowers, standing alone on green grass with nothing behind it but clear blue sky, seen from a little way off so the whole tree from its trunk to the top of its crown is in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cherry_blossom"
+        },
+        {
+          "name": "Banyan",
+          "rarity": "legendary",
+          "eduText": "A banyan drops roots from its branches. They thicken into new trunks, so one tree can spread like a forest.",
+          "imagePrompt": "a single banyan tree with one huge wide spreading crown and many thick aerial roots hanging down from its branches to the ground, standing alone on green grass with nothing behind it but clear blue sky, seen from a little way off so the whole tree from its trunk to the top of its crown is in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banyan"
+        },
+        {
+          "name": "Weeping Willow",
+          "rarity": "epic",
+          "eduText": "Willow branches bend instead of snapping in the wind, and the tree can grow a new one from a broken twig.",
+          "imagePrompt": "a single weeping willow tree with a short thick trunk and long thin branches of narrow green leaves hanging down to the ground, standing alone on green grass with nothing behind it but clear blue sky, seen from far enough away that the whole tree and the grass under it are in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Salix_babylonica"
+        },
+        {
+          "name": "Coconut Palm",
+          "rarity": "epic",
+          "eduText": "A coconut can float across the sea for months and still sprout into a new palm when it lands.",
+          "imagePrompt": "a single coconut palm tree with one tall curving bare trunk and a crown of long feathery green fronds with green coconuts underneath, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coconut"
+        },
+        {
+          "name": "Joshua Tree",
+          "rarity": "epic",
+          "eduText": "This desert tree is not really a tree at all. It is a giant yucca, and it can live over 150 years.",
+          "imagePrompt": "a single joshua tree with a short thick shaggy trunk and crooked upward arms each ending in a spiky green tuft, standing alone on plain pale sandy ground with nothing behind it but clear blue sky, seen from a little way off so the whole tree from its trunk to the top of its arms is in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yucca_brevifolia"
+        },
+        {
+          "name": "Norway Spruce",
+          "rarity": "epic",
+          "eduText": "Most Christmas trees are Norway spruces. Their cones hang down instead of standing up.",
+          "imagePrompt": "a single norway spruce tree shaped like a tall narrow pointed cone, with dense dark green needle branches reaching down to the ground, standing alone on green grass with nothing behind it but clear blue sky, seen from a little way off so the whole tree from its base to its pointed top is in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Picea_abies"
+        },
+        {
+          "name": "Monkey Puzzle Tree",
+          "rarity": "epic",
+          "eduText": "Its leaves are so sharp and spiky that people joked even a monkey would be puzzled climbing it.",
+          "imagePrompt": "a single monkey puzzle tree with a bare straight trunk and stiff branches covered in sharp overlapping dark green triangular scales, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Araucaria_araucana"
+        },
+        {
+          "name": "Oak",
+          "rarity": "rare",
+          "eduText": "An oak can drop thousands of acorns in one year, and jays bury them and plant new oaks by mistake.",
+          "imagePrompt": "a single short oak branch with deeply lobed green leaves and two brown acorns, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Oak"
+        },
+        {
+          "name": "Maple",
+          "rarity": "rare",
+          "eduText": "Maple seeds spin like helicopter blades as they fall, carrying them away from the parent tree.",
+          "imagePrompt": "a single short maple branch with just five flat bright red five-pointed leaves, the bare brown branch clearly visible along its whole length, with plain blue sky all around it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Maple"
+        },
+        {
+          "name": "Ginkgo",
+          "rarity": "rare",
+          "eduText": "Ginkgos have grown on Earth for over 200 million years, so dinosaurs walked under trees like this.",
+          "imagePrompt": "a single short ginkgo branch with small fan-shaped leaves turned golden yellow, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ginkgo_biloba"
+        },
+        {
+          "name": "Holly",
+          "rarity": "rare",
+          "eduText": "Holly leaves are spikiest low down where animals can reach, and smoother higher up the tree.",
+          "imagePrompt": "a single short holly branch with dark glossy green leaves with spiky pointed edges and clusters of small bright red berries, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ilex_aquifolium"
+        },
+        {
+          "name": "Apple Tree",
+          "rarity": "rare",
+          "eduText": "Every apple in an orchard row can be a clone, grown by joining a twig onto another tree's roots.",
+          "imagePrompt": "a single short apple branch with green leaves and three round shiny red apples, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Apple"
+        },
+        {
+          "name": "Horse Chestnut",
+          "rarity": "rare",
+          "eduText": "The shiny brown conker inside the spiky case is a seed, not a nut, and it is too bitter to eat.",
+          "imagePrompt": "a single short horse chestnut branch with a spiky green case split open to show two shiny brown conkers inside, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aesculus_hippocastanum"
+        },
+        {
+          "name": "Olive Tree",
+          "rarity": "rare",
+          "eduText": "Some olive trees are over a thousand years old and still grow fruit every single year.",
+          "imagePrompt": "a single short olive branch with narrow silvery grey-green leaves and a few small green olives, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Olive"
+        },
+        {
+          "name": "Silver Birch",
+          "rarity": "rare",
+          "eduText": "Birch bark peels off in papery strips, and its white colour bounces sunlight away from the trunk.",
+          "imagePrompt": "one single upright silver birch trunk with smooth chalky white bark marked with black horizontal dashes and dark diamond scars, standing on green grass with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Betula_pendula"
+        },
+        {
+          "name": "Rain Tree",
+          "rarity": "common",
+          "eduText": "Its leaflets fold up at dusk and when rain comes, letting the water fall straight through to the ground.",
+          "imagePrompt": "a single short rain tree branch with just two feathery fronds of tiny paired green leaflets at its tip, the bare brown branch clearly visible along its whole length, with plain blue sky all around it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Samanea_saman"
+        },
+        {
+          "name": "Sea Almond",
+          "rarity": "common",
+          "eduText": "Its big leaves turn red before they drop, and its seeds float on seawater to reach new beaches.",
+          "imagePrompt": "a single short sea almond branch with very large broad flat oval leaves, some deep red and some green, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Terminalia_catappa"
+        },
+        {
+          "name": "Traveller's Palm",
+          "rarity": "common",
+          "eduText": "Its leaves grow in one flat fan, and rainwater collects in the leaf bases for a thirsty traveller.",
+          "imagePrompt": "a single traveller's palm plant seen from directly in front, its long paddle-shaped green leaves fanning out flat in one single plane from a short central trunk like a giant open fan, standing alone on green grass with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ravenala"
+        },
+        {
+          "name": "Banana Tree",
+          "rarity": "common",
+          "eduText": "A banana plant is a giant herb, not a tree. Its trunk is made of tightly rolled leaf bases.",
+          "imagePrompt": "one very large bright green banana leaf with a thick pale midrib and long torn edges, its whole shape visible from base to tip, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banana"
+        },
+        {
+          "name": "Papaya Tree",
+          "rarity": "common",
+          "eduText": "Papayas grow straight out of the trunk in a ring, right under the crown of leaves.",
+          "imagePrompt": "the top of a single papaya stem with a ring of large yellow-green oval fruit growing tightly against it under a crown of deeply cut leaves, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Papaya"
+        },
+        {
+          "name": "Mango Tree",
+          "rarity": "common",
+          "eduText": "Mango trees can keep fruiting for over 100 years, and some grow taller than a house.",
+          "imagePrompt": "a single short mango branch with long narrow dark green leaves and two large oval fruit blushed red and yellow, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mango"
+        },
+        {
+          "name": "Starfruit Tree",
+          "rarity": "common",
+          "eduText": "Slice this ridged yellow fruit across the middle and every piece comes out shaped like a star.",
+          "imagePrompt": "a single short starfruit branch with small green leaves and three waxy yellow fruit with five deep ridges down their sides, and one slice cut across showing a yellow star shape, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Carambola"
+        },
+        {
+          "name": "Durian Tree",
+          "rarity": "common",
+          "eduText": "Durian smells so strong it is banned on trains and buses in some countries, but many people love it.",
+          "imagePrompt": "a single short durian branch with two big round green fruit completely covered in sharp thick spikes, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Durian"
+        },
+        {
+          "name": "Rambutan Tree",
+          "rarity": "common",
+          "eduText": "Rambutan means hairy in Malay. The soft red spines peel away to reveal a sweet white fruit.",
+          "imagePrompt": "a single short rambutan branch with a cluster of round bright red fruit covered in soft green hairs, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rambutan"
+        },
+        {
+          "name": "Rubber Tree",
+          "rarity": "common",
+          "eduText": "A spiral cut in the bark lets white latex drip into a cup, and that sap becomes rubber.",
+          "imagePrompt": "one single upright rubber tree trunk seen close up, standing on green grass, one deep spiral groove cut in a long slanting line down its smooth grey bark with white sap running along inside the cut, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hevea_brasiliensis"
+        },
+        {
+          "name": "Rainbow Eucalyptus",
+          "rarity": "common",
+          "eduText": "As its bark peels, the fresh layer underneath turns green, then orange, purple and blue.",
+          "imagePrompt": "one single upright rainbow eucalyptus trunk standing on green grass, its smooth bark streaked in bright green, orange, purple and blue, with nothing behind it but plain pale blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eucalyptus_deglupta"
+        },
+        {
+          "name": "Mangrove",
+          "rarity": "common",
+          "eduText": "Mangroves stand on stilt roots in salty water and their seeds sprout while still on the tree.",
+          "imagePrompt": "one single mangrove tree standing on many thin arching stilt roots that lift its trunk clear above shallow still water, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mangrove"
+        },
+        {
+          "name": "Frangipani",
+          "rarity": "common",
+          "eduText": "Frangipani flowers smell strongest at night to attract moths, though they hold no nectar at all.",
+          "imagePrompt": "a single short frangipani branch with thick bare grey stems and clusters of white five-petalled flowers with yellow centres, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Plumeria"
+        },
+        {
+          "name": "Flame of the Forest",
+          "rarity": "common",
+          "eduText": "When it blooms the whole crown turns orange-red, and its seed pods can grow as long as your arm.",
+          "imagePrompt": "a single short flame tree branch covered in large bright orange-red flowers with fine feathery green leaflets behind them, its whole length visible from end to end, with nothing behind it but plain blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Delonix_regia"
+        },
+        {
+          "name": "Angsana",
+          "rarity": "common",
+          "eduText": "Every angsana in a street can burst into yellow flower on the same day, then drop them a day later.",
+          "imagePrompt": "a single short angsana branch with a few small green leaflets and two clusters of tiny bright yellow flowers, the bare brown branch clearly visible along its whole length, with plain blue sky all around it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pterocarpus_indicus"
+        }
+      ]
     }
   ]
 }
