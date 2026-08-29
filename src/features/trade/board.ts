@@ -50,10 +50,11 @@ export interface BoardCard {
   /** What this swap is worth to the party on the OTHER side of the board. */
   tier: SwapTier;
   /**
-   * True when the OTHER party doesn't own this card at all. Drives the badge
-   * (FR4) and the "only show what's missing" filter (FR5). Deliberately about
-   * ownership, not duplicates: what matters is whether the swap gives them
-   * something genuinely new.
+   * True when the OTHER party doesn't own this card at all. Drives the "only
+   * show what's missing" filter (FR5) and its count; since #110 the `new` band
+   * heading is what says it on screen, so no tile wears a badge for it any
+   * more (FR4). Deliberately about ownership, not duplicates: what matters is
+   * whether the swap gives them something genuinely new.
    */
   newToOther: boolean;
 }

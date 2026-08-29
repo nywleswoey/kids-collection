@@ -192,8 +192,7 @@ export function TradeBoard({
             badged={myBadged}
             total={columns.mine.length}
             cards={applyMissingFilter(columns.mine, onlyTheirsMissing)}
-            receiver={friend.name}
-            newGlyph="🎁"
+            receiver={{ kind: "friend", name: friend.name }}
             selectedId={mine?.card.id ?? null}
             otherPick={theirs?.card ?? null}
             onPick={(c) => {
@@ -217,8 +216,7 @@ export function TradeBoard({
             badged={theirBadged}
             total={columns.theirs.length}
             cards={applyMissingFilter(columns.theirs, onlyMineMissing)}
-            receiver={YOU}
-            newGlyph="🆕"
+            receiver={ME}
             selectedId={theirs?.card.id ?? null}
             otherPick={mine?.card ?? null}
             onPick={(c) => {
@@ -270,19 +268,29 @@ export function TradeBoard({
 }
 
 /**
- * The receiver on the far side of a column, as the headings address them.
- * `YOU` is a sentinel, not a name: the copy has to switch person for it
- * ("one more and YOU can burn it"), and a friend can't be called it.
+ * Who receives the cards in a column — what every band heading is addressed
+ * to. A discriminant rather than a name string: the copy switches person for
+ * the child's own column ("one more and YOU can burn it"), and deciding that
+ * by comparing against the name would put a friend called "You" in the wrong
+ * person. It carries the column's glyph for the same reason — one value, so
+ * the two can't disagree.
  */
-const YOU = "you";
+type Receiver = { kind: "friend"; name: string } | { kind: "me" };
+
+const ME: Receiver = { kind: "me" };
+
+/** How a heading names the receiver. */
+function receiverName(receiver: Receiver): string {
+  return receiver.kind === "friend" ? receiver.name : "you";
+}
 
 /** The band heading — a whole sentence, naming WHOSE shelf the tier is about
  *  (#110). Said once above the band instead of on every tile. */
-function bandTitle(tier: SwapTier, receiver: string, newGlyph: string): string {
-  const you = receiver === YOU;
-  if (tier === "new") return `${newGlyph} New for ${receiver}`;
-  if (tier === "one-away") return `🔥 One more and ${receiver} can burn it`;
-  return you ? "You already have these" : `${receiver} already has these`;
+function bandTitle(tier: SwapTier, receiver: Receiver): string {
+  const who = receiverName(receiver);
+  if (tier === "new") return `${receiver.kind === "friend" ? "🎁" : "🆕"} New for ${who}`;
+  if (tier === "one-away") return `🔥 One more and ${who} can burn it`;
+  return receiver.kind === "friend" ? `${who} already has these` : "You already have these";
 }
 
 /**
@@ -291,9 +299,10 @@ function bandTitle(tier: SwapTier, receiver: string, newGlyph: string): string {
  * accessible name too. `rest` says nothing — an unlabelled tile means they
  * already have it, exactly as it did when the badge was visible (FR4).
  */
-function tierPhrase(tier: SwapTier, receiver: string): string {
-  if (tier === "new") return `new for ${receiver}`;
-  if (tier === "one-away") return `one more and ${receiver} can burn it`;
+function tierPhrase(tier: SwapTier, receiver: Receiver): string {
+  const who = receiverName(receiver);
+  if (tier === "new") return `new for ${who}`;
+  if (tier === "one-away") return `one more and ${who} can burn it`;
   return "";
 }
 
@@ -316,7 +325,6 @@ function Column({
   total,
   cards,
   receiver,
-  newGlyph,
   selectedId,
   otherPick,
   onPick,
@@ -330,8 +338,7 @@ function Column({
   badged: number;
   total: number;
   cards: BoardCard[];
-  receiver: string;
-  newGlyph: string;
+  receiver: Receiver;
   selectedId: string | null;
   otherPick: CardType | null;
   onPick: (c: BoardCard) => void;
@@ -358,7 +365,7 @@ function Column({
               data-testid={`trade-band-${testid}-${band.tier}`}
               className="text-xs font-bold uppercase tracking-wide text-[color:var(--ink-soft)]"
             >
-              {bandTitle(band.tier, receiver, newGlyph)} ({band.cards.length})
+              {bandTitle(band.tier, receiver)} ({band.cards.length})
             </h3>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
               {band.cards.map((c) => (
@@ -392,7 +399,7 @@ function Tile({
   onPick,
 }: {
   entry: BoardCard;
-  receiver: string;
+  receiver: Receiver;
   testid: string;
   selected: boolean;
   pickable: boolean;
