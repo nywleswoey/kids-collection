@@ -288,13 +288,13 @@ function bandTitle(tier: SwapTier, receiver: string, newGlyph: string): string {
 /**
  * The same sentence on the tile itself, for a screen reader: a band heading is
  * not announced with the button inside it, so the tier rides in each tile's
- * accessible name too. `rest` says nothing — an unlabelled tile means they
- * already have it, exactly as it did when the badge was visible (FR4).
+ * accessible name too, including the receiver context for `rest` tiles that
+ * are already owned (FR4).
  */
 function tierPhrase(tier: SwapTier, receiver: string): string {
   if (tier === "new") return `new for ${receiver}`;
   if (tier === "one-away") return `one more and ${receiver} can burn it`;
-  return "";
+  return receiver === YOU ? "you already have this" : `${receiver} already has this`;
 }
 
 /**
