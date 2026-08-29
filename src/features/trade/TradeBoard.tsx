@@ -18,8 +18,8 @@ import {
   buildColumns,
   isPickable,
   type BoardCard,
-  type SwapTier,
 } from "./board";
+import { ME, bandCopy, type Receiver } from "./band-copy";
 
 export type FriendSummary = {
   id: string;
@@ -268,45 +268,6 @@ export function TradeBoard({
 }
 
 /**
- * Who receives the cards in a column — what every band heading is addressed
- * to. A discriminant rather than a name string: the copy switches person for
- * the child's own column ("one more and YOU can burn it"), and deciding that
- * by comparing against the name would put a friend called "You" in the wrong
- * person. It carries the column's glyph for the same reason — one value, so
- * the two can't disagree.
- */
-type Receiver = { kind: "friend"; name: string } | { kind: "me" };
-
-const ME: Receiver = { kind: "me" };
-
-/** How a heading names the receiver. */
-function receiverName(receiver: Receiver): string {
-  return receiver.kind === "friend" ? receiver.name : "you";
-}
-
-/** The band heading — a whole sentence, naming WHOSE shelf the tier is about
- *  (#110). Said once above the band instead of on every tile. */
-function bandTitle(tier: SwapTier, receiver: Receiver): string {
-  const who = receiverName(receiver);
-  if (tier === "new") return `${receiver.kind === "friend" ? "🎁" : "🆕"} New for ${who}`;
-  if (tier === "one-away") return `🔥 One more and ${who} can burn it`;
-  return receiver.kind === "friend" ? `${who} already has these` : "You already have these";
-}
-
-/**
- * The same sentence on the tile itself, for a screen reader: a band heading is
- * not announced with the button inside it, so the tier rides in each tile's
- * accessible name too. `rest` says nothing — an unlabelled tile means they
- * already have it, exactly as it did when the badge was visible (FR4).
- */
-function tierPhrase(tier: SwapTier, receiver: Receiver): string {
-  const who = receiverName(receiver);
-  if (tier === "new") return `new for ${who}`;
-  if (tier === "one-away") return `one more and ${who} can burn it`;
-  return "";
-}
-
-/**
  * One side of the board, cut into tier bands (#110). The heading carries the
  * tier, so the tiles carry no badges at all — including the 🎁 that used to
  * mark tier 1 (FR4), which the first band now says in full and in words.
@@ -365,7 +326,7 @@ function Column({
               data-testid={`trade-band-${testid}-${band.tier}`}
               className="text-xs font-bold uppercase tracking-wide text-[color:var(--ink-soft)]"
             >
-              {bandTitle(band.tier, receiver)} ({band.cards.length})
+              {bandCopy(band.tier, receiver).heading} ({band.cards.length})
             </h3>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
               {band.cards.map((c) => (
@@ -406,7 +367,7 @@ function Tile({
   onPick: () => void;
 }) {
   const meta = RARITY_META[entry.card.rarity];
-  const phrase = tierPhrase(entry.tier, receiver);
+  const { phrase } = bandCopy(entry.tier, receiver);
   return (
     <button
       type="button"

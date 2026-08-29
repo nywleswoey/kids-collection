@@ -67,8 +67,11 @@ export interface BoardCard {
  * one side and forgotten on the other. The tier-2 test needs the receiver's
  * COUNT, not just their ownership — and it's already here: a holding of
  * SACRIFICE_MIN - 1 is a duplicate, so it's in the opposite inventory with its
- * count. Nothing has to be added to `getTradeBoard`'s payload, and no child
- * learns anything new about a friend's shelf.
+ * count. Nothing has to be added to `getTradeBoard`'s payload — the tier is
+ * derived from what the board already sends. What the child then LEARNS from
+ * it did change with #110: the band heading says "one more and Ana can burn
+ * it" in words, so a friend's exact holding of SACRIFICE_MIN - 1 is now on
+ * screen. That disclosure is the point of the ticket, not a leak.
  *
  * That last step is why the tier is only OBSERVABLE while SACRIFICE_MIN - 1 is
  * at least 2. The opposite inventory is `tradableDuplicates` — count >= 2 —
@@ -147,7 +150,7 @@ export interface TierBand {
  * reading the bands top to bottom is exactly `orderByValue`'s sequence — the
  * grouping makes that order legible, it never re-does it.
  *
- * The heading copy lives with the component: it names the RECEIVER ("one more
+ * The heading copy lives in `band-copy.ts`: it names the RECEIVER ("one more
  * and Ana can burn it" / "…and you can burn it"), which only the column knows.
  */
 export function bandsByTier(cards: BoardCard[]): TierBand[] {
