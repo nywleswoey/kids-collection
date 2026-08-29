@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { binderService } from "@/features/binder/service.prod";
 import { GalaxyView } from "@/features/binder/GalaxyView";
+// PROTOTYPE — #107. Dev-only; dies with the prototype/107-category-picker branch.
+import { Prototype107 } from "@/features/binder/prototype-107/Prototype107";
 import { rewardService } from "@/features/rewards/service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
@@ -55,8 +58,12 @@ export default async function BinderPage() {
             🚀 Discover a card
           </Link>
         </div>
-      ) : (
+      ) : process.env.NODE_ENV === "production" ? (
         <GalaxyView sections={binder.themes} />
+      ) : (
+        <Suspense fallback={<GalaxyView sections={binder.themes} />}>
+          <Prototype107 sections={binder.themes} />
+        </Suspense>
       )}
     </main>
   );
