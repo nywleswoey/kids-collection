@@ -27,7 +27,7 @@ function validTheme(name = "Animals", cardPrefix = name) {
       sourceUrl: `https://example.com/${rarity}/${i}`,
     })),
   );
-  return { name, cards };
+  return { name, coverPrompt: `a wide open ${name} place`, cards };
 }
 
 const validFile = () => ({ themes: [validTheme()] });

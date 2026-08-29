@@ -64,6 +64,23 @@ export const themeSeedSchema = z
   .object({
     name: z.string().trim().min(1),
     cards: z.array(seedCardSchema).min(1),
+    /**
+     * The theme's cover art prompt — a **place**, never one of its 30 subjects
+     * (#122). The picker's tile is a landmark a child navigates 25+ categories
+     * by, so it has to be the same picture every time and has to exist before
+     * they own anything here; `buildCoverPrompt` appends `COVER_STYLE` rather
+     * than `ART_STYLE` so a cover cannot be mistaken for a card.
+     *
+     * REQUIRED, unlike `provider` — and the difference is which step of the
+     * runbook writes it. `provider` records a bake-off pick that by definition
+     * does not exist while a theme is being authored, so requiring it would make
+     * a half-authored theme unloadable. `coverPrompt` is authored text, written
+     * at Step 4 alongside 30 `imagePrompt`s, so it is available exactly when the
+     * rest of the file is. Making it required is what turns "every theme has a
+     * cover" into something the schema enforces on every seed command instead of
+     * something the publish step hopes for.
+     */
+    coverPrompt: z.string().trim().min(1),
     /** Default provider for this theme's cards; a card's own `provider` wins (#63). */
     provider: z.string().trim().min(1).optional(),
   })

@@ -2,6 +2,7 @@
   "themes": [
     {
       "name": "Animals",
+      "coverPrompt": "a sunlit forest clearing with a winding stream, tall grass and wildflowers",
       "cards": [
         {
           "name": "Red Fox",
@@ -217,6 +218,7 @@
     },
     {
       "name": "Mythic Creatures",
+      "coverPrompt": "a misty mountain valley with an ancient mossy stone archway and a winding path",
       "cards": [
         {
           "name": "Griffin",
@@ -432,6 +434,7 @@
     },
     {
       "name": "Dinosaurs",
+      "coverPrompt": "a wide prehistoric valley of tall leafy plants and steaming hills under a warm orange sky",
       "cards": [
         {
           "name": "Triceratops",
@@ -647,6 +650,7 @@
     },
     {
       "name": "Superheroes",
+      "coverPrompt": "a bright city of tall towers at sunrise seen from an empty rooftop",
       "cards": [
         {
           "name": "Captain Kindness",
@@ -862,6 +866,7 @@
     },
     {
       "name": "Country",
+      "coverPrompt": "a winding road through green hills with signposts pointing many directions and colourful flags",
       "cards": [
         {
           "name": "Eiffel Tower (France)",
@@ -1077,6 +1082,7 @@
     },
     {
       "name": "Famous People",
+      "coverPrompt": "a warm library reading room with tall bookshelves, a wooden ladder and an open notebook on a desk",
       "cards": [
         {
           "name": "Albert Einstein",
@@ -1292,6 +1298,7 @@
     },
     {
       "name": "Weird Insects",
+      "coverPrompt": "a close-up garden floor of mossy stones, dewy clover and curled bark",
       "cards": [
         {
           "name": "Ladybug",
@@ -1507,6 +1514,7 @@
     },
     {
       "name": "Special Plants",
+      "coverPrompt": "a bright greenhouse with glass panes, clay pots on wooden benches and hanging watering cans",
       "cards": [
         {
           "name": "Venus Flytrap",
@@ -1722,6 +1730,7 @@
     },
     {
       "name": "Spooky Legends",
+      "coverPrompt": "a friendly moonlit path winding between crooked fences and bare twisted trees under purple fog",
       "cards": [
         {
           "name": "Ghost",
@@ -1937,6 +1946,7 @@
     },
     {
       "name": "Deep Sea Creatures",
+      "coverPrompt": "a deep ocean trench with shafts of blue light and glowing coral ridges",
       "cards": [
         {
           "name": "Anglerfish",
@@ -2152,6 +2162,7 @@
     },
     {
       "name": "Flying Machines",
+      "coverPrompt": "a grassy airfield at golden hour with a windsock, runway markings and open sky",
       "cards": [
         {
           "name": "Hot Air Balloon",
@@ -2367,6 +2378,7 @@
     },
     {
       "name": "Ocean Machines",
+      "coverPrompt": "a busy harbour dock with wooden piers, coiled ropes, buoys and calm water",
       "cards": [
         {
           "name": "Sailboat",
@@ -2582,6 +2594,7 @@
     },
     {
       "name": "Warriors",
+      "coverPrompt": "a quiet stone fortress courtyard with hanging banners and worn flagstones",
       "cards": [
         {
           "name": "Samurai",
@@ -2797,6 +2810,7 @@
     },
     {
       "name": "Artillery",
+      "coverPrompt": "a grassy hilltop fort of earth walls and wooden crates, with a flag and a wide valley beyond",
       "provider": "cloudflare-sdxl",
       "cards": [
         {
@@ -3014,6 +3028,7 @@
     },
     {
       "name": "Outer Space",
+      "coverPrompt": "a rocket launch pad at dawn with tall gantry towers, drifting steam and an open sky",
       "cards": [
         {
           "name": "The Moon",
@@ -3235,6 +3250,7 @@
     },
     {
       "name": "Land Machines",
+      "coverPrompt": "a sunny construction yard with sand piles, traffic cones and a wide open road",
       "cards": [
         {
           "name": "Fire Engine",

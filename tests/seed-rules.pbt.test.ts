@@ -30,7 +30,7 @@ type Card = {
   imagePrompt: string;
   sourceUrl: string;
 };
-type Theme = { name: string; cards: Card[] };
+type Theme = { name: string; coverPrompt: string; cards: Card[] };
 type File = { themes: Theme[] };
 
 const clone = (f: File): File => JSON.parse(JSON.stringify(f)) as File;
@@ -62,6 +62,9 @@ const themeArb = (i: number) =>
     )
     .map(([rarities, texts]) => ({
       name: `Theme ${i}`,
+      // Required since #122 — a theme with no cover prompt is not a valid theme,
+      // because the picker has no landmark to draw its tile with.
+      coverPrompt: `a wide open place ${i}`,
       cards: rarities.map((rarity, j) => ({
         name: `t${i}c${j}`,
         rarity: rarity as string,
