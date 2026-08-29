@@ -99,7 +99,8 @@ Grounded in the repository as of 2026-08-03 — 14 feature modules under `src/fe
 - **Ticket economy** — normal `pullTokens`, special egg tickets (✨ epic / 🍀 lucky), and per-rarity pick
   tickets. The single currency the whole reward loop runs on.
 - **Binder / Galaxy** — per-child collection grouped by theme, duplicate counts `xN`, locked silhouettes
-  for unowned cards, rarity and category filters, per-theme completion progress.
+  for unowned cards, a grid of category tiles the child *enters* one at a time (with a rarity filter
+  inside, and the burn pile as its own destination), per-theme completion progress.
 - **Card rendering & effects** — holographic foil, 3D tilt/parallax, rarity-scaled intensity, pack-open
   reveal, roulette.
 - **Sound** — SFX and BGM, rarity fanfares, dedicated easter-egg cue.
@@ -275,9 +276,10 @@ Next.js App Router + TypeScript + Tailwind application on Vercel, with Neon Post
   gap where an edited prompt could republish an image reviewed against a prompt that no longer exists.
   `--sync` also refuses to insert a card with no reviewed image without `--allow-unreviewed`.
 - **`SACRIFICE_COST` / `SACRIFICE_MIN` stay a single source of truth.** `SACRIFICE_COST = 3`,
-  `SACRIFICE_MIN = 4` in `src/features/pull/sacrifice.ts`, consumed by both the card detail page and the
-  galaxy filter, with a property-based test asserting the equivalence. The values are correct as-is; the
-  invariant is that they are never hardcoded anywhere else.
+  `SACRIFICE_MIN = 4` in `src/features/pull/sacrifice.ts`, consumed by every surface that offers or
+  advertises a sacrifice (listed on the constant itself), with a property-based test asserting the
+  equivalence. The values are correct as-is; the invariant is that they are never hardcoded anywhere
+  else.
 - **A pool reset must never delete `collections`.** `cards.theme_id` and `collections.card_id` are both
   `ON DELETE CASCADE`, so deleting the pool destroys every child's cards regardless of what the function
   names. `resetPool()` therefore refuses outright while any collection row exists, and has **no override
