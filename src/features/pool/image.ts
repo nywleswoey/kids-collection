@@ -52,6 +52,20 @@ export async function uploadImage(
   if (!measured) {
     throw new Error(`uploadImage(${key}): bytes are not a recognisable PNG/JPEG/WebP`);
   }
+  // The pathname below is what is ASKED for, not what the object is called. No
+  // naming options are passed, so the SERVICE decides — and which default it
+  // applies is selected by the `x-api-version` header the client library sends,
+  // not by anything visible here. Under `@vercel/blob@0.27`'s version 9 that
+  // default appends a random suffix, so the store creates
+  // `cards/<key>-<random>.jpg` and that suffixed URL is what `cards.imageUrl`
+  // holds, which is also why `--blob-budget` reconciles the store against the
+  // pool instead of trusting these URLs. v1.0 sends version 10, whose default
+  // takes the pathname literally.
+  //
+  // That makes the bump invisible at this call site: same arguments, same
+  // headers, different published name. `tests/blob-naming.test.ts` (#102) pins
+  // the version so it fails instead. Whether the default is the right one — and
+  // what happens to the ~390 URLs already written under version 9's — is #91's.
   const { url } = await put(`cards/${key}.jpg`, Buffer.from(bytes), {
     access: "public",
     contentType: contentTypeFor(measured.format),

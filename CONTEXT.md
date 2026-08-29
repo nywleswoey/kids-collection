@@ -126,6 +126,19 @@ free provider:
   from the CLI, and were the tightest of them all at **2,998 of 5,000 per 30 days** —
   a dated observation, not something the command will notice moving. The ceiling is a
   **plan** fact, hardcoded, and nothing detects a plan change.
+- **Published object name** — what a card's blob is actually called, which is NOT the
+  pathname the code asks for. `uploadImage` asks for `cards/<blobKey>.jpg` and states no
+  naming policy, so the service decides — and which default it applies is selected by
+  the `x-api-version` header the client library sends, invisibly to the call site. Under
+  `@vercel/blob@0.27`'s version **9** the default appends a random suffix, so the store
+  creates `cards/<blobKey>-<random>.jpg` and that suffixed URL is what `cards.imageUrl`
+  holds. v1.0 sends version **10**, whose default takes the pathname literally: same
+  call, same arguments, same headers, different published name. A **security** bump
+  bypasses the majors rule by design, so that flip can arrive without a decision.
+  `tests/blob-naming.test.ts` (#102) is the gate — it drives the real client against a
+  loopback fake of the API and pins the api version, verified red against a real 1.0.0
+  build. The flip itself, and the ~390 `cards.imageUrl` values written under version 9,
+  are #91's.
 - **Mixed-weight pool** — since #79 accepted Cloudflare's weight and the map rules
   re-rendering the ~360 published cards out of scope, the pool is permanently mixed:
   light Pollinations-era cards alongside ~10× heavier Cloudflare ones. That is a fact
