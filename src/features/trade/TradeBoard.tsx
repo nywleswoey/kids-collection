@@ -12,13 +12,7 @@ import { useSound } from "@/features/sound/useSound";
 import { playReward } from "@/features/sound/sfx";
 import { getTradeBoardAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
-import {
-  applyMissingFilter,
-  bandsByTier,
-  buildColumns,
-  isPickable,
-  type BoardCard,
-} from "./board";
+import { bandsByTier, buildColumns, isPickable, type BoardCard } from "./board";
 import { ME, bandCopy, type Receiver } from "./band-copy";
 
 export type FriendSummary = {
@@ -51,10 +45,6 @@ export function TradeBoard({
   } | null>(null);
   const [mine, setMine] = useState<BoardCard | null>(null);
   const [theirs, setTheirs] = useState<BoardCard | null>(null);
-  // FR5 / Q1=B — both filters start OFF: the child sees their whole inventory
-  // on arrival and opts into the narrowing.
-  const [onlyTheirsMissing, setOnlyTheirsMissing] = useState(false);
-  const [onlyMineMissing, setOnlyMineMissing] = useState(false);
   const [result, setResult] = useState<{ gave: CardType; got: CardType } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -136,9 +126,6 @@ export function TradeBoard({
         })
       : null;
 
-  const myBadged = columns ? columns.mine.filter((c) => c.newToOther).length : 0;
-  const theirBadged = columns ? columns.theirs.filter((c) => c.newToOther).length : 0;
-
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-5">
       <ErrorBanner testId="trade-error" message={error} />
@@ -186,12 +173,7 @@ export function TradeBoard({
           <Column
             testid="mine"
             title="Your doubles"
-            filterLabel={`Only show what ${friend.name} is missing`}
-            filterOn={onlyTheirsMissing}
-            setFilterOn={setOnlyTheirsMissing}
-            badged={myBadged}
-            total={columns.mine.length}
-            cards={applyMissingFilter(columns.mine, onlyTheirsMissing)}
+            cards={columns.mine}
             receiver={{ kind: "friend", name: friend.name }}
             selectedId={mine?.card.id ?? null}
             otherPick={theirs?.card ?? null}
@@ -200,22 +182,13 @@ export function TradeBoard({
               posthog.capture("trade_initiated", { card_rarity: c.card.rarity });
               setMine(c);
             }}
-            emptyHint={
-              onlyTheirsMissing
-                ? `${friend.name} already has all your doubles — untick to swap anyway.`
-                : "You have no doubles to trade yet."
-            }
+            emptyHint="You have no doubles to trade yet."
           />
 
           <Column
             testid="theirs"
             title={`${friend.name}'s doubles`}
-            filterLabel="Only show what you're missing"
-            filterOn={onlyMineMissing}
-            setFilterOn={setOnlyMineMissing}
-            badged={theirBadged}
-            total={columns.theirs.length}
-            cards={applyMissingFilter(columns.theirs, onlyMineMissing)}
+            cards={columns.theirs}
             receiver={ME}
             selectedId={theirs?.card.id ?? null}
             otherPick={mine?.card ?? null}
@@ -223,11 +196,7 @@ export function TradeBoard({
               play("click");
               setTheirs(c);
             }}
-            emptyHint={
-              onlyMineMissing
-                ? `You already have all of ${friend.name}'s doubles — untick to swap anyway.`
-                : `${friend.name} has no doubles to swap.`
-            }
+            emptyHint={`${friend.name} has no doubles to swap.`}
           />
         </div>
       ) : null}
@@ -272,18 +241,17 @@ export function TradeBoard({
  * tier, so the tiles carry no badges at all — including the 🎁 that used to
  * mark tier 1 (FR4), which the first band now says in full and in words.
  *
- * The header pill that counted the same cards went with it: it sat directly
- * above a heading saying the same thing in the same words. The filter's own
- * `(badged/total)` count stays — it's about what the checkbox would leave.
+ * The "only show what's missing" checkbox went the same way (#111). It kept
+ * exactly the `new` band — which the sort already floats to the top, under a
+ * heading that names it in a sentence and counts it. The checkbox restated
+ * that in its own label, and was the only control on the board that could
+ * REMOVE a swap the child was allowed to make. Nothing here narrows any more:
+ * the column shows the whole inventory, ordered so the best swap is first, and
+ * every card stays reachable.
  */
 function Column({
   testid,
   title,
-  filterLabel,
-  filterOn,
-  setFilterOn,
-  badged,
-  total,
   cards,
   receiver,
   selectedId,
@@ -293,11 +261,6 @@ function Column({
 }: {
   testid: string;
   title: string;
-  filterLabel: string;
-  filterOn: boolean;
-  setFilterOn: (v: boolean) => void;
-  badged: number;
-  total: number;
   cards: BoardCard[];
   receiver: Receiver;
   selectedId: string | null;
@@ -308,15 +271,6 @@ function Column({
   return (
     <section className="panel flex flex-col gap-3 p-4" data-testid={`trade-column-${testid}`}>
       <h2 className="text-lg font-bold">{title}</h2>
-      <label className="flex cursor-pointer items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={filterOn}
-          onChange={(e) => setFilterOn(e.target.checked)}
-          data-testid={`trade-filter-${testid}`}
-        />
-        {filterLabel} ({badged}/{total})
-      </label>
       {cards.length === 0 ? (
         <Hint>{emptyHint}</Hint>
       ) : (
