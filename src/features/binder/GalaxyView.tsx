@@ -9,7 +9,7 @@ import { SacrificeGrid } from "./SacrificeGrid";
 import { CategoryPicker } from "./CategoryPicker";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
-import { BURN, HUB, type Place, parsePlace, placeParam } from "./binder-place";
+import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
 
 /**
  * Galaxy category view (Inc9 FR1).
@@ -69,12 +69,7 @@ export function GalaxyView({
    * the URL and the back button without one (supported directly in Next 15).
    */
   const go = useCallback((next: Place) => {
-    const param = placeParam(next);
-    window.history.pushState(
-      null,
-      "",
-      param === null ? "/play/binder" : `/play/binder?at=${encodeURIComponent(param)}`,
-    );
+    window.history.pushState(null, "", placeHref(next));
     setPlace(next);
     // Rarity is scoped to a category, so every arrival starts unfiltered.
     setRarity(null);

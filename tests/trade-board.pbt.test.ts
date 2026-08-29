@@ -47,11 +47,8 @@ describe("buildColumns (Inc22 FR4 — badge only what's new to the other side)",
     fc.assert(
       fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
         const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
-        expect(sortedIds(cols.mine)).toEqual([...mine.map((t) => t.card.id)].sort());
-        expect(sortedIds(cols.theirs)).toEqual([...theirs.map((t) => t.card.id)].sort());
-        for (const t of mine) {
-          expect(cols.mine.find((c) => c.card.id === t.card.id)!.count).toBe(t.count);
-        }
+        expect(sortedPairs(cols.mine)).toEqual(sortedPairs(mine));
+        expect(sortedPairs(cols.theirs)).toEqual(sortedPairs(theirs));
       }),
     );
   });
@@ -162,6 +159,15 @@ describe("isPickable (Inc22 FR6 — agrees with validateTrade)", () => {
 
 function sortedIds(cards: BoardCard[]): string[] {
   return cards.map((c) => c.card.id).sort();
+}
+
+/**
+ * Membership as a multiset of (id, count) pairs. Ids repeat in a generated
+ * inventory, so a first-match lookup would check one entry's count twice and
+ * miss the other entirely.
+ */
+function sortedPairs(cards: { card: { id: string }; count: number }[]): string[] {
+  return cards.map((c) => `${c.card.id}\u0000${c.count}`).sort();
 }
 
 const TIER_RANK: Record<SwapTier, number> = { new: 0, "one-away": 1, rest: 2 };

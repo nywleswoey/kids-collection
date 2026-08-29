@@ -29,8 +29,11 @@ const TIER_RANK: Record<SwapTier, number> = { new: 0, "one-away": 1, rest: 2 };
 /**
  * One more copy takes this holding to SACRIFICE_MIN, the constant every surface
  * that offers or advertises a sacrifice gates on (Inc22 D4). Written as
- * "one below the minimum" rather than a literal 3 so it can never drift from
- * `sacrifice-filter.ts`'s `canSacrifice`.
+ * "one below the minimum" rather than a literal 3 so the PREDICATE can never
+ * drift from `sacrifice-filter.ts`'s `canSacrifice`.
+ *
+ * Its DETECTABILITY is a separate matter, and does not follow the constant:
+ * see `buildColumns` on where the receiver's count comes from.
  */
 export function oneAwayFromBurn(count: number): boolean {
   return count + 1 === SACRIFICE_MIN;
@@ -60,6 +63,16 @@ export interface BoardCard {
  * SACRIFICE_MIN - 1 is a duplicate, so it's in the opposite inventory with its
  * count. Nothing has to be added to `getTradeBoard`'s payload, and no child
  * learns anything new about a friend's shelf.
+ *
+ * That last step is why the tier is only OBSERVABLE while SACRIFICE_MIN - 1 is
+ * at least 2. The opposite inventory is `tradableDuplicates` — count >= 2 —
+ * so a receiver holding fewer copies than that never reaches the board with a
+ * count at all, and `tag` reads them as "rest". At SACRIFICE_MIN = 4 the
+ * one-away holding is 3 and lands in the list; lower SACRIFICE_COST far enough
+ * and the tier stops firing everywhere, silently, with the predicate still
+ * correct and the property tests still green — they draw their expectation
+ * from the same duplicates-only inventory. Widen the payload before lowering
+ * the constant.
  */
 export function buildColumns(input: {
   mine: TradableCard[];
