@@ -14,9 +14,11 @@ import { getTradeBoardAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
 import {
   applyMissingFilter,
+  bandsByTier,
   buildColumns,
   isPickable,
   type BoardCard,
+  type SwapTier,
 } from "./board";
 
 export type FriendSummary = {
@@ -29,8 +31,9 @@ export type FriendSummary = {
 
 /**
  * Friend-first swap board (Inc22). Pick the friend FIRST, then see both
- * inventories side by side with the cards that are new to the other party
- * badged. Server re-validates and commits atomically; giver A is always the
+ * inventories side by side, each ordered by what the swap is worth to whoever
+ * would RECEIVE those cards (#109) and cut into labelled tier bands (#110).
+ * Server re-validates and commits atomically; giver A is always the
  * server-side active profile.
  */
 export function TradeBoard({
@@ -183,14 +186,14 @@ export function TradeBoard({
           <Column
             testid="mine"
             title="Your doubles"
-            badgeSummary={`🎁 ${myBadged} new for ${friend.name}`}
             filterLabel={`Only show what ${friend.name} is missing`}
             filterOn={onlyTheirsMissing}
             setFilterOn={setOnlyTheirsMissing}
             badged={myBadged}
             total={columns.mine.length}
             cards={applyMissingFilter(columns.mine, onlyTheirsMissing)}
-            wantLabel={`🎁 New for ${friend.name}`}
+            receiver={friend.name}
+            newGlyph="🎁"
             selectedId={mine?.card.id ?? null}
             otherPick={theirs?.card ?? null}
             onPick={(c) => {
@@ -208,14 +211,14 @@ export function TradeBoard({
           <Column
             testid="theirs"
             title={`${friend.name}'s doubles`}
-            badgeSummary={`🆕 ${theirBadged} new for you`}
             filterLabel="Only show what you're missing"
             filterOn={onlyMineMissing}
             setFilterOn={setOnlyMineMissing}
             badged={theirBadged}
             total={columns.theirs.length}
             cards={applyMissingFilter(columns.theirs, onlyMineMissing)}
-            wantLabel="🆕 New for you"
+            receiver={YOU}
+            newGlyph="🆕"
             selectedId={theirs?.card.id ?? null}
             otherPick={mine?.card ?? null}
             onPick={(c) => {
@@ -266,17 +269,54 @@ export function TradeBoard({
   );
 }
 
+/**
+ * The receiver on the far side of a column, as the headings address them.
+ * `YOU` is a sentinel, not a name: the copy has to switch person for it
+ * ("one more and YOU can burn it"), and a friend can't be called it.
+ */
+const YOU = "you";
+
+/** The band heading — a whole sentence, naming WHOSE shelf the tier is about
+ *  (#110). Said once above the band instead of on every tile. */
+function bandTitle(tier: SwapTier, receiver: string, newGlyph: string): string {
+  const you = receiver === YOU;
+  if (tier === "new") return `${newGlyph} New for ${receiver}`;
+  if (tier === "one-away") return `🔥 One more and ${receiver} can burn it`;
+  return you ? "You already have these" : `${receiver} already has these`;
+}
+
+/**
+ * The same sentence on the tile itself, for a screen reader: a band heading is
+ * not announced with the button inside it, so the tier rides in each tile's
+ * accessible name too. `rest` says nothing — an unlabelled tile means they
+ * already have it, exactly as it did when the badge was visible (FR4).
+ */
+function tierPhrase(tier: SwapTier, receiver: string): string {
+  if (tier === "new") return `new for ${receiver}`;
+  if (tier === "one-away") return `one more and ${receiver} can burn it`;
+  return "";
+}
+
+/**
+ * One side of the board, cut into tier bands (#110). The heading carries the
+ * tier, so the tiles carry no badges at all — including the 🎁 that used to
+ * mark tier 1 (FR4), which the first band now says in full and in words.
+ *
+ * The header pill that counted the same cards went with it: it sat directly
+ * above a heading saying the same thing in the same words. The filter's own
+ * `(badged/total)` count stays — it's about what the checkbox would leave.
+ */
 function Column({
   testid,
   title,
-  badgeSummary,
   filterLabel,
   filterOn,
   setFilterOn,
   badged,
   total,
   cards,
-  wantLabel,
+  receiver,
+  newGlyph,
   selectedId,
   otherPick,
   onPick,
@@ -284,14 +324,14 @@ function Column({
 }: {
   testid: string;
   title: string;
-  badgeSummary: string;
   filterLabel: string;
   filterOn: boolean;
   setFilterOn: (v: boolean) => void;
   badged: number;
   total: number;
   cards: BoardCard[];
-  wantLabel: string;
+  receiver: string;
+  newGlyph: string;
   selectedId: string | null;
   otherPick: CardType | null;
   onPick: (c: BoardCard) => void;
@@ -299,10 +339,7 @@ function Column({
 }) {
   return (
     <section className="panel flex flex-col gap-3 p-4" data-testid={`trade-column-${testid}`}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-bold">{title}</h2>
-        <span className="pill pill--gold text-xs">{badgeSummary}</span>
-      </div>
+      <h2 className="text-lg font-bold">{title}</h2>
       <label className="flex cursor-pointer items-center gap-2 text-sm">
         <input
           type="checkbox"
@@ -315,61 +352,67 @@ function Column({
       {cards.length === 0 ? (
         <Hint>{emptyHint}</Hint>
       ) : (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          {cards.map((c) => (
-            <Tile
-              key={c.card.id}
-              entry={c}
-              wantLabel={wantLabel}
-              testid={testid}
-              selected={selectedId === c.card.id}
-              pickable={isPickable(c.card, otherPick)}
-              onPick={() => onPick(c)}
-            />
-          ))}
-        </div>
+        bandsByTier(cards).map((band) => (
+          <div key={band.tier} className="flex flex-col gap-2">
+            <h3
+              data-testid={`trade-band-${testid}-${band.tier}`}
+              className="text-xs font-bold uppercase tracking-wide text-[color:var(--ink-soft)]"
+            >
+              {bandTitle(band.tier, receiver, newGlyph)} ({band.cards.length})
+            </h3>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {band.cards.map((c) => (
+                <Tile
+                  key={c.card.id}
+                  entry={c}
+                  receiver={receiver}
+                  testid={testid}
+                  selected={selectedId === c.card.id}
+                  pickable={isPickable(c.card, otherPick)}
+                  onPick={() => onPick(c)}
+                />
+              ))}
+            </div>
+          </div>
+        ))
       )}
     </section>
   );
 }
 
-/** A card tile. Badged ONLY when it's new to the other party (FR4) — an unbadged
- *  tile simply means they already have it. Mismatched rarities are dimmed but
- *  stay visible (FR6). */
+/** A card tile. Carries no tier badge since #110 — the band heading above it
+ *  says the tier, in a sentence, once. Mismatched rarities are dimmed but stay
+ *  visible (FR6). */
 function Tile({
   entry,
-  wantLabel,
+  receiver,
   testid,
   selected,
   pickable,
   onPick,
 }: {
   entry: BoardCard;
-  wantLabel: string;
+  receiver: string;
   testid: string;
   selected: boolean;
   pickable: boolean;
   onPick: () => void;
 }) {
   const meta = RARITY_META[entry.card.rarity];
+  const phrase = tierPhrase(entry.tier, receiver);
   return (
     <button
       type="button"
       onClick={onPick}
       disabled={!pickable}
       aria-pressed={selected}
-      aria-label={`${entry.card.name}, ${meta.label}${entry.newToOther ? `, ${wantLabel}` : ""}`}
+      aria-label={`${entry.card.name}, ${meta.label}${phrase ? `, ${phrase}` : ""}`}
       data-testid={`trade-${testid}-${entry.card.id}`}
       className={`relative overflow-hidden rounded-xl border-2 bg-white/10 transition ${
         selected ? "ring-4 ring-[color:var(--brand-1)]" : ""
       } ${pickable ? "hover:scale-105" : "cursor-not-allowed opacity-25 grayscale"}`}
       style={{ borderColor: meta.frame }}
     >
-      {entry.newToOther ? (
-        <span className="absolute left-1 top-1 z-10 rounded-full bg-[#22c55e] px-1.5 py-0.5 text-[0.6rem] font-black leading-tight text-black">
-          {wantLabel}
-        </span>
-      ) : null}
       <CardImage src={entry.card.imageUrl} alt={entry.card.name} dim={200} />
       <span className="pill absolute bottom-1 right-1 text-xs">×{entry.count}</span>
       <span className="rarity-badge">{meta.label}</span>

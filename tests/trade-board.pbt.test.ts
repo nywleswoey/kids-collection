@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import {
+  bandsByTier,
   buildColumns,
   applyMissingFilter,
   missingCount,
@@ -307,6 +308,64 @@ describe("orderByValue (#109 — best swap first, and it never moves under a thu
         expect(orderByValue(shuffled).map((c) => c.card.id)).toEqual(
           orderByValue(unique).map((c) => c.card.id),
         );
+      }),
+    );
+  });
+});
+
+describe("bandsByTier (#110 — the tier is said once above a band, not on every tile)", () => {
+  const boardCardArb = fc
+    .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
+    .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
+  const columnArb = fc.array(boardCardArb, { maxLength: 20 });
+
+  it("reading the bands top to bottom is exactly the ordered column", () => {
+    // The whole point of the shape: the bands make #109's order LEGIBLE, so
+    // they must never re-do it. If this ever fails, a child's best swap has
+    // moved because of a heading.
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const column = orderByValue(cards);
+        expect(bandsByTier(column).flatMap((b) => b.cards)).toEqual(column);
+      }),
+    );
+  });
+
+  it("every card lands in exactly one band, and it's the band of its tier", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const bands = bandsByTier(orderByValue(cards));
+        expect(sortedIds(bands.flatMap((b) => b.cards))).toEqual(sortedIds(cards));
+        for (const band of bands) {
+          for (const c of band.cards) expect(c.tier).toBe(band.tier);
+        }
+      }),
+    );
+  });
+
+  it("never emits a heading over nothing", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        for (const band of bandsByTier(cards)) expect(band.cards.length).toBeGreaterThan(0);
+      }),
+    );
+  });
+
+  it("bands come out best-swap-first, matching the tier ranking", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const ranks = bandsByTier(cards).map((b) => TIER_RANK[b.tier]);
+        expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
+      }),
+    );
+  });
+
+  it("never mutates its input", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const before = cards.map((c) => c.card.id);
+        bandsByTier(cards);
+        expect(cards.map((c) => c.card.id)).toEqual(before);
       }),
     );
   });

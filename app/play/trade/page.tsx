@@ -22,8 +22,8 @@ export default async function TradePage() {
           Swap doubles, <span className="title-pop">{child.name}</span>!
         </h1>
         <p className="text-sm text-[color:var(--ink-soft)]">
-          Pick a friend, then swap a double for one of theirs — same rarity. 🎁 marks a card the
-          other player doesn&apos;t have yet.
+          Pick a friend, then swap a double for one of theirs — same rarity. Each side is sorted
+          by what the swap is worth to whoever gets the card.
         </p>
       </div>
 
