@@ -149,7 +149,8 @@ describe("tileLabel (#111 — a dimmed tile still says why)", () => {
       fc.property(cardArb, tierArb, receiverArb, fc.option(cardArb, { nil: null }), (card, tier, receiver, otherPick) => {
         const label = tileLabel({ card, tier }, receiver, otherPick);
         const locked = otherPick !== null && !isPickable(card, otherPick);
-        expect(label.endsWith(" to swap")).toBe(locked);
+        const lockSuffix = otherPick === null ? null : `, needs a ${RARITY_META[otherPick.rarity].label} to swap`;
+        expect(lockSuffix !== null && label.endsWith(lockSuffix)).toBe(locked);
         if (locked) {
           expect(label).toContain(`needs a ${RARITY_META[otherPick!.rarity].label} to swap`);
         }
@@ -174,7 +175,11 @@ describe("tileLabel (#111 — a dimmed tile still says why)", () => {
     fc.assert(
       fc.property(cardArb, cardArb, tierArb, receiverArb, (card, other, tier, receiver) => {
         const sameRarity: Card = { ...other, rarity: card.rarity };
-        expect(tileLabel({ card, tier }, receiver, sameRarity).endsWith(" to swap")).toBe(false);
+        expect(
+          tileLabel({ card, tier }, receiver, sameRarity).endsWith(
+            `, needs a ${RARITY_META[sameRarity.rarity].label} to swap`,
+          ),
+        ).toBe(false);
       }),
     );
   });
