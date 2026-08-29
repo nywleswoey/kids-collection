@@ -3,7 +3,6 @@ import fc from "fast-check";
 import {
   bandsByTier,
   buildColumns,
-  applyMissingFilter,
   missingCount,
   isPickable,
   oneAwayFromBurn,
@@ -33,16 +32,19 @@ const ownedArb = fc.array(fc.string({ minLength: 1 }), { maxLength: 20 }).map((i
 
 const boardCardArb = fc
   .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
-  .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
+  .map(([t, tier]) => ({ ...t, tier }) satisfies BoardCard);
 const columnArb = fc.array(boardCardArb, { maxLength: 20 });
 
-describe("buildColumns (Inc22 FR4 — badge only what's new to the other side)", () => {
-  it("newToOther is exactly the complement of the other party's owned set", () => {
+describe("buildColumns (#109 — tier each column against the other side)", () => {
+  it("the `new` tier is exactly the complement of the other party's owned set", () => {
+    // Stated on the tier rather than on a `newToOther` flag beside it: #111
+    // deleted that field once the filter reading it went, because the two were
+    // the same predicate under two names.
     fc.assert(
       fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
         const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
-        for (const c of cols.mine) expect(c.newToOther).toBe(!theirOwned.has(c.card.id));
-        for (const c of cols.theirs) expect(c.newToOther).toBe(!myOwned.has(c.card.id));
+        for (const c of cols.mine) expect(c.tier === "new").toBe(!theirOwned.has(c.card.id));
+        for (const c of cols.theirs) expect(c.tier === "new").toBe(!myOwned.has(c.card.id));
       }),
     );
   });
@@ -70,38 +72,18 @@ describe("buildColumns (Inc22 FR4 — badge only what's new to the other side)",
       myOwnedIds: new Set(["shared", "mine-only"]),
       theirOwnedIds: new Set(["shared"]),
     });
-    expect(cols.mine.find((c) => c.card.id === "mine-only")!.newToOther).toBe(true);
-    expect(cols.mine.find((c) => c.card.id === "shared")!.newToOther).toBe(false);
-    expect(cols.theirs[0].newToOther).toBe(false);
-  });
-});
-
-describe("applyMissingFilter (Inc22 FR5)", () => {
-  it("off is the identity", () => {
-    fc.assert(
-      fc.property(inventoryArb, ownedArb, (mine, owned) => {
-        const cols = buildColumns({ mine, theirs: [], myOwnedIds: new Set(), theirOwnedIds: owned });
-        expect(applyMissingFilter(cols.mine, false)).toBe(cols.mine);
-      }),
-    );
-  });
-
-  it("on keeps exactly the badged cards", () => {
-    fc.assert(
-      fc.property(inventoryArb, ownedArb, (mine, owned) => {
-        const cols = buildColumns({ mine, theirs: [], myOwnedIds: new Set(), theirOwnedIds: owned });
-        const out = applyMissingFilter(cols.mine, true);
-        expect(out.every((c) => c.newToOther)).toBe(true);
-        expect(out.length).toBe(cols.mine.filter((c) => c.newToOther).length);
-      }),
-    );
+    expect(cols.mine.find((c) => c.card.id === "mine-only")!.tier).toBe("new");
+    expect(cols.mine.find((c) => c.card.id === "shared")!.tier).not.toBe("new");
+    expect(cols.theirs[0].tier).not.toBe("new");
   });
 });
 
 describe("missingCount (Inc22 FR7 — friend chip counts)", () => {
-  it("always equals the number of badged cards on the board", () => {
-    // The chip on the friend strip and the badges on the board are computed at
-    // different times from different data; they must never disagree.
+  it("always equals the size of the `new` band on the board", () => {
+    // The chip on the friend strip and the band heading on the board are
+    // computed at different times from different data; they must never
+    // disagree. The chip is the only survivor of #111's cull — the board's own
+    // count of the same cards now lives in the band heading.
     fc.assert(
       fc.property(inventoryArb, ownedArb, (mine, theirOwned) => {
         const cols = buildColumns({
@@ -110,7 +92,7 @@ describe("missingCount (Inc22 FR7 — friend chip counts)", () => {
           myOwnedIds: new Set(),
           theirOwnedIds: theirOwned,
         });
-        expect(missingCount(mine, theirOwned)).toBe(cols.mine.filter((c) => c.newToOther).length);
+        expect(missingCount(mine, theirOwned)).toBe(cols.mine.filter((c) => c.tier === "new").length);
       }),
     );
   });
@@ -199,17 +181,6 @@ describe("oneAwayFromBurn (#109 tier 2 — expressed through SACRIFICE_MIN, neve
 });
 
 describe("tiers (#109 — mirrored, receiver-valued)", () => {
-  it("tier 'new' is exactly newToOther, on both columns", () => {
-    fc.assert(
-      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
-        const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
-        for (const c of [...cols.mine, ...cols.theirs]) {
-          expect(c.tier === "new").toBe(c.newToOther);
-        }
-      }),
-    );
-  });
-
   it("tier 'one-away' means the RECEIVER — not the giver — is one copy from burning", () => {
     // The mirror is the easy thing to get backwards: my column is tiered by the
     // friend's shelf, theirs by mine.

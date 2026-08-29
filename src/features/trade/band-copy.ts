@@ -1,10 +1,12 @@
-import type { SwapTier } from "./board";
+import type { Card } from "@/lib/types";
+import { RARITY_META } from "@/features/card/rarity";
+import { isPickable, type SwapTier } from "./board";
 
 /**
- * What a tier band SAYS (#110). PURE, and beside the component rather than in
- * it, because the words are a rule the child reads: the tier is stated once
- * above a band instead of stamped on every tile, and the same sentence has to
- * reach a screen reader from the tile itself.
+ * What a tier band and a tile SAY (#110, #111). PURE, and beside the component
+ * rather than in it, because the words are a rule the child reads: the tier is
+ * stated once above a band instead of stamped on every tile, and the same
+ * sentence has to reach a screen reader from the tile itself.
  */
 
 /**
@@ -78,4 +80,28 @@ function said(glyph: string, sentence: string): BandCopy {
     heading: `${glyph} ${sentence[0].toUpperCase()}${sentence.slice(1)}`,
     phrase: sentence,
   };
+}
+
+/**
+ * A tile's whole accessible name (#111). Pure and here, rather than
+ * interpolated in the component, for the reason `bandCopy` is: it is the only
+ * channel through which a child who can't see the board learns why half a
+ * column stopped responding.
+ *
+ * The rarity lock dims a mismatched tile but keeps it in the tab order, so a
+ * listener DOES reach it — and reaching a tile that says nothing about the
+ * lock is worse than the `disabled` silence it replaced. The reason is
+ * appended from `isPickable` itself, not from a second copy of the rule, so a
+ * tile cannot be dimmed and mute or lit and apologetic.
+ */
+export function tileLabel(
+  entry: { card: Card; tier: SwapTier },
+  receiver: Receiver,
+  otherPick: Card | null,
+): string {
+  const { label } = RARITY_META[entry.card.rarity];
+  const name = `${entry.card.name}, ${label}, ${bandCopy(entry.tier, receiver).phrase}`;
+  return otherPick === null || isPickable(entry.card, otherPick)
+    ? name
+    : `${name}, needs a ${RARITY_META[otherPick.rarity].label} to swap`;
 }

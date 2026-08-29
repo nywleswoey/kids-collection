@@ -3,7 +3,7 @@ import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import type { TradableCard } from "./trade-logic";
 
 /**
- * Friend-first trade board logic (Inc22 FR2/FR4/FR5/FR6/FR7). PURE — no I/O, so
+ * Friend-first trade board logic (Inc22 FR2/FR6/FR7). PURE — no I/O, so
  * every rule the child sees on the board is property-testable and can't drift
  * from what `validateTrade` will allow at commit time.
  */
@@ -47,16 +47,16 @@ export function oneAwayFromBurn(count: number): boolean {
 export interface BoardCard {
   card: Card;
   count: number;
-  /** What this swap is worth to the party on the OTHER side of the board. */
-  tier: SwapTier;
   /**
-   * True when the OTHER party doesn't own this card at all. Drives the "only
-   * show what's missing" filter (FR5) and its count; since #110 the `new` band
-   * heading is what says it on screen, so no tile wears a badge for it any
-   * more (FR4). Deliberately about ownership, not duplicates: what matters is
-   * whether the swap gives them something genuinely new.
+   * What this swap is worth to the party on the OTHER side of the board.
+   *
+   * The only thing a tile carries about the receiver, since #111. There used
+   * to be a `newToOther` boolean beside it, back when the "only show what's
+   * missing" checkbox (FR5) filtered on it — but `tier === "new"` is the same
+   * predicate, and once the filter went the field had no readers that the tier
+   * didn't already serve. Two names for one fact is how the two drift.
    */
-  newToOther: boolean;
+  tier: SwapTier;
 }
 
 /**
@@ -114,7 +114,7 @@ function tag(
     : theirCount !== undefined && oneAwayFromBurn(theirCount)
       ? "one-away"
       : "rest";
-  return { card: t.card, count: t.count, newToOther, tier };
+  return { card: t.card, count: t.count, tier };
 }
 
 /**
@@ -158,11 +158,6 @@ export function bandsByTier(cards: BoardCard[]): TierBand[] {
     tier,
     cards: cards.filter((c) => c.tier === tier),
   })).filter((band) => band.cards.length > 0);
-}
-
-/** FR5 — hide the cards the other party already has. `false` is the identity. */
-export function applyMissingFilter(cards: BoardCard[], onlyMissing: boolean): BoardCard[] {
-  return onlyMissing ? cards.filter((c) => c.newToOther) : cards;
 }
 
 /** FR7 — how many of `mine` the given ownership set lacks. Drives the friend chips. */

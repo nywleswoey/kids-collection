@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { ME, bandCopy, type BandCopy, type Receiver } from "@/features/trade/band-copy";
-import type { SwapTier } from "@/features/trade/board";
+import { ME, bandCopy, tileLabel, type BandCopy, type Receiver } from "@/features/trade/band-copy";
+import { isPickable, type SwapTier } from "@/features/trade/board";
+import { RARITY_META } from "@/features/card/rarity";
+import { RARITIES, type Card, type Rarity } from "@/lib/types";
 
 const ANA: Receiver = { kind: "friend", name: "Ana" };
 /** A friend whose name is the word the second-person copy uses. */
@@ -112,6 +114,72 @@ describe("bandCopy (#110 — the sentence a band says)", () => {
         for (const receiver of [{ kind: "friend", name } as Receiver, ME]) {
           expect(bandCopy(tier, receiver).heading.trim().length).toBeGreaterThan(0);
         }
+      }),
+    );
+  });
+});
+
+describe("tileLabel (#111 — a dimmed tile still says why)", () => {
+  const rarityArb = fc.constantFrom<Rarity>(...RARITIES);
+  const cardArb = fc
+    .tuple(fc.string({ minLength: 1 }), rarityArb)
+    .map(
+      ([id, rarity]): Card => ({
+        id,
+        themeId: "t",
+        name: id,
+        rarity,
+        imageUrl: "x",
+        eduText: "y",
+        sourceUrl: "",
+      }),
+    );
+  const tierArb = fc.constantFrom(...TIERS);
+  const receiverArb = fc.oneof(
+    fc.constant(ME),
+    fc.string({ minLength: 1 }).map((name): Receiver => ({ kind: "friend", name })),
+  );
+
+  it("says why exactly when the rarity lock is holding the tile out", () => {
+    // The invariant the whole a11y change rests on. A tile the lock dims is
+    // still reachable by keyboard since #111, so silence there is worse than
+    // the `disabled` it replaced — and a tile that apologises while perfectly
+    // pickable is a lie in the other direction.
+    fc.assert(
+      fc.property(cardArb, tierArb, receiverArb, fc.option(cardArb, { nil: null }), (card, tier, receiver, otherPick) => {
+        const label = tileLabel({ card, tier }, receiver, otherPick);
+        const locked = otherPick !== null && !isPickable(card, otherPick);
+        const lockSuffix = otherPick === null ? null : `, needs a ${RARITY_META[otherPick.rarity].label} to swap`;
+        expect(lockSuffix !== null && label.endsWith(lockSuffix)).toBe(locked);
+        if (locked) {
+          expect(label.endsWith(lockSuffix!)).toBe(true);
+        }
+      }),
+    );
+  });
+
+  it("always carries the card, its rarity and its tier, locked or not", () => {
+    // The lock reason is an APPENDIX. Whatever the pick state, a listener
+    // still hears which card this is and what the swap is worth.
+    fc.assert(
+      fc.property(cardArb, tierArb, receiverArb, fc.option(cardArb, { nil: null }), (card, tier, receiver, otherPick) => {
+        const label = tileLabel({ card, tier }, receiver, otherPick);
+        expect(label).toContain(card.name);
+        expect(label).toContain(RARITY_META[card.rarity].label);
+        expect(label).toContain(bandCopy(tier, receiver).phrase);
+      }),
+    );
+  });
+
+  it("a matching rarity never reads as locked", () => {
+    fc.assert(
+      fc.property(cardArb, cardArb, tierArb, receiverArb, (card, other, tier, receiver) => {
+        const sameRarity: Card = { ...other, rarity: card.rarity };
+        expect(
+          tileLabel({ card, tier }, receiver, sameRarity).endsWith(
+            `, needs a ${RARITY_META[sameRarity.rarity].label} to swap`,
+          ),
+        ).toBe(false);
       }),
     );
   });
