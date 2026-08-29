@@ -120,6 +120,7 @@ export interface PublishedCard {
   provenance: CardProvenance;
 }
 
+/** Create an empty provenance file structure with no themes. */
 export function emptyProvenance(): ProvenanceFile {
   return { themes: {} };
 }

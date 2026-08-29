@@ -27,7 +27,9 @@ export type Place =
   | { kind: "category"; themeId: string }
   | { kind: "burn" };
 
+/** The hub place (category picker). */
 export const HUB: Place = { kind: "hub" };
+/** The burn pile place (sacrifice-ready cards). */
 export const BURN: Place = { kind: "burn" };
 
 /** The reserved `?at=` value for the burn pile. */

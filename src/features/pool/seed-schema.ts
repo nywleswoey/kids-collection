@@ -19,6 +19,7 @@ import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
 /** Every theme is exactly this shape. Set-completion rewards and the rarity
  * filters assume it, so an off-pyramid theme breaks the symmetry permanently. */
 export const CARDS_PER_THEME = 30;
+/** Required card count per rarity for each theme (15/8/5/2 pyramid). */
 export const RARITY_PYRAMID: Record<Rarity, number> = {
   common: 15,
   rare: 8,
@@ -26,6 +27,7 @@ export const RARITY_PYRAMID: Record<Rarity, number> = {
   legendary: 2,
 };
 
+/** Zod schema for a single card in the seed file. */
 export const seedCardSchema = z.object({
   name: z.string().trim().min(1),
   rarity: z.enum(RARITIES as unknown as [string, ...string[]]),
@@ -57,6 +59,7 @@ export const seedCardSchema = z.object({
   provider: z.string().trim().min(1).optional(),
 });
 
+/** Zod schema for a theme in the seed file (30 cards in pyramid shape). */
 export const themeSeedSchema = z
   .object({
     name: z.string().trim().min(1),
@@ -89,6 +92,7 @@ export const themeSeedSchema = z
     }
   });
 
+/** Zod schema for the entire seed file (ensures unique card names globally). */
 export const seedFileSchema = z
   .object({
     themes: z.array(themeSeedSchema).min(1),

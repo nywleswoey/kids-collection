@@ -8,6 +8,7 @@
  */
 import { startMusic, stopMusic } from "./MusicEngine";
 
+/** Path to the background music audio file (falls back to synth if unavailable). */
 export const BGM_SRC = "/bgm/playful-loop.mp3";
 
 let el: HTMLAudioElement | null = null;
@@ -46,6 +47,7 @@ export function startBgm(): void {
   else el.play().catch(() => startMusic());
 }
 
+/** Stop all background music (both file and synth). */
 export function stopBgm(): void {
   wantOn = false;
   stopMusic();

@@ -46,8 +46,10 @@ export interface Topic {
   lesson: Lesson;
 }
 
+/** Number of questions per quiz. */
 export const QUIZ_LENGTH = 5;
-export const DAILY_TICKET_CAP = 3; // global Easter Egg tickets/day from quizzes (D6=D)
+/** Maximum Easter Egg tickets earnable per day from quizzes (D6=D). */
+export const DAILY_TICKET_CAP = 3;
 
 /** Why an award was or wasn't granted, for a friendly message. */
 export type AwardReason = "ok" | "failed" | "topic-done" | "daily-cap";

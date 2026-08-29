@@ -68,6 +68,7 @@ export function startMusic(): void {
   timer = setInterval(schedule, 120);
 }
 
+/** Stop the synthesized loop and disconnect the audio nodes. */
 export function stopMusic(): void {
   running = false;
   if (timer) {

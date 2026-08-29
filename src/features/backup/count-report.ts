@@ -59,6 +59,10 @@ export function parseCounts(tsv: string): TableCount[] {
   return out;
 }
 
+/**
+ * Compare production table counts against restored backup counts. Returns
+ * tables missing, extras found, and row count mismatches.
+ */
 export function diffCounts(before: TableCount[], after: TableCount[]): CountDiff {
   const beforeMap = new Map(before.map((c) => [qualifiedName(c), c.rows]));
   const afterMap = new Map(after.map((c) => [qualifiedName(c), c.rows]));
@@ -74,6 +78,7 @@ export function diffCounts(before: TableCount[], after: TableCount[]): CountDiff
   return { missingTables, extraTables, rowMismatches };
 }
 
+/** True if the diff shows no discrepancies (perfect restore match). */
 export function isClean(d: CountDiff): boolean {
   return (
     d.missingTables.length === 0 &&

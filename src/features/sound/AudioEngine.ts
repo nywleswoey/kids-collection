@@ -57,6 +57,7 @@ export function unlock(): void {
   }
 }
 
+/** True if Web Audio is available and not blocked. */
 export function isAvailable(): boolean {
   return available;
 }

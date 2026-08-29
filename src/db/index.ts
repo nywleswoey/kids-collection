@@ -9,6 +9,7 @@ import * as schema from "./schema";
  */
 const sql = neon(env.databaseUrl);
 
+/** Drizzle database client instance (server-only). */
 export const db = drizzle(sql, { schema });
 
 export { schema };

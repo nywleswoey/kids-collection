@@ -107,6 +107,7 @@ const GENERATORS: Record<string, (id: string, rng: Rng) => QuizQuestion> = {
   fractions: fractionQuestion,
 };
 
+/** True if the given topic ID is a math topic with a generator. */
 export function isMathTopic(topicId: string): boolean {
   return topicId in GENERATORS;
 }

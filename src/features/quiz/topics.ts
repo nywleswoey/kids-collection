@@ -3,6 +3,7 @@
 
 import type { Topic } from "./types";
 
+/** All available quiz topics with their lessons. */
 export const TOPICS: Topic[] = [
   {
     id: "multiplication-within-100",
@@ -109,6 +110,7 @@ export const TOPICS: Topic[] = [
 
 const BY_ID = new Map(TOPICS.map((t) => [t.id, t]));
 
+/** Look up a topic by id; returns undefined if not found. */
 export function getTopic(id: string): Topic | undefined {
   return BY_ID.get(id);
 }
