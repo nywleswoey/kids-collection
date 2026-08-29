@@ -101,7 +101,7 @@ export function tileLabel(
 ): string {
   const { label } = RARITY_META[entry.card.rarity];
   const name = `${entry.card.name}, ${label}, ${bandCopy(entry.tier, receiver).phrase}`;
-  return isPickable(entry.card, otherPick) || !otherPick
+  return otherPick === null || isPickable(entry.card, otherPick)
     ? name
     : `${name}, needs a ${RARITY_META[otherPick.rarity].label} to swap`;
 }

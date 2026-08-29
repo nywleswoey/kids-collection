@@ -79,10 +79,16 @@ Not performed here: `/play/*` requires a Google-authenticated parent session, wh
 A dev server is running on **http://localhost:3000**. Worth eyeballing:
 
 1. `/play/trade` — friend chips show `🎁 5` / `🎁 19` style counts before any card is picked.
-2. Pick a friend → two columns; only the badged cards carry a label, the rest carry none.
-3. Tick "Only show what X is missing" on each column → non-badged cards disappear; counts in the
-   label match what's left.
-4. Pick a card on one side → mismatched rarities on the other side go dim/grey and stop responding.
+2. Pick a friend (say Ana) → two columns, each cut into tier bands under a heading that names the
+   tier in a sentence and counts it, addressed to whoever would RECEIVE that column. Your doubles:
+   `🎁 New for Ana (5)` / `🔥 One more and Ana can burn it (2)` / `Ana already has these (12)`.
+   Ana's doubles: `🆕 New for you` / `🔥 One more and you can burn it` / `You already have these`.
+   No card carries a tier badge, and there is no filter checkbox.
+3. Each band's count matches the tiles under it, and the bands run new → one-away → rest down the
+   column; every double is in exactly one band, so the whole inventory is still reachable.
+4. Pick a card on one side → mismatched rarities on the other side go dim/grey and stop responding,
+   but stay tabbable: Tab onto one and the focus ring is clearly visible, the screen reader reads
+   "… needs a Rare to swap", and pressing it plays the denied sound and changes nothing.
 5. Phone viewport — columns stack with **your** doubles on top.
 6. `/play/binder` — Show row reads `🔥 Ready to sacrifice 0` and opens the empty state (per §2).
    To exercise the populated path, grant a 4th copy of some card to a test child first.

@@ -331,24 +331,28 @@ function Tile({
 }) {
   const meta = RARITY_META[entry.card.rarity];
   const pickable = isPickable(entry.card, otherPick);
+  const { play } = useSound();
   return (
     <button
       type="button"
       onClick={() => {
         if (pickable) onPick();
+        else play("denied");
       }}
       aria-disabled={!pickable}
       aria-pressed={selected}
       aria-label={tileLabel(entry, receiver, otherPick)}
       data-testid={`trade-${testid}-${entry.card.id}`}
-      className={`relative overflow-hidden rounded-xl border-2 bg-white/10 transition ${
+      className={`relative overflow-hidden rounded-xl border-2 bg-white/10 transition focus-visible:outline-none focus-visible:shadow-[var(--ring-focus)] ${
         selected ? "ring-4 ring-[color:var(--brand-1)]" : ""
-      } ${pickable ? "hover:scale-105" : "cursor-not-allowed opacity-25 grayscale"}`}
+      } ${pickable ? "hover:scale-105" : "cursor-not-allowed"}`}
       style={{ borderColor: meta.frame }}
     >
-      <CardImage src={entry.card.imageUrl} alt={entry.card.name} dim={200} />
-      <span className="pill absolute bottom-1 right-1 text-xs">×{entry.count}</span>
-      <span className="rarity-badge">{meta.label}</span>
+      <span className={`block ${pickable ? "" : "opacity-25 grayscale"}`}>
+        <CardImage src={entry.card.imageUrl} alt={entry.card.name} dim={200} />
+        <span className="pill absolute bottom-1 right-1 text-xs">×{entry.count}</span>
+        <span className="rarity-badge">{meta.label}</span>
+      </span>
     </button>
   );
 }
