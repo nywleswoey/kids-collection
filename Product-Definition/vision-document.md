@@ -111,7 +111,7 @@ Grounded in the repository as of 2026-08-03 — 14 feature modules under `src/fe
   Grammar questions a child has already answered are remembered and deprioritised.
 - **Trading** — atomic two-sided duplicate swap between two children; friend-first board whose two columns
   are each ordered and cut into labelled bands by what the swap is worth to whoever *receives* the card
-  (new to them → one more makes it burnable → the rest), with no per-tile badges.
+  (new to them → one more makes it burnable → the rest), rather than a tier badge on every tile.
 - **Sacrifice** — burn 4+ copies (keep 1) for a rarity-pick ticket, same tier or one up, 50/50.
 - **Set-completion rewards** — bonus card once per (child, theme, rarity) set completed, cascading.
 - **Admin** — passcode-gated (20s sliding TTL): manage profiles, grant every ticket type, view any
