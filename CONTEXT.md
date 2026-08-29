@@ -37,6 +37,11 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
 - **Sacrifice** — burn N copies of a card for a rarity-pick ticket (same tier or one
   up, 50/50).
 - **Trade** — atomic two-sided duplicate swap between two children.
+- **Swap tier** — what a trade is worth to whoever **receives** the card, and how both
+  swap-board columns are ordered (#109): **new** (they own none) → **one-away** (they
+  hold `SACRIFICE_MIN - 1`, so this copy makes it burnable) → **rest**. Mirrored — each
+  column is tiered against the *other* party's shelf. Never about acquisition recency:
+  `collections` has no timestamp.
 - **Offer** — an HMAC-signed, expiring token pinning the exact cards/rarity the server
   chose, so a claim can't be swapped for an un-offered card (pull eggs, quiz answers).
 - **Gate** — the admin passcode gate; issues a short-lived signed cookie.

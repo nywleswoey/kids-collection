@@ -5,7 +5,12 @@ import {
   applyMissingFilter,
   missingCount,
   isPickable,
+  oneAwayFromBurn,
+  orderByValue,
+  type BoardCard,
+  type SwapTier,
 } from "@/features/trade/board";
+import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import { validateTrade, type TradableCard } from "@/features/trade/trade-logic";
 import { RARITIES, type Rarity } from "@/lib/types";
 
@@ -36,13 +41,17 @@ describe("buildColumns (Inc22 FR4 — badge only what's new to the other side)",
     );
   });
 
-  it("preserves both inventories card-for-card, in order", () => {
+  it("preserves both inventories card-for-card — the sort reorders, never drops", () => {
+    // Order is #109's business; membership is not. A column that loses a card
+    // silently removes a swap the child could have made.
     fc.assert(
       fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
         const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
-        expect(cols.mine.map((c) => c.card.id)).toEqual(mine.map((t) => t.card.id));
-        expect(cols.theirs.map((c) => c.card.id)).toEqual(theirs.map((t) => t.card.id));
-        expect(cols.mine.map((c) => c.count)).toEqual(mine.map((t) => t.count));
+        expect(sortedIds(cols.mine)).toEqual([...mine.map((t) => t.card.id)].sort());
+        expect(sortedIds(cols.theirs)).toEqual([...theirs.map((t) => t.card.id)].sort());
+        for (const t of mine) {
+          expect(cols.mine.find((c) => c.card.id === t.card.id)!.count).toBe(t.count);
+        }
       }),
     );
   });
@@ -144,6 +153,154 @@ describe("isPickable (Inc22 FR6 — agrees with validateTrade)", () => {
     fc.assert(
       fc.property(tcardArb, tcardArb, (a, b) => {
         expect(isPickable(a.card, b.card)).toBe(isPickable(b.card, a.card));
+      }),
+    );
+  });
+});
+
+// ---- #109: what a swap is worth to whoever receives the card ----
+
+function sortedIds(cards: BoardCard[]): string[] {
+  return cards.map((c) => c.card.id).sort();
+}
+
+const TIER_RANK: Record<SwapTier, number> = { new: 0, "one-away": 1, rest: 2 };
+
+describe("oneAwayFromBurn (#109 tier 2 — expressed through SACRIFICE_MIN, never a literal)", () => {
+  it("is true for exactly one holding: one below the burn minimum", () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 20 }), (count) => {
+        expect(oneAwayFromBurn(count)).toBe(count === SACRIFICE_MIN - 1);
+      }),
+    );
+  });
+
+  it("one more copy always lands exactly on the burn minimum", () => {
+    // The whole promise of the tier: accept this swap and the receiver can burn.
+    // If SACRIFICE_MIN ever moves, this stays true and the literal would not.
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 20 }), (count) => {
+        if (oneAwayFromBurn(count)) expect(count + 1).toBe(SACRIFICE_MIN);
+      }),
+    );
+  });
+});
+
+describe("tiers (#109 — mirrored, receiver-valued)", () => {
+  it("tier 'new' is exactly newToOther, on both columns", () => {
+    fc.assert(
+      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
+        const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
+        for (const c of [...cols.mine, ...cols.theirs]) {
+          expect(c.tier === "new").toBe(c.newToOther);
+        }
+      }),
+    );
+  });
+
+  it("tier 'one-away' means the RECEIVER — not the giver — is one copy from burning", () => {
+    // The mirror is the easy thing to get backwards: my column is tiered by the
+    // friend's shelf, theirs by mine.
+    fc.assert(
+      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
+        const cols = buildColumns({ mine, theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned });
+        const theirCount = new Map(theirs.map((t) => [t.card.id, t.count]));
+        const myCount = new Map(mine.map((t) => [t.card.id, t.count]));
+        for (const c of cols.mine) {
+          const held = theirCount.get(c.card.id);
+          expect(c.tier === "one-away").toBe(
+            theirOwned.has(c.card.id) && held !== undefined && oneAwayFromBurn(held),
+          );
+        }
+        for (const c of cols.theirs) {
+          const held = myCount.get(c.card.id);
+          expect(c.tier === "one-away").toBe(
+            myOwned.has(c.card.id) && held !== undefined && oneAwayFromBurn(held),
+          );
+        }
+      }),
+    );
+  });
+
+  it("a card the receiver owns but holds only once is 'rest', never 'one-away'", () => {
+    // Single copies never reach the duplicate list, so the count is simply absent.
+    // Absent must read as "not one away", not as "unknown, assume yes".
+    const card = tcard("solo", "rare", 4);
+    const cols = buildColumns({
+      mine: [card],
+      theirs: [],
+      myOwnedIds: new Set(["solo"]),
+      theirOwnedIds: new Set(["solo"]),
+    });
+    expect(cols.mine[0].tier).toBe("rest");
+  });
+
+  it("puts a receiver holding SACRIFICE_MIN - 1 in tier 2, and one more copy in tier 3", () => {
+    const oneAway = tcard("one-away", "rare", 2);
+    const already = tcard("already", "rare", 2);
+    const cols = buildColumns({
+      mine: [oneAway, already],
+      theirs: [tcard("one-away", "rare", SACRIFICE_MIN - 1), tcard("already", "rare", SACRIFICE_MIN)],
+      myOwnedIds: new Set(["one-away", "already"]),
+      theirOwnedIds: new Set(["one-away", "already"]),
+    });
+    expect(cols.mine.find((c) => c.card.id === "one-away")!.tier).toBe("one-away");
+    expect(cols.mine.find((c) => c.card.id === "already")!.tier).toBe("rest");
+  });
+});
+
+describe("orderByValue (#109 — best swap first, and it never moves under a thumb)", () => {
+  const boardCardArb = fc
+    .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
+    .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
+  const columnArb = fc.array(boardCardArb, { maxLength: 20 });
+
+  it("is a permutation — nothing added, nothing lost", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        expect(sortedIds(orderByValue(cards))).toEqual(sortedIds(cards));
+      }),
+    );
+  });
+
+  it("never mutates its input", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const before = cards.map((c) => c.card.id);
+        orderByValue(cards);
+        expect(cards.map((c) => c.card.id)).toEqual(before);
+      }),
+    );
+  });
+
+  it("orders new → one-away → rest, then rarest, then id", () => {
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const out = orderByValue(cards);
+        for (let i = 1; i < out.length; i += 1) {
+          const [a, b] = [out[i - 1], out[i]];
+          expect(TIER_RANK[a.tier]).toBeLessThanOrEqual(TIER_RANK[b.tier]);
+          if (a.tier !== b.tier) continue;
+          expect(RARITIES.indexOf(a.card.rarity)).toBeGreaterThanOrEqual(
+            RARITIES.indexOf(b.card.rarity),
+          );
+          if (a.card.rarity !== b.card.rarity) continue;
+          expect(a.card.id <= b.card.id).toBe(true);
+        }
+      }),
+    );
+  });
+
+  it("is a TOTAL order: the same cards in any arrival order give the same column", () => {
+    // The property that matters at the thumb — a re-render must not reshuffle
+    // tiles, so distinct cards can never compare equal.
+    fc.assert(
+      fc.property(columnArb, (cards) => {
+        const unique = [...new Map(cards.map((c) => [c.card.id, c])).values()];
+        const shuffled = [...unique].reverse();
+        expect(orderByValue(shuffled).map((c) => c.card.id)).toEqual(
+          orderByValue(unique).map((c) => c.card.id),
+        );
       }),
     );
   });
