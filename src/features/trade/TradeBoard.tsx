@@ -169,7 +169,7 @@ export function TradeBoard({
       {/* Step 2 — the swap board (FR2) */}
       {friend && columns ? (
         <div className="grid w-full gap-5 md:grid-cols-2" data-testid="trade-board">
-          {/* Own doubles first — on mobile these stack above the friend's (FR5=A). */}
+          {/* Own doubles first — on mobile these stack above the friend's (Q5=A — FR2's mobile order). */}
           <Column
             testid="mine"
             title="Your doubles"
