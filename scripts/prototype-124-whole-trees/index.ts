@@ -205,6 +205,28 @@ const SUBJECTS: readonly Subject[] = [
     risk: "as above — and cypresses are a Tuscan-avenue cliche, so watch for a row of them.",
     prompt: `a single italian cypress tree shaped like a very tall narrow column of dense dark green foliage from top to bottom, ${OUTDOORS}`,
   },
+  {
+    // Added mid-run. Italian Cypress failed on both samples — sample 1 drew a
+    // wallpaper of floating trees, sample 2 drew a broad layered conifer and
+    // relegated the actual cypress columns to a background row — so the
+    // columnar slot is vacant and the human swapped it out.
+    //
+    // #119 had refused Monkey Puzzle an epic slot on the stated grounds that
+    // "its spiky cone crowds Joshua Tree". That call was made with no picture
+    // of either tree. This run has two of Joshua, and it drew as a PALE,
+    // SPARSE, SAND-COLOURED candelabra; Monkey Puzzle is a dense dark green
+    // spiky umbrella on a bare straight trunk. So the refusal is re-opened on
+    // evidence rather than overridden — and re-opening it is only honest if
+    // the replacement is screened to the same standard as the seven it joins,
+    // which is the whole reason this ticket exists.
+    slug: "monkey-puzzle",
+    name: "Monkey Puzzle Tree",
+    half: "tree",
+    shape: "spiky umbrella (replaces columnar)",
+    tier: "epic",
+    risk: "the crowding #119 alleged: read it against Joshua Tree, not against the broadleaves. Also a candidate for the wallpaper failure, being another repeating-geometry subject like the cypress that just failed.",
+    prompt: `a single monkey puzzle tree with a bare straight trunk and stiff branches covered in sharp overlapping dark green triangular scales, ${OUTDOORS}`,
+  },
 
   // ── #119's four crop families, one representative each ───────────────────
   {
