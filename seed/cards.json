@@ -3494,7 +3494,8 @@
           "rarity": "epic",
           "eduText": "Opal holds water inside it, and tiny stacked spheres split the light into flashes of rainbow colour.",
           "imagePrompt": "a single smooth rounded opal gemstone with rainbow colours flashing inside its polished top, on green grass, seen from the side, its whole outline visible against the grass",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Opal"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Opal",
+          "provider": "pollinations"
         },
         {
           "name": "Stone Arch",
@@ -3508,7 +3509,8 @@
           "rarity": "epic",
           "eduText": "Gold never rusts or tarnishes, so gold buried in ancient tombs still shines when it is dug up.",
           "imagePrompt": "a single shiny gold gold metal ingot with flat sides, rounded corners, lying on green grass",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Gold_bar"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gold_bar",
+          "provider": "pollinations"
         },
         {
           "name": "Topaz",
@@ -3634,7 +3636,8 @@
           "rarity": "common",
           "eduText": "Turquoise forms in deserts, where water trickles through copper-rich rock and dries in the cracks.",
           "imagePrompt": "a single flat slab of polished turquoise stone lying on green grass seen from above, its whole rounded edge visible, a smooth sky-blue face crossed by thin dark brown veins",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Turquoise"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Turquoise",
+          "provider": "pollinations"
         },
         {
           "name": "Limestone Cave",
@@ -3671,7 +3674,8 @@
           "imagePrompt": "a single tall sea cliff standing at the edge of calm blue water under a clear sky, its rough face striped with level layers of cream and dark grey stone, seen from a distance so the whole cliff, the water below it and the sky above it are all in the picture",
           "sourceUrl": "https://en.wikipedia.org/wiki/Cliffed_coast"
         }
-      ]
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
