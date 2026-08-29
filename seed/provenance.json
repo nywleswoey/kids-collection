@@ -1161,6 +1161,395 @@
         "reviewKey": "outer-space-venus-5ef3acea-pollinations-dff2",
         "reviewed": true
       }
+    },
+    "Rocks and Gems": {
+      "Agate": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-agate-90f11d4b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Amethyst": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-amethyst-87d5dce2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bronze Bar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-bronze-bar-596f263c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Copper Bar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-copper-bar-24c2a7f6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Crystal Cave": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-crystal-cave-1cd03bda-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Diamond": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-diamond-68b7f1fc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Emerald": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-emerald-60d50797-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Geode": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-geode-f79008d1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Giant's Causeway": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-giant-s-causeway-da3fbdca-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Gold Bar": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "rocks-and-gems-gold-bar-868fc9c0-pollinations-dff2",
+        "reviewed": true
+      },
+      "Gold Mine": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-gold-mine-deef4a49-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Granite": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-granite-1ff5330e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hoodoo": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-hoodoo-d54a3755-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lava Tube": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-lava-tube-5af18d3f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Limestone Cave": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-limestone-cave-80a84267-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Marble": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-marble-a1d49f6d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Onyx": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-onyx-e354194b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Opal": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "rocks-and-gems-opal-180ba32c-pollinations-dff2",
+        "reviewed": true
+      },
+      "Pyrite": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-pyrite-af367691-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Quarry": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-quarry-b7a79339-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "River Canyon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-river-canyon-ba3593d7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rose Quartz": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-rose-quartz-5519f617-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ruby": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-ruby-cab2991f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sapphire": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-sapphire-32c16cea-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sea Cliff": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-sea-cliff-aefa5eb1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Silver Bar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-silver-bar-16a8afd1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Slot Canyon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-slot-canyon-4d9c1ffc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Stone Arch": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-stone-arch-bdab88ad-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Topaz": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "rocks-and-gems-topaz-4ee6c409-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Turquoise": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "rocks-and-gems-turquoise-52ce5950-pollinations-dff2",
+        "reviewed": true
+      }
     }
   }
 }

@@ -3457,6 +3457,225 @@
         }
       ],
       "provider": "cloudflare-sdxl"
+    },
+    {
+      "name": "Rocks and Gems",
+      "cards": [
+        {
+          "name": "Diamond",
+          "rarity": "legendary",
+          "eduText": "Diamond is the hardest natural material on Earth. Only another diamond can scratch it.",
+          "imagePrompt": "a single clear colourless diamond gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Diamond"
+        },
+        {
+          "name": "Giant's Causeway",
+          "rarity": "legendary",
+          "eduText": "About 40,000 stone columns formed here when a thick lava flow cooled and cracked into six-sided shapes.",
+          "imagePrompt": "a rocky headland made of thousands of tall six-sided stone columns packed tightly together, stepping down into calm blue sea under a clear sky, seen from a distance so the whole formation, the water and the sky are all in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Giant%27s_Causeway"
+        },
+        {
+          "name": "Crystal Cave",
+          "rarity": "epic",
+          "eduText": "In Mexico's Cave of the Crystals, some crystals grew longer than a bus over half a million years.",
+          "imagePrompt": "the inside of a rocky cave with tall pointed pale purple crystals growing out of its floor and walls",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_of_the_Crystals"
+        },
+        {
+          "name": "Geode",
+          "rarity": "epic",
+          "eduText": "A geode looks like a plain round rock until you crack it open and find crystals lining the inside.",
+          "imagePrompt": "a single hollow round geode rock split open to show the purple crystal points lining its inside, on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Geode"
+        },
+        {
+          "name": "Opal",
+          "rarity": "epic",
+          "eduText": "Opal holds water inside it, and tiny stacked spheres split the light into flashes of rainbow colour.",
+          "imagePrompt": "a single smooth rounded opal gemstone with rainbow colours flashing inside its polished top, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Opal",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Stone Arch",
+          "rarity": "epic",
+          "eduText": "Wind and rain wear away the softer rock underneath, leaving a bridge of hard stone standing above.",
+          "imagePrompt": "a natural orange stone arch standing on dry desert ground, seen from one side so both of its rock legs and the thick span of rock above them are in the picture, low desert hills and blue sky behind it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Natural_arch"
+        },
+        {
+          "name": "Gold Bar",
+          "rarity": "epic",
+          "eduText": "Gold never rusts or tarnishes, so gold buried in ancient tombs still shines when it is dug up.",
+          "imagePrompt": "a single shiny gold gold metal ingot with flat sides, rounded corners, lying on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gold_bar",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Topaz",
+          "rarity": "rare",
+          "eduText": "Topaz is one of the hardest gemstones. It can scratch steel and glass without being marked itself.",
+          "imagePrompt": "a single golden-yellow topaz gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Topaz"
+        },
+        {
+          "name": "Onyx",
+          "rarity": "rare",
+          "eduText": "Onyx grows in flat bands of black and white, and carvers cut down through them to make tiny pictures.",
+          "imagePrompt": "a single glossy black onyx gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Onyx"
+        },
+        {
+          "name": "Marble",
+          "rarity": "rare",
+          "eduText": "Marble starts as limestone, then heat and pressure deep underground squeeze it into smooth hard stone.",
+          "imagePrompt": "a single flat oval slab of polished white marble lying alone on green grass seen from above, its whole rounded edge visible, bold dark grey veins running across its smooth face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Marble"
+        },
+        {
+          "name": "Rose Quartz",
+          "rarity": "rare",
+          "eduText": "Rose quartz gets its soft pink colour from tiny threads of another mineral tangled up inside it.",
+          "imagePrompt": "a single grey rock with a group of pointed pale pink rose quartz crystals growing out of the top of it, on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rose_quartz"
+        },
+        {
+          "name": "Bronze Bar",
+          "rarity": "rare",
+          "eduText": "Bronze is copper mixed with tin. It was so useful that a whole age of history is named after it.",
+          "imagePrompt": "a single bronze metal ingot with a warm reddish-brown metallic surface, flat sides and rounded corners, lying alone on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bronze"
+        },
+        {
+          "name": "Lava Tube",
+          "rarity": "rare",
+          "eduText": "When a river of lava cools hard on the outside and drains away inside, it leaves a long hollow tunnel.",
+          "imagePrompt": "the inside of a long round lava tube cave with smooth dark rock walls curving all around it, a bright daylight opening at the far end, seen from inside the tunnel",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lava_tube"
+        },
+        {
+          "name": "Hoodoo",
+          "rarity": "rare",
+          "eduText": "A hard cap of rock shelters the softer stone beneath it, leaving a thin tower standing on its own.",
+          "imagePrompt": "a single tall thin rock spire with a wide flat capstone balanced on top, standing alone on dry desert ground under a clear blue sky, seen from a distance so the whole spire and the ground it stands on are in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hoodoo_(geology)"
+        },
+        {
+          "name": "Slot Canyon",
+          "rarity": "rare",
+          "eduText": "Flash floods carve slot canyons so narrow you can touch both walls, and so deep the sky is a stripe.",
+          "imagePrompt": "the inside of a narrow slot canyon with tall smooth wavy orange rock walls close on both sides, a thin strip of blue sky far above and sunlight falling to the sandy floor",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Slot_canyon"
+        },
+        {
+          "name": "Granite",
+          "rarity": "common",
+          "eduText": "Granite cools slowly deep underground, which gives its crystals time to grow big enough to see.",
+          "imagePrompt": "a single large grey granite boulder with a finely speckled grainy surface, resting on short green grass, seen from the side with its whole rounded outline visible against a plain background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Granite"
+        },
+        {
+          "name": "Silver Bar",
+          "rarity": "common",
+          "eduText": "Silver carries electricity better than any other metal, so it hides inside phones and computers.",
+          "imagePrompt": "a single shiny silver silver metal ingot with flat sides, sloping bevelled edges and rounded corners, lying on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Silver"
+        },
+        {
+          "name": "Copper Bar",
+          "rarity": "common",
+          "eduText": "Copper slowly turns green in the weather, which is why the Statue of Liberty is not copper-coloured.",
+          "imagePrompt": "a single shiny orange-brown copper metal ingot with flat sides, rounded corners, lying on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Copper"
+        },
+        {
+          "name": "Amethyst",
+          "rarity": "common",
+          "eduText": "Amethyst is purple quartz. Iron trapped inside the crystal is what gives it the colour.",
+          "imagePrompt": "a single grey rock with a group of tall pointed purple amethyst crystals growing out of the top of it, on green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amethyst"
+        },
+        {
+          "name": "Pyrite",
+          "rarity": "common",
+          "eduText": "Pyrite is nicknamed fool's gold. Its shiny golden cubes fooled miners who were hunting for real gold.",
+          "imagePrompt": "one grey rock lying alone on green grass, a few sharp shiny golden cubes set into its top surface, its whole rounded outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pyrite"
+        },
+        {
+          "name": "Ruby",
+          "rarity": "common",
+          "eduText": "Ruby and sapphire are the same mineral. A trace of chromium is what turns one of them red.",
+          "imagePrompt": "a single deep red ruby gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ruby"
+        },
+        {
+          "name": "Emerald",
+          "rarity": "common",
+          "eduText": "Almost every emerald has tiny cracks and specks inside it, which jewellers call its garden.",
+          "imagePrompt": "a single deep green emerald gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Emerald"
+        },
+        {
+          "name": "Sapphire",
+          "rarity": "common",
+          "eduText": "Sapphires are not only blue. The very same mineral also grows pink, yellow, green and orange.",
+          "imagePrompt": "a single deep blue sapphire gemstone cut with many flat sparkling facets and a pointed base, on green grass, seen from the side, its whole outline visible against the grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sapphire"
+        },
+        {
+          "name": "Agate",
+          "rarity": "common",
+          "eduText": "An agate's stripes are layers that filled a hollow in the rock slowly, one band of colour at a time.",
+          "imagePrompt": "a single round polished agate slab lying flat on green grass seen from above, its whole rounded edge visible, wavy orange and white bands across its smooth face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agate"
+        },
+        {
+          "name": "Turquoise",
+          "rarity": "common",
+          "eduText": "Turquoise forms in deserts, where water trickles through copper-rich rock and dries in the cracks.",
+          "imagePrompt": "a single flat slab of polished turquoise stone lying on green grass seen from above, its whole rounded edge visible, a smooth sky-blue face crossed by thin dark brown veins",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Turquoise",
+          "provider": "pollinations"
+        },
+        {
+          "name": "Limestone Cave",
+          "rarity": "common",
+          "eduText": "Dripping water leaves a tiny ring of stone behind. A stalactite grows about a centimetre a century.",
+          "imagePrompt": "the inside of a limestone cave with pale stone icicles hanging from its roof and matching stone spikes rising from its floor, softly lit, the floor and the roof both in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Solutional_cave"
+        },
+        {
+          "name": "Gold Mine",
+          "rarity": "common",
+          "eduText": "The deepest gold mines reach four kilometres down, so far below the surface that the rock is warm.",
+          "imagePrompt": "a rock wall at the far end of a short underground mine tunnel, seen from inside the tunnel with its dark walls and roof framing the view on all sides, wooden support beams and a rail track on the tunnel floor leading up to it, a bright seam of gold ore across the cut stone",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gold_mining"
+        },
+        {
+          "name": "Quarry",
+          "rarity": "common",
+          "eduText": "Quarries cut stone in giant blocks. The marble for many famous statues came out of one in Italy.",
+          "imagePrompt": "a wide empty stone quarry pit with bare stepped ledges of pale rock cut into its walls going down to a flat stone floor, seen from the rim so the whole pit, its far wall and the sky above are all in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Quarry"
+        },
+        {
+          "name": "River Canyon",
+          "rarity": "common",
+          "eduText": "A river cuts down a little every year. Given millions of years it can saw a canyon a mile deep.",
+          "imagePrompt": "a tall canyon wall of layered orange and red rock rising above a blue river winding along the canyon floor, seen from the canyon floor in daylight, its horizontal rock layers clearly visible from top to bottom",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Canyon"
+        },
+        {
+          "name": "Sea Cliff",
+          "rarity": "common",
+          "eduText": "Waves undercut the bottom of a cliff until the rock above topples, so the coastline creeps inland.",
+          "imagePrompt": "a single tall sea cliff standing at the edge of calm blue water under a clear sky, its rough face striped with level layers of cream and dark grey stone, seen from a distance so the whole cliff, the water below it and the sky above it are all in the picture",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cliffed_coast"
+        }
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
