@@ -26,6 +26,11 @@ export type SwapTier = "new" | "one-away" | "rest";
 
 const TIER_RANK: Record<SwapTier, number> = { new: 0, "one-away": 1, rest: 2 };
 
+/** The tiers best-swap-first, derived from the ranking so the two can't drift. */
+const TIER_ORDER: SwapTier[] = (Object.keys(TIER_RANK) as SwapTier[]).sort(
+  (a, b) => TIER_RANK[a] - TIER_RANK[b],
+);
+
 /**
  * One more copy takes this holding to SACRIFICE_MIN, the constant every surface
  * that offers or advertises a sacrifice gates on (Inc22 D4). Written as
@@ -45,10 +50,11 @@ export interface BoardCard {
   /** What this swap is worth to the party on the OTHER side of the board. */
   tier: SwapTier;
   /**
-   * True when the OTHER party doesn't own this card at all. Drives the badge
-   * (FR4) and the "only show what's missing" filter (FR5). Deliberately about
-   * ownership, not duplicates: what matters is whether the swap gives them
-   * something genuinely new.
+   * True when the OTHER party doesn't own this card at all. Drives the "only
+   * show what's missing" filter (FR5) and its count; since #110 the `new` band
+   * heading is what says it on screen, so no tile wears a badge for it any
+   * more (FR4). Deliberately about ownership, not duplicates: what matters is
+   * whether the swap gives them something genuinely new.
    */
   newToOther: boolean;
 }
@@ -61,8 +67,11 @@ export interface BoardCard {
  * one side and forgotten on the other. The tier-2 test needs the receiver's
  * COUNT, not just their ownership — and it's already here: a holding of
  * SACRIFICE_MIN - 1 is a duplicate, so it's in the opposite inventory with its
- * count. Nothing has to be added to `getTradeBoard`'s payload, and no child
- * learns anything new about a friend's shelf.
+ * count. Nothing has to be added to `getTradeBoard`'s payload — the tier is
+ * derived from what the board already sends. What the child then LEARNS from
+ * it did change with #110: the band heading says "one more and Ana can burn
+ * it" in words, so a friend's exact holding of SACRIFICE_MIN - 1 is now on
+ * screen. That disclosure is the point of the ticket, not a leak.
  *
  * That last step is why the tier is only OBSERVABLE while SACRIFICE_MIN - 1 is
  * at least 2. The opposite inventory is `tradableDuplicates` — count >= 2 —
@@ -122,6 +131,33 @@ export function orderByValue(cards: BoardCard[]): BoardCard[] {
       RARITIES.indexOf(b.card.rarity) - RARITIES.indexOf(a.card.rarity) ||
       (a.card.id < b.card.id ? -1 : a.card.id > b.card.id ? 1 : 0),
   );
+}
+
+export interface TierBand {
+  tier: SwapTier;
+  cards: BoardCard[];
+}
+
+/**
+ * Cut an ordered column into its tier bands (#110). The tier is a property of
+ * a GROUP of cards, so it's said once above the band instead of stamped on
+ * every tile: a column where half the cards are one-away would otherwise wear
+ * a badge almost everywhere, and the `new` tier — the one `orderByValue` ranks
+ * FIRST — would stop standing out.
+ *
+ * Empty bands are dropped, so a column never shows a heading over nothing.
+ * Order inside a band is untouched, and the bands come out in tier order, so
+ * reading the bands top to bottom is exactly `orderByValue`'s sequence — the
+ * grouping makes that order legible, it never re-does it.
+ *
+ * The heading copy lives in `band-copy.ts`: it names the RECEIVER ("one more
+ * and Ana can burn it" / "…and you can burn it"), which only the column knows.
+ */
+export function bandsByTier(cards: BoardCard[]): TierBand[] {
+  return TIER_ORDER.map((tier) => ({
+    tier,
+    cards: cards.filter((c) => c.tier === tier),
+  })).filter((band) => band.cards.length > 0);
 }
 
 /** FR5 — hide the cards the other party already has. `false` is the identity. */
