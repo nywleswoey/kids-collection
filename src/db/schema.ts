@@ -29,6 +29,20 @@ export const themes = pgTable("themes", {
   // Display order, lowest = oldest (Inc21 FR1). Written from the theme's
   // position in seed/cards.json, so a newly appended theme is the most recent.
   sortOrder: integer("sort_order").notNull().default(0),
+  /**
+   * The theme's own cover art (#122) — what fronts its tile in the binder's
+   * category picker, and the thumbnail on the place bar inside it.
+   *
+   * The picker used to borrow the child's rarest owned card. That is a trophy,
+   * not a landmark: it changes on a legendary pull, and a category the child has
+   * not started showed a neutral placeholder — so the newest theme, the one they
+   * most want to find, was the least recognisable thing on the screen.
+   *
+   * Nullable for one migration only. Every theme is required to have one and
+   * `seed --sync` refuses to publish a theme whose cover has no reviewed image;
+   * the column tightens to NOT NULL once the 16 pre-existing themes are filled.
+   */
+  coverUrl: text("cover_url"),
 });
 
 /** Cards — shared library. */

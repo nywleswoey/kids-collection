@@ -71,6 +71,13 @@
       "when": 1787411934834,
       "tag": "0009_children_archived_at",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788017423448,
+      "tag": "0010_theme_cover_url",
+      "breakpoints": true
     }
   ]
 }

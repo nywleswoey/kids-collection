@@ -1,0 +1,14 @@
+-- #122: give a theme its own cover art.
+--
+-- The binder's category picker used to front each tile with the child's rarest
+-- OWNED card. That is a trophy, not a landmark — it changed whenever they
+-- pulled something better, and a category they had not started showed a neutral
+-- placeholder, so the newest theme was the least recognisable tile on a screen
+-- built for a child who navigates by picture.
+--
+-- Nullable for exactly one migration. Every theme is required to have a cover
+-- (`coverPrompt` is required by the seed schema, and `seed --sync` refuses to
+-- publish a theme whose cover has no reviewed image), so this column is
+-- nullable only while the 16 pre-existing themes are backfilled. It tightens to
+-- NOT NULL in the follow-up that makes the picker read it.
+ALTER TABLE "themes" ADD COLUMN "cover_url" text;
