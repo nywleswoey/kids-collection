@@ -6,6 +6,7 @@ import {
   type SheetTheme,
 } from "@/features/pool/contact-sheet";
 import { reviewFileName } from "@/features/pool/review-files";
+import { cardSubject, coverSubject } from "@/features/pool/prompt";
 import { fakeProvider } from "@/features/pool/providers/fake";
 
 /**
@@ -36,16 +37,21 @@ function deps(onDisk: readonly string[], sidecars: Record<string, { model?: stri
   };
 }
 
+const COVER = "a quiet stone fortress courtyard";
+
+/** Every candidate the sheet expects — the cover row included (#122). */
 function allFiles(theme: SheetTheme): string[] {
-  return theme.cards.flatMap((c) => PROVIDERS.map((p) => reviewFileName(theme.name, c, p)));
+  const subjects = [coverSubject(theme), ...theme.cards.map(cardSubject)];
+  return subjects.flatMap((sub) => PROVIDERS.map((p) => reviewFileName(theme.name, sub, p)));
 }
 
 describe("planContactSheet — the grid (#63)", () => {
-  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", cards };
+  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", coverPrompt: COVER, cards };
 
   it("gives every card a cell for every provider", () => {
     const sheet = planContactSheet(theme, PROVIDERS, deps(allFiles(theme)));
-    expect(sheet.rows).toHaveLength(2);
+    // Two cards plus the theme's cover, which leads the sheet (#122).
+    expect(sheet.rows).toHaveLength(3);
     for (const row of sheet.rows) expect(row.candidates.map((c) => c.providerId)).toEqual([
       "pollinations",
       "cloudflare-sdxl",
@@ -63,9 +69,11 @@ describe("planContactSheet — the grid (#63)", () => {
     expect(sheet.rows.every((r) => r.candidates.every((c) => c.present))).toBe(true);
   });
 
-  it("orders rows legendary first", () => {
+  it("leads with the cover, then orders cards legendary first", () => {
     const sheet = planContactSheet(theme, PROVIDERS, deps(allFiles(theme)));
-    expect(sheet.rows.map((r) => r.name)).toEqual(["Paladin", "Longbowman"]);
+    // The cover has no rarity, so it does not sort — it is prepended. It is the
+    // first picture a child meets, and it is judged against the cards it fronts.
+    expect(sheet.rows.map((r) => r.name)).toEqual(["Cover", "Paladin", "Longbowman"]);
   });
 
   it("marks the candidate --sync would publish", () => {
@@ -88,7 +96,7 @@ describe("planContactSheet — the grid (#63)", () => {
   });
 
   it("labels a cell with the model the response NAMED (#64)", () => {
-    const file = reviewFileName("Warriors", cards[0], jpegProvider);
+    const file = reviewFileName("Warriors", cardSubject(cards[0]), jpegProvider);
     const sheet = planContactSheet(theme, PROVIDERS, {
       ...deps(allFiles(theme)),
       readSidecar: (f) => (f === file.replace(/\.jpg$/, ".json") ? { model: "sana" } : undefined),
@@ -101,15 +109,19 @@ describe("planContactSheet — the grid (#63)", () => {
 });
 
 describe("planContactSheet — the three absences it must not hide", () => {
-  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", cards };
+  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", coverPrompt: COVER, cards };
 
   it("counts a provider that produced nothing, rather than omitting its column", () => {
     // A lane that died or was never run must be visibly empty. Omitting it would
     // read as a bake-off that never meant to include it.
-    const onlyJpeg = theme.cards.map((c) => reviewFileName(theme.name, c, jpegProvider));
+    // Every subject the sheet expects — the cover row and both cards — but from
+    // one lane only, so the other lane's column is entirely empty.
+    const onlyJpeg = [coverSubject(theme), ...theme.cards.map(cardSubject)].map((sub) =>
+      reviewFileName(theme.name, sub, jpegProvider),
+    );
     const sheet = planContactSheet(theme, PROVIDERS, deps(onlyJpeg));
     expect(sheet.providerIds).toContain("cloudflare-sdxl");
-    expect(sheet.missing).toBe(2);
+    expect(sheet.missing).toBe(3);
     const cf = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "cloudflare-sdxl"));
     expect(cf.every((c) => !c.present)).toBe(true);
   });
@@ -126,7 +138,7 @@ describe("planContactSheet — the three absences it must not hide", () => {
     expect(sheet.providerIds).toContain("ai-horde");
     expect(sheet.missing).toBe(0);
     const cells = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "ai-horde"));
-    expect(cells).toHaveLength(2);
+    expect(cells).toHaveLength(3);
     expect(cells.every((c) => !c.present)).toBe(true);
   });
 
@@ -134,15 +146,18 @@ describe("planContactSheet — the three absences it must not hide", () => {
     // The exemption is about the hatch, not about the sheet giving up on
     // counting. A dead lane must still be reported while a hatch sits out.
     const hatch = { ...fakeProvider({ id: "ai-horde", role: "escape-hatch" }), format: "webp" as const };
-    const onlyJpeg = theme.cards.map((c) => reviewFileName(theme.name, c, jpegProvider));
+    const onlyJpeg = [coverSubject(theme), ...theme.cards.map(cardSubject)].map((sub) =>
+      reviewFileName(theme.name, sub, jpegProvider),
+    );
     const sheet = planContactSheet(theme, [...PROVIDERS, hatch], deps(onlyJpeg));
-    expect(sheet.missing).toBe(2);
+    expect(sheet.missing).toBe(3);
   });
 
   it("counts cards with no pick — the ones --sync will refuse", () => {
-    const unjudged: SheetTheme = { name: "Warriors", cards };
+    const unjudged: SheetTheme = { name: "Warriors", coverPrompt: COVER, cards };
     const sheet = planContactSheet(unjudged, PROVIDERS, deps(allFiles(unjudged)));
-    expect(sheet.unpicked).toBe(2);
+    // Three subjects with no pick: the cover row and both cards (#122).
+    expect(sheet.unpicked).toBe(3);
     expect(sheet.rows.every((r) => r.resolvedProvider === undefined)).toBe(true);
   });
 
@@ -173,7 +188,7 @@ describe("planContactSheet — the three absences it must not hide", () => {
     // both admit dashes, so nothing in the name alone separates them. Told about
     // the sibling, the shorter theme stops reporting the longer one's candidates
     // as its own orphans.
-    const ocean: SheetTheme = { name: "Ocean", provider: "pollinations", cards };
+    const ocean: SheetTheme = { name: "Ocean", provider: "pollinations", coverPrompt: COVER, cards };
     const sibling = "ocean-machines-alvin-deadbeef-pollinations-1234.jpg";
     const own = "ocean-stray-deadbeef-pollinations-1234.jpg";
 
@@ -186,7 +201,7 @@ describe("planContactSheet — the three absences it must not hide", () => {
 });
 
 describe("renderContactSheet", () => {
-  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", cards };
+  const theme: SheetTheme = { name: "Warriors", provider: "pollinations", coverPrompt: COVER, cards };
 
   it("renders one column per provider and marks the pick", () => {
     const html = renderContactSheet(planContactSheet(theme, PROVIDERS, deps(allFiles(theme))));
@@ -198,7 +213,7 @@ describe("renderContactSheet", () => {
   });
 
   it("puts each absence on the page, not just in the console", () => {
-    const unjudged: SheetTheme = { name: "Warriors", cards };
+    const unjudged: SheetTheme = { name: "Warriors", coverPrompt: COVER, cards };
     const html = renderContactSheet(
       planContactSheet(unjudged, PROVIDERS, deps(["nope.png", "warriors-stray-a-b-c.png"])),
     );
@@ -212,6 +227,7 @@ describe("renderContactSheet", () => {
     const nasty: SheetTheme = {
       name: "Warriors",
       provider: "pollinations",
+      coverPrompt: COVER,
       cards: [{ name: "<script>x</script>", rarity: "common", eduText: "a & b", imagePrompt: "p" }],
     };
     const html = renderContactSheet(planContactSheet(nasty, PROVIDERS, deps([])));

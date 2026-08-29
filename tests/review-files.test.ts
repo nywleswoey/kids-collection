@@ -6,9 +6,11 @@ import {
   resolveProviderId,
   sidecarFileName,
   unknownProviders,
+  missingCoverReviews,
   type AuditTheme,
 } from "@/features/pool/review-files";
 import { promptHash } from "@/features/pool/keys";
+import { cardSubject, coverSubject } from "@/features/pool/prompt";
 import { cardKey } from "@/features/pool/publish-plan";
 import { fakeProvider } from "@/features/pool/providers/fake";
 import {
@@ -23,12 +25,14 @@ import {
 } from "@/features/pool/providers";
 
 const card = { name: "Longbowman", imagePrompt: "an English longbowman" };
+const subject = cardSubject(card);
+const COVER = "a quiet stone fortress courtyard";
 
 describe("reviewFileName (#63, #67)", () => {
   it("is theme-card-promptHash-provider-paramHash, with the provider's own extension", () => {
     const p = fakeProvider({ id: "cloudflare-sdxl", params: { steps: 20 } });
-    expect(reviewFileName("Warriors", card, p)).toBe(
-      `warriors-longbowman-${promptHash(card)}-cloudflare-sdxl-${paramHash({ steps: 20 })}.png`,
+    expect(reviewFileName("Warriors", subject, p)).toBe(
+      `warriors-longbowman-${promptHash(subject.prompt)}-cloudflare-sdxl-${paramHash({ steps: 20 })}.png`,
     );
   });
 
@@ -37,39 +41,39 @@ describe("reviewFileName (#63, #67)", () => {
     // disk and would make the contact sheet depend on a browser ignoring it.
     const png = fakeProvider({ id: "a" });
     const jpg = { ...fakeProvider({ id: "b" }), format: "jpeg" as const };
-    expect(reviewFileName("Warriors", card, png).endsWith(".png")).toBe(true);
-    expect(reviewFileName("Warriors", card, jpg).endsWith(".jpg")).toBe(true);
+    expect(reviewFileName("Warriors", subject, png).endsWith(".png")).toBe(true);
+    expect(reviewFileName("Warriors", subject, jpg).endsWith(".jpg")).toBe(true);
   });
 
   it("changes when a provider's params drift — D4's hole, closed one level down", () => {
     // Bumping SDXL's steps changes what the card renders as just as completely
     // as editing ART_STYLE does, and appears in no prompt. Without this, every
     // review file would still match.
-    const before = reviewFileName("Warriors", card, fakeProvider({ id: "cf", params: { steps: 20 } }));
-    const after = reviewFileName("Warriors", card, fakeProvider({ id: "cf", params: { steps: 30 } }));
+    const before = reviewFileName("Warriors", subject, fakeProvider({ id: "cf", params: { steps: 20 } }));
+    const after = reviewFileName("Warriors", subject, fakeProvider({ id: "cf", params: { steps: 30 } }));
     expect(after).not.toBe(before);
   });
 
   it("does NOT change when params are merely reordered", () => {
-    const a = reviewFileName("Warriors", card, fakeProvider({ id: "cf", params: { steps: 20, seed: 42 } }));
-    const b = reviewFileName("Warriors", card, fakeProvider({ id: "cf", params: { seed: 42, steps: 20 } }));
+    const a = reviewFileName("Warriors", subject, fakeProvider({ id: "cf", params: { steps: 20, seed: 42 } }));
+    const b = reviewFileName("Warriors", subject, fakeProvider({ id: "cf", params: { seed: 42, steps: 20 } }));
     expect(a).toBe(b);
   });
 
   it("keeps one promptHash across providers, so a bake-off row is groupable", () => {
     // #63 turned review into a subject x provider grid; a grid needs a key that
     // groups a row. Folding the provider into promptHash would destroy it.
-    const a = reviewFileName("Warriors", card, fakeProvider({ id: "alpha" }));
-    const b = reviewFileName("Warriors", card, fakeProvider({ id: "beta" }));
-    expect(a).toContain(promptHash(card));
-    expect(b).toContain(promptHash(card));
+    const a = reviewFileName("Warriors", subject, fakeProvider({ id: "alpha" }));
+    const b = reviewFileName("Warriors", subject, fakeProvider({ id: "beta" }));
+    expect(a).toContain(promptHash(subject.prompt));
+    expect(b).toContain(promptHash(subject.prompt));
     expect(a).not.toBe(b);
   });
 
   it("puts the sidecar on the same stem, as .json", () => {
     const p = fakeProvider({ id: "alpha" });
-    expect(sidecarFileName("Warriors", card, p)).toBe(
-      reviewFileName("Warriors", card, p).replace(/\.png$/, ".json"),
+    expect(sidecarFileName("Warriors", subject, p)).toBe(
+      reviewFileName("Warriors", subject, p).replace(/\.png$/, ".json"),
     );
   });
 });
@@ -99,6 +103,7 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
 
   const theme = (over: Partial<AuditTheme> = {}): AuditTheme => ({
     name: "Warriors",
+    coverPrompt: COVER,
     cards: [card, { name: "Halberdier", imagePrompt: "a halberdier" }],
     ...over,
   });
@@ -130,11 +135,15 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
   it("refuses after a provider switch — the mechanism, not 'nobody will do that'", () => {
     // Reviewed under alpha, then the theme is repointed at beta. The resolved
     // filename changes, so nothing on disk matches and the insert is refused.
-    const onDisk = new Set([reviewFileName("Warriors", card, alpha)]);
+    const onDisk = new Set([reviewFileName("Warriors", subject, alpha)]);
     const beta = fakeProvider({ id: "beta" });
     const twoProviders = (id: string) => ({ alpha, beta })[id as "alpha" | "beta"];
     const planned = new Set([cardKey("Warriors", "Longbowman")]);
-    const oneCard = { name: "Warriors", cards: [card] };
+    const oneCard = {
+      name: "Warriors",
+      coverPrompt: COVER,
+      cards: [card],
+    };
 
     expect(
       missingReviews([{ ...oneCard, provider: "alpha" }], planned, twoProviders, (f) => onDisk.has(f)),
@@ -149,9 +158,14 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
     // came from 20 steps, the adapter now asks for 30.
     const before = fakeProvider({ id: "alpha", params: { steps: 20 } });
     const after = fakeProvider({ id: "alpha", params: { steps: 30 } });
-    const onDisk = new Set([reviewFileName("Warriors", card, before)]);
+    const onDisk = new Set([reviewFileName("Warriors", subject, before)]);
     const planned = new Set([cardKey("Warriors", "Longbowman")]);
-    const oneCard = { name: "Warriors", provider: "alpha", cards: [card] };
+    const oneCard = {
+      name: "Warriors",
+      provider: "alpha",
+      coverPrompt: COVER,
+      cards: [card],
+    };
 
     expect(missingReviews([oneCard], planned, () => before, (f) => onDisk.has(f))).toEqual([]);
     expect(missingReviews([oneCard], planned, () => after, (f) => onDisk.has(f))).toHaveLength(1);
@@ -165,7 +179,7 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
 
   it("honours a per-card override over the theme default", () => {
     const found = missingReviews(
-      [{ name: "Warriors", provider: "alpha", cards: [{ ...card, provider: "ghost" }] }],
+      [{ name: "Warriors", provider: "alpha", coverPrompt: COVER, cards: [{ ...card, provider: "ghost" }] }],
       new Set([cardKey("Warriors", "Longbowman")]),
       lookup,
       everythingOnDisk,
@@ -173,11 +187,74 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
     expect(found[0].reason).toContain('unknown provider "ghost"');
   });
 
+  // ── The #122 hard stop: no cover, no publish ───────────────────────────────
+  describe("cover reviews (#122)", () => {
+    const allCovers = new Set(["Warriors"]);
+
+    it("refuses a theme whose cover has no reviewed image, naming it as Cover", () => {
+      const found = missingCoverReviews(
+        [theme({ provider: "alpha" })],
+        allCovers,
+        lookup,
+        nothingOnDisk,
+      );
+      expect(found).toEqual([
+        { theme: "Warriors", card: "Cover", reason: "no reviewed image from alpha" },
+      ]);
+    });
+
+    it("refuses a theme whose bake-off was never judged", () => {
+      const found = missingCoverReviews([theme()], allCovers, lookup, everythingOnDisk);
+      expect(found[0].reason).toContain("no provider chosen");
+    });
+
+    // The guarantee is that a theme cannot reach a child unrecognisable. A cover
+    // already published is not re-demanded, exactly as an already-published card
+    // is not — the audit is publish-scoped, not a back-fill of seed/review/.
+    it("ignores a theme whose cover is already published", () => {
+      expect(
+        missingCoverReviews([theme({ provider: "alpha" })], new Set(), lookup, nothingOnDisk),
+      ).toEqual([]);
+    });
+
+    it("accepts a theme whose cover candidate is on disk", () => {
+      const alphaTheme = theme({ provider: "alpha" });
+      const onDisk = new Set([
+        reviewFileName("Warriors", coverSubject(alphaTheme), alpha),
+      ]);
+      expect(
+        missingCoverReviews([alphaTheme], allCovers, lookup, (f) => onDisk.has(f)),
+      ).toEqual([]);
+    });
+
+    // A cover is named by the SAME machinery a card is, which is the only
+    // agreement FR9 needs between the two audits — and the reason a cover cannot
+    // be satisfied by a card's file that happens to sit in the same folder.
+    it("is not satisfied by a card's reviewed image", () => {
+      const alphaTheme = theme({ provider: "alpha" });
+      const onDisk = new Set([reviewFileName("Warriors", subject, alpha)]);
+      expect(
+        missingCoverReviews([alphaTheme], allCovers, lookup, (f) => onDisk.has(f)),
+      ).toHaveLength(1);
+    });
+
+    // Editing the authored place-prompt moves the filename, same as D4 does for
+    // a card: a cover reviewed against words that no longer exist is stale.
+    it("refuses after the coverPrompt is edited", () => {
+      const before = theme({ provider: "alpha" });
+      const onDisk = new Set([reviewFileName("Warriors", coverSubject(before), alpha)]);
+      const after = theme({ provider: "alpha", coverPrompt: "a different courtyard" });
+      expect(
+        missingCoverReviews([after], allCovers, lookup, (f) => onDisk.has(f)),
+      ).toHaveLength(1);
+    });
+  });
+
   it("reports an unregistered provider separately from a missing image", () => {
     // Different mistakes, different fixes: a typo is not solved by re-running
     // --review, and saying "no reviewed image" would send the author to do just
     // that.
-    const themes = [{ name: "Warriors", provider: "ghost", cards: [card] }];
+    const themes = [{ name: "Warriors", provider: "ghost", coverPrompt: COVER, cards: [card] }];
     const planned = new Set([cardKey("Warriors", "Longbowman")]);
     expect(unknownProviders(themes, planned, lookup)).toEqual([
       { theme: "Warriors", card: "Longbowman", providerId: "ghost" },

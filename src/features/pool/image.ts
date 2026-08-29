@@ -18,6 +18,17 @@ import { contentTypeFor, readImageSize } from "./image-size";
 /**
  * Upload bytes to Vercel Blob; returns the public URL.
  *
+ * `prefix` selects the namespace: `cards/` for a card, `covers/` for a theme's
+ * cover art (#122). It defaults to `cards` so the ~390 existing call sites and
+ * published names are untouched, and it is a closed union rather than a free
+ * string because a typo would silently publish into a third namespace that
+ * nothing reconciles — `--blob-budget` walks the store by prefix.
+ *
+ * A cover is a separate namespace rather than a card named "Cover": card names
+ * are unique pool-wide and nothing stops a future theme shipping one, which
+ * would publish over a theme's cover with no error at either end. See
+ * `coverBlobKey`.
+ *
  * The pathname keeps its `.jpg` suffix whatever the bytes actually are. That is
  * not a format claim — it is the name ~360 already-published objects carry, and
  * changing it would re-point every existing card's URL for no benefit. The real
@@ -47,6 +58,7 @@ import { contentTypeFor, readImageSize } from "./image-size";
 export async function uploadImage(
   key: string,
   bytes: Uint8Array,
+  prefix: "cards" | "covers" = "cards",
 ): Promise<string> {
   const measured = readImageSize(bytes);
   if (!measured) {
@@ -66,7 +78,7 @@ export async function uploadImage(
   // headers, different published name. `tests/blob-naming.test.ts` (#102) pins
   // the version so it fails instead. Whether the default is the right one — and
   // what happens to the ~390 URLs already written under version 9's — is #91's.
-  const { url } = await put(`cards/${key}.jpg`, Buffer.from(bytes), {
+  const { url } = await put(`${prefix}/${key}.jpg`, Buffer.from(bytes), {
     access: "public",
     contentType: contentTypeFor(measured.format),
   });

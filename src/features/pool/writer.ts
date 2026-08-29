@@ -44,6 +44,21 @@ export async function upsertTheme(
   return row.id;
 }
 
+/**
+ * Point a theme at its published cover art (#122).
+ *
+ * Separate from `upsertTheme` rather than another argument to it, because the
+ * two run at different times and under different guarantees: `upsertTheme` runs
+ * for every theme on every publish and must not need a cover in hand, while this
+ * runs only after a reviewed cover's bytes have actually been uploaded. Folding
+ * them together would mean passing `coverUrl: undefined` on every ordinary sync
+ * and deciding, inside the upsert, whether undefined means "leave it" or "clear
+ * it" — the ambiguity that loses a cover on an unrelated run.
+ */
+export async function setThemeCover(themeId: string, coverUrl: string): Promise<void> {
+  await db.update(themes).set({ coverUrl }).where(eq(themes.id, themeId));
+}
+
 /** True if a card with this theme+name already exists. */
 export async function cardExists(
   themeId: string,

@@ -13,7 +13,7 @@ This file supersedes the old `seed/AUTHORING_PROMPT.md`. It is the only card-aut
 | | |
 |---|---|
 | **Input** | A theme name. Nothing else. Any extra steer from the human (e.g. "lean historical") overrides this document's defaults where they conflict. |
-| **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed/cards.json`, committed on a branch, a PR open. |
+| **Output** | 30 published cards **and the theme's cover art**, images reviewed, the winning provider recorded in `seed/cards.json`, committed on a branch, a PR open. |
 | **Human checkpoints** | Exactly **two**: the 30-name list (Step 3), and the image contact sheet (Step 7). Still two — the bake-off did **not** add a third; it changed what the second one *is*, from approve/reject to **choose among N candidates**. Stop dead at both — do not proceed on silence, and never answer them yourself. |
 | **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. |
 | **Session** | One theme per run. Do not batch two themes. |
@@ -30,6 +30,10 @@ half-authored theme cannot be committed or published. You do not get to "fix it 
 3. **Card names unique across the entire pool**, not just within the theme. This is the rule a long
    authoring session breaks by accident, and the one with no other backstop.
 4. **`eduText` ≤ 120 characters**, `sourceUrl` a well-formed URL.
+5. **A `coverPrompt` on every theme** (#122). It is required, exactly like the 30 `imagePrompt`s and for
+   the same reason: it is authored text, written at Step 4, so there is no window in which a theme is
+   legitimately without one. Contrast `provider`, which is optional because it records a bake-off pick
+   that cannot exist while the theme is being authored.
 
 Reachability of `sourceUrl` is *not* schema-checked — that is `--check-urls` (Step 5).
 
@@ -114,6 +118,38 @@ Card shape (all five fields required):
 
 A sixth field, `provider`, is optional and is **not** authored here: it records the bake-off winner and is
 added at Step 6, on the theme and — sparsely — on individual cards.
+
+Theme shape — `name`, **`coverPrompt`**, then `cards`:
+
+```json
+{
+  "name": "Flying Machines",
+  "coverPrompt": "a grassy airfield at golden hour with a windsock, runway markings and open sky",
+  "cards": [ … 30 … ]
+}
+```
+
+### `coverPrompt` — a place, never a specimen (#122)
+
+This is the picture that fronts the theme's tile in the binder's category picker, and the thumbnail on
+the place bar once the child is inside it. It is a **landmark**: the same picture every time, so a child
+navigating 25+ categories can find this one by sight rather than by reading its name.
+
+Three rules, and they are not stylistic:
+
+- **Depict the theme's *place*, not one of its 30 subjects.** A category's front door showing card art
+  leaks what `CardSlot` keeps behind `❔` until it is earned (U5-Q5). Check the 30 names you just wrote,
+  and check the other themes' too — *Fern* is a Special Plants card, so "ferns" is not scenery.
+- **Exclude by omission, never by negation.** Do not write "no animals", "no people", "not a card". #81
+  measured that naming a depictable noun puts it in the picture whatever polarity you name it in; "no
+  border" is a *border cue*. If a subject must not appear, the fix is to not mention it.
+- **No art-style words.** `buildCoverPrompt()` appends `COVER_STYLE` — the scenery style, deliberately
+  different from the card style so a cover cannot be mistaken for a card you could own.
+
+A cover that is genuinely hard to write is a real signal, not a blocker: a theme whose subjects are
+*people* has no obvious place, and the honest answer is the room or landscape they belong to rather than
+a person nobody can collect. A picture that looks like a card but is not on the card list is a **phantom
+card** — the child will hunt for it and never find it.
 
 - **Theme name** — short, title-case, matching the existing set (*Animals*, *Mythic Creatures*,
   *Dinosaurs*, *Superheroes*, *Country*, *Famous People*, *Weird Insects*, *Special Plants*,
@@ -244,16 +280,19 @@ its ceiling is the **Hobby** allowance hardcoded; if the plan has changed since,
 
 ```bash
 git add seed/cards.json && git commit -m "feat(seed): add the <Theme> theme"
-pnpm seed --review         # generates images for NEW cards only, into seed/review/
+pnpm seed --review         # generates the cover + NEW cards only, into seed/review/
 ```
 
 `--review` needs `DATABASE_URL` (it reads the pool to scope itself to unpublished cards) but writes
 nothing to it. It skips cards already published and already-reviewed prompts, so an interrupted or
 rate-limited run resumes rather than restarting.
 
-`--review` is a **bake-off** (#63): it generates each new card from **every registered lane**, in parallel,
-so a human can compare candidates side by side and pick the best draughtsman per subject. A 30-card theme is
-30 images *per lane* — 60 today, on `pollinations` and `cloudflare-sdxl`. The lanes run alongside each other
+`--review` is a **bake-off** (#63): it generates each new subject from **every registered lane**, in
+parallel, so a human can compare candidates side by side and pick the best draughtsman per subject. A new
+theme is 30 cards **plus its cover** (#122) — 31 images *per lane*, 62 today on `pollinations` and
+`cloudflare-sdxl`. The cover rides the same run rather than a lighter one of its own: a *place* is the one
+prompt shape this repo has no measurements for, every number here having been taken on single-subject card
+art, so it is the strongest case for a bake-off rather than the weakest. The lanes run alongside each other
 and pace themselves independently, so the wall-clock is the slowest lane, not the sum: expect ~8 minutes,
 set by Pollinations. `ai-horde` is an **escape hatch**, not a lane, and sits out unless named (below).
 
@@ -436,13 +475,18 @@ One HTML page: **one row per subject, one column per provider**, so the human co
 opening a folder. Each cell is labelled with the model that actually answered, and the cell `--sync` would
 publish is outlined.
 
+**The first row is the theme's cover** (#122), then the 30 cards, legendary first. The cover leads because
+it is the picture a child meets *first*, and because it can only really be judged against the cards it
+fronts: the thing to check is that the cover reads as a **place** and the cards read as **specimens**. A
+cover that looks like it belongs in the grid below it has failed even if it is a lovely picture.
+
 The page states three things rather than hiding them, and so does the command:
 
 - **MISSING cells** — that *lane* produced nothing for that card. A dead lane or a narrowed run, *not* a
   provider that drew badly. An escape-hatch column (`ai-horde`) is labelled as such and blank by default —
   that is the arrangement working, so it is not counted here.
-- **cards with no pick** — expected at this point, since the picking happens *here*. `--sync` refuses every
-  one of them until Step 8 sets a `provider` on the card or its theme.
+- **subjects with no pick** — expected at this point, since the picking happens *here*. `--sync` refuses
+  every one of them, the cover row included, until Step 8 sets a `provider` on the card or its theme.
 - **orphan files** — candidates on disk from a provider no longer registered.
 
 **This checkpoint is a choice, not a yes/no.** The human is picking a provider per row, so give them what a
@@ -543,7 +587,8 @@ Abort the run and report. Do not improvise past any of these.
 | Signal | Why you stop |
 |---|---|
 | `--sync` reports a pending **prune**, or asks you to type a collection-row count | Something was renamed or dropped in the seed file. A prune deletes cards **out of the children's collections**. Fix the file. **Never pass `--allow-prune`.** |
-| `--sync` refuses: "would be inserted with no reviewed image" | Run `--review` first. **Never pass `--allow-unreviewed`** — it defeats the guarantee that no unreviewed image reaches a child. |
+| `--sync` refuses: "would be published with no reviewed art" | Run `--review` first. **Never pass `--allow-unreviewed`** — it defeats the guarantee that no unreviewed image reaches a child. |
+| `--sync` refuses a row named **`<Theme> / Cover`** | **No cover, no publish** (#122). The theme has no reviewed cover art, and a theme without one is a tile the child cannot tell apart from every other unstarted category. Same remedy as any other unreviewed row — `--review`, then judge the cover row at checkpoint 2. Never route around it. |
 | `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed/cards.json`. Never route around it with `--allow-unreviewed`. |
 | `--sync` refuses: "name a provider that is not registered" | A typo, or an adapter that was retired. Fix the `provider` value; re-running `--review` cannot satisfy this one. |
 | `--sync` refuses: "seed/provenance.json is unreadable" | The generated provenance record was hand-edited or truncated. Nothing has been written. Restore it with `git checkout seed/provenance.json`; never repair it by hand. |
@@ -570,6 +615,12 @@ Abort the run and report. Do not improvise past any of these.
 - Never delete a current candidate to narrow a row. A missing cell means a lane failed; making a rival
   disappear is answering checkpoint 2 for the human.
 - Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- **Never put one of the theme's own 30 subjects in its `coverPrompt`** (#122). A cover depicts the
+  theme's *place*, never a specimen: card art on the front door of a category leaks what `❔` keeps
+  hidden until it is earned. And never name an excluded subject *in order to forbid it* — "no dinosaurs"
+  draws dinosaurs, for the reason #81 measured on "no border". You exclude by omission.
+- Never point a theme's cover at a different provider from its cards. A cover inherits the theme's pick,
+  so one bake-off judgement covers the whole theme.
 - **Never hand-write or hand-edit `seed/provenance.json`.** It is what a publish *observed*, and a line
   typed into it by hand is indistinguishable from one the pipeline recorded. A card with no entry has no
   witness, and that is a true statement worth keeping.

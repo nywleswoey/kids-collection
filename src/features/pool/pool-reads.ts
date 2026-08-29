@@ -35,6 +35,25 @@ export async function listPublishedCardKeys(): Promise<Set<string>> {
 }
 
 /**
+ * Theme names that already have a cover published (#122).
+ *
+ * The cover equivalent of `listPublishedCardKeys`, and read the same way and for
+ * the same reason: `--review` needs to know which covers to generate and the
+ * publish guard needs to know which to demand, and the two must agree. A theme
+ * that does not exist yet contributes nothing, so its cover falls into the plan
+ * alongside all 30 of its cards.
+ *
+ * Keyed by NAME, not id, because that is what the seed file has and what
+ * `--review` can use without writing a theme row to find out.
+ */
+export async function listPublishedCoverThemes(): Promise<Set<string>> {
+  const rows = await db
+    .select({ theme: themes.name, cover: themes.coverUrl })
+    .from(themes);
+  return new Set(rows.filter((r) => r.cover !== null).map((r) => r.theme));
+}
+
+/**
  * Every published card's art, as `(theme, card, imageUrl)` in display order.
  *
  * Read-only, and the only consumer is `--check-images` (#78): a published card's

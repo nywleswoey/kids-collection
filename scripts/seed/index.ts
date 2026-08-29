@@ -85,9 +85,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadSeed } from "@/features/pool/loader";
-import { buildPrompt } from "@/features/pool/prompt";
 import { uploadImage } from "@/features/pool/image";
-import { blobKey } from "@/features/pool/keys";
+import { blobKey, coverBlobKey } from "@/features/pool/keys";
 import { runBakeOff, makeGate, withRetry, type BakeOffJob } from "@/features/pool/bake-off";
 import {
   buildSidecar,
@@ -98,7 +97,7 @@ import {
   resolveProviderId,
   sidecarFileName,
   unknownProviders,
-  type NamedCard,
+  missingCoverReviews,
   type ReviewSidecar,
 } from "@/features/pool/review-files";
 import {
@@ -123,9 +122,18 @@ import {
   type ImageProvider,
 } from "@/features/pool/providers";
 import { planInserts, cardKey } from "@/features/pool/publish-plan";
+import {
+  COVER_SUBJECT_NAME,
+  buildCoverPrompt,
+  buildPrompt,
+  cardSubject,
+  coverSubject,
+  type Subject,
+} from "@/features/pool/prompt";
 import { comparePoolShape } from "@/features/pool/completeness";
 import {
   listPublishedCardKeys,
+  listPublishedCoverThemes,
   readPublishedImages,
   readPublishedShape,
 } from "@/features/pool/pool-reads";
@@ -140,6 +148,7 @@ import {
 } from "@/features/pool/blob-budget";
 import {
   upsertTheme,
+  setThemeCover,
   insertCardIfNew,
   resetPool,
   updateCardMeta,
@@ -175,8 +184,8 @@ const PUBLISH_CONCURRENCY = intEnv("SEED_CONCURRENCY", 4);
 type Mode = "review" | "publish" | "sync";
 
 /** Absolute path of one bake-off candidate. */
-function reviewPath(themeName: string, card: NamedCard, provider: ImageProvider): string {
-  return join(REVIEW_DIR, reviewFileName(themeName, card, provider));
+function reviewPath(themeName: string, subject: Subject, provider: ImageProvider): string {
+  return join(REVIEW_DIR, reviewFileName(themeName, subject, provider));
 }
 
 /**
@@ -438,12 +447,21 @@ async function main() {
   const planned = new Set(plan.map((p) => cardKey(p.theme, p.card)));
   const themes: readonly ThemeSeed[] = seed.themes;
 
+  // Which themes already have a cover (#122)? Read alongside the card plan and
+  // for the same reason it is read here rather than earlier: --reset clears
+  // `cover_url` with the row, so a set read before it would let the guard below
+  // pass on covers that no longer exist.
+  const publishedCovers = await listPublishedCoverThemes();
+  const coversToPublish = new Set(
+    themes.filter((t) => !publishedCovers.has(t.name)).map((t) => t.name),
+  );
+
   // ── --review: the eager bake-off. Lane-major, so it does not share the
   // publish path's per-theme loop — nothing here writes to the database, and a
   // lane spans every theme in one queue so its pacing is spent on generating
   // rather than on waiting at theme boundaries.
   if (mode === "review") {
-    await review(themes, planned, lanes);
+    await review(themes, planned, publishedCovers, lanes);
     return;
   }
 
@@ -481,20 +499,31 @@ async function main() {
     return;
   }
 
-  const unreviewed = missingReviews(themes, planned, providerById, (name) =>
-    existsSync(join(REVIEW_DIR, name)),
-  );
+  const reviewExists = (name: string) => existsSync(join(REVIEW_DIR, name));
+  // Cards and covers audited together and refused together (#122). The
+  // guarantee they serve carries no qualifier — "no unreviewed image reaches a
+  // child, ever" — and a theme cover is now the FIRST picture a child sees of a
+  // category, so it is the last thing that should have a weaker gate than the
+  // cards behind it. `missingCoverReviews` names its rows `<theme> / Cover`, so
+  // the report below renders both shapes unchanged.
+  const unreviewed = [
+    ...missingReviews(themes, planned, providerById, reviewExists),
+    ...missingCoverReviews(themes, coversToPublish, providerById, reviewExists),
+  ];
   if (unreviewed.length > 0 && !process.argv.includes("--allow-unreviewed")) {
     console.error(
-      `\n⛔ ${unreviewed.length} card(s) would be inserted with no reviewed image:\n`,
+      `\n⛔ ${unreviewed.length} image(s) would be published with no reviewed art:\n`,
     );
     for (const p of unreviewed) {
       console.error(`   ${p.theme} / ${p.card} — ${p.reason}`);
     }
     console.error(
       `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
-        `   every image. Cards marked "no provider chosen" need a \`provider\` on the\n` +
+        `   every image. Rows marked "no provider chosen" need a \`provider\` on the\n` +
         `   card or its theme in seed/cards.json — that is the bake-off pick.\n` +
+        `   A \`${COVER_SUBJECT_NAME}\` row is a theme with no cover art: no cover, no\n` +
+        `   publish, because a category has to be recognisable before a child owns\n` +
+        `   anything in it.\n` +
         `   \`--allow-unreviewed\` exists but defeats the guarantee that no unreviewed\n` +
         `   image reaches a child.\n`,
     );
@@ -503,7 +532,7 @@ async function main() {
   }
   if (unreviewed.length > 0) {
     console.warn(
-      `⚠️  --allow-unreviewed: publishing ${unreviewed.length} card(s) no human has seen.`,
+      `⚠️  --allow-unreviewed: publishing ${unreviewed.length} image(s) no human has seen.`,
     );
   }
 
@@ -514,6 +543,7 @@ async function main() {
 
   const report = {
     inserted: 0,
+    covers: 0,
     updated: 0,
     skipped: 0,
     failed: 0,
@@ -526,6 +556,56 @@ async function main() {
   // seed/cards.json makes it the most recent (Inc21 FR2).
   for (const [sortOrder, theme] of themes.entries()) {
     const themeId = await upsertTheme(theme.name, sortOrder);
+
+    // The theme's cover (#122), before its cards. A theme row with no
+    // `cover_url` is a category the picker cannot draw a tile for, so it is the
+    // first thing published rather than the last — a run that dies partway
+    // leaves a recognisable half-theme rather than a nameless one.
+    //
+    // Published-once, like a card: an existing cover is never regenerated or
+    // re-uploaded, because it is a LANDMARK. Refreshing it on every sync would
+    // reintroduce exactly the instability #122 removed from the borrowed-card
+    // cover, one level up. Changing a theme's `coverPrompt` therefore does not
+    // republish it — clear `cover_url` to do that deliberately.
+    if (coversToPublish.has(theme.name)) {
+      try {
+        const provider = theme.provider ? providerById(theme.provider) : undefined;
+        const subject = coverSubject(theme);
+        const file = provider ? reviewPath(theme.name, subject, provider) : undefined;
+        let bytes: Uint8Array;
+        if (provider && file && existsSync(file)) {
+          bytes = new Uint8Array(readFileSync(file));
+          report.reused++;
+        } else {
+          // --allow-unreviewed only; the guard above refuses this path otherwise.
+          if (!provider) {
+            throw new Error(
+              `no provider resolved (set \`provider\` on the theme; registered: ${PROVIDER_IDS.join(", ")})`,
+            );
+          }
+          if (!provider.isConfigured()) {
+            throw new Error(
+              `provider ${provider.id} is not configured (set ${provider.requiredEnv.join(" and ")})`,
+            );
+          }
+          console.log(`🖼️  generating cover: ${theme.name} [${provider.id}]…`);
+          const gate = publishGate(provider);
+          const image = await withRetry(
+            provider,
+            () => gate().then(() => provider.generate(buildCoverPrompt(theme), CARD_SIZE)),
+            { retries: RETRIES },
+          );
+          bytes = image.bytes;
+        }
+        const coverUrl = await uploadImage(coverBlobKey(theme.name), bytes, "covers");
+        await setThemeCover(themeId, coverUrl);
+        report.covers++;
+        console.log(`✓ cover ${theme.name}`);
+      } catch (err) {
+        report.failed++;
+        console.error(`✗ ${theme.name} / ${COVER_SUBJECT_NAME}: ${String(err)}`);
+      }
+    }
 
     await runPool(theme.cards, PUBLISH_CONCURRENCY, async (card) => {
       try {
@@ -555,7 +635,9 @@ async function main() {
         // an optimisation — it re-opens the gap where the parent reviewed image A
         // and the child received image B.
         const provider = resolveProvider(theme, card);
-        const reviewFile = provider ? reviewPath(theme.name, card, provider) : undefined;
+        const reviewFile = provider
+          ? reviewPath(theme.name, cardSubject(card), provider)
+          : undefined;
 
         let bytes: Uint8Array;
         // What drew these bytes, for the durable record (#75). Undefined only
@@ -568,7 +650,7 @@ async function main() {
         if (provider && reviewFile && existsSync(reviewFile)) {
           bytes = new Uint8Array(readFileSync(reviewFile));
           reviewed = true;
-          sidecar = readSidecar(theme.name, card, provider);
+          sidecar = readSidecar(theme.name, cardSubject(card), provider);
           if (!sidecar) {
             console.warn(
               `⚠️  ${theme.name} / ${card.name}: no readable sidecar beside the reviewed image — ` +
@@ -628,7 +710,7 @@ async function main() {
               card: card.name,
               provenance: toProvenance(
                 sidecar,
-                reviewStem(theme.name, card, provider),
+                reviewStem(theme.name, cardSubject(card), provider),
                 reviewed,
               ),
             });
@@ -714,26 +796,36 @@ async function main() {
 async function review(
   themes: readonly ThemeSeed[],
   planned: ReadonlySet<string>,
+  publishedCovers: ReadonlySet<string>,
   lanes: readonly ImageProvider[],
 ): Promise<void> {
-  const jobs: BakeOffJob<SeedCard>[] = [];
+  const jobs: BakeOffJob<Subject>[] = [];
   let alreadyPublished = 0;
   for (const theme of themes) {
+    // A theme's cover rides the SAME bake-off as its cards (#122): one lane
+    // fan-out, one contact sheet, one checkpoint. It is a `Subject` like every
+    // card here — the only difference is which style `coverSubject` appended.
+    if (!publishedCovers.has(theme.name)) {
+      jobs.push({ theme: theme.name, card: coverSubject(theme) });
+    }
     for (const card of theme.cards) {
-      if (planned.has(cardKey(theme.name, card.name))) jobs.push({ theme: theme.name, card });
-      else alreadyPublished++;
+      if (planned.has(cardKey(theme.name, card.name))) {
+        jobs.push({ theme: theme.name, card: cardSubject(card) });
+      } else alreadyPublished++;
     }
   }
 
+  const coverJobs = jobs.filter((j) => j.card.name === COVER_SUBJECT_NAME).length;
   console.log(
-    `${jobs.length} new card(s) x ${lanes.length} provider(s) = ${jobs.length * lanes.length} image(s); ` +
+    `${jobs.length} new subject(s) (${jobs.length - coverJobs} card(s) + ${coverJobs} cover(s)) ` +
+      `x ${lanes.length} provider(s) = ${jobs.length * lanes.length} image(s); ` +
       `${alreadyPublished} already-published card(s) skipped.`,
   );
 
   const outcomes = await runBakeOff(jobs, lanes, {
     size: CARD_SIZE,
     retries: RETRIES,
-    buildPrompt: (card) => buildPrompt(card),
+    buildPrompt: (subject) => subject.prompt,
     isReviewed: (job, provider) => existsSync(reviewPath(job.theme, job.card, provider)),
     save: (job, provider, image) => {
       writeFileSync(reviewPath(job.theme, job.card, provider), image.bytes);
@@ -804,10 +896,10 @@ function loadProvenance(): ProvenanceFile {
  */
 function readSidecar(
   themeName: string,
-  card: NamedCard,
+  subject: Subject,
   provider: ImageProvider,
 ): ReviewSidecar | undefined {
-  const path = join(REVIEW_DIR, sidecarFileName(themeName, card, provider));
+  const path = join(REVIEW_DIR, sidecarFileName(themeName, subject, provider));
   if (!existsSync(path)) return undefined;
   // Missing a record is a cost; failing to publish a reviewed card over a
   // malformed file in scratch would not be. `parseSidecar` swallows both.
