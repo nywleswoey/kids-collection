@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { ME, bandCopy, type Receiver } from "@/features/trade/band-copy";
+import { ME, bandCopy, type BandCopy, type Receiver } from "@/features/trade/band-copy";
 import type { SwapTier } from "@/features/trade/board";
 
 const ANA: Receiver = { kind: "friend", name: "Ana" };
@@ -8,6 +8,34 @@ const ANA: Receiver = { kind: "friend", name: "Ana" };
 const FRIEND_CALLED_YOU: Receiver = { kind: "friend", name: "You" };
 
 const TIERS: SwapTier[] = ["new", "one-away", "rest"];
+
+/**
+ * The pair each tier says, spelled out here independently of the module: the
+ * heading counts a band and the phrase names one card, so `rest` differs by its
+ * number and every other tier is the same words behind a glyph. Written as a
+ * whole expected pair rather than derived from the heading by a suffix rewrite,
+ * because any such rewrite would run over the generated name too — a friend
+ * called "these" would fail the property against correct code.
+ */
+function expectedCopy(tier: SwapTier, receiver: Receiver): BandCopy {
+  const who = receiver.kind === "friend" ? receiver.name : "you";
+  switch (tier) {
+    case "new":
+      return {
+        heading: `${receiver.kind === "friend" ? "🎁" : "🆕"} New for ${who}`,
+        phrase: `new for ${who}`,
+      };
+    case "one-away":
+      return {
+        heading: `🔥 One more and ${who} can burn it`,
+        phrase: `one more and ${who} can burn it`,
+      };
+    case "rest":
+      return receiver.kind === "friend"
+        ? { heading: `${who} already has these`, phrase: `${who} already has this` }
+        : { heading: "You already have these", phrase: "you already have this" };
+  }
+}
 
 describe("bandCopy (#110 — the sentence a band says)", () => {
   it("says exactly what the board says today", () => {
@@ -32,12 +60,9 @@ describe("bandCopy (#110 — the sentence a band says)", () => {
     fc.assert(
       fc.property(fc.constantFrom(...TIERS), fc.string({ minLength: 1 }), (tier, name) => {
         for (const receiver of [{ kind: "friend", name } as Receiver, ME]) {
-          const { heading, phrase } = bandCopy(tier, receiver);
-          expect(phrase).not.toBe("");
-          // The heading counts a band and the phrase names one card, so `rest`
-          // differs by its number alone — every other tier is the same words.
-          const singular = heading.toLowerCase().replace(/these$/, "this");
-          expect(singular.endsWith(phrase.toLowerCase())).toBe(true);
+          const copy = bandCopy(tier, receiver);
+          expect(copy.phrase).not.toBe("");
+          expect(copy).toEqual(expectedCopy(tier, receiver));
         }
       }),
     );

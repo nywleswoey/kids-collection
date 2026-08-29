@@ -374,7 +374,7 @@ function Tile({
       onClick={onPick}
       disabled={!pickable}
       aria-pressed={selected}
-      aria-label={`${entry.card.name}, ${meta.label}${phrase ? `, ${phrase}` : ""}`}
+      aria-label={`${entry.card.name}, ${meta.label}, ${phrase}`}
       data-testid={`trade-${testid}-${entry.card.id}`}
       className={`relative overflow-hidden rounded-xl border-2 bg-white/10 transition ${
         selected ? "ring-4 ring-[color:var(--brand-1)]" : ""

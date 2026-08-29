@@ -31,6 +31,11 @@ const tcardArb = fc
 const inventoryArb = fc.array(tcardArb, { maxLength: 15 });
 const ownedArb = fc.array(fc.string({ minLength: 1 }), { maxLength: 20 }).map((ids) => new Set(ids));
 
+const boardCardArb = fc
+  .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
+  .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
+const columnArb = fc.array(boardCardArb, { maxLength: 20 });
+
 describe("buildColumns (Inc22 FR4 — badge only what's new to the other side)", () => {
   it("newToOther is exactly the complement of the other party's owned set", () => {
     fc.assert(
@@ -257,11 +262,6 @@ describe("tiers (#109 — mirrored, receiver-valued)", () => {
 });
 
 describe("orderByValue (#109 — best swap first, and it never moves under a thumb)", () => {
-  const boardCardArb = fc
-    .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
-    .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
-  const columnArb = fc.array(boardCardArb, { maxLength: 20 });
-
   it("is a permutation — nothing added, nothing lost", () => {
     fc.assert(
       fc.property(columnArb, (cards) => {
@@ -314,11 +314,6 @@ describe("orderByValue (#109 — best swap first, and it never moves under a thu
 });
 
 describe("bandsByTier (#110 — the tier is said once above a band, not on every tile)", () => {
-  const boardCardArb = fc
-    .tuple(tcardArb, fc.constantFrom<SwapTier>("new", "one-away", "rest"))
-    .map(([t, tier]) => ({ ...t, tier, newToOther: tier === "new" }) satisfies BoardCard);
-  const columnArb = fc.array(boardCardArb, { maxLength: 20 });
-
   it("reading the bands top to bottom is exactly the ordered column", () => {
     // The whole point of the shape: the bands make #109's order LEGIBLE, so
     // they must never re-do it. If this ever fails, a child's best swap has
