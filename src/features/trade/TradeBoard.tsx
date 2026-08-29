@@ -13,7 +13,7 @@ import { playReward } from "@/features/sound/sfx";
 import { getTradeBoardAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
 import { bandsByTier, buildColumns, isPickable, type BoardCard } from "./board";
-import { ME, bandCopy, type Receiver } from "./band-copy";
+import { ME, bandCopy, tileLabel, type Receiver } from "./band-copy";
 
 export type FriendSummary = {
   id: string;
@@ -290,7 +290,7 @@ function Column({
                   receiver={receiver}
                   testid={testid}
                   selected={selectedId === c.card.id}
-                  pickable={isPickable(c.card, otherPick)}
+                  otherPick={otherPick}
                   onPick={() => onPick(c)}
                 />
               ))}
@@ -302,33 +302,44 @@ function Column({
   );
 }
 
-/** A card tile. Carries no tier badge since #110 — the band heading above it
- *  says the tier, in a sentence, once. Mismatched rarities are dimmed but stay
- *  visible (FR6). */
+/**
+ * A card tile. Carries no tier badge since #110 — the band heading above it
+ * says the tier, in a sentence, once. Mismatched rarities are dimmed but stay
+ * visible (FR6), and stay REACHABLE (#111): the lock is `aria-disabled`, not
+ * `disabled`, because a `disabled` button leaves the tab order entirely, so a
+ * child driving the board by keyboard or screen reader met the locked half of
+ * a column as silence — no tile, and no reason. Dimmed-but-focusable puts the
+ * rule where it can be heard, which is the point of dimming rather than
+ * removing in the first place. The click has to be guarded by hand in
+ * exchange, since `aria-disabled` is a claim to assistive tech and not a
+ * behaviour the browser enforces.
+ */
 function Tile({
   entry,
   receiver,
   testid,
   selected,
-  pickable,
+  otherPick,
   onPick,
 }: {
   entry: BoardCard;
   receiver: Receiver;
   testid: string;
   selected: boolean;
-  pickable: boolean;
+  otherPick: CardType | null;
   onPick: () => void;
 }) {
   const meta = RARITY_META[entry.card.rarity];
-  const { phrase } = bandCopy(entry.tier, receiver);
+  const pickable = isPickable(entry.card, otherPick);
   return (
     <button
       type="button"
-      onClick={onPick}
-      disabled={!pickable}
+      onClick={() => {
+        if (pickable) onPick();
+      }}
+      aria-disabled={!pickable}
       aria-pressed={selected}
-      aria-label={`${entry.card.name}, ${meta.label}, ${phrase}`}
+      aria-label={tileLabel(entry, receiver, otherPick)}
       data-testid={`trade-${testid}-${entry.card.id}`}
       className={`relative overflow-hidden rounded-xl border-2 bg-white/10 transition ${
         selected ? "ring-4 ring-[color:var(--brand-1)]" : ""
