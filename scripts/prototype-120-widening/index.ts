@@ -111,10 +111,27 @@
  * error bar on every marginal call in #115 and #116, and on this run's own.
  * That is worth knowing before #118 authors thirty subjects against it.
  *
+ * ── The retry pass, added after the repeat probe ────────────────────────────
+ * Four arms failed in ways that could be either the subject or the draw, and
+ * the repeat probe had just shown those are not distinguishable from one
+ * sample. Ruling them on one roll each, straight after proving one roll is a
+ * lottery, would be exactly the mistake this run uncovered. So each gets two
+ * more images:
+ *
+ *   -b     the SAME prompt, drawn again. Was it the draw?
+ *   -fix   the prompt repaired for the specific failure seen. Was it fixable?
+ *
+ * The two are separate on purpose. If `-b` recovers, the arm was never broken
+ * and no wording change is owed. If only `-fix` recovers, the family is usable
+ * but costs a wording rule that #118 has to carry into every subject of it. If
+ * neither recovers, the family is out on two independent samples rather than
+ * one — which is the standard #115's marginal calls did not meet.
+ *
  * `seed/cards.json` is not touched and nothing is published.
  *
  *   pnpm prototype:120                draw everything; resumes, so an interrupt is cheap
  *   pnpm prototype:120 --repeat       draw the repeat probe (3x the same prompt)
+ *   pnpm prototype:120 --retry        draw the retry pass only
  *   pnpm prototype:120 --sheet        rebuild the contact sheet from disk, draw nothing
  *
  * Output (gitignored scratch): seed/review/prototype-120/
@@ -168,13 +185,15 @@ const SUBJECTS: readonly Subject[] = [
     slug: "control-bar",
     family: "bar (control)",
     kind: "control",
-    prompt: "a single shiny silver metal bar with flat sides and rounded corners, lying on green grass",
+    prompt:
+      "a single shiny silver metal bar with flat sides and rounded corners, lying on green grass",
   },
   {
     slug: "control-crystal",
     family: "crystal (control)",
     kind: "control",
-    prompt: "a single rainbow-coloured bismuth crystal with square stepped edges, on green grass",
+    prompt:
+      "a single rainbow-coloured bismuth crystal with square stepped edges, on green grass",
   },
 
   // ── The candidates ────────────────────────────────────────────────────────
@@ -226,7 +245,8 @@ const SUBJECTS: readonly Subject[] = [
     family: "ore in rock (re-run)",
     kind: "arm",
     vs: "lump",
-    prompt: "a single chunk of grey rock with bright green malachite crystals growing on it, on green grass",
+    prompt:
+      "a single chunk of grey rock with bright green malachite crystals growing on it, on green grass",
   },
   {
     slug: "pour-puddle",
@@ -249,6 +269,59 @@ const SUBJECTS: readonly Subject[] = [
     kind: "arm",
     prompt:
       "the inside of a rocky cave with tall pointed pale purple crystals growing out of its floor and walls",
+  },
+] as const;
+
+/**
+ * The retry pass. `of` names the arm being retried; `fix` is empty for a
+ * straight second sample and carries the repaired wording otherwise.
+ */
+type Retry = { slug: string; of: string; why: string; fix?: string };
+
+const RETRIES: readonly Retry[] = [
+  // slab drew an extreme close-up of banding with no object boundary at all —
+  // a texture, not a card. The repair names the whole object and its edge.
+  { slug: "slab-b", of: "slab", why: "same prompt, second sample" },
+  {
+    slug: "slab-fix",
+    of: "slab",
+    why: "whole object and its edge named, viewpoint given",
+    fix: "a single round polished agate slab lying flat on green grass seen from above, its whole rounded edge visible, wavy orange and white bands across its smooth face",
+  },
+  // cluster scattered crystals across the whole frame instead of putting one
+  // group on one rock. The repair moves the singular noun onto the ROCK and
+  // demotes the crystals to a feature of it.
+  { slug: "cluster-b", of: "cluster", why: "same prompt, second sample" },
+  {
+    slug: "cluster-fix",
+    of: "cluster",
+    why: "the singular noun moved onto the rock; crystals demoted to a feature",
+    fix: "a single grey rock with a group of tall pointed purple amethyst crystals growing out of the top of it, on green grass",
+  },
+  // ore failed the same way as in #115 even WITH "a single chunk of", and lost
+  // its malachite entirely. Second sample, then the same rock-as-subject repair
+  // — if that is what it takes, "chunk of" is the wrong head noun, not the
+  // wrong quantifier.
+  { slug: "ore-b", of: "ore", why: "same prompt, second sample" },
+  {
+    slug: "ore-fix",
+    of: "ore",
+    why: '"chunk of rock" replaced by a boulder — a head noun that is singular by nature',
+    fix: "a single grey boulder with bright green malachite crystals growing on its surface, on green grass",
+  },
+  // pour-puddle kept its shape but lost its identity — it read as ice or pale
+  // stone, not metal. The repair puts the shine back, which is also #115's
+  // "no colour and no texture" rule applied to a silver subject.
+  {
+    slug: "pour-puddle-b",
+    of: "pour-puddle",
+    why: "same prompt, second sample",
+  },
+  {
+    slug: "pour-puddle-fix",
+    of: "pour-puddle",
+    why: "shine named, so silver reads as metal rather than ice",
+    fix: "a single blob of hardened silver metal with a shiny mirror surface and rippled frozen edges, on green grass",
   },
 ] as const;
 
@@ -286,8 +359,11 @@ async function draw(s: Subject): Promise<void> {
   }
   const bytes = new Uint8Array(await res.arrayBuffer());
   writeFileSync(file, bytes);
-  const flag = bytes.byteLength < BLANK_BYTES ? "  <-- SUSPECT BLANK, re-roll (#115)" : "";
-  console.log(`ok    ${s.slug.padEnd(16)} ${String(bytes.byteLength).padStart(8)}B${flag}`);
+  const flag =
+    bytes.byteLength < BLANK_BYTES ? "  <-- SUSPECT BLANK, re-roll (#115)" : "";
+  console.log(
+    `ok    ${s.slug.padEnd(16)} ${String(bytes.byteLength).padStart(8)}B${flag}`,
+  );
 }
 
 // ── The contact sheet ───────────────────────────────────────────────────────
@@ -322,10 +398,16 @@ function sheet(): void {
   // accused of being. This is the view the three controls exist for: "new
   // silhouette" is not a judgement you can make in the abstract, only against
   // the shape the theme already has.
-  const pairs = SUBJECTS.filter((s) => s.kind === "arm" && s.vs && s.vs !== "cut gem")
+  const pairs = SUBJECTS.filter(
+    (s) => s.kind === "arm" && s.vs && s.vs !== "cut gem",
+  )
     .map((s) => {
-      const ctrl = SUBJECTS.find((c) => c.kind === "control" && c.family.startsWith(s.vs ?? ""));
-      const left = ctrl ? img(ctrl.slug, `${ctrl.family} — what it might already be`) : "";
+      const ctrl = SUBJECTS.find(
+        (c) => c.kind === "control" && c.family.startsWith(s.vs ?? ""),
+      );
+      const left = ctrl
+        ? img(ctrl.slug, `${ctrl.family} — what it might already be`)
+        : "";
       return `<div class=pair><div class=strip>${left}${img(s.slug, s.family)}</div>
         <div class=pr>${esc(s.prompt)}</div></div>`;
     })
@@ -354,6 +436,25 @@ function sheet(): void {
       ? `<figure><img src="${esc(slug)}.png" loading="lazy"><figcaption>${esc(cap)}</figcaption></figure>`
       : `<figure class="miss">—<figcaption>${esc(cap)}</figcaption></figure>`;
   const repeats = `<div class=strip>${repeatFig(REPEAT_OF, "draw 1")}${repeatFig("repeat-2", "draw 2")}${repeatFig("repeat-3", "draw 3")}</div>`;
+
+  // VIEW 6 — the retry pass. One row per failed arm: the original, a second
+  // sample of the same words, and the repaired wording. Reading left to right
+  // says which of the three explanations the failure had.
+  const retried = [...new Set(RETRIES.map((r) => r.of))]
+    .map((of) => {
+      const base = bySlug.get(of);
+      const cells = [img(of, "original")]
+        .concat(
+          RETRIES.filter((r) => r.of === of).map((r) =>
+            repeatFig(r.slug, r.fix ? `fix — ${r.why}` : r.why),
+          ),
+        )
+        .join("");
+      const fix = RETRIES.find((r) => r.of === of && r.fix);
+      return `<h3>${esc(base?.family ?? of)}</h3><div class=strip>${cells}</div>
+        ${fix ? `<div class=pr>${esc(fix.fix ?? "")}</div>` : ""}`;
+    })
+    .join("");
 
   const html = `<!doctype html><meta charset=utf-8><title>#120 — does widening buy silhouettes or colours?</title>
 <style>
@@ -412,11 +513,27 @@ not about the lane but about the <b>method</b>. #115 and #116 each drew one samp
 that &ldquo;twenty sets only answer more slowly&rdquo;. That holds only if a subject has one look. If these
 three disagree, a one-sample verdict cannot separate <em>this subject draws badly</em> from <em>this draw
 was bad</em> — and every marginal call above, and in #115 and #116, carries an error bar.</p>
-${repeats}`;
+${repeats}
+
+<h2>6 — The retry pass: the subject, the draw, or the wording?</h2>
+<p class=q>Four arms failed in ways one sample cannot explain. Each row is the original, then the
+<b>same prompt drawn again</b>, then the <b>wording repaired</b> for the specific failure. If the second
+sample recovers, the arm was never broken. If only the repair recovers, the family is usable but costs a
+wording rule #118 must carry into every subject of it. If neither recovers, the family is out on two
+independent samples — the standard the marginal calls in #115 were not held to.</p>
+${retried}`;
 
   const out = join(OUT_DIR, "sheet.html");
   writeFileSync(out, html);
   console.log(`sheet ${out}`);
+}
+
+async function drawRetries(): Promise<void> {
+  for (const r of RETRIES) {
+    const base = bySlug.get(r.of);
+    if (!base) continue;
+    await draw({ ...base, slug: r.slug, prompt: r.fix ?? base.prompt });
+  }
 }
 
 async function drawRepeats(): Promise<void> {
@@ -433,8 +550,13 @@ async function main(): Promise<void> {
     await drawRepeats();
     return sheet();
   }
+  if (argv.includes("--retry")) {
+    await drawRetries();
+    return sheet();
+  }
   for (const s of SUBJECTS) await draw(s);
   await drawRepeats();
+  await drawRetries();
   sheet();
 }
 
