@@ -152,7 +152,7 @@ describe("tileLabel (#111 — a dimmed tile still says why)", () => {
         const lockSuffix = otherPick === null ? null : `, needs a ${RARITY_META[otherPick.rarity].label} to swap`;
         expect(lockSuffix !== null && label.endsWith(lockSuffix)).toBe(locked);
         if (locked) {
-          expect(label).toContain(`needs a ${RARITY_META[otherPick!.rarity].label} to swap`);
+          expect(label.endsWith(lockSuffix!)).toBe(true);
         }
       }),
     );
