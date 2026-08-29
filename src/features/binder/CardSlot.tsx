@@ -3,6 +3,7 @@ import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/features/card/RarityThumb";
 import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
 import { raritySlotClass } from "./rarity-slot";
+import { cardHref, type Place } from "./binder-place";
 import "./rarity-slot.css";
 
 /** Owned card thumbnail (tappable → detail) or a locked silhouette.
@@ -19,9 +20,13 @@ import "./rarity-slot.css";
 export function CardSlot({
   entry,
   admin = false,
+  from,
 }: {
   entry: BinderCard;
   admin?: boolean;
+  /** The place this slot was tapped from, so card detail can send the child
+   *  back there rather than to the hub (#108). */
+  from?: Place;
 }) {
   if (!entry.owned) {
     // Locked stays neutral — no rarity hint (U5-Q5) — but shows the name (U6-FR1).
@@ -47,7 +52,7 @@ export function CardSlot({
 
   return (
     <Link
-      href={`/play/binder/${entry.card.id}`}
+      href={from ? cardHref(entry.card.id, from) : `/play/binder/${entry.card.id}`}
       data-testid={`card-slot-${entry.card.id}`}
       className={`slot-pop block ${raritySlotClass(entry.card.rarity)}`}
     >

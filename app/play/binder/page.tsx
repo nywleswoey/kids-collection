@@ -2,16 +2,27 @@ import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { binderService } from "@/features/binder/service.prod";
 import { GalaxyView } from "@/features/binder/GalaxyView";
+import { parsePlace } from "@/features/binder/binder-place";
 import { rewardService } from "@/features/rewards/service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
-export default async function BinderPage() {
+export default async function BinderPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ at?: string | string[] }>;
+}) {
   const child = await requireActivePlayer();
 
-  const [binder, pendingRewards] = await Promise.all([
+  const [{ at }, binder, pendingRewards] = await Promise.all([
+    searchParams,
     binderService.getBinder(child.id),
     rewardService.getPendingRewards(child.id),
   ]);
+
+  // Which place the child is in (#108). Resolved server-side so a refresh, a
+  // deep link, or the way back from a card lands where it should; from there
+  // GalaxyView moves between places with history.pushState, no round trip.
+  const place = parsePlace(at, binder.themes);
 
   return (
     <main
@@ -65,7 +76,7 @@ export default async function BinderPage() {
           </Link>
         </div>
       ) : (
-        <GalaxyView sections={binder.themes} />
+        <GalaxyView sections={binder.themes} initialPlace={place} />
       )}
     </main>
   );
