@@ -139,6 +139,7 @@ const subjectVerbAgreement: QuizQuestion[] = [
   mc("sv-16", "The students ___ hard for the exam.", "study", ["studies", "studying", "is study"]),
 ];
 
+/** Map of grammar topic IDs to their question banks. */
 export const GRAMMAR_BANKS: Record<string, QuizQuestion[]> = {
   "verb-tenses": verbTenses,
   "pronouns-vs-proper-nouns": pronounsProperNouns,
@@ -148,6 +149,7 @@ export const GRAMMAR_BANKS: Record<string, QuizQuestion[]> = {
   "subject-verb-agreement": subjectVerbAgreement,
 };
 
+/** True if the given topic ID is a grammar topic with a question bank. */
 export function isGrammarTopic(topicId: string): boolean {
   return topicId in GRAMMAR_BANKS;
 }

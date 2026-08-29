@@ -30,6 +30,11 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
   `docs/DATA-PRESERVATION-0009.md`.
 - **Collection** — a child's owned cards, one row per `(child, card)` with a `count`
   (`collections` table, `CHECK(count >= 1)`).
+- **Place** — where the binder is: the category picker (the hub), one category, or the
+  burn pile (#107, #108). The three are mutually exclusive, so a place is one value
+  rather than a category selection plus a mode flag, and it lives in the URL as `?at=`
+  so a tapped card can come back to it. Rarity is deliberately **not** a place — it is
+  a lens applied inside one and resets on entry (`src/features/binder/binder-place.ts`).
 - **Pull** — spending a token to draw a rarity-weighted card. May branch into an
   **easter egg**: a signed pick-1-of-N **offer** the child claims later.
 - **Ticket** — a spendable column on `children`: normal `pullTokens`, special egg
@@ -37,6 +42,11 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
 - **Sacrifice** — burn N copies of a card for a rarity-pick ticket (same tier or one
   up, 50/50).
 - **Trade** — atomic two-sided duplicate swap between two children.
+- **Swap tier** — what a trade is worth to whoever **receives** the card, and how both
+  swap-board columns are ordered (#109): **new** (they own none) → **one-away** (they
+  hold `SACRIFICE_MIN - 1`, so this copy makes it burnable) → **rest**. Mirrored — each
+  column is tiered against the *other* party's shelf. Never about acquisition recency:
+  `collections` has no timestamp.
 - **Offer** — an HMAC-signed, expiring token pinning the exact cards/rarity the server
   chose, so a claim can't be swapped for an un-offered card (pull eggs, quiz answers).
 - **Gate** — the admin passcode gate; issues a short-lived signed cookie.

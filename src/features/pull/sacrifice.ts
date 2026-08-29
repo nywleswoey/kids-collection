@@ -15,9 +15,9 @@ export const SACRIFICE_COST = 3;
  * copies is never allowed to take your last one — `pull-service` enforces that
  * with `removeCard(childId, cardId, SACRIFICE_COST, SACRIFICE_COST + 1)`, so a
  * holding of exactly SACRIFICE_COST can't be burned. Every surface that offers
- * or advertises a sacrifice gates on THIS constant, so the card detail page and
- * the galaxy's burn filter are the same expression rather than two that happen
- * to agree (Inc22 D4).
+ * or advertises a sacrifice gates on THIS constant, so the card detail page, the
+ * galaxy's burn pile and the swap board's `one-away` tier (`trade/board.ts`) are
+ * one expression rather than several that happen to agree (Inc22 D4).
  */
 export const SACRIFICE_MIN = SACRIFICE_COST + 1;
 

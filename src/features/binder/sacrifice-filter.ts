@@ -16,10 +16,12 @@ export function canSacrifice(entry: BinderCard): boolean {
 }
 
 /**
- * Every burnable card across ALL sections. Global by design (FR11): it ignores
- * the category and rarity chips so "show me everything I can burn" is always
- * the complete answer, never a filtered subset the child could misread as all
- * they have.
+ * Every burnable card across ALL sections. Global by design (FR11): it spans
+ * every category and ignores the rarity row, so "show me everything I can burn"
+ * is always the complete answer, never a filtered subset the child could misread
+ * as all they have. Since #108 the burn pile is its own place on the binder hub
+ * rather than a mode over the category you happen to be in, which is what makes
+ * that global count honest about where the child is.
  */
 export function sacrificeReady(sections: ThemeSection[]): BinderCard[] {
   return sections.flatMap((section) => section.cards.filter(canSacrifice));

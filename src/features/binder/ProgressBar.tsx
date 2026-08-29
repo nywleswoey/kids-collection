@@ -21,7 +21,9 @@ export function ProgressBar({
       <span className="text-sm font-bold tabular-nums text-[color:var(--ink-soft)]">
         {owned} / {total}
       </span>
-      {complete ? <span aria-label="complete">✅</span> : null}
+      {/* Same 🏆 the picker tile and the reward modal use, so "this set is
+          finished" is one symbol the child learns once rather than three. */}
+      {complete ? <span aria-label="Set complete">🏆</span> : null}
     </div>
   );
 }

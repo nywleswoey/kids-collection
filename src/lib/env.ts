@@ -10,6 +10,7 @@ function required(name: string): string {
   return value;
 }
 
+/** Server-only environment variables with validation. */
 export const env = {
   get databaseUrl(): string {
     return required("DATABASE_URL");

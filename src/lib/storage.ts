@@ -20,6 +20,7 @@ function resolveStorage(kind: StorageKind): Storage | null {
   }
 }
 
+/** Get a value from storage; returns null if unavailable or blocked. */
 export function storageGet(kind: StorageKind, key: string): string | null {
   const store = resolveStorage(kind);
   if (!store) return null;
@@ -30,6 +31,7 @@ export function storageGet(kind: StorageKind, key: string): string | null {
   }
 }
 
+/** Set a value in storage; silently fails if unavailable or blocked. */
 export function storageSet(kind: StorageKind, key: string, value: string): void {
   const store = resolveStorage(kind);
   if (!store) return;

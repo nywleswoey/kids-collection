@@ -3,6 +3,7 @@ import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/features/card/RarityThumb";
 import { SACRIFICE_COST, SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import { raritySlotClass } from "./rarity-slot";
+import { BURN, cardHref } from "./binder-place";
 import "./rarity-slot.css";
 
 /**
@@ -10,6 +11,11 @@ import "./rarity-slot.css";
  * headers — burnable piles are rare, so grouping them by category is noise.
  * Each tile deep-links to the card detail page, which is where the sacrifice
  * actually happens (SacrificePanel), so this view is a finder, not an action.
+ *
+ * #108: the tiles carry `?from=burn`, because this screen is a loop — burn one,
+ * come back, burn the next — and before that the way back landed on the hub,
+ * two taps from the pile the child was working through. The heading moved to
+ * the sticky place bar above, which names the pile and counts it.
  */
 export function SacrificeGrid({ cards }: { cards: BinderCard[] }) {
   if (cards.length === 0) {
@@ -32,7 +38,6 @@ export function SacrificeGrid({ cards }: { cards: BinderCard[] }) {
 
   return (
     <section data-testid="sacrifice-grid" className="panel flex flex-col gap-4 p-5">
-      <h2 className="text-xl font-bold">🔥 Ready to sacrifice</h2>
       <p className="text-sm text-[color:var(--ink-soft)]">
         Tap a card to burn {SACRIFICE_COST} copies for an Easter Egg ticket 🥚 — you always keep 1.
       </p>
@@ -40,7 +45,7 @@ export function SacrificeGrid({ cards }: { cards: BinderCard[] }) {
         {cards.map((entry) => (
           <Link
             key={entry.card.id}
-            href={`/play/binder/${entry.card.id}`}
+            href={cardHref(entry.card.id, BURN)}
             data-testid={`sacrifice-card-${entry.card.id}`}
             className={`slot-pop relative block ${raritySlotClass(entry.card.rarity)}`}
           >

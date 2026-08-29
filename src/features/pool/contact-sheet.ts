@@ -198,6 +198,7 @@ export function planContactSheet(
   };
 }
 
+/** Render a contact sheet as markdown for the bake-off review comment. */
 export function renderContactSheet(sheet: ContactSheet): string {
   const cols = sheet.providerIds.length;
   const banner = [

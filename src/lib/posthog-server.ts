@@ -2,6 +2,10 @@ import { PostHog } from "posthog-node";
 
 let posthogClient: PostHog | null = null;
 
+/**
+ * Get or initialize the server-side PostHog client. Returns null if the
+ * project token is not configured, logging an error in development only.
+ */
 export function getPostHogClient(): PostHog | null {
   const key = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
 
