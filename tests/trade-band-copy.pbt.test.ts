@@ -32,7 +32,12 @@ function expectedCopy(tier: SwapTier, receiver: Receiver): BandCopy {
       };
     case "rest":
       return receiver.kind === "friend"
-        ? { heading: `${who} already has these`, phrase: `${who} already has this` }
+        ? receiver.name === "You"
+          ? {
+              heading: "Your friend named You already has these",
+              phrase: "your friend named You already has this",
+            }
+          : { heading: `${who} already has these`, phrase: `${who} already has this` }
         : { heading: "You already have these", phrase: "you already have this" };
   }
 }
@@ -75,7 +80,9 @@ describe("bandCopy (#110 — the sentence a band says)", () => {
     for (const tier of TIERS) {
       expect(bandCopy(tier, FRIEND_CALLED_YOU)).not.toEqual(bandCopy(tier, ME));
     }
-    expect(bandCopy("rest", FRIEND_CALLED_YOU).heading).toBe("You already has these");
+    expect(bandCopy("rest", FRIEND_CALLED_YOU).heading).toBe(
+      "Your friend named You already has these",
+    );
     expect(bandCopy("rest", ME).heading).toBe("You already have these");
     expect(bandCopy("new", FRIEND_CALLED_YOU).heading).toBe("🎁 New for You");
     expect(bandCopy("new", ME).heading).toBe("🆕 New for you");

@@ -51,7 +51,12 @@ export function bandCopy(tier: SwapTier, receiver: Receiver): BandCopy {
       // has to agree with the person — which is why it can't go through
       // `said`, and why heading and phrase are spelled out as a pair.
       return receiver.kind === "friend"
-        ? { heading: `${who} already has these`, phrase: `${who} already has this` }
+        ? receiver.name === "You"
+          ? {
+              heading: "Your friend named You already has these",
+              phrase: "your friend named You already has this",
+            }
+          : { heading: `${who} already has these`, phrase: `${who} already has this` }
         : { heading: "You already have these", phrase: "you already have this" };
   }
 }
