@@ -223,6 +223,74 @@ export function planContactSheet(
 }
 
 /** Render a contact sheet as markdown for the bake-off review comment. */
+/**
+ * One sheet of COVERS across many themes (#122) — the backfill's checkpoint 2.
+ *
+ * `planContactSheet` is per-theme, which is right for a new theme: 31 rows, all
+ * of them freshly generated. It is wrong for filling in covers for themes that
+ * already shipped, where it renders 30 blank rows for published cards it cannot
+ * know are published, and buries the one row that matters. Sixteen of those is
+ * not a checkpoint anyone can actually read.
+ *
+ * So the covers get one page: one row per theme, one column per provider, which
+ * is also the only way to see the thing that most needs seeing here — whether
+ * sixteen covers read as sixteen DIFFERENT places. A cover judged alone can look
+ * fine and still be the third grassy hilltop in the grid.
+ *
+ * Same `ContactSheet` shape, so `renderContactSheet` is untouched: `name` is the
+ * theme, `rarity` is the literal subject name, and `eduText` carries the
+ * authored prompt so a human can see the words each picture answers.
+ *
+ * Orphans are not computed. Detection is per-theme-prefix and this sheet spans
+ * every theme, so every theme's files would claim every other's; the per-theme
+ * sheet remains the place that question is asked.
+ */
+export function planCoverSheet(
+  themes: readonly SheetTheme[],
+  providers: readonly SheetProvider[],
+  deps: SheetDeps,
+): ContactSheet {
+  let missing = 0;
+  let unpicked = 0;
+
+  const rows: SheetRow[] = themes.map((theme) => {
+    const resolved = theme.provider;
+    if (resolved === undefined) unpicked++;
+    const subject = coverSubject(theme);
+
+    return {
+      name: theme.name,
+      rarity: COVER_SUBJECT_NAME.toLowerCase(),
+      eduText: theme.coverPrompt,
+      resolvedProvider: resolved,
+      candidates: providers.map((provider): SheetCandidate => {
+        const fileName = reviewFileName(theme.name, subject, provider);
+        const present = deps.exists(fileName);
+        if (!present && provider.role === "lane") missing++;
+        return {
+          providerId: provider.id,
+          fileName,
+          present,
+          model: present
+            ? deps.readSidecar(fileName.replace(/\.[^.]+$/, ".json"))?.model
+            : undefined,
+          isPick: provider.id === resolved,
+        };
+      }),
+    };
+  });
+
+  return {
+    theme: `${themes.length} theme cover(s)`,
+    providerIds: providers.map((p) => p.id),
+    escapeHatchIds: providers.filter((p) => p.role === "escape-hatch").map((p) => p.id),
+    rows,
+    missing,
+    unpicked,
+    orphans: [],
+  };
+}
+
 export function renderContactSheet(sheet: ContactSheet): string {
   const cols = sheet.providerIds.length;
   const banner = [

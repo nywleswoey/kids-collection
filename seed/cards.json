@@ -3,6 +3,7 @@
     {
       "name": "Animals",
       "coverPrompt": "a sunlit forest clearing with a winding stream, tall grass and wildflowers",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Red Fox",
@@ -219,6 +220,7 @@
     {
       "name": "Mythic Creatures",
       "coverPrompt": "a misty mountain valley with an ancient mossy stone archway and a winding path",
+      "provider": "pollinations",
       "cards": [
         {
           "name": "Griffin",
@@ -435,6 +437,7 @@
     {
       "name": "Dinosaurs",
       "coverPrompt": "a wide prehistoric valley of tall leafy plants and steaming hills under a warm orange sky",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Triceratops",
@@ -651,6 +654,7 @@
     {
       "name": "Superheroes",
       "coverPrompt": "a bright city of tall towers at sunrise seen from an empty rooftop",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Captain Kindness",
@@ -867,6 +871,7 @@
     {
       "name": "Country",
       "coverPrompt": "a winding road through green hills with signposts pointing many directions and colourful flags",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Eiffel Tower (France)",
@@ -1083,6 +1088,7 @@
     {
       "name": "Famous People",
       "coverPrompt": "a warm library reading room with tall bookshelves, a wooden ladder and an open notebook on a desk",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Albert Einstein",
@@ -1299,6 +1305,7 @@
     {
       "name": "Weird Insects",
       "coverPrompt": "a close-up garden floor of mossy stones, dewy clover and curled bark",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Ladybug",
@@ -1515,6 +1522,7 @@
     {
       "name": "Special Plants",
       "coverPrompt": "a bright greenhouse with glass panes, clay pots on wooden benches and hanging watering cans",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Venus Flytrap",
@@ -1731,6 +1739,7 @@
     {
       "name": "Spooky Legends",
       "coverPrompt": "a friendly moonlit path winding between crooked fences and bare twisted trees under purple fog",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Ghost",
@@ -1947,6 +1956,7 @@
     {
       "name": "Deep Sea Creatures",
       "coverPrompt": "a deep ocean trench with shafts of blue light and glowing coral ridges",
+      "provider": "pollinations",
       "cards": [
         {
           "name": "Anglerfish",
@@ -2162,7 +2172,8 @@
     },
     {
       "name": "Flying Machines",
-      "coverPrompt": "a grassy airfield at golden hour with a windsock, runway markings and open sky",
+      "coverPrompt": "a wide runway curving across a grassy airfield at golden hour, with marker lights and open sky",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Hot Air Balloon",
@@ -2379,6 +2390,7 @@
     {
       "name": "Ocean Machines",
       "coverPrompt": "a busy harbour dock with wooden piers, coiled ropes, buoys and calm water",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Sailboat",
@@ -2595,6 +2607,7 @@
     {
       "name": "Warriors",
       "coverPrompt": "a quiet stone fortress courtyard with hanging banners and worn flagstones",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Samurai",
@@ -3029,6 +3042,7 @@
     {
       "name": "Outer Space",
       "coverPrompt": "a rocket launch pad at dawn with tall gantry towers, drifting steam and an open sky",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "The Moon",
@@ -3245,12 +3259,12 @@
           "imagePrompt": "a broad glowing band of pale starlight arching across a dark blue night sky above low rolling green hills",
           "sourceUrl": "https://en.wikipedia.org/wiki/Milky_Way"
         }
-      ],
-      "provider": "cloudflare-sdxl"
+      ]
     },
     {
       "name": "Land Machines",
       "coverPrompt": "a sunny construction yard with sand piles, traffic cones and a wide open road",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Fire Engine",
@@ -3471,11 +3485,12 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Bagger_288",
           "provider": "pollinations"
         }
-      ],
-      "provider": "cloudflare-sdxl"
+      ]
     },
     {
       "name": "Rocks and Gems",
+      "coverPrompt": "a sunlit slope of loose grey pebbles and rounded boulders with tufts of dry grass, under a clear blue sky",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Diamond",
@@ -3690,11 +3705,12 @@
           "imagePrompt": "a single tall sea cliff standing at the edge of calm blue water under a clear sky, its rough face striped with level layers of cream and dark grey stone, seen from a distance so the whole cliff, the water below it and the sky above it are all in the picture",
           "sourceUrl": "https://en.wikipedia.org/wiki/Cliffed_coast"
         }
-      ],
-      "provider": "cloudflare-sdxl"
+      ]
     },
     {
       "name": "Trees",
+      "coverPrompt": "a view looking straight up into a sunlit green canopy with bright sky breaking through the leaves",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Cherry Blossom Tree",
@@ -3907,8 +3923,7 @@
           "imagePrompt": "a single short angsana branch with a few small green leaflets and two clusters of tiny bright yellow flowers, the bare brown branch clearly visible along its whole length, with plain blue sky all around it",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pterocarpus_indicus"
         }
-      ],
-      "provider": "cloudflare-sdxl"
+      ]
     }
   ]
 }

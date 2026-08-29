@@ -2,6 +2,7 @@
  * Build the review contact sheet for one theme — runbook Step 7, CHECKPOINT 2.
  *
  *   pnpm contact-sheet "Ocean Machines"
+ *   pnpm contact-sheet --covers        # every theme's cover, one page (#122)
  *
  * Writes seed/review/<theme-slug>-review.html: one row per subject, one column
  * per registered provider, the `--sync` pick outlined (#63's subject x provider
@@ -18,8 +19,13 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadSeed } from "@/features/pool/loader";
+import type { SeedFile } from "@/features/pool/seed-schema";
 import { slug } from "@/features/pool/keys";
-import { planContactSheet, renderContactSheet } from "@/features/pool/contact-sheet";
+import {
+  planContactSheet,
+  planCoverSheet,
+  renderContactSheet,
+} from "@/features/pool/contact-sheet";
 import { parseSidecar } from "@/features/pool/review-files";
 import { PROVIDERS } from "@/features/pool/providers";
 
@@ -31,6 +37,7 @@ function main() {
   if (!themeName) {
     console.error(
       `Usage: pnpm contact-sheet "<Theme Name>"\n` +
+        `       pnpm contact-sheet --covers\n` +
         `   The name must match seed/cards.json exactly.`,
     );
     process.exitCode = 1;
@@ -38,6 +45,12 @@ function main() {
   }
 
   const seed = loadSeed(SEED_PATH);
+
+  if (themeName === "--covers") {
+    coversSheet(seed.themes);
+    return;
+  }
+
   const theme = seed.themes.find((t) => t.name === themeName);
   if (!theme) {
     console.error(
@@ -107,6 +120,59 @@ function main() {
     console.warn(
       `⚠️  ${sheet.orphans.length} file(s) belong to no registered provider:\n` +
         sheet.orphans.map((f) => `   ${f}`).join("\n"),
+    );
+  }
+}
+
+/**
+ * Every theme's cover on ONE page (#122).
+ *
+ * The per-theme sheet is right for a new theme and wrong for backfilling covers
+ * onto themes that already shipped: it renders 30 blank rows for published cards
+ * and buries the row that matters. This is also the only view that answers the
+ * question the covers actually have to pass — whether they read as N DIFFERENT
+ * places. A cover judged alone can look fine and still be the third grassy
+ * hilltop in the grid.
+ */
+function coversSheet(themes: SeedFile["themes"]): void {
+  if (!existsSync(REVIEW_DIR)) {
+    console.error(`⛔ ${REVIEW_DIR} does not exist. Run \`pnpm seed --review\` first.`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const sheet = planCoverSheet(themes, PROVIDERS, {
+    exists: (f) => existsSync(join(REVIEW_DIR, f)),
+    readSidecar: (f) => {
+      try {
+        return parseSidecar(readFileSync(join(REVIEW_DIR, f), "utf8"));
+      } catch {
+        return undefined;
+      }
+    },
+    listFiles: () => readdirSync(REVIEW_DIR),
+  });
+
+  const out = join(REVIEW_DIR, "covers-review.html");
+  writeFileSync(out, renderContactSheet(sheet));
+
+  // Counted from the cells themselves, not as `cells - missing`. `missing`
+  // deliberately excludes an escape hatch's blanks (#71), so subtracting it
+  // reports every hatch column as full — 48 of 48 where 32 have an image.
+  const cells = sheet.rows.length * sheet.providerIds.length;
+  const present = sheet.rows.reduce(
+    (n, r) => n + r.candidates.filter((c) => c.present).length,
+    0,
+  );
+  console.log(
+    `→ ${out}\n` +
+      `   ${sheet.rows.length} cover(s) x ${sheet.providerIds.length} provider(s) ` +
+      `= ${cells} cell(s), ${present} with an image.`,
+  );
+  if (sheet.unpicked > 0) {
+    console.warn(
+      `⚠️  ${sheet.unpicked} theme(s) have no provider chosen. \`--sync\` will refuse\n` +
+        `   their covers until a \`provider\` is set on the theme — no cover, no publish.`,
     );
   }
 }

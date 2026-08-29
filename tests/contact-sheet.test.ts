@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   planContactSheet,
+  planCoverSheet,
   renderContactSheet,
   type SheetDeps,
   type SheetTheme,
@@ -105,6 +106,48 @@ describe("planContactSheet — the grid (#63)", () => {
       .find((r) => r.name === "Longbowman")!
       .candidates.find((c) => c.providerId === "pollinations")!;
     expect(cell.model).toBe("sana");
+  });
+});
+
+describe("planCoverSheet — every theme's cover on one page (#122)", () => {
+  const themes: SheetTheme[] = [
+    { name: "Warriors", provider: "pollinations", coverPrompt: "a stone courtyard", cards },
+    { name: "Ocean", provider: "cloudflare-sdxl", coverPrompt: "a harbour dock", cards },
+  ];
+  const coverFiles = (ts: SheetTheme[]) =>
+    ts.flatMap((t) => PROVIDERS.map((p) => reviewFileName(t.name, coverSubject(t), p)));
+
+  it("is one row per theme and no card rows at all", () => {
+    const sheet = planCoverSheet(themes, PROVIDERS, deps(coverFiles(themes)));
+    expect(sheet.rows.map((r) => r.name)).toEqual(["Warriors", "Ocean"]);
+  });
+
+  // The reason this sheet exists. Per-theme sheets would render 30 blank rows
+  // for already-published cards and bury the one row being judged; sixteen of
+  // those is not a checkpoint anyone can read.
+  it("counts no cards as missing, however many the theme has", () => {
+    const sheet = planCoverSheet(themes, PROVIDERS, deps(coverFiles(themes)));
+    expect(sheet.missing).toBe(0);
+  });
+
+  it("names each row's file from ITS OWN theme, not a shared prefix", () => {
+    const sheet = planCoverSheet(themes, PROVIDERS, deps(coverFiles(themes)));
+    expect(sheet.rows[0].candidates[0].fileName).toContain("warriors-cover-");
+    expect(sheet.rows[1].candidates[0].fileName).toContain("ocean-cover-");
+  });
+
+  it("marks the theme's provider as the pick, and counts a theme with none", () => {
+    const unjudged = [{ ...themes[0], provider: undefined }];
+    const sheet = planCoverSheet(unjudged, PROVIDERS, deps(coverFiles(unjudged)));
+    expect(sheet.unpicked).toBe(1);
+    expect(sheet.rows[0].candidates.some((c) => c.isPick)).toBe(false);
+  });
+
+  // Orphan detection is per-theme-prefix and this sheet spans every theme, so
+  // each theme's files would claim every other's. The per-theme sheet keeps it.
+  it("reports no orphans, because it cannot tell whose they are", () => {
+    const sheet = planCoverSheet(themes, PROVIDERS, deps([...coverFiles(themes), "stray.png"]));
+    expect(sheet.orphans).toEqual([]);
   });
 });
 

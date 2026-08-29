@@ -469,7 +469,14 @@ human's choice, recorded in Step 8.
 
 ```bash
 pnpm contact-sheet "<Theme Name>"      # exact theme name, e.g. "Ocean Machines"
+pnpm contact-sheet --covers            # every theme's cover on ONE page (#122)
 ```
+
+`--covers` is for **backfilling** covers onto themes that already shipped, not for a new theme — a new
+theme's cover is the first row of its own sheet. It exists because the per-theme sheet renders a blank row
+for every already-published card and would bury the one row being judged, and because sixteen covers can
+only be judged for *distinctness* side by side: a cover that looks fine alone can still be the third grassy
+hilltop in the grid.
 
 One HTML page: **one row per subject, one column per provider**, so the human compares a row rather than
 opening a folder. Each cell is labelled with the model that actually answered, and the cell `--sync` would
