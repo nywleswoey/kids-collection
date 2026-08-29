@@ -16,6 +16,7 @@ import {
   reviewStem,
   type ReviewSidecar,
 } from "@/features/pool/review-files";
+import { cardSubject } from "@/features/pool/prompt";
 import { fakeProvider } from "@/features/pool/providers/fake";
 
 const witnessed: ReviewSidecar = {
@@ -182,10 +183,10 @@ describe("the record and the candidate it describes (#75)", () => {
     // ART_STYLE) and WHICH parameter bag drew the bytes. If it ever named
     // something other than the file that was reviewed, the record would point at
     // a candidate that never existed.
-    const stem = reviewStem("Warriors", card, provider);
+    const stem = reviewStem("Warriors", cardSubject(card), provider);
     const sidecar = buildSidecar(provider, { bytes: new Uint8Array([1]), format: "png" });
     const rec = toProvenance(sidecar, stem, true);
-    expect(`${rec.reviewKey}.png`).toBe(reviewFileName("Warriors", card, provider));
+    expect(`${rec.reviewKey}.png`).toBe(reviewFileName("Warriors", cardSubject(card), provider));
   });
 
   it("survives the trip the sidecar actually makes: buildSidecar -> JSON -> parseSidecar", () => {

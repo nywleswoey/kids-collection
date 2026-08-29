@@ -108,3 +108,72 @@ export const ART_STYLE =
 export function buildPrompt(card: Pick<SeedCard, "imagePrompt">): string {
   return `${card.imagePrompt}, ${ART_STYLE}`;
 }
+
+/**
+ * Kid-friendly art style appended to every THEME COVER prompt (#122).
+ *
+ * A cover is not a card and must not look like one. #122 decided the picker's
+ * tile is a **landmark** — the same picture every time, so a child can find
+ * Dinosaurs among 30 tiles — and that a cover therefore depicts the theme's
+ * **place**, never one of its 30 subjects: putting a card's art on the door of
+ * the category that contains it leaks what U5-Q5 keeps behind `❔`. A separate
+ * style is what keeps the two readable apart at a glance; running a place
+ * through `ART_STYLE` would draw a specimen-shaped picture of it.
+ *
+ * Every word here is a PROPERTY, deliberately. #81's lesson above is about the
+ * noun, not the negation: naming something depictable puts it in the picture
+ * whatever polarity you name it in. So this cannot say "no animals", "no
+ * people", "no card" — those are the exact shape of "no border", which #81
+ * measured as a border *cue*. The exclusions live in the authored `coverPrompt`
+ * by omission instead, and a cover prompt that names an excluded subject in
+ * order to forbid it is an authoring bug, not a safeguard.
+ *
+ * "no text" carries over from `ART_STYLE` on the same reasoning it survives
+ * there: text is not a thing a model can draw a picture OF, so it is a property
+ * rather than a noun.
+ */
+export const COVER_STYLE =
+  "vibrant kid-friendly cartoon scenery illustration, wide open view, " +
+  "bright colors, friendly, soft depth, no text";
+
+/** Build the full prompt for a theme's cover (pure). */
+export function buildCoverPrompt(theme: { coverPrompt: string }): string {
+  return `${theme.coverPrompt}, ${COVER_STYLE}`;
+}
+
+/**
+ * What the naming stack (`keys.ts`, `review-files.ts`) and the bake-off runner
+ * see: a **named, fully-styled prompt**.
+ *
+ * The stack used to take a `SeedCard` and call `buildPrompt` itself, which meant
+ * "which style applies" was decided deep inside `promptHash`. A cover needs a
+ * different style, and threading a style argument through `reviewKey` →
+ * `reviewStem` → `reviewFileName` → `sidecarFileName` would put that decision in
+ * four signatures instead of one. Deciding it once, here, leaves every one of
+ * those functions style-agnostic and lets a cover be named by exactly the
+ * machinery a card is.
+ *
+ * `prompt` is the string actually sent to the provider — the same string
+ * `promptHash` content-addresses — so the review-staleness guarantee (D4) is
+ * unchanged in substance: edit `ART_STYLE`, `COVER_STYLE` or an authored prompt
+ * and every affected filename moves.
+ */
+export interface Subject {
+  /** Human-readable, and the slug half of every filename. */
+  name: string;
+  /** The full prompt, style already appended. */
+  prompt: string;
+}
+
+/** The subject name a theme's cover is filed under. */
+export const COVER_SUBJECT_NAME = "Cover";
+
+/** A card as the naming stack sees it. */
+export function cardSubject(card: Pick<SeedCard, "name" | "imagePrompt">): Subject {
+  return { name: card.name, prompt: buildPrompt(card) };
+}
+
+/** A theme's cover as the naming stack sees it. */
+export function coverSubject(theme: { coverPrompt: string }): Subject {
+  return { name: COVER_SUBJECT_NAME, prompt: buildCoverPrompt(theme) };
+}

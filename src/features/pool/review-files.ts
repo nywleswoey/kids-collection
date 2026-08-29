@@ -11,6 +11,12 @@
 import { z } from "zod";
 import { EXTENSIONS } from "./image-size";
 import { reviewKey } from "./keys";
+import {
+  COVER_SUBJECT_NAME,
+  cardSubject,
+  coverSubject,
+  type Subject,
+} from "./prompt";
 import { cardKey } from "./publish-plan";
 import {
   providerSegment,
@@ -19,7 +25,13 @@ import {
 } from "./providers/provider";
 import type { SeedCard } from "./seed-schema";
 
-/** Minimal shape a card needs to be named. */
+/**
+ * Minimal shape a card needs to be named.
+ *
+ * Kept as the type callers hold a *card* in; `cardSubject` turns it into the
+ * `Subject` the naming functions below take. Since #122 those functions name a
+ * theme cover with the same machinery, so they cannot take a card.
+ */
 export type NamedCard = Pick<SeedCard, "name" | "imagePrompt">;
 
 /** The adapter facts a filename depends on. */
@@ -37,10 +49,10 @@ export type NamingProvider = Pick<ImageProvider, "id" | "params" | "format">;
  */
 export function reviewStem(
   themeName: string,
-  card: NamedCard,
+  subject: Subject,
   provider: NamingProvider,
 ): string {
-  return reviewKey(themeName, card, providerSegment(provider));
+  return reviewKey(themeName, subject, providerSegment(provider));
 }
 
 /**
@@ -53,10 +65,10 @@ export function reviewStem(
  */
 export function reviewFileName(
   themeName: string,
-  card: NamedCard,
+  subject: Subject,
   provider: NamingProvider,
 ): string {
-  return `${reviewStem(themeName, card, provider)}.${EXTENSIONS[provider.format]}`;
+  return `${reviewStem(themeName, subject, provider)}.${EXTENSIONS[provider.format]}`;
 }
 
 /**
@@ -74,10 +86,10 @@ export function reviewFileName(
  */
 export function sidecarFileName(
   themeName: string,
-  card: NamedCard,
+  subject: Subject,
   provider: NamingProvider,
 ): string {
-  return `${reviewStem(themeName, card, provider)}.json`;
+  return `${reviewStem(themeName, subject, provider)}.json`;
 }
 
 const reviewSidecarSchema = z.object({
@@ -150,6 +162,8 @@ export function buildSidecar(
 export interface AuditTheme {
   name: string;
   provider?: string;
+  /** The authored place-prompt for this theme's cover (#122). */
+  coverPrompt: string;
   cards: readonly (NamedCard & { provider?: string })[];
 }
 
@@ -225,13 +239,68 @@ export function missingReviews(
         });
         continue;
       }
-      if (!exists(reviewFileName(theme.name, card, provider))) {
+      if (!exists(reviewFileName(theme.name, cardSubject(card), provider))) {
         missing.push({
           theme: theme.name,
           card: card.name,
           reason: `no reviewed image from ${provider.id}`,
         });
       }
+    }
+  }
+  return missing;
+}
+
+/**
+ * Themes whose cover would be published with no reviewed image (#122) — the
+ * hard stop that makes "every category is recognisable before you own anything
+ * in it" a guarantee rather than an aspiration.
+ *
+ * A sibling of `missingReviews` rather than another branch inside it, because
+ * the two audits are keyed differently: a card is planned per `(theme, card)`,
+ * a cover per theme, so folding them together would mean one function taking two
+ * planned-sets and reporting rows of two shapes. They share the machinery that
+ * matters — `reviewFileName`, `resolveProviderId`, the same `exists` — so they
+ * cannot disagree about which file a reviewed image lives in, which is the only
+ * agreement FR9 actually needs.
+ *
+ * `card` on the returned row is the literal subject name a cover is filed under,
+ * so the CLI's existing `theme / card — reason` report renders it unchanged and
+ * a human reads "Animals / Cover — no reviewed image from pollinations".
+ *
+ * A cover has no per-subject provider override: it inherits the theme's pick,
+ * which is the same bake-off judgement its 30 cards ride on. There is no case
+ * for one lane drawing a theme's cards and another its cover — that is the
+ * mixed-lane incoherence #77 is already worried about, inside a single theme.
+ */
+export function missingCoverReviews(
+  themes: readonly AuditTheme[],
+  plannedCovers: ReadonlySet<string>,
+  lookup: (id: string) => NamingProvider | undefined,
+  exists: (fileName: string) => boolean,
+): UnreviewedCard[] {
+  const missing: UnreviewedCard[] = [];
+  for (const theme of themes) {
+    if (!plannedCovers.has(theme.name)) continue;
+    const id = theme.provider;
+    const provider = id === undefined ? undefined : lookup(id);
+    if (!provider) {
+      missing.push({
+        theme: theme.name,
+        card: COVER_SUBJECT_NAME,
+        reason:
+          id === undefined
+            ? "no provider chosen (bake-off not judged)"
+            : `unknown provider "${id}"`,
+      });
+      continue;
+    }
+    if (!exists(reviewFileName(theme.name, coverSubject(theme), provider))) {
+      missing.push({
+        theme: theme.name,
+        card: COVER_SUBJECT_NAME,
+        reason: `no reviewed image from ${provider.id}`,
+      });
     }
   }
   return missing;

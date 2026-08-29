@@ -43,6 +43,12 @@
  */
 import { slug } from "./keys";
 import { reviewFileName, resolveProviderId, type NamingProvider } from "./review-files";
+import {
+  COVER_SUBJECT_NAME,
+  cardSubject,
+  coverSubject,
+  type Subject,
+} from "./prompt";
 import type { ProviderRole } from "./providers/provider";
 
 /**
@@ -74,6 +80,8 @@ export interface SheetCard {
 export interface SheetTheme {
   name: string;
   provider?: string;
+  /** The theme's cover prompt (#122) — screened as the sheet's first row. */
+  coverPrompt: string;
   cards: readonly SheetCard[];
 }
 
@@ -136,14 +144,36 @@ export function planContactSheet(
   let missing = 0;
   let unpicked = 0;
 
-  const rows: SheetRow[] = [...theme.cards]
-    .sort((a, b) => (RARITY_ORDER[a.rarity] ?? 9) - (RARITY_ORDER[b.rarity] ?? 9))
-    .map((card) => {
-      const resolved = resolveProviderId(theme, card);
+  // The cover leads the sheet (#122). It is screened by the same human in the
+  // same sitting as the 30 cards, and it is the picture a child meets FIRST, so
+  // it is the first row rather than an appendix — and it is judged against the
+  // cards it will front rather than in isolation, which is the only way to see
+  // that a cover reads as a place and its cards read as specimens.
+  //
+  // It has no rarity, so it sorts nowhere: it is prepended rather than mixed in,
+  // and `rarity` carries the literal subject name so the rendered sheet labels
+  // the row instead of showing an empty rarity cell.
+  const subjects: Array<{ row: Omit<SheetRow, "candidates" | "resolvedProvider">; subject: Subject; provider?: string }> = [
+    {
+      row: { name: COVER_SUBJECT_NAME, rarity: COVER_SUBJECT_NAME.toLowerCase(), eduText: theme.coverPrompt },
+      subject: coverSubject(theme),
+      provider: theme.provider,
+    },
+    ...[...theme.cards]
+      .sort((a, b) => (RARITY_ORDER[a.rarity] ?? 9) - (RARITY_ORDER[b.rarity] ?? 9))
+      .map((card) => ({
+        row: { name: card.name, rarity: card.rarity, eduText: card.eduText },
+        subject: cardSubject(card),
+        provider: resolveProviderId(theme, card),
+      })),
+  ];
+
+  const rows: SheetRow[] = subjects
+    .map(({ row, subject, provider: resolved }) => {
       if (resolved === undefined) unpicked++;
 
       const candidates = providers.map((provider): SheetCandidate => {
-        const fileName = reviewFileName(theme.name, card, provider);
+        const fileName = reviewFileName(theme.name, subject, provider);
         expected.add(fileName);
         const present = deps.exists(fileName);
         // A hatch's blank is not a gap — see the header note.
@@ -159,13 +189,7 @@ export function planContactSheet(
         };
       });
 
-      return {
-        name: card.name,
-        rarity: card.rarity,
-        eduText: card.eduText,
-        resolvedProvider: resolved,
-        candidates,
-      };
+      return { ...row, resolvedProvider: resolved, candidates };
     });
 
   // Orphans are found by scanning rather than by column, because a column can

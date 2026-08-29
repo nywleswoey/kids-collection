@@ -14,8 +14,7 @@
  * uses, and FR7 changes exactly one of them.
  */
 import { createHash } from "node:crypto";
-import { buildPrompt } from "./prompt";
-import type { SeedCard } from "./seed-schema";
+import type { Subject } from "./prompt";
 
 /** Lowercase, non-alphanumerics collapsed to "-", no leading/trailing dash. */
 export function slug(s: string): string {
@@ -35,16 +34,43 @@ export function blobKey(themeName: string, cardName: string): string {
 }
 
 /**
+ * Pathname for a theme's cover object (#122). Its own namespace — `uploadImage`
+ * prefixes `covers/`, not `cards/`.
+ *
+ * A cover is NOT filed as `blobKey(theme, "Cover")` under `cards/`, even though
+ * the slug would read the same. Card names are unique across the whole pool and
+ * nothing stops a future theme shipping a card called "Cover", which would then
+ * publish over a theme's cover with no error at either end — one object, two
+ * owners. A separate prefix makes that collision unrepresentable rather than
+ * unlikely.
+ *
+ * This is a NEW namespace, not a change to an existing one, so it is
+ * independent of #91's open question about what the ~390 `cards/` URLs are
+ * actually named under the store's version-9 random-suffix default.
+ */
+export function coverBlobKey(themeName: string): string {
+  return slug(themeName);
+}
+
+/**
  * First 8 hex chars of sha256 over the prompt actually sent to the image service.
  *
- * Hashes `buildPrompt(card)`, NOT `card.imagePrompt` (D4): buildPrompt appends
- * ART_STYLE, so changing ART_STYLE changes what every card renders as. Hashing the
- * raw imagePrompt would leave that change invisible to the review gate — the exact
- * failure mode FR7 exists to remove. The cost is that an ART_STYLE edit invalidates
- * every review file and forces a full re-review, which is the correct consequence.
+ * Hashes the FULL prompt, not the authored fragment (D4): the style constant is
+ * appended before it gets here, so changing `ART_STYLE` — or `COVER_STYLE` —
+ * changes what every affected subject renders as. Hashing the raw authored
+ * prompt would leave that change invisible to the review gate, the exact failure
+ * mode FR7 exists to remove. The cost is that a style edit invalidates every
+ * review file and forces a full re-review, which is the correct consequence.
+ *
+ * It takes the built string rather than a card (#122). It used to call
+ * `buildPrompt` itself, which hard-wired "the card style" into the hash and left
+ * a theme cover — which needs `COVER_STYLE` — with no way through this function
+ * except a style parameter threaded down four signatures. `Subject` decides the
+ * style once, at construction. Card hashes are unchanged: the same string is
+ * still what gets hashed, which `keys.test.ts` pins by value.
  */
-export function promptHash(card: Pick<SeedCard, "imagePrompt">): string {
-  return createHash("sha256").update(buildPrompt(card)).digest("hex").slice(0, 8);
+export function promptHash(prompt: string): string {
+  return createHash("sha256").update(prompt).digest("hex").slice(0, 8);
 }
 
 /**
@@ -72,8 +98,8 @@ export function promptHash(card: Pick<SeedCard, "imagePrompt">): string {
  */
 export function reviewKey(
   themeName: string,
-  card: Pick<SeedCard, "name" | "imagePrompt">,
+  subject: Subject,
   providerSegment: string,
 ): string {
-  return `${slug(`${themeName}-${card.name}`)}-${promptHash(card)}-${providerSegment}`;
+  return `${slug(`${themeName}-${subject.name}`)}-${promptHash(subject.prompt)}-${providerSegment}`;
 }
