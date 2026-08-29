@@ -22,8 +22,8 @@ describe("bandCopy (#110 — the sentence a band says)", () => {
     expect(bandCopy("new", ME).phrase).toBe("new for you");
     expect(bandCopy("one-away", ANA).phrase).toBe("one more and Ana can burn it");
     expect(bandCopy("one-away", ME).phrase).toBe("one more and you can burn it");
-    expect(bandCopy("rest", ANA).phrase).toBe("");
-    expect(bandCopy("rest", ME).phrase).toBe("");
+    expect(bandCopy("rest", ANA).phrase).toBe("Ana already has this");
+    expect(bandCopy("rest", ME).phrase).toBe("you already have this");
   });
 
   it("heading and tile phrase are the same sentence, so they can't drift", () => {
@@ -33,8 +33,11 @@ describe("bandCopy (#110 — the sentence a band says)", () => {
       fc.property(fc.constantFrom(...TIERS), fc.string({ minLength: 1 }), (tier, name) => {
         for (const receiver of [{ kind: "friend", name } as Receiver, ME]) {
           const { heading, phrase } = bandCopy(tier, receiver);
-          if (phrase === "") continue;
-          expect(heading.toLowerCase().endsWith(phrase.toLowerCase())).toBe(true);
+          expect(phrase).not.toBe("");
+          // The heading counts a band and the phrase names one card, so `rest`
+          // differs by its number alone — every other tier is the same words.
+          const singular = heading.toLowerCase().replace(/these$/, "this");
+          expect(singular.endsWith(phrase.toLowerCase())).toBe(true);
         }
       }),
     );

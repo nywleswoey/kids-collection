@@ -25,8 +25,11 @@ export interface BandCopy {
   /**
    * The same sentence on the tile itself, for a screen reader: a band heading
    * is not announced with the button inside it, so the tier rides in each
-   * tile's accessible name too. `rest` says nothing — an unlabelled tile means
-   * they already have it, exactly as it did when the badge was visible (FR4).
+   * tile's accessible name too. Every tier says something, `rest` included —
+   * before #110 an unbadged tile meant "they already have it", but that was a
+   * convention of the badges this ticket removed, and a listener who can't see
+   * the band headings would be left inferring a tier from an absence. Singular
+   * where the heading is plural: the heading counts a band, a tile is one card.
    */
   phrase: string;
 }
@@ -45,12 +48,11 @@ export function bandCopy(tier: SwapTier, receiver: Receiver): BandCopy {
       return said("🔥", `one more and ${who} can burn it`);
     case "rest":
       // The only tier whose subject is the receiver, so the only one whose verb
-      // has to agree with the person — and the one the tile leaves unsaid.
-      return {
-        heading:
-          receiver.kind === "friend" ? `${who} already has these` : "You already have these",
-        phrase: "",
-      };
+      // has to agree with the person — which is why it can't go through
+      // `said`, and why heading and phrase are spelled out as a pair.
+      return receiver.kind === "friend"
+        ? { heading: `${who} already has these`, phrase: `${who} already has this` }
+        : { heading: "You already have these", phrase: "you already have this" };
   }
 }
 
