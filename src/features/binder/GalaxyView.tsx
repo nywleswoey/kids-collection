@@ -6,49 +6,58 @@ import type { ThemeSection as ThemeSectionData } from "@/lib/types";
 import { RARITY_META } from "@/features/card/rarity";
 import { ThemeSection } from "./ThemeSection";
 import { SacrificeGrid } from "./SacrificeGrid";
+import { CategoryPicker } from "./CategoryPicker";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
 
 /**
- * Galaxy category view (Inc9 FR1). Sticky tab bar of category chips filters the
- * galaxy to one theme; "★ All" (default) shows every section. Scales as the
- * number of categories grows -- on a phone the chips are a single sideways-
- * scrolling row, so adding categories lengthens the strip instead of growing a
- * taller and taller block under the pinned header.
+ * Galaxy category view (Inc9 FR1).
  *
- * Inc13 FR1/FR2: a second chip row filters by rarity and shows the owned count
- * per rarity. Rarity AND-combines with the active category (Q4.1=A); counts are
- * owned-only within the current category selection (Q4.2=A); the filtered view
- * keeps locked cards so the child sees what's left (Q4.3=B).
+ * #107: a category is now a **place you go**, not a chip you tick. The binder
+ * lands on `CategoryPicker` — a grid of picture tiles — and tapping one enters
+ * that category, which is where the rarity row and the cards live. The old
+ * shape rendered `★ All` plus one chip per theme in a single wrapped sticky
+ * `<nav>`; that row grew by one every seed run and never shrank, and was
+ * already three or four wrapped lines under a sticky header on a phone. A tile
+ * grid grows downwards instead of pushing the cards off screen, so it still
+ * reads at 25+ themes.
  *
- * Inc22 FR9/FR11: a "Show" row switches between the galaxy and a flat grid of
+ * Two consequences of that swap, both deliberate:
+ *   - **`★ All` is gone.** "Every category at once" is a filter, not a
+ *     destination, and 480 slots in one scroll was never a view anyone read.
+ *   - **The rarity row moved inside a category.** It AND-combines with the
+ *     active category (Inc13 Q4.1=A) and its counts are scoped to the current
+ *     selection (Q4.2=A); with no "all categories" selection left, "within the
+ *     current selection" now simply means "within this category". The filtered
+ *     view still keeps locked cards so the child sees what's left (Q4.3=B).
+ *
+ * Inc22 FR9/FR11: the "Show" row switches between the galaxy and a flat grid of
  * the cards that can be sacrificed. The burn view is deliberately GLOBAL — it
- * ignores both chip rows, and its count is the total across every category, so
- * "everything I can burn" is never a filtered subset.
+ * ignores the category and rarity selections, and its count is the total across
+ * every category, so "everything I can burn" is never a filtered subset. That
+ * is why the mode row sits *above* the picker rather than inside a category:
+ * it must never read as a filter applied within one.
  */
 type Mode = "all" | "sacrifice";
 
 export function GalaxyView({ sections }: { sections: ThemeSectionData[] }) {
   const [mode, setMode] = useState<Mode>("all");
-  const [active, setActive] = useState<string>("all");
+  const [openId, setOpenId] = useState<string | null>(null);
   const [rarity, setRarity] = useState<Rarity | null>(null);
 
   const burnable = sacrificeReady(sections);
+  const open = sections.find((s) => s.theme.id === openId) ?? null;
 
-  const inCategory =
-    active === "all"
-      ? sections
-      : sections.filter((s) => s.theme.id === active);
+  function openCategory(themeId: string) {
+    setOpenId(themeId);
+    // Rarity is scoped to a category, so entering one starts unfiltered.
+    setRarity(null);
+  }
 
-  const counts = countOwnedByRarity(inCategory);
-
-  const visible = inCategory
-    .map((section) => ({
-      ...section,
-      cards: filterCardsByRarity(section.cards, rarity),
-    }))
-    // Hide sections with no cards under the active rarity filter.
-    .filter((section) => section.cards.length > 0);
+  function closeCategory() {
+    setOpenId(null);
+    setRarity(null);
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,62 +79,76 @@ export function GalaxyView({ sections }: { sections: ThemeSectionData[] }) {
 
       {mode === "sacrifice" ? (
         <SacrificeGrid cards={burnable} />
+      ) : open === null ? (
+        <CategoryPicker sections={sections} onOpen={openCategory} />
       ) : (
-        <>
-          <nav
-            data-testid="galaxy-tabs"
-            /* Phone: pins at the top on its own (the header is not sticky
-               there) and scrolls sideways in a single row -- wrapping 16
-               categories built a 338px block that swallowed 40% of the screen.
-               `sm:` and up: wraps as before and clears the now-pinned header.
-               That header is a stable 88px single row from 640px up and pins at
-               top-3, so its bottom edge sits at 100px; 108px leaves an 8px gap.
-               The old top-24 (96px) tucked the nav 4px underneath it. */
-            className="sticky top-3 z-[9] flex flex-nowrap gap-2 overflow-x-auto rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)] sm:top-[6.75rem] sm:flex-wrap sm:overflow-x-visible"
-            style={{ background: "var(--bg-1)" }}
-          >
-            <TabChip
-              label="★ All"
-              active={active === "all"}
-              onClick={() => setActive("all")}
-              testid="galaxy-tab-all"
-            />
-            {sections.map((s) => (
-              <TabChip
-                key={s.theme.id}
-                label={s.theme.name}
-                active={active === s.theme.id}
-                onClick={() => setActive(s.theme.id)}
-                testid={`galaxy-tab-${s.theme.id}`}
-              />
-            ))}
-          </nav>
-
-          <div data-testid="galaxy-rarity-filter" className="flex flex-wrap gap-2">
-            <TabChip
-              label="All rarities"
-              active={rarity === null}
-              onClick={() => setRarity(null)}
-              testid="galaxy-rarity-all"
-            />
-            {RARITIES.map((r) => (
-              <TabChip
-                key={r}
-                label={`${RARITY_META[r].label} ${counts[r]}`}
-                active={rarity === r}
-                onClick={() => setRarity(r)}
-                testid={`galaxy-rarity-${r}`}
-                frame={RARITY_META[r].frame}
-              />
-            ))}
-          </div>
-
-          {visible.map((section) => (
-            <ThemeSection key={section.theme.id} section={section} />
-          ))}
-        </>
+        <OpenCategory
+          section={open}
+          rarity={rarity}
+          setRarity={setRarity}
+          onBack={closeCategory}
+        />
       )}
     </div>
+  );
+}
+
+/** One category as a destination: a back bar, the rarity row, and the cards. */
+function OpenCategory({
+  section,
+  rarity,
+  setRarity,
+  onBack,
+}: {
+  section: ThemeSectionData;
+  rarity: Rarity | null;
+  setRarity: (r: Rarity | null) => void;
+  onBack: () => void;
+}) {
+  const counts = countOwnedByRarity([section]);
+  const cards = filterCardsByRarity(section.cards, rarity);
+
+  return (
+    <>
+      <div
+        data-testid="galaxy-category-bar"
+        className="sticky top-24 z-[9] flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
+        style={{ background: "var(--bg-1)" }}
+      >
+        <button
+          type="button"
+          onClick={onBack}
+          data-testid="galaxy-category-back"
+          className="btn btn--ghost text-sm"
+        >
+          ← All categories
+        </button>
+        {/* The name only. The section header below carries the progress bar
+            and its 🏆, so the mark is not repeated within one screen. */}
+        <span className="display truncate text-lg">{section.theme.name}</span>
+      </div>
+
+      <div data-testid="galaxy-rarity-filter" className="flex flex-wrap gap-2">
+        <TabChip
+          label="All rarities"
+          active={rarity === null}
+          onClick={() => setRarity(null)}
+          testid="galaxy-rarity-all"
+        />
+        {RARITIES.map((r) => (
+          <TabChip
+            key={r}
+            label={`${RARITY_META[r].label} ${counts[r]}`}
+            active={rarity === r}
+            onClick={() => setRarity(r)}
+            testid={`galaxy-rarity-${r}`}
+            frame={RARITY_META[r].frame}
+          />
+        ))}
+      </div>
+
+      <ThemeSection section={{ ...section, cards }} />
+    </>
   );
 }
 
