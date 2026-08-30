@@ -1550,6 +1550,397 @@
         "reviewKey": "rocks-and-gems-turquoise-52ce5950-pollinations-dff2",
         "reviewed": true
       }
+    },
+    "Trees": {
+      "Angsana": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-angsana-c2aec872-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Apple Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-apple-tree-db951484-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Banana Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-banana-tree-4f885583-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Banyan": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-banyan-2d4c79dc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cannonball Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-cannonball-tree-9862e0fa-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cherry Blossom Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-cherry-blossom-tree-c62a7de1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Coconut Palm": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-coconut-palm-712d1343-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Durian Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-durian-tree-cb007bd8-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Flame of the Forest": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-flame-of-the-forest-b2c61298-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Frangipani": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-frangipani-b35f5554-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ginkgo": {
+        "provider": "pollinations",
+        "model": "sana",
+        "params": {
+          "model": "flux",
+          "seed": 42,
+          "nologo": true
+        },
+        "format": "jpeg",
+        "reviewKey": "trees-ginkgo-e8a6f0bc-pollinations-dff2",
+        "reviewed": true
+      },
+      "Holly": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-holly-73b85ec9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Horse Chestnut": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-horse-chestnut-7d967f06-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Joshua Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-joshua-tree-28201f58-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mango Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-mango-tree-42b0922f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mangrove": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-mangrove-7749daeb-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Maple": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-maple-7ad5e4a0-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Norway Spruce": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-norway-spruce-2881b971-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Oak": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-oak-1dd65247-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Olive Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-olive-tree-8ca9bc53-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Papaya Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-papaya-tree-d9f9a9ec-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rain Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-rain-tree-bae7591b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rainbow Eucalyptus": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-rainbow-eucalyptus-2e1a3d38-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rambutan Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-rambutan-tree-5fb12e1a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rubber Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-rubber-tree-60c62aa1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Saga Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-saga-tree-d7075bca-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sea Almond": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-sea-almond-308f18d5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Silver Birch": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-silver-birch-bb1e666d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Starfruit Tree": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-starfruit-tree-8efe9b37-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Weeping Willow": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "trees-weeping-willow-7db0aad1-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
     }
   }
 }
