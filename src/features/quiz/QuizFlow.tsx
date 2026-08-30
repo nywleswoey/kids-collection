@@ -11,6 +11,11 @@ import { BarModel } from "./BarModel";
 
 type Phase = "lesson" | "quiz" | "result";
 
+/**
+ * Complete quiz flow: lesson screen, multi-question quiz, and result screen.
+ * Manages quiz state, answer submission, scoring, and Easter egg award outcome.
+ * Plays sounds and shows confetti on success.
+ */
 export function QuizFlow({
   topicId,
   title,

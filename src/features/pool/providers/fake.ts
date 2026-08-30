@@ -43,6 +43,7 @@ export interface FakeProvider extends ImageProvider {
   readonly calls: string[];
 }
 
+/** In-memory fake image provider for testing. Returns scripted responses and records calls. */
 export function fakeProvider(opts: FakeProviderOptions = {}): FakeProvider {
   const calls: string[] = [];
   const script = [...(opts.script ?? [])];

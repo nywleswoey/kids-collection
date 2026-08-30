@@ -31,8 +31,10 @@ export function isTradable(count: number): boolean {
   return count >= 2;
 }
 
-/** Validate a two-sided swap (FR1/FR2/FR7). Both givers must offer a duplicate
- * of the SAME rarity, to two DISTINCT children, and not the identical card. */
+/**
+ * Validate a two-sided swap (FR1/FR2/FR7). Both givers must offer a duplicate
+ * of the SAME rarity, to two DISTINCT children, and not the identical card.
+ */
 export function validateTrade(a: TradeSide, b: TradeSide): TradeValidation {
   if (a.childId === b.childId) {
     return { ok: false, reason: "Pick a different friend to trade with." };

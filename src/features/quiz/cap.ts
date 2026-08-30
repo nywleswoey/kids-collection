@@ -5,8 +5,10 @@ import { DAILY_TICKET_CAP, type AwardReason } from "./types";
 const SGT_OFFSET_MS = 8 * 60 * 60 * 1000; // Singapore = UTC+8, no DST
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Integer key for the SGT calendar day containing `nowMs`. Two instants share
- * a key iff they fall on the same Singapore date. Used to bucket completions. */
+/**
+ * Integer key for the SGT calendar day containing `nowMs`. Two instants share
+ * a key iff they fall on the same Singapore date. Used to bucket completions.
+ */
 export function sgtDayKey(nowMs: number): number {
   return Math.floor((nowMs + SGT_OFFSET_MS) / DAY_MS);
 }

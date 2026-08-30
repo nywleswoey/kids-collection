@@ -5,6 +5,11 @@ import { GrantControl } from "./GrantControl";
 import type { AdminChildRow as Row } from "@/lib/types";
 import type { QuizActivity } from "@/features/quiz/types";
 
+/**
+ * Admin dashboard row for a single child profile. Shows avatar, name, collection
+ * progress, token balances with grant controls, binder link, and optional quiz
+ * activity summary. Parent/admin-only UI component.
+ */
 export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) {
   const { child } = row;
   return (

@@ -7,6 +7,9 @@ import { EffectTriggerPanel } from "@/features/admin/EffectTriggerPanel";
 import { SoundProvider } from "@/features/sound/SoundProvider";
 import { SoundControls } from "@/features/sound/SoundControls";
 
+// Force dynamic rendering since this page requires database access
+export const dynamic = "force-dynamic";
+
 /**
  * Admin preview (U4-FR2/FR3): the full pool shown as a completed binder with
  * admin-only source links, plus a panel to trigger every effect. Read-only —

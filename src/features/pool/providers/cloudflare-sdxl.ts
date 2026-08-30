@@ -79,6 +79,7 @@ import {
 } from "./http";
 import type { GeneratedImage, ImageProvider, ImageSizeRequest } from "./provider";
 
+/** Cloudflare Workers AI SDXL adapter (free tier, bake-off lane). */
 export function cloudflareSdxl(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   return {

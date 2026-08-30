@@ -12,6 +12,11 @@ import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/features/sound/useSound";
 import { CountUp } from "@/features/anim/CountUp";
 
+/**
+ * Main pull/gacha button component. Manages pull token balance, card reveal flow,
+ * Easter egg picker, roulette animation, and sacrifice hint modal. Handles both
+ * regular pulls and Easter egg redemptions.
+ */
 export function PullButton({
   childId,
   initialBalance,

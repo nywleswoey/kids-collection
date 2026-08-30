@@ -51,6 +51,11 @@ function Stepper({
   );
 }
 
+/**
+ * Admin UI for granting pull tokens and Easter egg tickets to a child. Shows
+ * current balances with quick-grant buttons (+1, +5) and a custom amount input.
+ * Updates optimistically via server actions. Admin-only component.
+ */
 export function GrantControl({
   childId,
   initialBalance,

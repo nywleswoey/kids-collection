@@ -4,6 +4,11 @@ import { CardSlot } from "./CardSlot";
 import { SetCompleteCelebration } from "./SetCompleteCelebration";
 import type { Place } from "./binder-place";
 
+/**
+ * Category section displaying a theme's card grid with optional heading and
+ * progress bar. Shows all 30 cards (owned + locked slots). Triggers celebration
+ * effect when set completes. Supports admin preview mode.
+ */
 export function ThemeSection({
   section,
   admin = false,

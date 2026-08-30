@@ -125,14 +125,19 @@ const RETIRED_TOPIC_TITLES: Record<string, string> = {
   "number-bonds-100": "Number Bonds to 100 (retired)",
 };
 
-/** Display name for a topic id: live title → retired label → the raw id. The
- *  raw-id fallback stays as the last resort for an id in neither map. */
+/**
+ * Display name for a topic id: live title → retired label → the raw id. The
+ * raw-id fallback stays as the last resort for an id in neither map.
+ */
 export function topicTitle(id: string): string {
   return BY_ID.get(id)?.title ?? RETIRED_TOPIC_TITLES[id] ?? id;
 }
 
-/** Topic ids by subject — the source of truth for the daily draw's "at least one
- *  maths" guarantee (Inc25 FR7). Derived from TOPICS, never from generator
- *  registration, so it stays correct as generators come and go. */
+/**
+ * Topic ids by subject — the source of truth for the daily draw's "at least one
+ * maths" guarantee (Inc25 FR7). Derived from TOPICS, never from generator
+ * registration, so it stays correct as generators come and go.
+ */
 export const MATH_TOPIC_IDS: string[] = TOPICS.filter((t) => t.subject === "math").map((t) => t.id);
+/** Grammar topic IDs derived from TOPICS array. */
 export const GRAMMAR_TOPIC_IDS: string[] = TOPICS.filter((t) => t.subject === "grammar").map((t) => t.id);

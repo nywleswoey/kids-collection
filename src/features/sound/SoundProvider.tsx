@@ -29,8 +29,14 @@ export interface SoundContextValue {
   toggleBgm: () => void;
 }
 
+/** React context for sound state and controls. Provides SFX/BGM toggle state and play function. */
 export const SoundContext = createContext<SoundContextValue | null>(null);
 
+/**
+ * Sound provider managing SFX and BGM state. Handles audio engine lifecycle,
+ * user gesture unlocking, localStorage persistence, and provides sound controls
+ * to descendants via context.
+ */
 export function SoundProvider({ children }: { children: ReactNode }) {
   // Start from defaults for a stable first render, then hydrate from storage.
   const [sfxEnabled, setSfx] = useState(true);

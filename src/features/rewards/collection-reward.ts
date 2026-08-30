@@ -25,8 +25,10 @@ export function isRaritySetComplete(
   return inSet.every((c) => ownedIds.has(c.id));
 }
 
-/** Distinct (theme, rarity) pairs touched by the given card ids — the only
- * sets that could have just completed after adding those cards. */
+/**
+ * Distinct (theme, rarity) pairs touched by the given card ids — the only
+ * sets that could have just completed after adding those cards.
+ */
 export function raritySetsFor(cards: Card[], cardIds: string[]): RaritySet[] {
   const byId = new Map(cards.map((c) => [c.id, c]));
   const seen = new Set<string>();

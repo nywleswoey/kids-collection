@@ -189,8 +189,10 @@ function fractionOfQuantity(id: string, rng: Rng): QuizQuestion {
 
 const SKILLS = [nameTheFraction, addSubSameDenominator, fractionOfQuantity];
 
-/** One fraction question, skill chosen from the injected rng. Registered as a
- *  math-gen GENERATOR (D1) so `buildQuestions` keeps its two branches. */
+/**
+ * One fraction question, skill chosen from the injected rng. Registered as a
+ * math-gen GENERATOR (D1) so `buildQuestions` keeps its two branches.
+ */
 export function fractionQuestion(id: string, rng: Rng): QuizQuestion {
   return SKILLS[randInt(rng, 0, SKILLS.length - 1)](id, rng);
 }

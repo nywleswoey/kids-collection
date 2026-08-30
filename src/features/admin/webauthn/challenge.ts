@@ -35,6 +35,7 @@ export interface ChallengePayload extends SignedPayload {
   sub: string;
 }
 
+/** Type guard: true iff `p` is a validly-shaped `ChallengePayload` object. */
 export function isChallengePayload(p: unknown): p is ChallengePayload {
   const c = p as ChallengePayload;
   return (

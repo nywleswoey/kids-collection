@@ -21,8 +21,10 @@ export const SACRIFICE_COST = 3;
  */
 export const SACRIFICE_MIN = SACRIFICE_COST + 1;
 
-/** The next rarity up, capped at the top tier (legendary → legendary). Still used
- *  by the collection-completion reward (rewards/service.ts). */
+/**
+ * The next rarity up, capped at the top tier (legendary → legendary). Still used
+ * by the collection-completion reward (rewards/service.ts). PURE function.
+ */
 export function nextTier(r: Rarity): Rarity {
   const i = RARITIES.indexOf(r);
   return RARITIES[Math.min(i + 1, RARITIES.length - 1)];

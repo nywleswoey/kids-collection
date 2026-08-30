@@ -3,19 +3,23 @@
 export const RARITIES = ["common", "rare", "epic", "legendary"] as const;
 export type Rarity = (typeof RARITIES)[number];
 
-/** Fresh zeroed count-per-rarity map. Returns a new object each call so callers
- * that mutate the tally in place don't share module-level state. */
+/**
+ * Fresh zeroed count-per-rarity map. Returns a new object each call so callers
+ * that mutate the tally in place don't share module-level state.
+ */
 export function zeroRarityCount(): Record<Rarity, number> {
   return { common: 0, rare: 0, epic: 0, legendary: 0 };
 }
 
-/** Drop weights for the pull distribution (BR1). Must sum to 100.
+/**
+ * Drop weights for the pull distribution (BR1). Must sum to 100.
  *
  * Inc25 FR1: tightened from 60/25/12/3 now the pool is 360 cards — epic −42%,
  * legendary −33%. Shared with the Easter Egg roll (easter-egg.ts) by design, so
  * both harden together; both sites derive their bands from this object, so a
  * retune needs no call-site change. Picking WITHIN a rarity stays uniform — no
- * duplicate protection (explicitly declined). */
+ * duplicate protection (explicitly declined).
+ */
 export const RARITY_WEIGHTS: Record<Rarity, number> = {
   common: 70,
   rare: 21,
