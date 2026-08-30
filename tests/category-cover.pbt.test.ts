@@ -37,74 +37,78 @@ function section(cards: BinderCard[]): ThemeSection {
   };
 }
 
-describe("coverCard (#107 category picker)", () => {
-  it("picks the rarest owned card", () => {
+describe("coverCard (#107 category picker, reversed by #122)", () => {
+  it("picks the theme's first legendary in catalog order", () => {
     const cover = coverCard(
       section([
         bcard("a", "common", true),
-        bcard("b", "legendary", true),
-        bcard("c", "epic", true),
+        bcard("b", "legendary", false),
+        bcard("c", "legendary", true),
       ]),
     );
     expect(cover?.card.id).toBe("b");
   });
 
-  it("ignores unowned cards even when they are rarer", () => {
-    const cover = coverCard(
-      section([bcard("a", "common", true), bcard("b", "legendary", false)]),
-    );
-    expect(cover?.card.id).toBe("a");
-  });
-
-  it("returns null when nothing is owned, so unearned art never leaks (U5-Q5)", () => {
-    fc.assert(
-      fc.property(fc.array(cardArb, { maxLength: 20 }), (cards) => {
-        const locked = cards.map((c) => ({ ...c, owned: false, count: 0 }));
-        expect(coverCard(section(locked))).toBe(null);
-      }),
-    );
-  });
-
-  it("never returns an unowned card", () => {
+  // The whole point of the reversal. A cover that depends on what the child owns
+  // is a trophy; a landmark has to be the same picture on every visit, including
+  // the first, when they own nothing here.
+  it("does not depend on ownership at all", () => {
     fc.assert(
       fc.property(sectionArb, (s) => {
-        const cover = coverCard(s);
-        if (cover) expect(cover.owned).toBe(true);
+        const allLocked = { ...s, cards: s.cards.map((c) => ({ ...c, owned: false, count: 0 })) };
+        const allOwned = { ...s, cards: s.cards.map((c) => ({ ...c, owned: true, count: 1 })) };
+        expect(coverCard(allLocked)?.card.id).toBe(coverCard(allOwned)?.card.id);
       }),
     );
   });
 
-  it("returns a card iff the category has at least one owned card", () => {
+  // What replaced "returns null when nothing is owned". A theme with cards
+  // always has a cover, which is what let the 🪐 placeholder be deleted rather
+  // than kept as an unreachable branch.
+  it("returns a card for any non-empty category", () => {
     fc.assert(
       fc.property(sectionArb, (s) => {
-        const anyOwned = s.cards.some((c) => c.owned);
-        expect(coverCard(s) !== null).toBe(anyOwned);
+        expect(coverCard(s) !== null).toBe(s.cards.length > 0);
       }),
     );
   });
 
-  it("is stable: no owned card in the section is rarer than the cover", () => {
+  it("prefers a legendary over every other rarity, wherever it sits", () => {
     fc.assert(
       fc.property(sectionArb, (s) => {
         const cover = coverCard(s);
         if (!cover) return;
-        const rank = (r: Rarity) => RARITIES.indexOf(r);
-        for (const c of s.cards) {
-          if (c.owned) {
-            expect(rank(c.card.rarity)).toBeLessThanOrEqual(rank(cover.card.rarity));
-          }
-        }
+        const hasLegendary = s.cards.some((c) => c.card.rarity === "legendary");
+        if (hasLegendary) expect(cover.card.rarity).toBe("legendary");
       }),
     );
   });
 
-  it("ties inside a rarity resolve to the first card in catalog order", () => {
-    const cover = coverCard(
-      section([
-        bcard("first", "epic", true),
-        bcard("second", "epic", true),
-      ]),
+  // Stability is the property the tile is bought for. Note the guard: it holds
+  // ONCE THE THEME HAS A LEGENDARY, and the unconditional version is false —
+  // appending a legendary to a section that had none moves the cover off the
+  // catalog-order fallback. That case cannot occur for real data (the pyramid
+  // puts two legendaries in every theme before it can publish), so the guard is
+  // the honest statement of the invariant rather than a weakening of it.
+  it("is stable when the catalog grows behind it", () => {
+    fc.assert(
+      fc.property(sectionArb, fc.array(cardArb, { maxLength: 5 }), (s, extra) => {
+        if (!s.cards.some((c) => c.card.rarity === "legendary")) return;
+        const cover = coverCard(s);
+        if (!cover) return;
+        expect(coverCard({ ...s, cards: [...s.cards, ...extra] })?.card.id).toBe(cover.card.id);
+      }),
     );
+  });
+
+  it("falls back to catalog order for a section with no legendary", () => {
+    // Unreachable for real data — the pyramid guarantees two per theme — but it
+    // is what makes the function total, so the tile has no placeholder branch.
+    const cover = coverCard(section([bcard("first", "epic", false), bcard("second", "rare", true)]));
     expect(cover?.card.id).toBe("first");
+  });
+
+  it("returns null only for an empty category", () => {
+    expect(coverCard(section([]))).toBe(null);
   });
 });

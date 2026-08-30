@@ -7,6 +7,8 @@ import { RARITY_META } from "@/features/card/rarity";
 import { ThemeSection } from "./ThemeSection";
 import { SacrificeGrid } from "./SacrificeGrid";
 import { CategoryPicker } from "./CategoryPicker";
+import { coverCard } from "./category-cover";
+import { CardImage } from "@/features/card/CardImage";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
 import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
@@ -112,6 +114,7 @@ export function GalaxyView({
       <div className="flex flex-col gap-6">
         <PlaceBar
           title={open.theme.name}
+          cover={coverCard(open)?.card.imageUrl}
           progress={open.progress}
           onBack={() => go(HUB)}
         />
@@ -179,12 +182,27 @@ function BurnDoor({ count, onOpen }: { count: number; onOpen: () => void }) {
 }
 
 /** The one sticky layer a place is allowed: the way back, and where you are. */
+/**
+ * The sticky bar inside a category or the burn pile: one way back, where you
+ * are, and how far along.
+ *
+ * #122 gave it the category's cover thumbnail. The bar was pure text, and #108
+ * moved the category heading INTO it — so for a child who cannot yet read the
+ * name, it said nothing about where they were standing. It is sticky, so it
+ * persists through a 30-card scroll: not arrival confirmation (they just tapped
+ * the tile) but a persistent *where am I*, which is exactly when a picture beats
+ * a word. Decorative (`alt=""`) because `title` already carries the name, and no
+ * new sticky layer — the two-layer budget is untouched.
+ */
 function PlaceBar({
   title,
+  cover,
   progress,
   onBack,
 }: {
   title: string;
+  /** The category's cover art; absent for the burn pile, which is no category. */
+  cover?: string;
   progress?: { owned: number; total: number; complete: boolean };
   onBack: () => void;
 }) {
@@ -207,6 +225,15 @@ function PlaceBar({
       >
         ← All categories
       </button>
+      {cover ? (
+        <CardImage
+          src={cover}
+          alt=""
+          dim={64}
+          loading="lazy"
+          className="h-7 w-7 shrink-0 rounded-md object-cover"
+        />
+      ) : null}
       <span className="display min-w-0 flex-1 truncate text-lg">{title}</span>
       {progress ? (
         <span
