@@ -4,7 +4,7 @@ import type { BinderCard, ThemeSection } from "@/lib/types";
  * Which card's art fronts a category tile in the picker (#107, reversed by
  * #122). PURE → property-tested.
  *
- * `Theme` is `{ id, name, sortOrder }` — it carries no art of its own, so a
+ * `Theme` is `{ id, name }` — it carries no art of its own, so a
  * picture-first picker has to borrow one from the category's cards. It borrows
  * the theme's **alphabetically first legendary**: the same card every time,
  * owned or not.
