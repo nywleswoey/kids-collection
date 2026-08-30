@@ -84,11 +84,13 @@ import { coverCard } from "./category-cover";
  * on the screen. The two-line box is fixed height so a one-line name does not
  * raise its tile's bar out of line with its neighbours'.
  *
- * The 🏆 banner wraps rather than shrinking. "🏆 Set complete!" measures ~108px
- * against ~106px of tile, so something had to give; shrinking the type (~9.6px,
- * for a child) or cutting to a bare 🏆 would both spend the language match #107
- * bought. Two lines cost ~28px of art, and only in the completed state — where
- * covering art matters least and a louder tile is the point.
+ * The 🏆 banner keeps its full wording. Measured at a 390px viewport it
+ * renders full-size on one line at 3 columns, unclipped; wrapping is left
+ * available as headroom rather than being what happens. Shrinking the type
+ * (~9.6px, for a child) or cutting to a bare 🏆 would both spend the language
+ * match #107 bought, so neither is on the table even if a longer banner ever
+ * does wrap — and it would only do so in the completed state, where covering
+ * art matters least and a louder tile is the point.
  *
  * Net: 32 themes now scroll ~2,070px, LESS than today's 18 themes at ~2,240px.
  * The pool nearly doubles and the hub does not get longer.
