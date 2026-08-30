@@ -3748,7 +3748,8 @@
           "rarity": "rare",
           "eduText": "Ginkgos have grown on Earth for over 200 million years, so dinosaurs walked under trees like this.",
           "imagePrompt": "a single short ginkgo branch with small fan-shaped leaves turned golden yellow, its whole length visible from end to end, with nothing behind it but plain blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Ginkgo_biloba"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ginkgo_biloba",
+          "provider": "pollinations"
         },
         {
           "name": "Holly",
@@ -3769,7 +3770,8 @@
           "rarity": "rare",
           "eduText": "The shiny brown conker inside the spiky case is a seed, not a nut, and it is too bitter to eat.",
           "imagePrompt": "a single short horse chestnut branch with a spiky green case split open to show two shiny brown conkers inside, its whole length visible from end to end, with nothing behind it but plain blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Aesculus_hippocastanum"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aesculus_hippocastanum",
+          "provider": "pollinations"
         },
         {
           "name": "Olive Tree",
@@ -3890,7 +3892,8 @@
           "imagePrompt": "a single short angsana branch with a few small green leaflets and two clusters of tiny bright yellow flowers, the bare brown branch clearly visible along its whole length, with plain blue sky all around it",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pterocarpus_indicus"
         }
-      ]
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
