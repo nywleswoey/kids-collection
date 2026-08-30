@@ -1,0 +1,17 @@
+-- #122, reversing its own first answer.
+--
+-- An earlier attempt gave `themes` a `cover_url` column holding per-theme cover
+-- art. That art is gone: a category's tile is now fronted by the theme's first
+-- LEGENDARY CARD, derived in `category-cover.ts` with no column, no blob and no
+-- seed field. Generated covers charged every future theme an authored prompt, a
+-- bake-off row and a human screening pick, forever; two themes landed on main
+-- while that work was open, each owing exactly that.
+--
+-- `IF EXISTS` because this migration must be a no-op on a database that never
+-- had the column. It DID reach one — the column was created and filled with 16
+-- URLs on the production database before the reversal — so this is a real drop
+-- there and a no-op everywhere else.
+--
+-- The 16 objects under `covers/` in Blob are NOT removed here; a migration
+-- cannot reach the store. They are orphaned and `--blob-budget` will see them.
+ALTER TABLE "themes" DROP COLUMN IF EXISTS "cover_url";
