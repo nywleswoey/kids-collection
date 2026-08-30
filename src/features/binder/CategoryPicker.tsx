@@ -17,12 +17,14 @@ import { coverCard } from "./category-cover";
  * the reward modal celebrates it with, so the tile and the celebration are one
  * promise rather than two marks the child has to learn separately.
  *
- * #122: the tile's face is the theme's first legendary, owned or not — a
- * LANDMARK, the same picture on every visit. It used to be the child's rarest
- * owned card, which meant a category they had not started rendered a neutral 🪐
- * and told them nothing at the one moment they most needed to tell categories
- * apart. That placeholder is gone rather than restyled: `coverCard` is total for
- * any non-empty category, so there is no state left for it to cover.
+ * #122: the tile's face is the theme's first legendary — since #123's grid
+ * order, the alphabetically first one; `category-cover.ts` owns the rule —
+ * owned or not, a LANDMARK showing the same picture on every visit. It used to
+ * be the child's rarest owned card, which meant a category they had not started
+ * rendered a neutral 🪐 and told them nothing at the one moment they most needed
+ * to tell categories apart. That placeholder is gone rather than restyled:
+ * `coverCard` is total for any non-empty category, so there is no state left for
+ * it to cover.
  */
 export function CategoryPicker({
   sections,
