@@ -19,6 +19,7 @@ import { isPickable, type SwapTier } from "./board";
  */
 export type Receiver = { kind: "friend"; name: string } | { kind: "me" };
 
+/** Receiver constant representing the active child ("ME" in UI copy). */
 export const ME: Receiver = { kind: "me" };
 
 export interface BandCopy {

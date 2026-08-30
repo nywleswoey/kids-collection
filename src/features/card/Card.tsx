@@ -6,6 +6,11 @@ import { rarityClass, RARITY_LABEL } from "./rarity";
 import { useCardTilt } from "./useCardTilt";
 import "./card.css";
 
+/**
+ * Full card display with art, name, rarity badge, and fun fact. Supports tilt
+ * and holographic effects when interactive. Shows optional count badge for
+ * duplicates. Rarity-styled frame and glow.
+ */
 export function Card({
   card,
   interactive = false,

@@ -49,6 +49,7 @@ export { aiHorde } from "./ai-horde";
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
 export const PROVIDERS: readonly ImageProvider[] = [pollinations(), cloudflareSdxl(), aiHorde()];
 
+/** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
 
 /** The default fan-out: bake-off lanes only, escape hatches excluded (#71). */
@@ -68,6 +69,7 @@ export function providerById(id: string): ImageProvider | undefined {
   return PROVIDERS.find((p) => p.id === id);
 }
 
+/** Error thrown when provider selection or configuration fails during seeding. */
 export class ProviderSelectionError extends Error {
   constructor(message: string) {
     super(message);

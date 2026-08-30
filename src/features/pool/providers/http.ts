@@ -142,6 +142,7 @@ export function finishGeneration(
   return { bytes, format: measured.format, model };
 }
 
+/** Sleep helper for async provider polling (injectable for testing). */
 export function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }

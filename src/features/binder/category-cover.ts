@@ -6,8 +6,15 @@ import type { BinderCard, ThemeSection } from "@/lib/types";
  *
  * `Theme` is `{ id, name, sortOrder }` — it carries no art of its own, so a
  * picture-first picker has to borrow one from the category's cards. It borrows
- * the theme's **first legendary in catalog order**: the same card every time,
+ * the theme's **alphabetically first legendary**: the same card every time,
  * owned or not.
+ *
+ * That used to read "first legendary in catalog order", and #123 found nothing
+ * underneath it: `catalog.listCards` carries no `ORDER BY`, so "catalog order"
+ * was Postgres heap order — stable in practice for an insert-only table, and
+ * guaranteed by nothing. `orderCategoryCards` now runs inside the binder
+ * service, ahead of every reader of `section.cards`, so "the same card every
+ * time" is a property rather than a hope.
  *
  * ── Why not the rarest OWNED card, which is what this used to do ─────────────
  * That was a trophy, not a landmark. It showed off the best thing the child had
@@ -48,9 +55,11 @@ import type { BinderCard, ThemeSection } from "@/lib/types";
  * ── Total by construction ───────────────────────────────────────────────────
  * Every theme has exactly two legendaries (`RARITY_PYRAMID`, enforced by
  * `seed-schema.ts` on every seed command), so the first branch always hits for
- * real data. The fallback to catalog order is for a section assembled outside
- * that guarantee — a test fixture, a partially loaded theme — and exists so the
- * return is non-null and the tile never needs a placeholder branch at all. That
+ * real data. The fallback to the section's first card is for a section
+ * assembled outside that guarantee — a test fixture, a partially loaded theme —
+ * and exists so the return is non-null and the tile never needs a placeholder
+ * branch at all. Under #123's order that fallback is the alphabetically first
+ * card of the lowest rarity present, which is total either way. That
  * is what let the 🪐 fallback be deleted rather than kept as unreachable code.
  */
 export function coverCard(section: ThemeSection): BinderCard | null {

@@ -5,6 +5,11 @@ import { AVATAR_PRESETS } from "@/lib/avatars";
 import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
 import { createProfileAction, updateProfileAction } from "./actions";
 
+/**
+ * Profile creation/edit form. Handles both new profile creation and editing
+ * existing profiles. Includes name input and avatar picker. Validates name
+ * presence before submit.
+ */
 export function ProfileForm({
   initial,
   onDone,

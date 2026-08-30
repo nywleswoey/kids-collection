@@ -5,6 +5,9 @@ import { requireAdminGate } from "@/features/admin/gate";
 import { requireParent } from "@/features/auth/guard";
 import { quizService } from "@/features/quiz/quiz-service.prod";
 
+// Force dynamic rendering since this page requires database access
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardPage() {
   await requireParent(); // U2-SEC — parent-only (was inside getAdminOverview)
   await requireAdminGate(); // U4-FR1 passcode gate (defense in depth)

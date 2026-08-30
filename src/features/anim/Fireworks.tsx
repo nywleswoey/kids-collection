@@ -46,6 +46,11 @@ function build(seed: number): Spark[] {
   return sparks;
 }
 
+/**
+ * Fireworks animation component. Bump `fire` prop to launch a volley of bursts.
+ * Each burst radiates sparks from a random viewport position. Respects
+ * reduced-motion preference.
+ */
 export function Fireworks({ fire }: { fire: number }) {
   const sparks = useMemo(() => build(fire), [fire]);
   const visible = useOneShotBurst(fire, 2200);

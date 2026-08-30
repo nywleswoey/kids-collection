@@ -79,6 +79,7 @@ import type { GeneratedImage, ImageProvider, ImageSizeRequest } from "./provider
 
 const ENDPOINT = "https://image.pollinations.ai/prompt/";
 
+/** Pollinations.ai image provider adapter (free, anonymous, bake-off lane). */
 export function pollinations(opts: HttpAdapterOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   return {

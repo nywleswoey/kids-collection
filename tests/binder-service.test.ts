@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { makeBinderService } from "@/features/binder/service";
+import { coverCard } from "@/features/binder/category-cover";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import type { Catalog } from "@/features/pool/catalog";
 import type { Card, Rarity, Theme } from "@/lib/types";
@@ -51,6 +52,53 @@ describe("makeBinderService.getBinder", () => {
 
     const space = binder.themes.find((s) => s.theme.id === "t2")!;
     expect(space.progress).toMatchObject({ owned: 1, total: 1, complete: true });
+  });
+});
+
+describe("makeBinderService card order (#123)", () => {
+  it("hands every consumer one order: rarity ascending, then name", async () => {
+    // Deliberately catalog-hostile: the fake returns them best-first, the way an
+    // unordered `listCards` is free to.
+    const shuffled: Card[] = [
+      card("l", "t1", "legendary"),
+      card("e", "t1", "epic"),
+      card("c2", "t1"),
+      card("r", "t1", "rare"),
+      card("c1", "t1"),
+    ];
+    const collections = inMemoryCollectionStore({ kid: { l: 1 } });
+    const service = makeBinderService({
+      collections,
+      catalog: fakeCatalog(shuffled, [THEMES[0]!]),
+    });
+
+    const binder = await service.getBinder("kid");
+    const section = binder.themes[0]!;
+
+    expect(section.cards.map((c) => c.card.id)).toEqual(["c1", "c2", "r", "e", "l"]);
+    expect(section.cards.map((c) => c.card.rarity)).toEqual([
+      "common",
+      "common",
+      "rare",
+      "epic",
+      "legendary",
+    ]);
+  });
+
+  it("backs coverCard's 'the same card every time' (#122)", async () => {
+    const collections = inMemoryCollectionStore({ kid: {} });
+    const forwards = [card("z", "t1", "legendary"), card("a", "t1", "legendary")];
+    const one = await makeBinderService({
+      collections,
+      catalog: fakeCatalog(forwards, [THEMES[0]!]),
+    }).getBinder("kid");
+    const other = await makeBinderService({
+      collections,
+      catalog: fakeCatalog([...forwards].reverse(), [THEMES[0]!]),
+    }).getBinder("kid");
+
+    expect(coverCard(one.themes[0]!)!.card.id).toBe("a");
+    expect(coverCard(other.themes[0]!)!.card.id).toBe("a");
   });
 });
 

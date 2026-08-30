@@ -5,6 +5,9 @@ import { profileService } from "@/features/profiles/service.prod";
 import { ThemeSection } from "@/features/binder/ThemeSection";
 import { requireAdminGate } from "@/features/admin/gate";
 
+// Force dynamic rendering since this page requires database access
+export const dynamic = "force-dynamic";
+
 export default async function AdminChildBinderPage({
   params,
 }: {

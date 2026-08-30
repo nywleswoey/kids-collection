@@ -19,6 +19,11 @@ interface Streak {
   top: number; // vh start offset, %
 }
 
+/**
+ * Periodic asteroid animation component. Streaks across backdrop every 8-15
+ * seconds. Respects reduced-motion preference. Accepts optional `trigger` prop
+ * for on-demand streaks (admin panel).
+ */
 export function Asteroids({ trigger }: { trigger?: number } = {}) {
   const reduced = useReducedMotion();
   const [streak, setStreak] = useState<Streak | null>(null);

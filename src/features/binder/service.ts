@@ -1,6 +1,7 @@
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/features/pool/catalog";
 import { themeProgress } from "@/lib/logic";
+import { orderCategoryCards } from "./card-order";
 import type {
   BinderView,
   Card,
@@ -17,6 +18,15 @@ export interface BinderDeps {
  * Binder read model (U5), parameterized by its ports. Pure assembly over the
  * collection entries + catalog pool; the owned/locked/progress computation is
  * unit-testable with fakes. Prod wiring: `service.prod.ts`.
+ *
+ * #123 puts `orderCategoryCards` here rather than in `GalaxyView`, so there is
+ * exactly ONE card order in the app. Four things read `ThemeSection.cards` —
+ * the galaxy, both admin previews, and `coverCard` — and `catalog.listCards`
+ * has no `ORDER BY`, so sorting at render would have left the other three on
+ * unspecified heap order. That matters most for `coverCard`, whose promise of
+ * "the theme's first legendary… the same card every time" (#122) had nothing
+ * underneath it until this call; it now means the alphabetically first
+ * legendary, and the admin views show the child's own layout for free.
  */
 export function makeBinderService({ collections, catalog }: BinderDeps) {
   /** Assemble the active child's binder: themes with owned/locked cards + progress (D1/D2). */
@@ -37,11 +47,13 @@ export function makeBinderService({ collections, catalog }: BinderDeps) {
     let totalOwned = 0;
     const sections: ThemeSection[] = themes.map((theme) => {
       const themeCards = cards.filter((c) => c.themeId === theme.id);
-      const binderCards = themeCards.map((card) => {
-        const count = owned.get(card.id) ?? 0;
-        if (count > 0) totalOwned += 1;
-        return { card, owned: count > 0, count };
-      });
+      const binderCards = orderCategoryCards(
+        themeCards.map((card) => {
+          const count = owned.get(card.id) ?? 0;
+          if (count > 0) totalOwned += 1;
+          return { card, owned: count > 0, count };
+        }),
+      );
       const prog = themeProgress(
         entries,
         themeCards.map((c) => c.id),

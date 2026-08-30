@@ -1,6 +1,10 @@
 import { AvatarBadge } from "@/features/ui/AvatarBadge";
 import { selectProfileAction } from "./actions";
 
+/**
+ * Child profile selection card. Tappable card showing avatar and name that
+ * submits profile selection form. Used on profile picker screen.
+ */
 export function ProfileCard({
   id,
   name,

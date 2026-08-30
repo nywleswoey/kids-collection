@@ -123,6 +123,7 @@ export interface AiHordeOptions extends HttpAdapterOptions {
   pollTimeoutMs?: number;
 }
 
+/** AI Horde image provider adapter (volunteer-run, escape-hatch role, async generation with polling). */
 export function aiHorde(opts: AiHordeOptions = {}): ImageProvider {
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   const sleep = opts.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));

@@ -16,8 +16,10 @@ import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
  * longest eduText 110 chars. They are forward guards, not retro-fixes.
  */
 
-/** Every theme is exactly this shape. Set-completion rewards and the rarity
- * filters assume it, so an off-pyramid theme breaks the symmetry permanently. */
+/**
+ * Every theme is exactly this shape. Set-completion rewards and the rarity
+ * filters assume it, so an off-pyramid theme breaks the symmetry permanently.
+ */
 export const CARDS_PER_THEME = 30;
 /** Required card count per rarity for each theme (15/8/5/2 pyramid). */
 export const RARITY_PYRAMID: Record<Rarity, number> = {

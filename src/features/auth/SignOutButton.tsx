@@ -4,7 +4,10 @@ import posthog from 'posthog-js';
 import { startTransition } from 'react';
 import { signOutAction } from '@/features/profiles/actions';
 
-// posthog.reset() clears the identified session so the next anonymous visit starts fresh.
+/**
+ * Sign-out button that clears PostHog identity and triggers the sign-out action.
+ * Calls `posthog.reset()` before signing out to end the identified session.
+ */
 export function SignOutButton() {
   function handleClick() {
     posthog.reset();

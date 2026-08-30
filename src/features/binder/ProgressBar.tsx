@@ -1,3 +1,7 @@
+/**
+ * Collection progress bar showing owned/total cards for a theme. Displays
+ * animated gradient bar, numeric ratio, and trophy icon when complete.
+ */
 export function ProgressBar({
   themeId,
   owned,
