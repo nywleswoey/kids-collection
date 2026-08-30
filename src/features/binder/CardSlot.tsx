@@ -30,6 +30,11 @@ export function CardSlot({
 }) {
   if (!entry.owned) {
     // Locked stays neutral — no rarity hint (U5-Q5) — but shows the name (U6-FR1).
+    // The TILE is what U5-Q5 governs, and it still says nothing: no frame, no
+    // glow, no badge. Since #123 the grid is ordered by rarity, so a locked
+    // slot's POSITION does carry what its decoration withholds — the last two
+    // `❔` of a category are its legendaries. Deliberate, not an oversight: see
+    // `card-order.ts` for why that cost was taken.
     return (
       <div
         data-testid={`card-locked-${entry.card.id}`}
