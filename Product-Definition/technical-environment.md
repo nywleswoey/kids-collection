@@ -359,9 +359,12 @@ contradictions**; this is a strict technical superset.
 
 - **Unit** — 63 files under `tests/`, run by `pnpm test` (Vitest, node env, no database needed). 23 of
   the 63 are property-based; see below.
-- **Integration** — `pnpm test:pg` runs the store adapters against a real Postgres 17 in Docker via a
-  local Neon HTTP proxy (`tests-pg/`, 7 suites — the 5 store adapters, the pool writer, and the
-  delete-path cascades — serial execution, 30s timeout; 57 tests pass and 3 skip). The container
+- **Integration** — `pnpm test:pg` runs the store adapters, plus the reads and writes only a real
+  database can prove, against a real Postgres 17 in Docker via a local Neon HTTP proxy (serial
+  execution, 30s timeout; the only skips are the 3 `it.runIf(properties)` cases in the shared
+  contracts, off here by design because they fuzz exhaustively against the fake in `pnpm test`).
+  `tests-pg/README.md` is the inventory of what the suites cover — deliberately not re-listed here,
+  since a hand-copied list drifts (#132). The container
   **major** deliberately matches production Neon, so a contract the suite proves is a contract prod
   honours; the tag floats within the major, since Neon moves prod's minor unannounced and a pinned minor
   would match only on the day it was pinned. The `psql` doing the migrations may be older, which nothing
