@@ -4,6 +4,11 @@ Runs the shared store contracts (`tests/contracts/*`) against the **real** pg
 adapters (`src/db/stores/*.pg.ts`) — the second adapter that makes the Store seam
 real. `pnpm test` needs no database; this suite does.
 
+It also holds the cases only a real database can prove, where a fake would assert
+nothing because the behaviour under test *is* the SQL: the pool writer's upserts,
+the child reads, `listThemes`' total `ORDER BY` (`pool-order.pg.test.ts`), and the
+delete-path cascades.
+
 Because `swapCards` uses the neon-http-only `db.batch`, the adapters run unchanged
 against a local Postgres fronted by a **Neon HTTP proxy** (see `docker-compose.yml`).
 Exhaustive property fuzzing runs against the in-memory fake in `pnpm test`; this run

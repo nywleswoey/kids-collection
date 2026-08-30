@@ -1,7 +1,7 @@
 /**
  * Pull-screen category selection (Inc21 FR3/FR4).
  *
- * The catalog keeps growing (10 themes and counting), but the pull screen's chip
+ * The catalog keeps growing (18 themes and counting), but the pull screen's chip
  * row has to stay readable on a small phone. Show only the most recent ones —
  * "recent" being the theme order `listThemes()` now guarantees via
  * `themes.sort_order` (oldest first, newest last).

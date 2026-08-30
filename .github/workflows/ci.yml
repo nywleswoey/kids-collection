@@ -383,12 +383,14 @@ jobs:
       # is a container this job just created and the runner will destroy — the
       # credentials are as public as the compose file they come from.
       #
-      # 47 tests pass and 3 skip. The 3 are `it.runIf(properties)` in the shared
-      # contracts, switched off by `{ properties: false }` at each tests-pg entry
-      # point — the properties DO run, exhaustively, against the in-memory fake
-      # in `pnpm test` over on fast-gate; running them again over HTTP round
-      # trips would buy nothing but minutes. The condition is a literal in the
-      # test file, not a probe of the environment, so it means exactly the same
+      # Exactly 3 tests skip, and the count of skips is the number worth
+      # stating here — the pass count moves with every suite added, and a stale
+      # tally in a comment is worse than none. The 3 are `it.runIf(properties)`
+      # in the shared contracts, switched off by `{ properties: false }` at each
+      # tests-pg entry point — the properties DO run, exhaustively, against the
+      # in-memory fake in `pnpm test` over on fast-gate; running them again over
+      # HTTP round trips would buy nothing but minutes. The condition is a
+      # literal in the test file, not a probe of the environment, so it means the same
       # thing on a runner as on a laptop. Worth being explicit about, because a
       # skip nobody looks at is how a green run stops being evidence.
       #
