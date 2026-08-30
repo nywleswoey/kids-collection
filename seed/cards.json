@@ -3723,11 +3723,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Picea_abies"
         },
         {
-          "name": "Monkey Puzzle Tree",
+          "name": "Cannonball Tree",
           "rarity": "epic",
-          "eduText": "Its leaves are so sharp and spiky that people joked even a monkey would be puzzled climbing it.",
-          "imagePrompt": "a single monkey puzzle tree with a bare straight trunk and stiff branches covered in sharp overlapping dark green triangular scales, on green grass under a blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Araucaria_araucana"
+          "eduText": "Its heavy round fruit grow straight out of the trunk instead of the branches, and they smell sweet.",
+          "imagePrompt": "a single tree with one thick straight trunk, dozens of large round brown fruit growing in tight clusters directly on the trunk bark all the way from the ground up to the branches, green leaves above, on green grass under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Couroupita_guianensis"
         },
         {
           "name": "Oak",
@@ -3770,8 +3770,7 @@
           "rarity": "rare",
           "eduText": "The shiny brown conker inside the spiky case is a seed, not a nut, and it is too bitter to eat.",
           "imagePrompt": "a single short horse chestnut branch with a spiky green case split open to show two shiny brown conkers inside, its whole length visible from end to end, with nothing behind it but plain blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Aesculus_hippocastanum",
-          "provider": "pollinations"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aesculus_hippocastanum"
         },
         {
           "name": "Olive Tree",
@@ -3802,11 +3801,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Terminalia_catappa"
         },
         {
-          "name": "Traveller's Palm",
+          "name": "Saga Tree",
           "rarity": "common",
-          "eduText": "Its leaves grow in one flat fan, and rainwater collects in the leaf bases for a thirsty traveller.",
-          "imagePrompt": "a single traveller's palm plant seen from directly in front, its long paddle-shaped green leaves fanning out flat in one single plane from a short central trunk like a giant open fan, standing alone on green grass with nothing behind it but plain blue sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Ravenala"
+          "eduText": "Its bright red seeds are so alike in weight that goldsmiths once used them as tiny weighing stones.",
+          "imagePrompt": "one curled brown seed pod hanging from a short twig, split wide open along its length, six flat round glossy scarlet seeds sitting in a row inside the open pod, a few small green leaflets on the twig, with plain blue sky all around it",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Adenanthera_pavonina"
         },
         {
           "name": "Banana Tree",
