@@ -27,7 +27,8 @@
     "reconcile": "tsx --env-file-if-exists=.env.local scripts/reconcile/index.ts",
     "prototype:74": "tsx --env-file-if-exists=.env.local scripts/prototype-74-aihorde/index.ts",
     "prototype:79": "tsx --env-file-if-exists=.env.local scripts/prototype-79-weight/index.ts",
-    "prototype:81": "tsx --env-file-if-exists=.env.local scripts/prototype-81-frames/index.ts"
+    "prototype:81": "tsx --env-file-if-exists=.env.local scripts/prototype-81-frames/index.ts",
+    "prototype:147": "tsx --env-file-if-exists=.env.local scripts/prototype-147-lanes/index.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
