@@ -3893,6 +3893,221 @@
         }
       ],
       "provider": "cloudflare-sdxl"
+    },
+    {
+      "name": "Birds",
+      "cards": [
+        {
+          "name": "Ostrich",
+          "rarity": "legendary",
+          "eduText": "The ostrich is the biggest bird alive. It cannot fly, but it runs faster than any other bird and lays the biggest eggs.",
+          "imagePrompt": "a single tall ostrich with fluffy black and white feathers and long pink legs, standing on dry golden grass under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_ostrich"
+        },
+        {
+          "name": "Bee Hummingbird",
+          "rarity": "legendary",
+          "eduText": "The bee hummingbird of Cuba is the smallest bird in the world, only about 5 or 6 centimetres long.",
+          "imagePrompt": "a single tiny round hummingbird with a shimmering pink head and throat, a blue-grey back and a thin straight beak, perched on a thin twig with plain blue sky behind it, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bee_hummingbird"
+        },
+        {
+          "name": "Bald Eagle",
+          "rarity": "epic",
+          "eduText": "The bald eagle is not bald. Its name comes from an older word for white-headed. It is the national bird of the USA.",
+          "imagePrompt": "a single bald eagle with a white head, a yellow hooked beak and dark brown body feathers, perched on a thick tree branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bald_eagle"
+        },
+        {
+          "name": "Peacock",
+          "rarity": "epic",
+          "eduText": "Only male peafowl, called peacocks, grow the huge tail covered in eye-spots. They fan it out to impress females.",
+          "imagePrompt": "a single blue peacock with its huge green tail fanned out wide and covered in eye-spots, standing on green grass under a blue sky, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Indian_peafowl"
+        },
+        {
+          "name": "Toucan",
+          "rarity": "epic",
+          "eduText": "A toco toucan's giant orange beak is very light because it is hollow inside, and it helps the bird keep cool.",
+          "imagePrompt": "a single toco toucan with a huge bright orange beak, a black body and a white throat, perched on a branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Toco_toucan"
+        },
+        {
+          "name": "Wandering Albatross",
+          "rarity": "epic",
+          "eduText": "The wandering albatross has the widest wings of any living bird, over 3 metres from tip to tip, and glides for hours.",
+          "imagePrompt": "a single huge white seabird with long black-tipped wings spread out wide to both sides, gliding low over blue ocean waves under a blue sky, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wandering_albatross"
+        },
+        {
+          "name": "Scarlet Macaw",
+          "rarity": "epic",
+          "eduText": "Scarlet macaws are big red, yellow and blue parrots from the rainforests of Central and South America.",
+          "imagePrompt": "a single scarlet macaw with bright red, yellow and blue feathers and a long tail, perched on a branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Scarlet_macaw"
+        },
+        {
+          "name": "Blue-footed Booby",
+          "rarity": "rare",
+          "eduText": "Male blue-footed boobies show off their bright blue feet in a strutting dance. The blue comes from the fish they eat.",
+          "imagePrompt": "a single blue-footed booby with a white chest, brown wings and big bright blue webbed feet, standing on a grey rock by the sea under a blue sky, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Blue-footed_booby"
+        },
+        {
+          "name": "Kakapo",
+          "rarity": "rare",
+          "eduText": "The kakapo of New Zealand is the heaviest parrot in the world. It cannot fly, and only a few hundred are left.",
+          "imagePrompt": "a single very chubby round moss-green parrot sitting low on a mossy forest floor, with a pale yellow-green face of soft whiskery feathers and a big grey beak, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kakapo"
+        },
+        {
+          "name": "Hoopoe",
+          "rarity": "rare",
+          "eduText": "The hoopoe can raise the tall orange crest on its head, and its soft call sounds like oop-oop-oop.",
+          "imagePrompt": "a tall fan-shaped orange crest with black tips spread open on top of the head of a single small cinnamon-orange hoopoe with black and white striped wings and a long thin downward-curved beak, standing on green grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eurasian_hoopoe"
+        },
+        {
+          "name": "Puffin",
+          "rarity": "rare",
+          "eduText": "An Atlantic puffin can hold a row of small fish in its colourful beak, using its tongue to keep them in place.",
+          "imagePrompt": "a single Atlantic puffin with a black and white body and a bright orange striped beak, standing on a grassy cliff top under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Atlantic_puffin"
+        },
+        {
+          "name": "Cassowary",
+          "rarity": "rare",
+          "eduText": "The cassowary has a tall helmet on its head called a casque. It eats fallen fruit on the rainforest floor.",
+          "imagePrompt": "a single tall black cassowary with a bright blue neck and a tall brown horn-like crest on its head, standing in a sunny green rainforest, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Southern_cassowary"
+        },
+        {
+          "name": "Rhinoceros Hornbill",
+          "rarity": "rare",
+          "eduText": "The rhinoceros hornbill has a bright orange horn curving up from its beak. It is the state bird of Sarawak in Malaysia.",
+          "imagePrompt": "a single large black hornbill bird with a big yellow beak and an upturned orange horn on top of it, perched on a branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rhinoceros_hornbill"
+        },
+        {
+          "name": "Kookaburra",
+          "rarity": "rare",
+          "eduText": "The laughing kookaburra of Australia is a big kingfisher. Its loud call sounds just like someone laughing.",
+          "imagePrompt": "a single laughing kookaburra with a big head, a cream-white chest, a brown stripe through its eye, a thick strong beak and a blue patch on its wings, perched on a eucalyptus branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Laughing_kookaburra"
+        },
+        {
+          "name": "Arctic Tern",
+          "rarity": "rare",
+          "eduText": "Arctic terns fly from the Arctic to the Antarctic and back every year, the longest migration of any animal.",
+          "imagePrompt": "a single white arctic tern with a black cap and a bright red beak, standing on a grey rock by the sea under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Arctic_tern"
+        },
+        {
+          "name": "Mallard",
+          "rarity": "common",
+          "eduText": "Female mallards give the loud classic quack. Males have a quieter, deeper quack. Most farm ducks come from mallards.",
+          "imagePrompt": "a single male mallard duck with a shiny green head and a yellow beak, swimming on a calm blue pond, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mallard"
+        },
+        {
+          "name": "House Sparrow",
+          "rarity": "common",
+          "eduText": "House sparrows live close to people on every continent except Antarctica, and love to take dust baths.",
+          "imagePrompt": "a single small brown and grey house sparrow with a black bib, perched on a wooden fence post against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/House_sparrow"
+        },
+        {
+          "name": "Rock Pigeon",
+          "rarity": "common",
+          "eduText": "Homing pigeons can find their way home from far away, so people once used them to carry letters.",
+          "imagePrompt": "a single grey rock pigeon with a shiny green and purple neck, standing on a stone pavement in daylight, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rock_dove"
+        },
+        {
+          "name": "European Robin",
+          "rarity": "common",
+          "eduText": "European robins sing almost all year, and they sometimes follow gardeners to grab worms from freshly dug soil.",
+          "imagePrompt": "a single round little European robin with an orange-red face and chest, perched on a mossy stone wall in a green garden, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/European_robin"
+        },
+        {
+          "name": "Northern Cardinal",
+          "rarity": "common",
+          "eduText": "The male northern cardinal is bright red all over. It is the state bird of seven US states.",
+          "imagePrompt": "a single bright red northern cardinal with a pointed crest and a black face mask, perched on a snowy branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Northern_cardinal"
+        },
+        {
+          "name": "Blue Jay",
+          "rarity": "common",
+          "eduText": "Blue jays can copy hawk calls so well it is hard to tell them apart. They hide acorns to eat later.",
+          "imagePrompt": "a single blue jay with a blue crest, blue wings with black and white stripes and a white chest, perched on a branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Blue_jay"
+        },
+        {
+          "name": "Raven",
+          "rarity": "common",
+          "eduText": "Common ravens are some of the smartest birds. They can solve puzzles and even copy human words.",
+          "imagePrompt": "a single large glossy black raven with a thick black beak, standing on a grey rock in daylight under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_raven"
+        },
+        {
+          "name": "Rooster",
+          "rarity": "common",
+          "eduText": "A rooster crows loudly to tell other roosters that this is his home. Chickens came from the red junglefowl of Asia.",
+          "imagePrompt": "a single proud rooster with a red comb, orange and brown feathers and a green curved tail, standing on green grass under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chicken"
+        },
+        {
+          "name": "Mute Swan",
+          "rarity": "common",
+          "eduText": "Mute swans are not really silent. They hiss and snort, and their wings make a loud humming sound as they fly.",
+          "imagePrompt": "a single white mute swan with an orange beak and a gracefully curved neck, swimming on a calm blue lake, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mute_swan"
+        },
+        {
+          "name": "Woodpecker",
+          "rarity": "common",
+          "eduText": "Woodpeckers peck trees to find insects and drum on trees to talk. A long sticky tongue helps them grab food.",
+          "imagePrompt": "a single black and white woodpecker with a bright red patch on its head, clinging to the side of a tree trunk in daylight, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Woodpecker"
+        },
+        {
+          "name": "Pelican",
+          "rarity": "common",
+          "eduText": "A pelican scoops up fish and water in the stretchy pouch under its beak, then tips the water out before swallowing.",
+          "imagePrompt": "a single white pelican with a long orange beak and a big stretchy pouch underneath, standing on a wooden jetty by blue water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pelican"
+        },
+        {
+          "name": "Kingfisher",
+          "rarity": "common",
+          "eduText": "The common kingfisher dives into rivers to catch fish. Its eyes are made to see fish under the water.",
+          "imagePrompt": "a single small common kingfisher with a bright blue back, an orange chest and a long pointed beak, perched on a branch over a river, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_kingfisher"
+        },
+        {
+          "name": "Javan Myna",
+          "rarity": "common",
+          "eduText": "Javan mynas came to Singapore about 100 years ago as caged birds. They are bold and not very afraid of people.",
+          "imagePrompt": "a single black Javan myna with a yellow beak, yellow legs and white patches on its wings, standing on green grass in daylight, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Javan_myna"
+        },
+        {
+          "name": "Budgerigar",
+          "rarity": "common",
+          "eduText": "Wild budgerigars in Australia are green and yellow. Pet budgies have been bred in blue, white and many other colours.",
+          "imagePrompt": "a single small green and yellow budgerigar with black wavy stripes on its wings, perched on a thin branch against a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Budgerigar"
+        },
+        {
+          "name": "Seagull",
+          "rarity": "common",
+          "eduText": "Gulls can drink seawater. Special glands above their eyes take out the salt, and it drips out through their nostrils.",
+          "imagePrompt": "a single white and grey seagull with a yellow beak, standing on a wooden post by the sea under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gull"
+        }
+      ]
     }
   ]
 }
