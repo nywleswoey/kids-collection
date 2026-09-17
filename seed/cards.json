@@ -4192,11 +4192,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Pretzel"
         },
         {
-          "name": "Baklava",
+          "name": "Hummus",
           "rarity": "rare",
-          "eduText": "Baklava is made from many paper-thin layers of pastry, filled with chopped nuts and soaked in sweet syrup or honey.",
-          "imagePrompt": "a single golden brown square of baklava, a sweet crispy pastry sprinkled with bright green crushed pistachios, sitting alone in the middle of a small white plate on a plain wooden table",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Baklava"
+          "eduText": "Hummus is a smooth dip made from mashed chickpeas, sesame paste, lemon and garlic. People scoop it up with bread.",
+          "imagePrompt": "a single round white bowl of smooth creamy hummus with a swirl of golden olive oil and a sprinkle of red paprika in the middle, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hummus"
         },
         {
           "name": "Jollof Rice",
@@ -4318,11 +4318,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Couscous"
         },
         {
-          "name": "Bunny Chow",
+          "name": "Injera",
           "rarity": "common",
-          "eduText": "Bunny chow comes from Durban in South Africa. It is a hollowed-out loaf of bread filled with curry, with no bunny in it.",
-          "imagePrompt": "a big square loaf of golden-crusted white bread with a hole cut in the top, full of orange curry, on a round white plate on a plain wooden table",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Bunny_chow"
+          "eduText": "Injera is a big, soft, spongy flatbread from Ethiopia. Food is served on top, and you tear off pieces to scoop it up.",
+          "imagePrompt": "a wide round metal tray lined with a thin grey-brown pancake full of tiny holes, topped with small heaps of red lentil stew, yellow split peas and green spinach, with rolled-up pancakes at the edge, seen from above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Injera"
         }
       ]
     }
