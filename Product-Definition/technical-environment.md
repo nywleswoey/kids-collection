@@ -371,7 +371,7 @@ contradictions**; this is a strict technical superset.
   here depends on. ⚠️ **Known flake**: the suite intermittently stalls on one test until the 30s timeout
   fires. Reproduced on Postgres 16 and 17 alike, so it is not a property of the version; seen only on
   local Docker Desktop so far, never on a CI runner.
-- **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds 6 store
+- **Contract** — not Pact-style, but a genuine contract suite: `tests/contracts/` holds the store
   conformance specs run against **both** adapters (in-memory fake in Vitest, pg adapter in `test:pg`),
   proving they agree on the atomicity contracts, plus the `ImageProvider` spec
   (`image-provider-contract.ts`) — structural half against every provider including the in-memory fake,
@@ -382,12 +382,13 @@ contradictions**; this is a strict technical superset.
   keys in `.env.local`; it reports which providers it skipped rather than passing on an empty set.
 - **Property-based — REQUIRED and BLOCKING** — covering the logic where a wrong answer costs the
   children real cards. The inventory this constraint is stated over is a glob, not a list:
-  **`tests/**/*.pbt.test.ts`**, and `ls tests/*.pbt.test.ts` is what it covers today. Counts and module
-  names are deliberately not copied here — they were, and drifted on nearly every test commit (#132).
-  The rule is checked instead: **every file calling `fc.assert` is a `*.pbt.test.ts`**, or a shared
-  contract that one imports. `tests/pbt-inventory.test.ts` fails `pnpm test` otherwise, so a property
-  in a misnamed `foo.test.ts` — which would run and pass while sitting outside the inventory, as nearly
-  shipped in #110 — goes red. **Now enforced in CI** — see *CI/CD Gates*, including the depth it runs at.
+  **`tests/**/*.pbt.test.ts`**, and `find tests -name '*.pbt.test.ts'` is what it covers today. Counts
+  and module names are deliberately not copied here — they were, and drifted on nearly every test commit
+  (#132). The rule is checked instead: **every file that builds a fast-check property is a
+  `*.pbt.test.ts` under `tests/`**, or a contract suite spec that one imports. `tests/pbt-inventory.test.ts`
+  sweeps `tests/`, `tests-pg/` and `tests-live/` and fails `pnpm test` otherwise, so a property in a
+  misnamed `foo.test.ts` — which would run and pass while sitting outside the inventory, as nearly shipped
+  in #110 — goes red. **Now enforced in CI** — see *CI/CD Gates*, including the depth it runs at.
 
 **Explicitly not required**: end-to-end (no browser harness; the manual visual check covers it),
 performance/load (three users — there is no load), SAST/DAST (no public attack surface; the app sits

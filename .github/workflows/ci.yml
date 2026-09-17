@@ -228,7 +228,7 @@ jobs:
       # No counts here, on purpose: they were hand-copied, drifted on nearly every
       # test commit, and could not catch a property in a misnamed file (#132).
       # tests/pbt-inventory.test.ts checks the rule the counts stood in for — any
-      # file calling `fc.assert` outside that glob fails this step. The suite
+      # file building a fast-check property outside that glob fails this step. The suite
       # still passes with every environment variable unset — the one below only
       # makes the search deeper, never makes it possible.
       #
