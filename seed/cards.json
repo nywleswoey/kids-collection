@@ -4112,6 +4112,7 @@
     },
     {
       "name": "Food Around the World",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Pizza",
