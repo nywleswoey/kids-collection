@@ -392,6 +392,398 @@
         "reviewed": true
       }
     },
+    "Birds": {
+      "Arctic Tern": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-arctic-tern-754cdf74-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bald Eagle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-bald-eagle-4c9e08aa-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bee Hummingbird": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-bee-hummingbird-ffd1445c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Blue Jay": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-blue-jay-9c90a723-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Blue-footed Booby": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-blue-footed-booby-74b07bdb-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Budgerigar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-budgerigar-df170fb2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cassowary": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-cassowary-16c54e99-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "European Robin": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-european-robin-e322f735-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hoopoe": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-hoopoe-2bdb03ec-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "House Sparrow": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-house-sparrow-9bcaf3c1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Javan Myna": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-javan-myna-00992ae7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Kakapo": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-kakapo-51dd38a0-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Kingfisher": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-kingfisher-57c9ee64-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Kookaburra": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-kookaburra-89a334d3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mallard": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-mallard-6c82ba53-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mute Swan": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-mute-swan-61d975e2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Northern Cardinal": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-northern-cardinal-be42e9d3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ostrich": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-ostrich-fdc73af3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Peacock": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-peacock-8dc60d39-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pelican": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-pelican-8965e87a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Puffin": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-puffin-4cdf0887-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Raven": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-raven-56bebca2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rhinoceros Hornbill": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-rhinoceros-hornbill-4a57e320-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rock Pigeon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-rock-pigeon-ba321d75-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rooster": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-rooster-9576df21-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Scarlet Macaw": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-scarlet-macaw-420b8d44-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Seagull": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-seagull-a3b0ad70-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Toucan": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-toucan-2252e5ac-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Wandering Albatross": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-wandering-albatross-20455c9c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Woodpecker": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "birds-woodpecker-369fdcbb-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
+    },
     "Land Machines": {
       "Ambulance": {
         "provider": "cloudflare-sdxl",
