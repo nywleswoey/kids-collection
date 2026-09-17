@@ -784,6 +784,398 @@
         "reviewed": true
       }
     },
+    "Food Around the World": {
+      "Bibimbap": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-bibimbap-136a11da-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Chicken Rice": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-chicken-rice-fb745629-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Chilli Crab": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-chilli-crab-962346e4-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Chocolate": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-chocolate-89f907bd-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Couscous": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-couscous-e7fe8a00-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Croissant": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-croissant-b1037ce5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Dumplings": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-dumplings-60d8d96a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Empanada": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-empanada-8bd6c28f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Falafel": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-falafel-3f18a883-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Fish and Chips": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-fish-and-chips-f263fd16-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hamburger": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-hamburger-cbdec7b5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hummus": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-hummus-13758448-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Injera": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-injera-240fd0bb-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Jollof Rice": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-jollof-rice-8bc8fe56-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Kaya Toast": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-kaya-toast-08222e2c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Laksa": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-laksa-5ec98969-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Mochi": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-mochi-4c0fee16-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pad Thai": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-pad-thai-75568710-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Paella": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-paella-56ca0d67-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pavlova": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-pavlova-5ebf2746-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pho": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-pho-894eb60e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pizza": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-pizza-788e4fd5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Popcorn": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-popcorn-ac63dd76-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pretzel": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-pretzel-7b81428a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Roti Prata": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-roti-prata-8d0baaa6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Samosa": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-samosa-31d8b25b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Spaghetti": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-spaghetti-a0d6f145-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sushi": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-sushi-6a282c9b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tacos": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-tacos-acba313c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Waffle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "food-around-the-world-waffle-1ea3b94f-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
+    },
     "Land Machines": {
       "Ambulance": {
         "provider": "cloudflare-sdxl",
