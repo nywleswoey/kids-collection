@@ -4109,6 +4109,221 @@
         }
       ],
       "provider": "cloudflare-sdxl"
+    },
+    {
+      "name": "Food Around the World",
+      "cards": [
+        {
+          "name": "Pizza",
+          "rarity": "legendary",
+          "eduText": "Modern pizza comes from Naples in Italy. The Margherita is said to be named after Queen Margherita, who visited in 1889.",
+          "imagePrompt": "a single round pizza with bubbling tomato sauce, melted white mozzarella and green basil leaves, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pizza"
+        },
+        {
+          "name": "Chocolate",
+          "rarity": "legendary",
+          "eduText": "The Aztecs used cacao beans as money and drank chocolate as a bitter, spicy drink, long before anyone made a bar.",
+          "imagePrompt": "a single thick bar of milk chocolate with one corner snapped off, lying on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chocolate"
+        },
+        {
+          "name": "Sushi",
+          "rarity": "epic",
+          "eduText": "Long ago, fish was packed in rice so it would not go bad. That idea grew into sushi, a famous food of Japan.",
+          "imagePrompt": "three pieces of salmon nigiri sushi side by side, each a small block of white rice topped with a slice of pink salmon, on a small wooden board in the middle of a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sushi"
+        },
+        {
+          "name": "Croissant",
+          "rarity": "epic",
+          "eduText": "The croissant grew from the Austrian kipferl. French bakers made it flaky by folding butter into the dough many times.",
+          "imagePrompt": "a single golden flaky croissant with a curved crescent shape, on a small white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Croissant"
+        },
+        {
+          "name": "Tacos",
+          "rarity": "epic",
+          "eduText": "In Mexico, tacos are often made with soft corn tortillas, which people there ate long before Europeans arrived.",
+          "imagePrompt": "three soft corn tacos filled with meat, chopped onion and green herbs, standing side by side on a round white plate, seen from the side",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taco"
+        },
+        {
+          "name": "Dumplings",
+          "rarity": "epic",
+          "eduText": "Families in northern China fold dumplings together for Chinese New Year, shaped like old Chinese silver money for luck.",
+          "imagePrompt": "a round bamboo steamer basket filled with plump white pleated dumplings, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jiaozi"
+        },
+        {
+          "name": "Chilli Crab",
+          "rarity": "epic",
+          "eduText": "In 1956, a couple in Singapore sold crab in a sweet, spicy chilli and tomato sauce from a pushcart.",
+          "imagePrompt": "a whole bright red cooked crab covered in thick orange chilli sauce, in a wide shallow white bowl on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chilli_crab"
+        },
+        {
+          "name": "Paella",
+          "rarity": "rare",
+          "eduText": "Paella comes from Valencia in Spain and is named after the wide, flat pan it is cooked in.",
+          "imagePrompt": "a wide flat round pan full of yellow saffron rice with green peas and red peppers, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Paella"
+        },
+        {
+          "name": "Pad Thai",
+          "rarity": "rare",
+          "eduText": "During World War II, Thailand asked people to eat more rice noodles. Pad thai became one of its national dishes.",
+          "imagePrompt": "a round white plate piled with stir-fried rice noodles, shrimp, bean sprouts and a wedge of lime, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pad_thai"
+        },
+        {
+          "name": "Laksa",
+          "rarity": "rare",
+          "eduText": "Laksa is a spicy noodle soup from Peranakan cooking. Singapore's version has a rich orange coconut curry broth.",
+          "imagePrompt": "a deep round bowl of orange coconut curry noodle soup topped with prawns, half a boiled egg and green herbs, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Laksa"
+        },
+        {
+          "name": "Pretzel",
+          "rarity": "rare",
+          "eduText": "Pretzels are said to have been made by a monk, who crossed strips of dough to look like hands praying.",
+          "imagePrompt": "a single big shiny golden brown soft pretzel twisted into a knot and sprinkled with coarse salt, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pretzel"
+        },
+        {
+          "name": "Baklava",
+          "rarity": "rare",
+          "eduText": "Baklava is made from many paper-thin layers of pastry, filled with chopped nuts and soaked in sweet syrup or honey.",
+          "imagePrompt": "a single golden brown square of baklava, a sweet crispy pastry sprinkled with bright green crushed pistachios, sitting alone in the middle of a small white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Baklava"
+        },
+        {
+          "name": "Jollof Rice",
+          "rarity": "rare",
+          "eduText": "People in Ghana and Nigeria have a friendly rivalry over whose jollof rice is best, nicknamed the Jollof Wars.",
+          "imagePrompt": "a round white plate heaped with bright orange-red tomato rice and a few slices of fried plantain, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jollof_rice"
+        },
+        {
+          "name": "Pavlova",
+          "rarity": "rare",
+          "eduText": "Pavlova is a meringue cake named after the Russian ballerina Anna Pavlova. Australia and New Zealand both claim it.",
+          "imagePrompt": "a single round white meringue cake topped with whipped cream, sliced strawberries and kiwi fruit, on a white cake plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pavlova_(cake)"
+        },
+        {
+          "name": "Bibimbap",
+          "rarity": "rare",
+          "eduText": "Bibimbap means mixed rice in Korean. Rice is topped with vegetables and an egg, then stirred together before eating.",
+          "imagePrompt": "a round stone bowl of white rice topped with neat colorful piles of vegetables and a fried egg in the middle, on a plain wooden table, seen from above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bibimbap"
+        },
+        {
+          "name": "Hamburger",
+          "rarity": "common",
+          "eduText": "The hamburger is named after the city of Hamburg in Germany, but it became famous in the United States.",
+          "imagePrompt": "a single tall hamburger with a sesame seed bun, a beef patty, cheese, lettuce and tomato, on a plain wooden table, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hamburger"
+        },
+        {
+          "name": "Popcorn",
+          "rarity": "common",
+          "eduText": "Popcorn pops because the water inside each kernel turns to steam and bursts its hard shell open.",
+          "imagePrompt": "a plain red paper tub overflowing with fluffy white popcorn, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Popcorn"
+        },
+        {
+          "name": "Spaghetti",
+          "rarity": "common",
+          "eduText": "Spaghetti means little strings in Italian. It is made from wheat and water.",
+          "imagePrompt": "a round white plate of spaghetti piled in a neat swirl with red tomato sauce and a sprinkle of cheese, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spaghetti"
+        },
+        {
+          "name": "Chicken Rice",
+          "rarity": "common",
+          "eduText": "Chicken rice was made by people from Hainan in China who moved to Southeast Asia. It is a national dish of Singapore.",
+          "imagePrompt": "a round white plate with slices of smooth poached chicken beside a dome of yellowish rice and a few cucumber slices, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hainanese_chicken_rice"
+        },
+        {
+          "name": "Kaya Toast",
+          "rarity": "common",
+          "eduText": "Kaya is a sweet jam of coconut milk, eggs and sugar. In Singapore it is spread on toast with butter for breakfast.",
+          "imagePrompt": "a stack of two crispy toast triangles sandwiching green kaya jam and a thick slice of butter, on a small white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coconut_jam"
+        },
+        {
+          "name": "Roti Prata",
+          "rarity": "common",
+          "eduText": "Roti prata dough is flipped and stretched very thin, then folded and fried on a hot flat griddle until crispy.",
+          "imagePrompt": "two round golden crispy flatbreads on a round metal plate beside a small bowl of curry, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Roti_prata"
+        },
+        {
+          "name": "Samosa",
+          "rarity": "common",
+          "eduText": "Samosas are crispy triangle pastries with a spicy filling. They reached India from the Middle East and Central Asia.",
+          "imagePrompt": "three golden crispy triangle-shaped samosas on a round white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Samosa"
+        },
+        {
+          "name": "Falafel",
+          "rarity": "common",
+          "eduText": "Falafel are crunchy fried balls made from ground chickpeas or fava beans, eaten all over the Middle East.",
+          "imagePrompt": "a small pile of round crunchy brown falafel balls on a round white plate with a little bowl of white dip, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Falafel"
+        },
+        {
+          "name": "Mochi",
+          "rarity": "common",
+          "eduText": "Mochi is made by pounding sticky rice into a soft, stretchy dough. In Japan it is a special food at New Year.",
+          "imagePrompt": "three round soft pastel pink, white and green mochi balls on a small wooden plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mochi"
+        },
+        {
+          "name": "Waffle",
+          "rarity": "common",
+          "eduText": "A waffle gets its grid of little pockets from the patterned iron it is baked in. Belgium is famous for its waffles.",
+          "imagePrompt": "a single golden rectangular waffle with deep square pockets, dusted with white powdered sugar, on a white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Waffle"
+        },
+        {
+          "name": "Fish and Chips",
+          "rarity": "common",
+          "eduText": "Fish and chips became a favourite takeaway in Britain in the 1800s and was often wrapped in paper to carry home.",
+          "imagePrompt": "a long golden crispy fried fish fillet and a pile of thick french fries on a sheet of white paper, on a plain wooden table, seen from a little above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fish_and_chips"
+        },
+        {
+          "name": "Empanada",
+          "rarity": "common",
+          "eduText": "Empanada comes from a Spanish word meaning wrapped in bread. Dough is folded over a filling, then baked or fried.",
+          "imagePrompt": "three golden half-moon empanadas with twisted crimped edges on a round white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Empanada"
+        },
+        {
+          "name": "Pho",
+          "rarity": "common",
+          "eduText": "Pho is a Vietnamese soup of rice noodles, herbs and meat in a clear broth. It first came from northern Vietnam.",
+          "imagePrompt": "a deep round bowl of clear noodle soup with thin slices of beef, rice noodles, green herbs and a wedge of lime, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pho"
+        },
+        {
+          "name": "Couscous",
+          "rarity": "common",
+          "eduText": "Couscous is tiny balls of semolina wheat, rolled by hand and then steamed. It is a main food across North Africa.",
+          "imagePrompt": "a wide shallow clay dish heaped with fluffy yellow couscous topped with carrots, zucchini and chickpeas, on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Couscous"
+        },
+        {
+          "name": "Bunny Chow",
+          "rarity": "common",
+          "eduText": "Bunny chow comes from Durban in South Africa. It is a hollowed-out loaf of bread filled with curry, with no bunny in it.",
+          "imagePrompt": "a big square loaf of golden-crusted white bread with a hole cut in the top, full of orange curry, on a round white plate on a plain wooden table",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bunny_chow"
+        }
+      ]
     }
   ]
 }
