@@ -4107,7 +4107,8 @@
           "imagePrompt": "a single white and grey seagull with a yellow beak, standing on a wooden post by the sea under a blue sky, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Gull"
         }
-      ]
+      ],
+      "provider": "cloudflare-sdxl"
     }
   ]
 }
