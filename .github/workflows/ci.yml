@@ -5,7 +5,7 @@
 #
 # Why this file exists: Property-Based Testing is a *blocking* constraint carried
 # from the product definition, and until now it was enforced by one person
-# remembering to run `pnpm test` — 23 of the 63 test files are `*.pbt.test.ts`.
+# remembering to run `pnpm test`, over every `tests/**/*.pbt.test.ts`.
 # This workflow is what turns that discipline into mechanism.
 #
 # This file only *supplies* checks. What makes them binding is branch protection
@@ -224,12 +224,16 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm typecheck
 
-      # 329 tests across 52 files, 23 of them property-based, and 104 `fc.assert`
-      # call sites. The suite still passes with every environment variable unset
-      # — the one below only makes the search deeper, never makes it possible.
+      # Every `tests/**/*.test.ts`; the property-based ones are `*.pbt.test.ts`.
+      # No counts here, on purpose: they were hand-copied, drifted on nearly every
+      # test commit, and could not catch a property in a misnamed file (#132).
+      # tests/pbt-inventory.test.ts checks the rule the counts stood in for — any
+      # file calling `fc.assert` outside that glob fails this step. The suite
+      # still passes with every environment variable unset — the one below only
+      # makes the search deeper, never makes it possible.
       #
-      # 1000 is ten times fast-check's default, so this run explores ~100,000
-      # cases rather than ~10,000. Property-Based Testing is a *blocking*
+      # 1000 is ten times fast-check's default, so this run explores 1,000 cases
+      # per `fc.assert` site rather than 100. Property-Based Testing is a *blocking*
       # constraint (OQ-T-2), and mechanising a shallow search would close that
       # question only nominally. The runner is where depth is nearly free: nobody
       # is waiting on it, and `pg-gate` usually sets the PR's wall-clock either

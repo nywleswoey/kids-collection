@@ -66,7 +66,7 @@ Scope: source code only. Config files (`.mjs`, `.json`) and generated output are
 | Auth.js / NextAuth 5.0.0-beta.25 | Parent Google OAuth | Maintain — **see OQ-T-3** |
 | Vercel Blob 0.27 | 300 card images | Maintain |
 | Zod 3 | Profile input + seed-file schema | Maintain |
-| Vitest 2 + fast-check 3 | 52 unit/PBT files (23 property-based) + 5 contract specs | Maintain |
+| Vitest 2 + fast-check 3 | Unit and property-based suites (`tests/`) + shared contract specs (`tests/contracts/`) | Maintain |
 | PostHog (`posthog-js` / `posthog-node`) | Analytics, error capture, scoped session replay | Maintain |
 | Pollinations.ai | Seed-time image generation only | Maintain — Workers AI / Flux is the parked alternative |
 
@@ -357,8 +357,8 @@ contradictions**; this is a strict technical superset.
 
 ### Test Types
 
-- **Unit** — 63 files under `tests/`, run by `pnpm test` (Vitest, node env, no database needed). 23 of
-  the 63 are property-based; see below.
+- **Unit** — every `*.test.ts` under `tests/`, run by `pnpm test` (Vitest, node env, no database
+  needed). The ones carrying properties are named `*.pbt.test.ts`; see below.
 - **Integration** — `pnpm test:pg` runs the store adapters, plus the reads and writes only a real
   database can prove, against a real Postgres 17 in Docker via a local Neon HTTP proxy (serial
   execution, 30s timeout; the only skips are the 3 `it.runIf(properties)` cases in the shared
@@ -380,13 +380,14 @@ contradictions**; this is a strict technical superset.
   `ImageProvider` spec against the **real** endpoints. Opt-in and **deliberately not in CI**: live calls
   would spend quota on every push and sit against the "$0 stays $0 structurally" rule. Needs the provider
   keys in `.env.local`; it reports which providers it skipped rather than passing on an empty set.
-- **Property-based — REQUIRED and BLOCKING** — **23** `*.pbt.test.ts` files carrying **106** `fc.assert`
-  call sites, covering the logic where a wrong answer costs the children real cards: `auth-policy`,
-  `collection-reward`, `count-report`, `db-target`, `delete-path`, `easter-egg`, `gate-token`, `logic`,
-  `offer`, `pull-categories`, `quiz-cap`, `quiz-daily-topics`, `quiz-fraction-gen`, `quiz-math-gen`,
-  `quiz-offer`, `quiz-seen-select`, `rarity-filter`, `sacrifice`, `sacrifice-filter`, `seed-rules`,
-  `signed-token`, `trade-board`, `trade-logic`. **Now enforced in CI** — see *CI/CD Gates*, including
-  the depth it runs at.
+- **Property-based — REQUIRED and BLOCKING** — covering the logic where a wrong answer costs the
+  children real cards. The inventory this constraint is stated over is a glob, not a list:
+  **`tests/**/*.pbt.test.ts`**, and `ls tests/*.pbt.test.ts` is what it covers today. Counts and module
+  names are deliberately not copied here — they were, and drifted on nearly every test commit (#132).
+  The rule is checked instead: **every file calling `fc.assert` is a `*.pbt.test.ts`**, or a shared
+  contract that one imports. `tests/pbt-inventory.test.ts` fails `pnpm test` otherwise, so a property
+  in a misnamed `foo.test.ts` — which would run and pass while sitting outside the inventory, as nearly
+  shipped in #110 — goes red. **Now enforced in CI** — see *CI/CD Gates*, including the depth it runs at.
 
 **Explicitly not required**: end-to-end (no browser harness; the manual visual check covers it),
 performance/load (three users — there is no load), SAST/DAST (no public attack surface; the app sits
@@ -509,7 +510,7 @@ wearing this one's clothes. Revisit as its own piece of work if it is ever wante
 > role, and it used to be enforced only by developer discipline. It is now enforced by mechanism:
 > `pnpm test` runs on `fast-gate` on every pull request and `fast-gate` is a required check, so a PR whose
 > properties fail cannot be merged. **Enforced depth**: CI sets `FC_NUM_RUNS: 1000` — ten times
-> fast-check's default — so a run explores ~106,000 cases across the suite's 106 `fc.assert` sites, while
+> fast-check's default — so a run explores 1,000 cases per `fc.assert` site rather than 100, while
 > a local run stays at the default 100 for a fast inner loop. `FC_NUM_RUNS=1000 pnpm test` reproduces CI
 > exactly, and a malformed value **throws**: `numRuns: NaN` would otherwise run every property zero times
 > and report a pass. No property has failed at any depth up to 10,000 runs each.
