@@ -5,7 +5,6 @@ import {
   type ContractFixtures,
 } from "./contracts/image-provider-contract";
 import { fakeProvider, picturePng, solidPng } from "@/features/pool/providers/fake";
-import { pollinations } from "@/features/pool/providers/pollinations";
 import { cloudflareSdxl } from "@/features/pool/providers/cloudflare-sdxl";
 import { aiHorde } from "@/features/pool/providers/ai-horde";
 import { CARD_SIZE, ProviderRetryable } from "@/features/pool/providers";
@@ -124,10 +123,8 @@ function makeFixtures(
 }
 
 /** The synthetic headers at the weight of a real card — see `padToCardWeight`. */
-const cardJpeg = drawn(syntheticJpeg);
 const cardWebp = drawn(syntheticWebp);
 
-const jpegFixtures = makeFixtures(cardJpeg, syntheticJpeg, picturePng);
 const pngFixtures = makeFixtures(picturePng, solidPng, drawn(syntheticJpeg));
 const webpFixtures = makeFixtures(cardWebp, syntheticWebp, picturePng);
 
@@ -185,7 +182,6 @@ describe("real adapters", () => {
   // fixture.
   const saved = { ...process.env };
   beforeEach(() => {
-    process.env.POLLINATIONS_TOKEN = "test-token";
     process.env.CLOUDFLARE_ACCOUNT_ID = "test-account";
     process.env.CLOUDFLARE_API_TOKEN = "test-token";
     process.env.AIHORDE_API_KEY = "test-key";
@@ -193,12 +189,6 @@ describe("real adapters", () => {
   afterEach(() => {
     process.env = { ...saved };
   });
-
-  runHttpProviderContract(
-    "pollinations",
-    (respond) => pollinations({ fetchImpl: async () => respond() }),
-    jpegFixtures,
-  );
 
   runHttpProviderContract(
     "cloudflare-sdxl",
@@ -214,75 +204,6 @@ describe("real adapters", () => {
 });
 
 // ── adapter specifics the shared contract cannot express ─────────────────────
-
-describe("pollinations adapter", () => {
-  const saved = { ...process.env };
-  afterEach(() => {
-    process.env = { ...saved };
-  });
-
-  it("reports the model the response NAMED, not the one it requested (#64)", async () => {
-    process.env.POLLINATIONS_TOKEN = "t";
-    const provider = pollinations({
-      fetchImpl: async () =>
-        new Response(cardJpeg(768, 768) as unknown as BodyInit, {
-          status: 200,
-          headers: { "x-model-used": "sana" },
-        }),
-    });
-    const image = await provider.generate("a panda", CARD_SIZE);
-    // The request asked for flux; the response says sana. That gap is the whole
-    // reason `model` exists on the result — it was the only witness #64 had.
-    expect(provider.params.model).toBe("flux");
-    expect(image.model).toBe("sana");
-  });
-
-  it("pins the seed explicitly rather than inheriting the server default (#64)", async () => {
-    process.env.POLLINATIONS_TOKEN = "t";
-    let seen = "";
-    const provider = pollinations({
-      fetchImpl: async (url) => {
-        seen = String(url);
-        return imageResponse(cardJpeg(768, 768));
-      },
-    });
-    await provider.generate("a panda", CARD_SIZE);
-    expect(seen).toContain("seed=42");
-    expect(seen).toContain(`width=${CARD_SIZE.width}&height=${CARD_SIZE.height}`);
-  });
-
-  it("needs no credential — the free registered tier no longer exists (#69)", () => {
-    // #67 originally required POLLINATIONS_TOKEN, on the premise that the "seed"
-    // tier bought 3x the anonymous rate. Measured live: auth.pollinations.ai is
-    // gone, the tiers are replaced by prepaid Pollen, and every image model is
-    // priced — so the credentialled path is a paywall #72 forbids crossing.
-    delete process.env.POLLINATIONS_TOKEN;
-    expect(pollinations().isConfigured()).toBe(true);
-    expect(pollinations().requiredEnv).toEqual([]);
-  });
-
-  it("sends no credential — the legacy host ignores one", () => {
-    process.env.POLLINATIONS_TOKEN = "sk_should_not_be_sent";
-    let sentAuth: unknown = "unset";
-    const provider = pollinations({
-      fetchImpl: async (_input, init) => {
-        sentAuth = (init?.headers as Record<string, string> | undefined)?.Authorization;
-        return imageResponse(cardJpeg(768, 768));
-      },
-    });
-    return provider.generate("x", CARD_SIZE).then(() => {
-      // Sending a secret somewhere that ignores it is worse than sending none.
-      expect(sentAuth).toBeUndefined();
-    });
-  });
-
-  it("paces as a serial cap, not a rate — one queued request per IP", () => {
-    // The anonymous limit is no longer "one request every 15s": a second
-    // concurrent request answers 429 "Queue full for IP … (max: 1)".
-    expect(pollinations().concurrency).toBe(1);
-    expect(pollinations().minIntervalMs).toBeGreaterThanOrEqual(15_000);
-  });
-});
 
 describe("cloudflare-sdxl adapter", () => {
   const saved = { ...process.env };

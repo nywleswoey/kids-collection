@@ -41,7 +41,7 @@ const SALT = `kc-live-${Date.now()}`;
  * suite nobody can afford to run is a suite nobody runs.
  *
  *   LIVE_PROVIDERS=ai-horde pnpm test:providers   # just the hatch
- *   LIVE_PROVIDERS=ai-horde,pollinations ...      # both
+ *   LIVE_PROVIDERS=ai-horde,cloudflare-sdxl ...   # both
  *
  * Set `testTimeout` accordingly when you do — the default 180s will not cover a
  * cold horde queue.
