@@ -215,7 +215,6 @@ describe("the registry (#67)", () => {
   });
 
   function configureAll() {
-    process.env.POLLINATIONS_TOKEN = "t";
     process.env.CLOUDFLARE_ACCOUNT_ID = "a";
     process.env.CLOUDFLARE_API_TOKEN = "t";
   }
@@ -267,7 +266,12 @@ describe("the registry (#67)", () => {
 
   it("narrows deliberately when --providers names a subset", () => {
     configureAll();
-    expect(selectLanes(["pollinations"]).map((p) => p.id)).toEqual(["pollinations"]);
+    expect(selectLanes(["cloudflare-sdxl"]).map((p) => p.id)).toEqual(["cloudflare-sdxl"]);
+  });
+
+  it("no longer registers Pollinations — it stamped its logo on every image", () => {
+    expect(providerById("pollinations")).toBeUndefined();
+    expect(() => selectLanes(["pollinations"])).toThrow(/unknown provider/);
   });
 
   it("ABORTS on an unconfigured lane rather than dropping it", () => {
@@ -281,7 +285,7 @@ describe("the registry (#67)", () => {
     } catch (err) {
       const message = (err as Error).message;
       expect(message).toContain("CLOUDFLARE_API_TOKEN"); // names what to set
-      expect(message).toContain("--providers=pollinations"); // and the way past it
+      expect(message).toContain("--providers="); // and the way past it
     }
   });
 
@@ -316,7 +320,8 @@ describe("the registry (#67)", () => {
   it("does not require credentials merely to look a provider up", () => {
     // --sync needs the adapter registered to rebuild a review filename, but it
     // never generates, so publishing reviewed bytes must not demand keys.
-    delete process.env.POLLINATIONS_TOKEN;
-    expect(providerById("pollinations")).toBeDefined();
+    delete process.env.CLOUDFLARE_ACCOUNT_ID;
+    delete process.env.CLOUDFLARE_API_TOKEN;
+    expect(providerById("cloudflare-sdxl")).toBeDefined();
   });
 });

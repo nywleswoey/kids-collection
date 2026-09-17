@@ -9,7 +9,7 @@
  *                                 lane (#79), then exit
  *   pnpm seed --review            generate images for NEW cards to seed/review/,
  *                                 from EVERY registered provider (the bake-off)
- *   pnpm seed --review --providers=pollinations
+ *   pnpm seed --review --providers=cloudflare-sdxl
  *                                 narrow the bake-off to named provider(s)
  *   pnpm seed --publish           generate -> upload to Blob -> insert NEW cards (idempotent)
  *   pnpm seed --publish --reset   wipe the whole pool first, then republish everything

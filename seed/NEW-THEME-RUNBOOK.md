@@ -139,11 +139,18 @@ Read this **before** you pick subjects, not after — some of it is a constraint
 wording. It is written **per provider**, because they do not fail the same way. There is no such thing as
 "the image model" here any more: Step 6 draws every card on every lane and a human picks (#63).
 
+**`pollinations` is retired.** On *Food Around the World* every one of its 30 candidates came back with a
+"pollinations.ai" logo stamped into the corner despite `nologo=true`, and text in the image is a rejection on
+sight — so it could no longer win a row. It is gone from the registry: the one lane today is `cloudflare-sdxl`,
+with `ai-horde` as the escape hatch. Its column below is kept as the record of why earlier themes look the way
+they do, and because its failure classes are what a replacement lane has to beat. Cards already published
+from it are unaffected — `--sync` never resolves the provider of a card it is not inserting.
+
 The failure classes below were learned the hard way on *Warriors*, where a Pollinations-only pass returned
 3 usable images out of 28. #66 re-ran three of those cards through the shipped seam on both lanes, and #74
 ran them through the escape hatch. What survives is narrower than the old blanket claim:
 
-| Failure class | `pollinations` (asks for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) |
+| Failure class | `pollinations` (**retired**; asked for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) |
 |---|---|---|---|
 | Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had |
 | Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` |
@@ -156,7 +163,7 @@ them, and the two answers are cheap-then-expensive — drop the object and let c
 cards per theme, not fifteen.
 
 `ART_STYLE` asks for a bright cartoon, and **the lanes do not agree about what they are drawing**:
-Cloudflare renders bright cartoon, `sana` renders painterly semi-realism on *every* subject, and the horde's
+Cloudflare renders bright cartoon, `sana` (retired Pollinations) rendered painterly semi-realism on *every* subject, and the horde's
 model drifts photo-real on costume subjects. So a picture that looks wrong in style is usually the wrong
 lane rather than the wrong words. Long, photo-real prompts make it worse everywhere. The prompts that land
 look like the ones already in `cards.json`: a short noun phrase, **one** cheerful subject, outdoors in
@@ -177,18 +184,16 @@ Wording levers, in the order worth trying — these apply to every provider:
 
 | Provider | Same prompt twice | So the revert trick… |
 |---|---|---|
-| `pollinations` | **same bytes** — measured over 50 minutes and across cache misses (#64), with the seed pinned to 42 | **works.** Paste round 2's prompt back and round 2's picture returns verbatim |
 | `cloudflare-sdxl` | **different bytes**, despite the same pinned seed (#66) | **does not work.** A reverted prompt draws a *new* picture on this lane |
 | `ai-horde` | unmeasured, and it is a pool of volunteer machines | **assume it does not.** Do not plan around it |
 
 So: **keep every superseded `imagePrompt` in the session** until the theme ships — that is the only
-recovery mechanism that spans all three. On a non-deterministic lane, deleting a candidate and re-running
+record of what you tried. On a non-deterministic lane, deleting a candidate and re-running
 is a **re-roll**: you get a different picture and you cannot get the old one back. That is occasionally the
 right move (it is how you clear a near-empty frame, below); it is never reversible.
 
-Even on Pollinations the trick is bounded: the provider can change the model behind a prompt without notice,
-and has (#64) — a request for `flux` is served by `sana` today — so a prompt that drew one picture in July
-draws a different one weeks later. Never use it to recover art that has already shipped: a published card is
+No registered provider returns the same picture for a reverted prompt, so there is no revert trick at all.
+Nor is there one for art that has already shipped: a published card is
 protected by the Blob URL already in the database, and `--sync` only updates text on an existing card, never
 regenerating or re-uploading its image. The reviewed bytes in `seed/review/` protect a card at insert time
 only, and that directory is gitignored local scratch a fresh clone will not have.
@@ -200,7 +205,6 @@ numbers below are *why a run takes as long as it does*, not knobs for you to tur
 
 | Provider | The ceiling | What you see |
 |---|---|---|
-| `pollinations` | **one queued request per IP** (anonymous; no key, and the paid path is a wall #72 forbids crossing) — 1 at a time, 15s apart | the slow lane: ~8 minutes for a 30-card theme, and it sets the wall-clock floor for the whole bake-off |
 | `cloudflare-sdxl` | a published 10,000 neurons/day on the free plan, but **the exhaustion signal is undocumented** (#68) — so a lane that dies for no stated reason may be this. What guarantees $0 is the card-free account, not the number | 4 at a time, ~6–8s per image |
 | `ai-horde` | **2 requests/second per IP** across the whole API, and a volunteer queue you sit at the back of at zero kudos | 1 at a time; **30–45 minutes for one image** |
 
@@ -253,24 +257,24 @@ rate-limited run resumes rather than restarting.
 
 `--review` is a **bake-off** (#63): it generates each new card from **every registered lane**, in parallel,
 so a human can compare candidates side by side and pick the best draughtsman per subject. A 30-card theme is
-30 images *per lane* — 60 today, on `pollinations` and `cloudflare-sdxl`. The lanes run alongside each other
-and pace themselves independently, so the wall-clock is the slowest lane, not the sum: expect ~8 minutes,
-set by Pollinations. `ai-horde` is an **escape hatch**, not a lane, and sits out unless named (below).
+30 images *per lane* — 30 today, on `cloudflare-sdxl` alone, in a few minutes. With more than one lane they
+run alongside each other and pace themselves independently, so the wall-clock is the slowest lane, not the
+sum. `ai-horde` is an **escape hatch**, not a lane, and sits out unless named (below).
 
 If a provider's key is missing the run **aborts and generates nothing**, rather than quietly leaving that
 provider out — a lane absent from a comparison looks like a provider that drew badly. Add the key, or narrow
 the run on purpose:
 
 ```bash
-pnpm seed --review --providers=pollinations
+pnpm seed --review --providers=cloudflare-sdxl
 ```
 
 Review files land at `seed/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
 covers the *full* prompt including `ART_STYLE` and is identical across providers, so a subject's candidates
 sort together. `<params4>` covers that provider's request settings, so changing them invalidates the reviews
-they would change. The extension follows the provider — Pollinations writes JPEG, Cloudflare PNG, AI Horde
-WebP. Each image has a `.json` sidecar recording what was requested and, *where the provider says so*, which
-model actually answered: Pollinations names it except on a cache hit, and Cloudflare names nothing at all,
+they would change. The extension follows the provider — Cloudflare writes PNG, AI Horde WebP (retired
+Pollinations wrote JPEG). Each image has a `.json` sidecar recording what was requested and, *where the provider says so*, which
+model actually answered: Cloudflare names nothing at all,
 so a blank `model` means unwitnessed, never "the model I asked for".
 
 If a provider stops responding, its lane is abandoned after 3 consecutive failures and the run reports it.
@@ -300,7 +304,7 @@ Rule out a candidate on:
   style, but it is always an *illustration*, so photoreal skin, camera depth-of-field blur, a naturalistic
   cast shadow, or the look of a glazed figurine on a surface reads as a different product sitting in the
   binder. This is the one style question settled on sight; **every other one is a pick, not a rejection.**
-  It bites the Pollinations lane hardest — `sana` leans semi-real, per the table in Step 4.
+  It bit the retired Pollinations lane hardest; on Cloudflare it is rare, and the hatch drifts photo-real on costumes.
 - **A blank frame.** Cloudflare can return a *pure black* 768×768 PNG for a perfectly innocuous prompt —
   ~40% of attempts on one measured prompt. It is a valid PNG at exactly the right size, so it used to reach
   `seed/review/` looking like a real candidate, with file size (~2 KB against a normal 750–900 KB) the only
@@ -326,13 +330,12 @@ Pick on what Step 4's per-provider table predicts — one lane draws a subject c
 
 Mixing costs less than it sounds like it should, because the published binder has never been uniform.
 `Animals` — one theme, one provider, one run, live in children's hands — carries a flat graphic tiger, a
-painterly red panda and a soft watercolour axolotl. The two lanes *do* differ, and visibly: Cloudflare is
-flat and outlined where Pollinations is semi-real and painterly. That gap is real, and it is no wider
-than the gap already sitting inside a single published theme.
+painterly red panda and a soft watercolour axolotl. Cloudflare is flat and outlined; the hatch drifts
+photo-real on costume subjects, and the retired Pollinations lane was semi-real and painterly. Those gaps are
+real, and no wider than the gap already sitting inside a single published theme.
 
-Do not keep a lane for **continuity**, either. Pollinations drew the published cards but no longer draws
-in the style that drew them (#64), so picking it buys nothing back. That is about which candidate you
-pick, not about which lanes run — the lane roster is #69's, and unchanged.
+Do not keep a lane for **continuity**, either. Pollinations drew many of the published cards but had stopped
+drawing in the style that drew them (#64) well before it was retired, so matching it was never on offer.
 
 Legendaries get no special rule. If two of them tie, say so at the checkpoint; do not settle it yourself.
 
@@ -368,9 +371,8 @@ re-prompting fixes the wrong words.**
 | One candidate is nearly empty, the rest are fine | **Re-roll** that one file. Not a re-prompt round. An outright *black* frame no longer reaches you — the seam refuses it and the lane redraws (#78) |
 | One cell is missing from the sheet entirely | Not a judgement call: that lane failed the card and printed a `✗` line naming it. Re-run `--review` |
 
-**To re-prompt, edit the `imagePrompt`** — deleting files is not enough on the Pollinations lane, which
-returns the same bytes for the same prompt (#64), so a delete-and-rerun there regenerates the picture you
-just rejected. Editing the prompt changes `<hash8>`, which both asks for a different picture on every lane
+**To re-prompt, edit the `imagePrompt`** — deleting files and re-running is a re-roll, not a re-prompt, and
+on a deterministic provider it would regenerate the picture you just rejected. Editing the prompt changes `<hash8>`, which both asks for a different picture on every lane
 *and* makes the old candidates stop matching.
 
 Those old candidates are now **N files per card, plus their `.json` sidecars**, and they are invisible to
@@ -417,7 +419,7 @@ in one prompt is a `CorruptPrompt`: a terminal failure *plus* a timeout on this 
 **3 → 9 → 15 → 21 minutes**, on a 24-hour counter. Retrying immediately makes the next wait longer. The
 refusal is also information — this prompt is unworkable on the one provider whose policy was supposed to be
 permissive — so the response is to reword it (Step 4's levers) or take the card to the human, never to
-re-submit it as-is. Only the hatch's lane is affected; Cloudflare and Pollinations carry on.
+re-submit it as-is. Only the hatch's lane is affected; Cloudflare carries on.
 
 One thing is easier here than anywhere else: **on AI Horde, paying is not merely forbidden, it is
 impossible.** The service has no payment surface at all, so this is the only provider where the $0 constraint
@@ -481,7 +483,7 @@ exactly as it is — no other field is touched by this step:
 ```
 
 `--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes. The id
-must match a registered provider exactly (`pollinations`, `cloudflare-sdxl`, `ai-horde`); a typo is refused
+must match a registered provider exactly (`cloudflare-sdxl`, `ai-horde`); a typo is refused
 by name rather than treated as a missing review.
 
 ```bash

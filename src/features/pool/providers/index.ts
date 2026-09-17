@@ -35,19 +35,27 @@
  * would silently rename every reviewed candidate when someone edited their
  * `.env.local` — and on this provider a mistyped name is not a 404 but a
  * DIFFERENT model, with the horde's most-served models being NSFW ones.
+ *
+ * ── Pollinations, retired ────────────────────────────────────────────────────
+ * Pollinations was a lane until the Food Around the World bake-off, where all 30
+ * of its candidates came back with a "pollinations.ai" logo stamped into the
+ * corner despite `nologo=true`, drawn by `sana` rather than the `flux` requested.
+ * Text in the image is a rejection on sight, so the lane could no longer win a
+ * row and only cost wall-clock. It is removed rather than demoted: nothing names
+ * it that could still need it. `--sync` resolves a provider only for a card it is
+ * about to INSERT, and every card whose `provider` is "pollinations" is already
+ * published, so text updates on them never touch this registry.
  */
 import { aiHorde } from "./ai-horde";
 import { cloudflareSdxl } from "./cloudflare-sdxl";
-import { pollinations } from "./pollinations";
 import type { ImageProvider } from "./provider";
 
 export * from "./provider";
-export { pollinations } from "./pollinations";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
 export { aiHorde } from "./ai-horde";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [pollinations(), cloudflareSdxl(), aiHorde()];
+export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), aiHorde()];
 
 /** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
