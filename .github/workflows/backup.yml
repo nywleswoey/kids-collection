@@ -303,7 +303,7 @@ jobs:
         shell: bash
 
       - name: Verify the backup restores exactly
-        run: pnpm exec tsx scripts/backup/verify.ts prod-counts.tsv restored-counts.tsv
+        run: pnpm backup:verify prod-counts.tsv restored-counts.tsv
 
       # The dead-man's switch, and the ONLY thing here that can report a backup
       # which never ran. Everything else in this file reports on a run that

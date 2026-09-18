@@ -1,6 +1,6 @@
 "use server";
 
-import { withActiveChild } from "@/features/actions/action";
+import { withActiveChild } from "@/lib/actions";
 import { rewardService } from "./service.prod";
 
 /** Mark the given pending collection-reward modals as shown (Inc16 FR5). */

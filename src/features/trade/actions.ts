@@ -1,6 +1,6 @@
 "use server";
 
-import { withActiveChild } from "@/features/actions/action";
+import { withActiveChild } from "@/lib/actions";
 import { tradeService } from "./trade-service.prod";
 import type { TradeResult } from "./trade-service";
 import type { TradableCard } from "./trade-logic";
