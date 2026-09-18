@@ -12,8 +12,8 @@ never import from `src/features/`.
 `pull`, `trade`, `profiles`, `auth`, `rewards`. These may depend on each other
 and on `src/shared/`.
 
-Both are reached through the same `@/*` alias (`@/shared/...`,
-`@/features/...`) — only the directory changed, not the import style.
+Both are reached through the same `@/*` alias: `@/shared/...` and
+`@/features/...`.
 
 ## Which test root to use
 
