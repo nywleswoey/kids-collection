@@ -63,12 +63,21 @@ pnpm test                 # property-based tests (fast-check)
 ## Project layout
 ```
 app/                  Next.js routes + layout
+src/features/         product code by feature (binder, pull, trade, admin, ...)
+src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
-src/lib/              env, types, avatars, pure business logic
-tests/                property-based + integration tests
+src/lib/               env, types, avatars, pure business logic
+scripts/              seed CLI, contact-sheet, reconcile, backup verify, prototypes
+seed/                 card/theme source data (cards.json, provenance.json, runbook)
+docs/                 operational runbooks (restore, passkey cutover, migration notes)
+.claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
+tests/                property-based + unit tests, plus tests/contracts/ shared specs
+tests-pg/             integration tests against a real dockerized Postgres
+tests-live/           opt-in live tests against real external providers
 Product-Definition/   current vision, technical environment, open questions
 aidlc-docs/           AI-DLC v1 design + audit artifacts (increments 1–22, history)
 ```
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for which of `tests/`, `tests-pg/`, `tests-live/` to add a test to.
 
 ## Data model (U1)
 - `themes` 1—* `cards` (shared pool; rarity ∈ common/rare/epic/legendary)
