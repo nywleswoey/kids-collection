@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/shared/card/RarityThumb";
 import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
-import { raritySlotClass } from "./rarity-slot";
+import { raritySlotClass } from "@/shared/card/rarity-slot";
 import { cardHref, type Place } from "./binder-place";
-import "./rarity-slot.css";
+import "@/shared/card/rarity-slot.css";
 
 /** Owned card thumbnail (tappable → detail) or a locked silhouette.
  *  Owned slots show rarity via a colored frame + glow + corner badge (U5-FR2).

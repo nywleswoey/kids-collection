@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/shared/card/RarityThumb";
 import { CardModal } from "@/shared/card/CardModal";
-import { raritySlotClass } from "@/features/binder/rarity-slot";
-import "@/features/binder/rarity-slot.css";
+import { raritySlotClass } from "@/shared/card/rarity-slot";
+import "@/shared/card/rarity-slot.css";
 
 /**
  * Admin preview card (U5-FR1/FR2): rarity-framed thumbnail with a corner badge,

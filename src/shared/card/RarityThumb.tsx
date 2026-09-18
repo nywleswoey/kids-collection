@@ -1,7 +1,7 @@
 import type { BinderCard } from "@/lib/types";
 import { CardImage } from "@/shared/card/CardImage";
 import { RARITY_META } from "@/shared/card/rarity";
-import "@/features/binder/rarity-slot.css";
+import "./rarity-slot.css";
 
 /** Shared inner content for an owned rarity-framed slot (U5-FR2): an optional
  *  copy-count badge, the rarity corner badge, and the lazy 256px thumbnail.

@@ -17,7 +17,7 @@ import { join, dirname, resolve } from "node:path";
  */
 
 const ROOT = resolve(__dirname, "..");
-const FORBIDDEN = join(ROOT, "src", "features", "pool", "providers");
+const FORBIDDEN = join(ROOT, "src", "shared", "pool", "providers");
 const ENTRY_DIRS = ["app"];
 const ENTRY_FILES = ["middleware.ts", "instrumentation-client.ts", "next.config.ts"];
 const EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs"];
@@ -104,6 +104,6 @@ describe("provider boundary (#67)", () => {
         .map((s) => resolveSpecifier(f, s))
         .filter((t): t is string => t !== null),
     );
-    expect(reachable.some((t) => t.includes(join("src", "features")))).toBe(true);
+    expect(reachable.some((t) => t.includes(join("src", "shared", "pool")))).toBe(true);
   });
 });

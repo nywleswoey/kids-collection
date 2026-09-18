@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/shared/card/RarityThumb";
 import { SACRIFICE_COST, SACRIFICE_MIN } from "@/features/pull/sacrifice";
-import { raritySlotClass } from "./rarity-slot";
+import { raritySlotClass } from "@/shared/card/rarity-slot";
 import { BURN, cardHref } from "./binder-place";
-import "./rarity-slot.css";
+import "@/shared/card/rarity-slot.css";
 
 /**
  * Flat grid of the cards a child can sacrifice (Inc22 FR12–FR15). No theme
