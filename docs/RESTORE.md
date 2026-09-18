@@ -150,11 +150,11 @@ exist in the target.
 ## 4. What the backup does not cover
 
 - **Card images.** They live in Vercel Blob, not Postgres, and no `pg_dump` includes them. The pool can
-  be re-generated from `seed/cards.json` via the seeding pipeline, but **not the shipped pictures**: the
+  be re-generated from `seed-content/cards.json` via the seeding pipeline, but **not the shipped pictures**: the
   image provider swaps the model behind a prompt without notice (#64), so a re-seed draws new art rather
   than restoring the originals. A restored database points at Blob URLs that are still live — image loss
   is a separate, independent failure, and it is not recoverable byte-for-byte. What *is* recoverable is the
-  record of what drew each card published since #75: `seed/provenance.json` is in git, not in Postgres, so
+  record of what drew each card published since #75: `seed-content/provenance.json` is in git, not in Postgres, so
   it survives both a database loss and this 90-day horizon.
 - **Anything older than 90 days.** Artifact retention is the hard horizon.
 - **The 6–24 hour window**, as above — no point-in-time recovery there.

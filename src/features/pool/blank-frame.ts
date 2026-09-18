@@ -5,7 +5,7 @@
  * picture. #78 caught Cloudflare SDXL answering HTTP 200 with a pure black
  * 768x768 PNG for an entirely innocuous prompt: a real PNG, exactly the size the
  * map's invariant demands, non-empty, in the declared format — so it was written
- * to `seed/review/` under a normal candidate filename, with a normal sidecar, and
+ * to `seed-content/review/` under a normal candidate filename, with a normal sidecar, and
  * counted as a drawn cell on the contact sheet. The only thing that flagged it
  * was a human noticing the file was 400x smaller than its neighbours.
  *
@@ -56,7 +56,7 @@
  * ── What it deliberately does not catch ──────────────────────────────────────
  * A picture of the wrong subject, a badly drawn one, a framed one, a photoreal
  * one. Those are judgements about content, they are CHECKPOINT 2's job
- * (`seed/NEW-THEME-RUNBOOK.md`) and a human's, and the provider contract says so
+ * (`seed-content/NEW-THEME-RUNBOOK.md`) and a human's, and the provider contract says so
  * explicitly: "deliberately NOT here: anything about content, style or subject
  * fidelity."
  *

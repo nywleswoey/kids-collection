@@ -100,14 +100,14 @@ free provider:
   else about a hatch is identical, so a card published from one is as traceable as
   any other (`providers/index.ts`, #71).
 - **Bake-off candidate** — one generated image for a `(card, provider)` pair, named
-  `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed/review/`,
+  `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed-content/review/`,
   with a `.json` **sidecar** recording the model the response actually *named*
   (`src/features/pool/review-files.ts`).
 - **Provenance record** — the picked candidate's sidecar, kept after review is over
-  (`seed/provenance.json`, written by `--sync`/`--publish`, `provenance.ts`, #75).
-  `seed/review/` is gitignored scratch, so without this the only surviving witness of
+  (`seed-content/provenance.json`, written by `--sync`/`--publish`, `provenance.ts`, #75).
+  `seed-content/review/` is gitignored scratch, so without this the only surviving witness of
   a shipped card is `provider` — the **lane**, which #64 proved is not the model.
-  Generated and never hand-edited, unlike `seed/cards.json`. Its `model` is what the
+  Generated and never hand-edited, unlike `seed-content/cards.json`. Its `model` is what the
   response *named* and is **`null`** where a provider names nothing (Cloudflare), never
   back-filled from the `params.model` that was *asked for*; its `reviewed` flag is FR9's
   durable receipt, false only on the `--allow-unreviewed` path.
@@ -177,7 +177,7 @@ free provider:
   a model swap is a roster decision (#69), not a file-size one.
 - **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
   (`src/features/pool/contact-sheet.ts`), **CHECKPOINT 2** of
-  `seed/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
+  `seed-content/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
 - **`params`** — an adapter's declared, **total** request-parameter bag, hashed into
   the candidate filename so a parameter change invalidates exactly the reviews it
   would change. Pacing (`minIntervalMs`, `concurrency`) is deliberately excluded,

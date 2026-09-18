@@ -24,7 +24,7 @@ async function pruneNotIn(
 
 /**
  * Upsert a theme by name; returns its id (idempotent, U3-BR8). `sortOrder` is
- * the theme's position in seed/cards.json and is refreshed on every sync, so
+ * the theme's position in seed-content/cards.json and is refreshed on every sync, so
  * reordering that file reorders the pull screen's chips (Inc21 FR2).
  */
 export async function upsertTheme(

@@ -230,7 +230,7 @@ describe("runBakeOff — circuit breaker (#67)", () => {
 
   it("does not blame the provider for a local write failure", async () => {
     // The breaker counts provider failures and reports a dead lane. A full disk
-    // or a bad permission on seed/review/ is neither, and must not be described
+    // or a bad permission on seed-content/review/ is neither, and must not be described
     // as one — the operator would go looking at the wrong end of the pipe.
     const p = fakeProvider({ id: "cloudflare-sdxl" });
     const errors: string[] = [];

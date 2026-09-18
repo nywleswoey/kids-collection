@@ -94,7 +94,7 @@ describe("readImageSize", () => {
 
   it("returns null for an HTML error page served with HTTP 200", () => {
     // The failure the empty-body check waves through: it has a non-zero length,
-    // so without this it would land in seed/review/ looking like a reviewed card.
+    // so without this it would land in seed-content/review/ looking like a reviewed card.
     const html = new TextEncoder().encode("<html><body>rate limited</body></html>");
     expect(readImageSize(html)).toBeNull();
   });

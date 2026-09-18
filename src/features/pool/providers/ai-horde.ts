@@ -134,7 +134,7 @@ export function aiHorde(opts: AiHordeOptions = {}): ImageProvider {
     id: "ai-horde",
     role: "escape-hatch",
     // R2 delivery is WebP. `finishGeneration` sniffs the bytes, so a worker that
-    // ever returned something else fails loudly rather than filling seed/review/
+    // ever returned something else fails loudly rather than filling seed-content/review/
     // with extensions that lie.
     format: "webp",
     params: {
@@ -351,7 +351,7 @@ export function aiHorde(opts: AiHordeOptions = {}): ImageProvider {
       if (generation.censored) {
         // A censoring worker returns a BLACK FRAME, not a refusal. #71 accepted
         // that risk because it "fails visibly into review" — but a black frame
-        // in seed/review/ is not visible, it reads as a model that drew nothing.
+        // in seed-content/review/ is not visible, it reads as a model that drew nothing.
         // It is one volunteer's filter rather than a verdict on the prompt, so
         // another worker is a real remedy.
         throw new ProviderRetryable(

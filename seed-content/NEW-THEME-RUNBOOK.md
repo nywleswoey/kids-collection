@@ -4,16 +4,16 @@
 the live pool: choose the 30 subjects, author the JSON, validate it, generate the art, screen it, get one
 human approval, publish, and open a PR.
 
-This file supersedes the old `seed/AUTHORING_PROMPT.md`. It is the only card-authoring document.
+This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authoring document.
 
-**Invocation:** _"Add the theme **Ocean Machines** using `seed/NEW-THEME-RUNBOOK.md`."_
+**Invocation:** _"Add the theme **Ocean Machines** using `seed-content/NEW-THEME-RUNBOOK.md`."_
 
 ## Contract
 
 | | |
 |---|---|
 | **Input** | A theme name. Nothing else. Any extra steer from the human (e.g. "lean historical") overrides this document's defaults where they conflict. |
-| **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed/cards.json`, committed on a branch, a PR open. |
+| **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed-content/cards.json`, committed on a branch, a PR open. |
 | **Human checkpoints** | Exactly **two**: the 30-name list (Step 3), and the image contact sheet (Step 7). Still two — the bake-off did **not** add a third; it changed what the second one *is*, from approve/reject to **choose among N candidates**. Stop dead at both — do not proceed on silence, and never answer them yourself. |
 | **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. |
 | **Session** | One theme per run. Do not batch two themes. |
@@ -46,8 +46,8 @@ Work here for the rest of the run. Never author on `main`.
 ## Step 2 — Read the pool before you invent anything
 
 ```bash
-node -e "const d=require('./seed/cards.json');console.log(d.themes.map(t=>t.name).join('\n'))"
-node -e "const d=require('./seed/cards.json');console.log(d.themes.flatMap(t=>t.cards.map(c=>c.name)).sort().join('\n'))"
+node -e "const d=require('./seed-content/cards.json');console.log(d.themes.map(t=>t.name).join('\n'))"
+node -e "const d=require('./seed-content/cards.json');console.log(d.themes.flatMap(t=>t.cards.map(c=>c.name)).sort().join('\n'))"
 ```
 
 The second command is the collision list — every card name already taken. Read it. A near-miss is also a
@@ -195,7 +195,7 @@ right move (it is how you clear a near-empty frame, below); it is never reversib
 No registered provider returns the same picture for a reverted prompt, so there is no revert trick at all.
 Nor is there one for art that has already shipped: a published card is
 protected by the Blob URL already in the database, and `--sync` only updates text on an existing card, never
-regenerating or re-uploading its image. The reviewed bytes in `seed/review/` protect a card at insert time
+regenerating or re-uploading its image. The reviewed bytes in `seed-content/review/` protect a card at insert time
 only, and that directory is gitignored local scratch a fresh clone will not have.
 
 #### Rate limits, per provider
@@ -213,7 +213,7 @@ everything already on disk. It is **not** a prompt problem and does not count as
 provider keeps refusing, that is the free allocation's ceiling doing its job — wait and resume later.
 **Never attach a payment method to unblock it.**
 
-**Append** the theme object to the `themes` array of `seed/cards.json`. Array position **is** the theme's
+**Append** the theme object to the `themes` array of `seed-content/cards.json`. Array position **is** the theme's
 display order and `themes.sort_order` is a contract: never insert mid-array, never reorder existing
 entries — that reshuffles what the children already know.
 
@@ -247,8 +247,8 @@ its ceiling is the **Hobby** allowance hardcoded; if the plan has changed since,
 ## Step 6 — Commit, then generate the art
 
 ```bash
-git add seed/cards.json && git commit -m "feat(seed): add the <Theme> theme"
-pnpm seed --review         # generates images for NEW cards only, into seed/review/
+git add seed-content/cards.json && git commit -m "feat(seed): add the <Theme> theme"
+pnpm seed --review         # generates images for NEW cards only, into seed-content/review/
 ```
 
 `--review` needs `DATABASE_URL` (it reads the pool to scope itself to unpublished cards) but writes
@@ -269,7 +269,7 @@ the run on purpose:
 pnpm seed --review --providers=cloudflare-sdxl
 ```
 
-Review files land at `seed/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
+Review files land at `seed-content/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
 covers the *full* prompt including `ART_STYLE` and is identical across providers, so a subject's candidates
 sort together. `<params4>` covers that provider's request settings, so changing them invalidates the reviews
 they would change. The extension follows the provider — Cloudflare writes PNG, AI Horde WebP (retired
@@ -307,7 +307,7 @@ Rule out a candidate on:
   It bit the retired Pollinations lane hardest; on Cloudflare it is rare, and the hatch drifts photo-real on costumes.
 - **A blank frame.** Cloudflare can return a *pure black* 768×768 PNG for a perfectly innocuous prompt —
   ~40% of attempts on one measured prompt. It is a valid PNG at exactly the right size, so it used to reach
-  `seed/review/` looking like a real candidate, with file size (~2 KB against a normal 750–900 KB) the only
+  `seed-content/review/` looking like a real candidate, with file size (~2 KB against a normal 750–900 KB) the only
   tell. **Closed by #78**: the seam now measures encoded bytes per pixel and refuses anything below
   0.02 B/px as retryable, so the lane simply draws again and the blank never lands. A card that blanks every
   attempt fails the ladder, prints a `✗` line naming it during the run, and counts as a failure in that
@@ -380,7 +380,7 @@ the contact sheet (it looks up the *current* hash). Leaving them is harmless; if
 delete the whole superseded set at once and never a subset of it:
 
 ```bash
-rm seed/review/<theme-slug>-<card-slug>-<oldhash8>-*
+rm seed-content/review/<theme-slug>-<card-slug>-<oldhash8>-*
 ```
 
 Never delete a *current* candidate to tidy a row. A missing cell reads as "that lane failed", and removing a
@@ -411,7 +411,7 @@ weapon-bearing subjects — and #74 found it also draws the one class both lanes
 (the first clean single bow this project has had). It is not better in general: it renders costume subjects
 photo-real and loses `ART_STYLE`. It is also the slowest thing in this runbook by an order of magnitude — a
 volunteer queue, and this project's account holds no kudos, so **one image can take 30–45 minutes**. Use it
-for the one or two cards that earned it, never for a theme. Its candidates land in `seed/review/` and appear
+for the one or two cards that earned it, never for a theme. Its candidates land in `seed-content/review/` and appear
 in the contact sheet exactly like a lane's, so a pick on the hatch is recorded exactly like any other.
 
 **If the horde refuses the prompt, stop — do not re-run it.** Two or more matches against its content regex
@@ -459,7 +459,7 @@ chooser needs and nothing more:
 
 Then **stop and wait for an explicit approval.** The human holds the kid-safety veto and the taste call;
 your screening only removes their grind, it does not replace them. This is the **second and last**
-checkpoint — publishing does not get another one. `seed/review/*.html` is a local scratch artifact — do not
+checkpoint — publishing does not get another one. `seed-content/review/*.html` is a local scratch artifact — do not
 commit it.
 
 ## Step 8 — Record the pick
@@ -467,7 +467,7 @@ commit it.
 The human has chosen; write it down. This is the one step with no counterpart in the old single-provider
 pipeline, and it is what stands between a reviewed image and a published one.
 
-In `seed/cards.json`, set **`provider` on the theme** to whichever provider won most rows, and add
+In `seed-content/cards.json`, set **`provider` on the theme** to whichever provider won most rows, and add
 `provider` to **individual cards only where a different one won** — a sparse override list, not 30 repeats.
 A theme carrying several lanes is normal (#77):
 
@@ -487,7 +487,7 @@ must match a registered provider exactly (`cloudflare-sdxl`, `ai-horde`); a typo
 by name rather than treated as a missing review.
 
 ```bash
-git add seed/cards.json && git commit -m "feat(seed): record the <Theme> bake-off picks"
+git add seed-content/cards.json && git commit -m "feat(seed): record the <Theme> bake-off picks"
 ```
 
 ## Step 9 — Publish
@@ -515,14 +515,14 @@ re-generated and never re-audited by any other command, so this is the only pass
 That is the design working — an unjudged bake-off has no reviewed image, only candidates — not a bug. The
 fix is always Step 8, never `--allow-unreviewed`.
 
-`--sync` also rewrites **`seed/provenance.json`**, one entry per card it just published, recording what
+`--sync` also rewrites **`seed-content/provenance.json`**, one entry per card it just published, recording what
 actually drew it — the model the response *named*, the parameters that were *asked for*, and the review key
-those bytes were reviewed under (#75). `seed/review/` is scratch and gets deleted; this is the only thing
+those bytes were reviewed under (#75). `seed-content/review/` is scratch and gets deleted; this is the only thing
 that outlives it. **Commit it with the theme** — it is generated, so never hand-edit it, and never write an
 entry for a card you did not just publish:
 
 ```bash
-git add seed/provenance.json && git commit -m "chore(seed): record what drew <Theme>"
+git add seed-content/provenance.json && git commit -m "chore(seed): record what drew <Theme>"
 git push -u origin theme/<theme-slug>
 gh pr create --fill
 ```
@@ -546,9 +546,9 @@ Abort the run and report. Do not improvise past any of these.
 |---|---|
 | `--sync` reports a pending **prune**, or asks you to type a collection-row count | Something was renamed or dropped in the seed file. A prune deletes cards **out of the children's collections**. Fix the file. **Never pass `--allow-prune`.** |
 | `--sync` refuses: "would be inserted with no reviewed image" | Run `--review` first. **Never pass `--allow-unreviewed`** — it defeats the guarantee that no unreviewed image reaches a child. |
-| `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed/cards.json`. Never route around it with `--allow-unreviewed`. |
+| `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed-content/cards.json`. Never route around it with `--allow-unreviewed`. |
 | `--sync` refuses: "name a provider that is not registered" | A typo, or an adapter that was retired. Fix the `provider` value; re-running `--review` cannot satisfy this one. |
-| `--sync` refuses: "seed/provenance.json is unreadable" | The generated provenance record was hand-edited or truncated. Nothing has been written. Restore it with `git checkout seed/provenance.json`; never repair it by hand. |
+| `--sync` refuses: "seed-content/provenance.json is unreadable" | The generated provenance record was hand-edited or truncated. Nothing has been written. Restore it with `git checkout seed-content/provenance.json`; never repair it by hand. |
 | `--review` aborts naming an unconfigured provider | Add the key, or narrow the run *on purpose* with `--providers=`. Never let a lane drop out silently — a blank column reads as a provider that drew badly. |
 | Schema failure you cannot resolve without dropping below 30 cards or off the pyramid | The theme is not viable as scoped. That is a human call. |
 | A `sourceUrl` you cannot make resolve for a subject you consider essential | Ditto. |
@@ -564,15 +564,15 @@ Abort the run and report. Do not improvise past any of these.
 - Never pass `--allow-prune`, `--allow-unreviewed`, or `--reset`.
 - Never answer a checkpoint on the human's behalf — including the bake-off pick, which is a *choice* the
   human makes at checkpoint 2 and you only ever recommend.
-- **Never rename, copy or hand-edit a file in `seed/review/` to make a card look picked.** The filename is
+- **Never rename, copy or hand-edit a file in `seed-content/review/` to make a card look picked.** The filename is
   the whole audit trail: `<hash8>` says which prompt drew it and `<provider>-<params4>` says who drew it
   with what settings. Renaming one provider's candidate to another's is publishing bytes no one reviewed
   under that name — the exact hole `--sync`'s refusal exists to close. A card is picked by writing
-  `provider` into `seed/cards.json`, and by nothing else.
+  `provider` into `seed-content/cards.json`, and by nothing else.
 - Never delete a current candidate to narrow a row. A missing cell means a lane failed; making a rival
   disappear is answering checkpoint 2 for the human.
 - Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
-- **Never hand-write or hand-edit `seed/provenance.json`.** It is what a publish *observed*, and a line
+- **Never hand-write or hand-edit `seed-content/provenance.json`.** It is what a publish *observed*, and a line
   typed into it by hand is indistinguishable from one the pipeline recorded. A card with no entry has no
   witness, and that is a true statement worth keeping.
 - Never move a provider between lane and escape hatch, or add one, to get a run through. The registry

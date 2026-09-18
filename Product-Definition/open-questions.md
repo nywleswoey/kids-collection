@@ -75,7 +75,7 @@ Last generated: 2026-08-03T11:16:45Z
 > That leaves room for roughly **400–700 more themes** before Blob's free tier fills — a thirty-fold
 > increase on today's pool. The limits on this project are the parent's authoring time and the
 > children's appetite, not the free tier. Full figures:
-> `aidlc-docs/construction/build-and-test/increment24-vehicle-themes-build-and-test.md` §2.
+> `archive/aidlc-v1/construction/build-and-test/increment24-vehicle-themes-build-and-test.md` §2.
 >
 > *Recorded so it is not rediscovered*: Blob holds 13 orphaned objects (373 for 360 cards),
 > pre-existing and not created by Increment 24. `uploadImage` writes before `insertCardIfNew`, so a

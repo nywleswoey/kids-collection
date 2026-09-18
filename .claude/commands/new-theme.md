@@ -1,11 +1,11 @@
 ---
-description: Author and publish a new 30-card theme (category) end-to-end, per seed/NEW-THEME-RUNBOOK.md
+description: Author and publish a new 30-card theme (category) end-to-end, per seed-content/NEW-THEME-RUNBOOK.md
 argument-hint: <Theme Name>
 ---
 
 Add the theme **$ARGUMENTS** to the card pool.
 
-Read `seed/NEW-THEME-RUNBOOK.md` in full **before doing anything else**, then follow it step by step. It
+Read `seed-content/NEW-THEME-RUNBOOK.md` in full **before doing anything else**, then follow it step by step. It
 is the only authority on how a theme is authored — do not fall back on general knowledge about the seed
 pipeline, and do not skip ahead.
 

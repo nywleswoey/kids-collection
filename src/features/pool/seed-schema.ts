@@ -11,7 +11,7 @@ import { RARITIES, zeroRarityCount, type Rarity } from "@/lib/types";
  * which is why the sourceUrl *reachability* check is a separate `--check-urls`
  * flag rather than a rule here.
  *
- * All four rules were verified against the committed seed/cards.json before being
+ * All four rules were verified against the committed seed-content/cards.json before being
  * added: 10 themes x 30 cards, every pyramid 15/8/5/2, 300/300 unique names,
  * longest eduText 110 chars. They are forward guards, not retro-fixes.
  */
