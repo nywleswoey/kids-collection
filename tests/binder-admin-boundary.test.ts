@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join, dirname, resolve } from "node:path";
+import { join } from "node:path";
+import { ROOT, listFiles, crawlImports } from "./module-graph";
 
 /**
  * Play-facing binder must never import admin (kc-binder layering follow-up).
@@ -8,86 +8,23 @@ import { join, dirname, resolve } from "node:path";
  * `src/features/binder` renders under `app/play`; `src/features/admin` is the
  * parent-gated surface. Admin composes binder's shared pieces (rarity-slot,
  * RarityThumb) itself — that direction is fine — but binder reaching back into
- * admin puts admin-only UI behind a play import and inverts the boundary. This
- * mirrors `provider-boundary.test.ts`'s crawl so the rule is a property of the
- * code, not just a fact about today's call sites.
+ * admin puts admin-only UI behind a play import and inverts the boundary. The
+ * crawl is transitive, so the rule is a property of the code rather than a fact
+ * about today's call sites: binder → card → admin is caught too.
  */
 
-const ROOT = resolve(__dirname, "..");
 const FORBIDDEN = join(ROOT, "src", "features", "admin");
 const ENTRY_DIR = join(ROOT, "src", "features", "binder");
-const EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs"];
-
-function listFiles(dir: string): string[] {
-  if (!existsSync(dir)) return [];
-  const out: string[] = [];
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...listFiles(full));
-    else if (EXTENSIONS.some((e) => full.endsWith(e))) out.push(full);
-  }
-  return out;
-}
-
-/** Every static import/export specifier and dynamic `import("…")` in a file. */
-function specifiersIn(file: string): string[] {
-  const source = readFileSync(file, "utf8");
-  const out: string[] = [];
-  const patterns = [
-    /(?:^|\n)\s*(?:import|export)[\s\S]{0,400}?from\s*["']([^"']+)["']/g,
-    /(?:^|\n)\s*import\s*["']([^"']+)["']/g,
-    /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
-  ];
-  for (const re of patterns) {
-    for (const m of source.matchAll(re)) out.push(m[1]);
-  }
-  return out;
-}
-
-/** Resolve a specifier the way the `@` alias and Node module resolution would. */
-function resolveSpecifier(from: string, spec: string): string | null {
-  let base: string;
-  if (spec.startsWith("@/")) base = join(ROOT, "src", spec.slice(2));
-  else if (spec.startsWith(".")) base = resolve(dirname(from), spec);
-  else return null; // a package, not our code
-
-  const candidates = [
-    base,
-    ...EXTENSIONS.map((e) => base + e),
-    ...EXTENSIONS.map((e) => join(base, `index${e}`)),
-  ];
-  for (const candidate of candidates) {
-    if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
-  }
-  return null;
-}
 
 describe("binder → admin layering", () => {
   it("nothing reachable from src/features/binder imports src/features/admin", () => {
-    const queue = listFiles(ENTRY_DIR);
-    expect(queue.length).toBeGreaterThan(0); // a silent empty sweep proves nothing
+    const entries = listFiles(ENTRY_DIR);
+    expect(entries.length).toBeGreaterThan(0); // a silent empty sweep proves nothing
 
-    const seen = new Set<string>(queue);
-    const offenders: string[] = [];
+    const { reached, offenders } = crawlImports(entries, FORBIDDEN);
 
-    while (queue.length > 0) {
-      const file = queue.shift()!;
-      for (const spec of specifiersIn(file)) {
-        const target = resolveSpecifier(file, spec);
-        if (!target) continue;
-        if (target.startsWith(FORBIDDEN)) {
-          offenders.push(`${file.slice(ROOT.length + 1)} → ${spec}`);
-          continue;
-        }
-        if (!seen.has(target)) {
-          seen.add(target);
-          queue.push(target);
-        }
-      }
-    }
-
-    // Without this, restricting the crawl to binder itself would still pass.
-    expect([...seen].some((f) => !f.startsWith(ENTRY_DIR))).toBe(true);
+    // Without this, a crawl that never left binder itself would still pass.
+    expect(reached.some((f) => !f.startsWith(ENTRY_DIR))).toBe(true);
     expect(offenders).toEqual([]);
   });
 });
