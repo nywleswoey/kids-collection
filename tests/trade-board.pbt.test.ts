@@ -3,7 +3,7 @@ import fc from "fast-check";
 import {
   bandsByTier,
   buildColumns,
-  missingCount,
+  goodSwapCount,
   isPickable,
   oneAwayFromBurn,
   orderByValue,
@@ -78,30 +78,80 @@ describe("buildColumns (#109 — tier each column against the other side)", () =
   });
 });
 
-describe("missingCount (Inc22 FR7 — friend chip counts)", () => {
-  it("always equals the size of the `new` band on the board", () => {
-    // The chip on the friend strip and the band heading on the board are
-    // computed at different times from different data; they must never
-    // disagree. The chip is the only survivor of #111's cull — the board's own
-    // count of the same cards now lives in the band heading.
+describe("goodSwapCount (#142 — the friend chip counts swaps good BOTH ways)", () => {
+  it("pairs each rarity off separately and sums the pairs", () => {
+    // Worked by hand from #142's resolution: rare gives min(3, 1) = 1, epic
+    // gives min(1, 2) = 1, so the chip reads 2 — NOT 4 (the outward count the
+    // chip showed before) and NOT 7 (every pairing).
+    const mine = [
+      tcard("r1", "rare", 2),
+      tcard("r2", "rare", 2),
+      tcard("r3", "rare", 3),
+      tcard("e1", "epic", 2),
+    ];
+    const theirs = [
+      tcard("r9", "rare", 2),
+      tcard("e8", "epic", 4),
+      tcard("e7", "epic", 2),
+    ];
+
+    expect(
+      goodSwapCount({
+        mine,
+        theirDupes: theirs,
+        myOwnedIds: new Set(mine.map((t) => t.card.id)),
+        theirOwnedIds: new Set(theirs.map((t) => t.card.id)),
+      }),
+    ).toBe(2);
+  });
+
+  it("is symmetric — a good swap is good from either side of the board", () => {
+    // The whole point of #142: the chip must not depend on which child is
+    // looking at it. The one-way count it replaced failed exactly this.
     fc.assert(
-      fc.property(inventoryArb, ownedArb, (mine, theirOwned) => {
-        const cols = buildColumns({
-          mine,
-          theirs: [],
-          myOwnedIds: new Set(),
-          theirOwnedIds: theirOwned,
-        });
-        expect(missingCount(mine, theirOwned)).toBe(cols.mine.filter((c) => c.tier === "new").length);
+      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
+        expect(
+          goodSwapCount({ mine, theirDupes: theirs, myOwnedIds: myOwned, theirOwnedIds: theirOwned }),
+        ).toBe(
+          goodSwapCount({ mine: theirs, theirDupes: mine, myOwnedIds: theirOwned, theirOwnedIds: myOwned }),
+        );
       }),
     );
   });
 
-  it("is 0 when they own everything, and the full inventory when they own nothing", () => {
+  it("counts only swaps validateTrade would actually accept", () => {
+    // The count promises trades. A count that outran the rarity lock (FR6) would
+    // send a child to a board where nothing pairs, so it is checked against the
+    // committing authority rather than against a restatement of the rule.
     fc.assert(
-      fc.property(inventoryArb, (mine) => {
-        expect(missingCount(mine, new Set(mine.map((t) => t.card.id)))).toBe(0);
-        expect(missingCount(mine, new Set())).toBe(mine.length);
+      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
+        const n = goodSwapCount({
+          mine,
+          theirDupes: theirs,
+          myOwnedIds: myOwned,
+          theirOwnedIds: theirOwned,
+        });
+        // Every legal, mutually-new pairing, greedily matched with each distinct
+        // card used once — the count cannot exceed what is actually playable.
+        const givable = mine.filter((t) => !theirOwned.has(t.card.id));
+        const gettable = theirs.filter((t) => !myOwned.has(t.card.id));
+        const taken = new Set<string>();
+        let playable = 0;
+        for (const g of givable) {
+          const match = gettable.find(
+            (t) =>
+              !taken.has(t.card.id) &&
+              validateTrade(
+                { childId: "A", cardId: g.card.id, rarity: g.card.rarity, count: g.count },
+                { childId: "B", cardId: t.card.id, rarity: t.card.rarity, count: t.count },
+              ).ok,
+          );
+          if (match) {
+            taken.add(match.card.id);
+            playable += 1;
+          }
+        }
+        expect(n).toBe(playable);
       }),
     );
   });

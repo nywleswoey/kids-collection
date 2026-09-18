@@ -96,13 +96,18 @@ export function inMemoryCollectionStore(
       return new Set(row ? row.keys() : []);
     },
 
-    async ownedCardIdsForChildren(childIds) {
-      const out = new Map<string, Set<string>>();
+    async entriesForChildren(childIds) {
+      const out = new Map<string, Array<{ cardId: string; count: number }>>();
       for (const childId of childIds) {
         const row = state.get(childId);
         // Absent (not empty) for a child holding nothing — mirrors the pg
         // adapter, where such a child simply has no rows to group.
-        if (row && row.size > 0) out.set(childId, new Set(row.keys()));
+        if (row && row.size > 0) {
+          out.set(
+            childId,
+            [...row.entries()].map(([cardId, count]) => ({ cardId, count })),
+          );
+        }
       }
       return out;
     },

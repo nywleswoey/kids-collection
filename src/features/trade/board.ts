@@ -1,4 +1,4 @@
-import { RARITIES, type Card } from "@/lib/types";
+import { RARITIES, type Card, type Rarity } from "@/lib/types";
 import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import type { TradableCard } from "./trade-logic";
 
@@ -160,13 +160,45 @@ export function bandsByTier(cards: BoardCard[]): TierBand[] {
   })).filter((band) => band.cards.length > 0);
 }
 
-/** FR7 — how many of `mine` the given ownership set lacks. Drives the friend chips. */
-export function missingCount(
-  mine: TradableCard[],
-  otherOwnedIds: ReadonlySet<string>,
-): number {
+/**
+ * #142 (replacing Inc22 FR7's one-way count) — how many swaps this friend and I
+ * could do that are good for BOTH of us. Drives the friend chips.
+ *
+ * The count the chip used to show was outward only: how many of MY doubles the
+ * friend lacked. So a friend sitting on a pile I needed rendered identically to
+ * a friend holding nothing I needed, and the child had to open every board to
+ * find out — the scan the strip exists to save.
+ *
+ * Paired per rarity, because a swap is only legal between equal rarities (FR6,
+ * `isPickable`/`validateTrade`); a count that pooled the rarities would promise
+ * trades the server rejects. `min` of the two sides, not their product, because
+ * that is how many swaps can actually happen with each card used once. Distinct
+ * cards, never copies — a second copy of the same card is new to nobody, so a
+ * double held nine times is still one swap's worth.
+ */
+export function goodSwapCount(input: {
+  mine: TradableCard[];
+  theirDupes: TradableCard[];
+  myOwnedIds: ReadonlySet<string>;
+  theirOwnedIds: ReadonlySet<string>;
+}): number {
+  const { mine, theirDupes, myOwnedIds, theirOwnedIds } = input;
+  const iCanGive = new Map<Rarity, number>();
+  const theyCanGive = new Map<Rarity, number>();
+  for (const t of mine) {
+    if (!theirOwnedIds.has(t.card.id)) {
+      iCanGive.set(t.card.rarity, (iCanGive.get(t.card.rarity) ?? 0) + 1);
+    }
+  }
+  for (const t of theirDupes) {
+    if (!myOwnedIds.has(t.card.id)) {
+      theyCanGive.set(t.card.rarity, (theyCanGive.get(t.card.rarity) ?? 0) + 1);
+    }
+  }
   let n = 0;
-  for (const t of mine) if (!otherOwnedIds.has(t.card.id)) n += 1;
+  for (const [rarity, mineAtRarity] of iCanGive) {
+    n += Math.min(mineAtRarity, theyCanGive.get(rarity) ?? 0);
+  }
   return n;
 }
 

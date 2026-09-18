@@ -138,9 +138,13 @@ describe("makeTradeService.getTradeBoard (Inc22 FR3)", () => {
 describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
   const cards = [card("x", "rare"), card("y", "rare"), card("z", "epic")];
 
-  it("excludes the active child and counts the duplicates each friend is missing", async () => {
+  it("excludes the active child and counts swaps that are good BOTH ways (#142)", async () => {
+    // A owns x twice (a rare double) and z three times (an epic double).
+    // Ben holds x once — no double to give back — so he and A have no good swap,
+    // even though he is missing A's epic. The old outward count made Ben a 1.
+    // Cass holds two of y, a rare A does not own, which pairs with A's rare x: 1.
     const { service } = setup(
-      { A: { x: 2, z: 3 }, B: { x: 5 }, C: {} },
+      { A: { x: 2, z: 3 }, B: { x: 1 }, C: { y: 2 } },
       cards,
       [kid("A"), kid("B", "Ben"), kid("C", "Cass")],
     );
@@ -148,24 +152,33 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
     const friends = await service.listFriendSummaries("A");
 
     expect(friends.map((f) => f.id)).toEqual(["B", "C"]); // self excluded
-    expect(friends.find((f) => f.id === "B")!.missingCount).toBe(1); // has x, missing z
-    expect(friends.find((f) => f.id === "C")!.missingCount).toBe(2); // owns nothing
+    expect(friends.find((f) => f.id === "B")!.goodSwapCount).toBe(0);
+    expect(friends.find((f) => f.id === "C")!.goodSwapCount).toBe(1);
     expect(friends.find((f) => f.id === "B")!.name).toBe("Ben");
   });
 
-  it("reads every friend's ownership in ONE batched call (NFR5)", async () => {
+  it("reads every collection in ONE batched call, the active child included (NFR5)", async () => {
+    // The two-way count (#142) needs the active child's own rows as well as
+    // every friend's. They ride in the SAME batch — a per-child read for "me"
+    // beside the batch would be the first step back towards a read per friend.
     const collections = inMemoryCollectionStore({ A: { x: 2 }, B: { x: 1 }, C: { x: 1 } });
     let batched = 0;
     let perChild = 0;
+    let batchedIds: string[] = [];
     const spy = {
       ...collections,
-      async ownedCardIdsForChildren(ids: string[]) {
+      async entriesForChildren(ids: string[]) {
         batched += 1;
-        return collections.ownedCardIdsForChildren(ids);
+        batchedIds = ids;
+        return collections.entriesForChildren(ids);
       },
       async ownedCardIds(id: string) {
         perChild += 1;
         return collections.ownedCardIds(id);
+      },
+      async tradableDuplicates(id: string) {
+        perChild += 1;
+        return collections.tradableDuplicates(id);
       },
     };
     const service = makeTradeService({
@@ -178,7 +191,8 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
     await service.listFriendSummaries("A");
 
     expect(batched).toBe(1);
-    expect(perChild).toBe(0); // never one round trip per friend
+    expect(perChild).toBe(0); // never one round trip per friend — nor one for me
+    expect([...batchedIds].sort()).toEqual(["A", "B", "C"]);
   });
 
   it("an archived child is not a trade partner (#97)", async () => {
