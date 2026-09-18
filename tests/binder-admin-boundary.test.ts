@@ -63,7 +63,7 @@ function resolveSpecifier(from: string, spec: string): string | null {
 }
 
 describe("binder → admin layering", () => {
-  it("nothing under src/features/binder imports src/features/admin", () => {
+  it("nothing reachable from src/features/binder imports src/features/admin", () => {
     const queue = listFiles(ENTRY_DIR);
     expect(queue.length).toBeGreaterThan(0); // a silent empty sweep proves nothing
 
@@ -79,16 +79,15 @@ describe("binder → admin layering", () => {
           offenders.push(`${file.slice(ROOT.length + 1)} → ${spec}`);
           continue;
         }
-        // Only crawl inside binder itself — admin depending on binder (the
-        // other direction) is allowed and out of scope for this rule, so
-        // don't follow edges that leave src/features/binder.
-        if (target.startsWith(ENTRY_DIR) && !seen.has(target)) {
+        if (!seen.has(target)) {
           seen.add(target);
           queue.push(target);
         }
       }
     }
 
+    // Without this, restricting the crawl to binder itself would still pass.
+    expect([...seen].some((f) => !f.startsWith(ENTRY_DIR))).toBe(true);
     expect(offenders).toEqual([]);
   });
 });
