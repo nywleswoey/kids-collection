@@ -4,7 +4,7 @@
 the live pool: choose the 30 subjects, author the JSON, validate it, generate the art, screen it, get one
 human approval, publish, and open a PR.
 
-This file supersedes the old `seed/AUTHORING_PROMPT.md`. It is the only card-authoring document.
+This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authoring document.
 
 **Invocation:** _"Add the theme **Ocean Machines** using `seed-content/NEW-THEME-RUNBOOK.md`."_
 
