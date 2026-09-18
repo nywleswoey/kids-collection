@@ -17,7 +17,7 @@ import {
   diffCounts,
   isClean,
   formatDiff,
-} from "@/features/backup/count-report";
+} from "./count-report";
 
 function main(): void {
   const [beforePath, afterPath] = process.argv.slice(2);

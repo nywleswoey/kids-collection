@@ -4,7 +4,8 @@
  * Separated from `publish-plan.ts` and `completeness.ts` because those are pure
  * and must stay testable without a database — importing the `db` singleton into
  * them pulls in `env.databaseUrl` at module load, which fails in Vitest. Same
- * split as Inc23's `backup/count-report.ts` (pure) vs `scripts/backup/verify.ts`.
+ * split as Inc23's `scripts/backup/count-report.ts` (pure) vs its I/O caller
+ * `scripts/backup/verify.ts`.
  *
  * Every query here is strictly a read. `--review` calls the first one and writes
  * nothing at all — which is why none of them uses `upsertTheme`, whose lookup

@@ -1,6 +1,6 @@
 "use server";
 
-import { withParent, withActiveChild } from "@/features/actions/action";
+import { withParent, withActiveChild } from "@/lib/actions";
 import { getParent } from "@/features/auth/guard";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { pullService } from "./pull-service.prod";

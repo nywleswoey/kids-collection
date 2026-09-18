@@ -6,7 +6,7 @@ import {
   isClean,
   formatDiff,
   type TableCount,
-} from "@/features/backup/count-report";
+} from "../scripts/backup/count-report";
 
 const tableArb = fc.record({
   schema: fc.constantFrom("public", "drizzle"),

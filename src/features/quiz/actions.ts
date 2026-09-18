@@ -1,6 +1,6 @@
 "use server";
 
-import { withActiveChild } from "@/features/actions/action";
+import { withActiveChild } from "@/lib/actions";
 import { quizService } from "./quiz-service.prod";
 import type { BuiltQuiz } from "./quiz-service";
 import type { QuizOutcome } from "./types";

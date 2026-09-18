@@ -66,7 +66,7 @@ app/                  Next.js routes + layout
 src/features/         product code by feature (binder, pull, trade, admin, ...)
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
-src/lib/               env, types, avatars, pure business logic
+src/lib/              env, types, avatars, server-action shape, pure logic
 scripts/              seed CLI, contact-sheet, reconcile, backup verify, prototypes
 seed/                 card/theme source data (cards.json, provenance.json, runbook)
 docs/                 operational runbooks (restore, passkey cutover, migration notes)

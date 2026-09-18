@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { signOut as authSignOut } from "@/auth/config";
-import { withParent } from "@/features/actions/action";
+import { withParent } from "@/lib/actions";
 import { getParent } from "@/features/auth/guard";
 import { field } from "@/lib/form";
 import { captureServerException, getPostHogClient } from "@/lib/posthog-server";
