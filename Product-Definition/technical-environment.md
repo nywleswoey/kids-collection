@@ -117,7 +117,7 @@ The ways an AI agent most plausibly breaks this codebase *while writing perfectl
 - **Don't add a REST route under `app/api/` for an internal feature.** Compose `withParent` /
   `withActiveChild` instead. A new route is a new unauthenticated-by-default surface.
 - **Don't hand-roll `requireParent()` / `revalidatePath()` in an action.** That policy lives in exactly
-  one place — `src/features/actions/action.ts`.
+  one place — `src/lib/actions.ts`.
 - **Don't trust a client-supplied child identity.** The active child is resolved server-side and
   re-validated against the DB. The client says who to trade *with*, never who it *is*.
 - **Don't hardcode `3` or `4` for sacrifice.** Import `SACRIFICE_COST` / `SACRIFICE_MIN`.
@@ -526,7 +526,7 @@ All paths were verified to exist on 2026-08-03.
 
 ### Endpoint
 
-**`src/features/actions/action.ts`** — the single most important file to read before writing any mutation.
+**`src/lib/actions.ts`** — the single most important file to read before writing any mutation.
 The one Server Action shape: **gate → run → revalidate**. It exposes `withParent` and `withActiveChild` so
 features compose the guard + `revalidatePath` dance instead of re-inventing it. Its own comment states the
 intent: *"the gating and cache-busting policy lives in exactly one place."* Also wires
@@ -586,7 +586,7 @@ in three weeks).
 
 Canonical set to load before writing code:
 
-- `src/features/actions/action.ts` — the Server Action shape
+- `src/lib/actions.ts` — the Server Action shape
 - `src/features/trade/trade-service.ts` + `trade-service.prod.ts` — factory / port wiring
 - `src/db/collection-reads.ts` — adapter-side read, `server-only` placement
 - `tests/sacrifice.pbt.test.ts` — property-based shape
