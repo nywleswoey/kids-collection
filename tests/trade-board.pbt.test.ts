@@ -123,8 +123,37 @@ describe("goodSwapCount (#142 — the friend chip counts swaps good BOTH ways)",
     // The count promises trades. A count that outran the rarity lock (FR6) would
     // send a child to a board where nothing pairs, so it is checked against the
     // committing authority rather than against a restatement of the rule.
+    //
+    // This one property draws from a NARROWER domain than the two above, and
+    // deliberately: `wellFormedStateArb` reproduces the two invariants
+    // `listFriendSummaries` has already established by the time it calls
+    // `goodSwapCount`. A card id appears at most ONCE per inventory —
+    // (childId, cardId) is the collection's primary key — and each side's owned
+    // set CONTAINS its own duplicates, because a card you hold twice is a card
+    // you own. Widen it back to `inventoryArb`/`ownedArb` and this goes flaky on
+    // states no service can produce: both sides holding the same id makes
+    // `goodSwapCount` count a pairing `validateTrade` rejects as the identical
+    // card, and a repeated id inside one inventory makes the greedy matcher
+    // below under-count, since `taken` is keyed by id. Neither is a bug in
+    // `goodSwapCount`. Inside this domain the two sides' givable cards are
+    // id-disjoint, so `validateTrade` reduces to the rarity clause, each rarity
+    // is a complete bipartite block, and greedy attains the maximum matching —
+    // which is why this may stay an equality and must not be relaxed.
+    const uniqueInventoryArb = fc.uniqueArray(tcardArb, {
+      maxLength: 15,
+      selector: (t) => t.card.id,
+    });
+    const wellFormedStateArb = fc
+      .tuple(uniqueInventoryArb, uniqueInventoryArb, ownedArb, ownedArb)
+      .map(([mine, theirs, alsoMine, alsoTheirs]) => ({
+        mine,
+        theirs,
+        myOwned: new Set([...alsoMine, ...mine.map((t) => t.card.id)]),
+        theirOwned: new Set([...alsoTheirs, ...theirs.map((t) => t.card.id)]),
+      }));
+
     fc.assert(
-      fc.property(inventoryArb, inventoryArb, ownedArb, ownedArb, (mine, theirs, myOwned, theirOwned) => {
+      fc.property(wellFormedStateArb, ({ mine, theirs, myOwned, theirOwned }) => {
         const n = goodSwapCount({
           mine,
           theirDupes: theirs,

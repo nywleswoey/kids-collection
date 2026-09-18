@@ -169,7 +169,7 @@ export function TradeBoard({
                 {f.goodSwapCount > 0 ? (
                   <span
                     className="pill pill--gold text-xs"
-                    aria-label={`${f.goodSwapCount} good ${f.goodSwapCount === 1 ? "swap" : "swaps"} with ${f.name}`}
+                    aria-label={`${f.goodSwapCount} good ${f.goodSwapCount === 1 ? "swap" : "swaps"}`}
                   >
                     🤝 {f.goodSwapCount}
                   </span>
