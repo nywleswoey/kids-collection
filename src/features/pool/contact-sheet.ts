@@ -212,7 +212,7 @@ export function renderContactSheet(sheet: ContactSheet): string {
       ? `<p class="sub">${sheet.escapeHatchIds.map(esc).join(", ")} ${sheet.escapeHatchIds.length === 1 ? "is an escape hatch" : "are escape hatches"} (#71): not part of the fan-out, so blank is the normal state. A filled cell there means someone invoked it deliberately for that card.</p>`
       : "",
     sheet.orphans.length > 0
-      ? `<p class="warn">⚠ ${sheet.orphans.length} file(s) in seed/review/ belong to no registered provider (a rename or a retirement): ${sheet.orphans.map(esc).join(", ")}</p>`
+      ? `<p class="warn">⚠ ${sheet.orphans.length} file(s) in seed-content/review/ belong to no registered provider (a rename or a retirement): ${sheet.orphans.map(esc).join(", ")}</p>`
       : "",
   ].join("");
 
@@ -257,7 +257,7 @@ img{width:100%;border-radius:8px;display:block;background:#222}
 td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 </style>
 <h1>${esc(sheet.theme)} — ${sheet.rows.length} card(s) in the seed</h1>
-<p class="sub">Every card this theme declares in <code>seed/cards.json</code>, not just the unpublished ones — this sheet reads no database. One row per subject, one column per provider. The outlined cell is what <code>--sync</code> would publish.</p>
+<p class="sub">Every card this theme declares in <code>seed-content/cards.json</code>, not just the unpublished ones — this sheet reads no database. One row per subject, one column per provider. The outlined cell is what <code>--sync</code> would publish.</p>
 ${banner}
 <table>
 <thead><tr><th>Card</th>${sheet.providerIds

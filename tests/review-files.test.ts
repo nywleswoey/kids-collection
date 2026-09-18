@@ -157,7 +157,7 @@ describe("the FR9 audit (#67 — what --sync refuses, and why)", () => {
     expect(missingReviews([oneCard], planned, () => after, (f) => onDisk.has(f))).toHaveLength(1);
   });
 
-  it("ignores cards that are not planned inserts — no back-fill of seed/review/", () => {
+  it("ignores cards that are not planned inserts — no back-fill of seed-content/review/", () => {
     // The ~360 already-published cards are not in the plan, so they never need a
     // review file. Insert-scoped, as FR9 has always been.
     expect(missingReviews([theme()], new Set(), lookup, nothingOnDisk)).toEqual([]);

@@ -26,7 +26,7 @@ next-env.d.ts
 *.log
 
 # seed review images (generated for human review, not committed)
-/seed/review/
+/seed-content/review/
 .env*
 !.env.example
 .env.local

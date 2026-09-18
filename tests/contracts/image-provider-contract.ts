@@ -23,7 +23,7 @@ import {
  *      or `height` parameter at all, so an adapter written against it returns a
  *      perfectly plausible image of the wrong size.
  *   2. The bytes are a real image. A provider answering 200 with an HTML or JSON
- *      error page passes every length check and would land in `seed/review/`
+ *      error page passes every length check and would land in `seed-content/review/`
  *      looking like a reviewed card.
  *   3. Failures map onto the retry taxonomy: 429 and 5xx retryable, 4xx not.
  *      The lane runner's circuit breaker counts what escapes, so an adapter that
@@ -209,7 +209,7 @@ export function runHttpProviderContract(
 
     it("refuses an image in a format it does not declare", async () => {
       // The declared format names the review file, so an adapter declaring png
-      // and returning jpeg fills seed/review/ with extensions that lie. Nothing
+      // and returning jpeg fills seed-content/review/ with extensions that lie. Nothing
       // downstream complains — the path is built the same way both times and
       // uploadImage sniffs the bytes — so only this catches it.
       const provider = makeProvider(fixtures.wrongFormat);

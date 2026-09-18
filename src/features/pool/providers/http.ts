@@ -56,7 +56,7 @@ export function parseRetryAfter(headers?: Headers): number | undefined {
  * Read a response body as image bytes, rejecting an empty one.
  *
  * The empty check is inherited from the previous `generateImage` and is worth
- * keeping: a zero-length body written to `seed/review/` looks like a reviewed
+ * keeping: a zero-length body written to `seed-content/review/` looks like a reviewed
  * card to `existsSync`, which is precisely the confusion FR9 exists to prevent.
  * The contract suite's size assertion catches the subtler version — a provider
  * returning an HTML error page with HTTP 200.
@@ -77,7 +77,7 @@ export async function readBytes(
  *
  * The format sniff also catches the sneakiest failure: a provider returning an
  * HTML or JSON error page with HTTP 200. That has a non-zero length, so the
- * empty-body check waves it through and it would land in `seed/review/` looking
+ * empty-body check waves it through and it would land in `seed-content/review/` looking
  * for all the world like a reviewed card.
  *
  * The size check enforces the map's 768x768 invariant at runtime, and is not
@@ -87,7 +87,7 @@ export async function readBytes(
  * The blank check (#78) is the one that judges the picture rather than the
  * envelope. Everything above proves an image is WELL-FORMED, and a pure black
  * 768x768 PNG is well-formed — Cloudflare SDXL returned one for ~40% of attempts
- * on a shipped prompt, and it reached `seed/review/` looking like a candidate.
+ * on a shipped prompt, and it reached `seed-content/review/` looking like a candidate.
  * `../blank-frame.ts` holds the threshold and the measurements behind it.
  */
 export function finishGeneration(
@@ -111,7 +111,7 @@ export function finishGeneration(
   // it, so an adapter that declares png and returns jpeg produces a folder of
   // files whose extensions lie. Publishing survives (the path is built the same
   // way both times, and `uploadImage` sniffs the bytes for the content type), so
-  // nothing downstream would ever complain; a human reading seed/review/ would
+  // nothing downstream would ever complain; a human reading seed-content/review/ would
   // simply be misled, indefinitely.
   //
   // Adapter formats are written from provider docs and cannot be verified until

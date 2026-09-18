@@ -70,7 +70,7 @@ export function reviewFileName(
  * moment someone is already looking.
  *
  * Alongside rather than inside the image: adding an EXIF writer would be a new
- * dependency, and `seed/review/` is uncommitted scratch either way.
+ * dependency, and `seed-content/review/` is uncommitted scratch either way.
  */
 export function sidecarFileName(
   themeName: string,
@@ -195,7 +195,7 @@ export function unknownProviders(
  * Planned inserts with no reviewed image on disk (FR9).
  *
  * Two distinct ways to be unreviewed, reported distinctly because the remedies
- * differ: a card with no pick needs a `provider` written into `seed/cards.json`,
+ * differ: a card with no pick needs a `provider` written into `seed-content/cards.json`,
  * while a card whose pick has no file needs another review round. Both refuse
  * the insert; only one of them is fixed by re-running `--review`.
  *

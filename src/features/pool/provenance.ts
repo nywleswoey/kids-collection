@@ -2,14 +2,14 @@
  * What actually drew a published card, kept after review is over (#75).
  *
  * ── The gap this closes ──────────────────────────────────────────────────────
- * A published card records `provider` in `seed/cards.json` — the LANE. #64 proved
+ * A published card records `provider` in `seed-content/cards.json` — the LANE. #64 proved
  * that is not the same thing as the model: a request for `flux` came back served
  * by `sana`, silently, with no version string anywhere but a response header. So
  * `provider: "pollinations"` does not explain why a theme's art looks the way it
  * does, and does not let anyone reproduce a bake-off.
  *
  * The witness exists — `generate()` returns `model` and `--review` writes it to a
- * sidecar beside every candidate (`review-files.ts`) — but `seed/review/` is
+ * sidecar beside every candidate (`review-files.ts`) — but `seed-content/review/` is
  * gitignored scratch. It dies at publish. This is where the picked candidate's
  * sidecar goes to survive.
  *
@@ -18,7 +18,7 @@
  * describes and never touch the authoring surface. It loses on three counts.
  *
  *   - The rest of the record is already in git. The prompt is in
- *     `seed/cards.json`, `ART_STYLE` is in `prompt.ts`, the parameter bag is in
+ *     `seed-content/cards.json`, `ART_STYLE` is in `prompt.ts`, the parameter bag is in
  *     the adapter. Only the witness is homeless. Splitting one record across git
  *     and Postgres means answering one question needs a psql session against
  *     production, about art that has nothing to do with production.
@@ -29,7 +29,7 @@
  *   - A wrong row is undetectable. A wrong file is a diff, in the same pull
  *     request that ships the theme.
  *
- * It is NOT written into `seed/cards.json`, for that file's own reason: it is
+ * It is NOT written into `seed-content/cards.json`, for that file's own reason: it is
  * hand-authored and schema-validated, and a tool writing generated fields into it
  * changes what it is. This file is generated and only generated — nobody hand-
  * edits it, and the runbook says so.
@@ -90,7 +90,7 @@ const cardProvenanceSchema = z.object({
    * Did a human see these bytes before a child did?
    *
    * True for everything the runbook produces: `--sync` publishes a candidate off
-   * `seed/review/` that was screened at checkpoint 2. False only on the
+   * `seed-content/review/` that was screened at checkpoint 2. False only on the
    * `--allow-unreviewed` path, which generates at publish time — there the
    * `reviewKey` is a correct content address for bytes that were never in a
    * review folder and never in front of anyone.

@@ -53,7 +53,7 @@ describe("toProvenance (#75)", () => {
   });
 
   it("pins the reviewKey, which carries the prompt and param hashes", () => {
-    // The one thing `provider` in seed/cards.json cannot say: WHICH prompt (and
+    // The one thing `provider` in seed-content/cards.json cannot say: WHICH prompt (and
     // therefore which ART_STYLE) and WHICH parameter bag drew these bytes.
     expect(toProvenance(witnessed, REVIEW_KEY, true).reviewKey).toBe(REVIEW_KEY);
   });
@@ -217,8 +217,8 @@ describe("the record and the candidate it describes (#75)", () => {
   });
 });
 
-describe("the committed seed/provenance.json (#75)", () => {
-  const raw = readFileSync(join(process.cwd(), "seed", "provenance.json"), "utf8");
+describe("the committed seed-content/provenance.json (#75)", () => {
+  const raw = readFileSync(join(process.cwd(), "seed-content", "provenance.json"), "utf8");
 
   it("is a valid provenance file", () => {
     // `--sync` LOADS this before it publishes anything and aborts if it does not

@@ -413,7 +413,7 @@ describe("ai-horde adapter (#74)", () => {
   it("treats a worker's censorship as retryable, not as a drawing (#71)", async () => {
     // Per-worker censorship returns a BLACK FRAME rather than a refusal. #71
     // accepted that risk on the grounds it fails visibly into review — but a
-    // black frame saved to seed/review/ is not visible, it is a card that looks
+    // black frame saved to seed-content/review/ is not visible, it is a card that looks
     // like the model drew nothing. It is also one volunteer's filter, not a
     // verdict on the prompt, so another worker is a real remedy: retryable.
     const provider = aiHorde({

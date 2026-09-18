@@ -7,7 +7,7 @@
  *   pnpm seed --blob-budget       weigh the whole Blob store against the plan's storage
  *                                 allowance and project how many themes still fit, per
  *                                 lane (#79), then exit
- *   pnpm seed --review            generate images for NEW cards to seed/review/,
+ *   pnpm seed --review            generate images for NEW cards to seed-content/review/,
  *                                 from EVERY registered provider (the bake-off)
  *   pnpm seed --review --providers=cloudflare-sdxl
  *                                 narrow the bake-off to named provider(s)
@@ -43,7 +43,7 @@
  *
  * The reason once given here — "Pollinations is non-deterministic and the request
  * carries no seed" — is wrong, and was already corrected during Inc24 itself (see
- * `aidlc-docs/construction/build-and-test/increment24-vehicle-themes-build-and-test.md`
+ * `archive/aidlc-v1/construction/build-and-test/increment24-vehicle-themes-build-and-test.md`
  * §3); this header just never caught up. Re-measured in #64: the request does omit
  * the seed, but the omitted seed takes a fixed server-side default, and generation
  * is reproducible for a given model — while one model is deployed behind the prompt,
@@ -71,7 +71,7 @@
  * ── The bake-off (#63, #67) ──────────────────────────────────────────────────
  * `--review` no longer generates one image per card. It generates one per card PER
  * PROVIDER, in parallel lanes, so a human compares a subject x provider row and
- * records the winner in `seed/cards.json` — a theme-level `provider` default plus
+ * records the winner in `seed-content/cards.json` — a theme-level `provider` default plus
  * sparse per-card overrides. `--sync` resolves `card.provider ?? theme.provider` and
  * publishes THAT provider's reviewed bytes.
  *
@@ -151,10 +151,10 @@ import { isProductionDatabaseUrl, describeTarget } from "@/features/pool/db-targ
 import { confirmDestructive } from "./guard";
 import type { Rarity } from "@/lib/types";
 
-const SEED_PATH = join(process.cwd(), "seed", "cards.json");
-const REVIEW_DIR = join(process.cwd(), "seed", "review");
+const SEED_PATH = join(process.cwd(), "seed-content", "cards.json");
+const REVIEW_DIR = join(process.cwd(), "seed-content", "review");
 /** Committed, generated, never hand-edited — see `features/pool/provenance.ts` (#75). */
-const PROVENANCE_PATH = join(process.cwd(), "seed", "provenance.json");
+const PROVENANCE_PATH = join(process.cwd(), "seed-content", "provenance.json");
 
 // Retry budget per (card, provider) attempt, honoured by both generation paths —
 // the lane runner and `--allow-unreviewed`. Concurrency and pacing are NOT here
@@ -460,7 +460,7 @@ async function main() {
   // ("no unreviewed content path to a child, ever") carries no mode qualifier.
   //
   // Insert-scoped: the already-published cards are not in `plan`, so they never
-  // need a review file and no back-fill of seed/review/ is required.
+  // need a review file and no back-fill of seed-content/review/ is required.
   //
   // Same idiom as --allow-prune: named flag, printed blast radius, non-zero exit
   // by default, nothing written.
@@ -475,7 +475,7 @@ async function main() {
     for (const u of unknown) console.error(`   ${u.theme} / ${u.card} → "${u.providerId}"`);
     console.error(
       `\n   Registered: ${PROVIDER_IDS.join(", ")}\n` +
-        `   Nothing has been written. Fix the \`provider\` value in seed/cards.json.\n`,
+        `   Nothing has been written. Fix the \`provider\` value in seed-content/cards.json.\n`,
     );
     process.exitCode = 1;
     return;
@@ -494,7 +494,7 @@ async function main() {
     console.error(
       `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
         `   every image. Cards marked "no provider chosen" need a \`provider\` on the\n` +
-        `   card or its theme in seed/cards.json — that is the bake-off pick.\n` +
+        `   card or its theme in seed-content/cards.json — that is the bake-off pick.\n` +
         `   \`--allow-unreviewed\` exists but defeats the guarantee that no unreviewed\n` +
         `   image reaches a child.\n`,
     );
@@ -523,7 +523,7 @@ async function main() {
   };
 
   // Array position is the theme's display order — appending a theme to
-  // seed/cards.json makes it the most recent (Inc21 FR2).
+  // seed-content/cards.json makes it the most recent (Inc21 FR2).
   for (const [sortOrder, theme] of themes.entries()) {
     const themeId = await upsertTheme(theme.name, sortOrder);
 
@@ -673,7 +673,7 @@ async function main() {
       serializeProvenance(recordProvenance(provenanceBefore, publishedCards)),
     );
     console.log(
-      `✎ seed/provenance.json: recorded what drew ${publishedCards.length} newly published card(s). ` +
+      `✎ seed-content/provenance.json: recorded what drew ${publishedCards.length} newly published card(s). ` +
         `Commit it with the theme.`,
     );
   }
@@ -787,9 +787,9 @@ function loadProvenance(): ProvenanceFile {
     return parseProvenance(JSON.parse(readFileSync(PROVENANCE_PATH, "utf8")));
   } catch (err) {
     throw new Error(
-      `seed/provenance.json is unreadable (${String(err)}).\n` +
+      `seed-content/provenance.json is unreadable (${String(err)}).\n` +
         `   Nothing has been written. It is a generated file — restore it with ` +
-        `\`git checkout seed/provenance.json\` rather than repairing it by hand.`,
+        `\`git checkout seed-content/provenance.json\` rather than repairing it by hand.`,
     );
   }
 }

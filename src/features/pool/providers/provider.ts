@@ -98,7 +98,7 @@ export type ProviderParams = Readonly<Record<string, string | number | boolean>>
 export type ProviderRole = "lane" | "escape-hatch";
 
 export interface ImageProvider {
-  /** Stable slug, unique in the registry. Appears in review filenames and in `seed/cards.json`. */
+  /** Stable slug, unique in the registry. Appears in review filenames and in `seed-content/cards.json`. */
   readonly id: string;
   /** In the eager bake-off, or invoked on demand only (#71)? */
   readonly role: ProviderRole;

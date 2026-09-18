@@ -48,7 +48,7 @@ export function promptHash(card: Pick<SeedCard, "imagePrompt">): string {
 }
 
 /**
- * Filename stem under seed/review/. Editing a card's imagePrompt changes the hash,
+ * Filename stem under seed-content/review/. Editing a card's imagePrompt changes the hash,
  * so `--sync` finds no matching file and regenerates instead of republishing an
  * image that was reviewed against a prompt that no longer exists.
  *

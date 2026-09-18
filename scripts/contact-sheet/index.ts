@@ -3,7 +3,7 @@
  *
  *   pnpm contact-sheet "Ocean Machines"
  *
- * Writes seed/review/<theme-slug>-review.html: one row per subject, one column
+ * Writes seed-content/review/<theme-slug>-review.html: one row per subject, one column
  * per registered provider, the `--sync` pick outlined (#63's subject x provider
  * grid). A local scratch artifact — do not commit it.
  *
@@ -23,15 +23,15 @@ import { planContactSheet, renderContactSheet } from "@/features/pool/contact-sh
 import { parseSidecar } from "@/features/pool/review-files";
 import { PROVIDERS } from "@/features/pool/providers";
 
-const SEED_PATH = join(process.cwd(), "seed", "cards.json");
-const REVIEW_DIR = join(process.cwd(), "seed", "review");
+const SEED_PATH = join(process.cwd(), "seed-content", "cards.json");
+const REVIEW_DIR = join(process.cwd(), "seed-content", "review");
 
 function main() {
   const themeName = process.argv[2];
   if (!themeName) {
     console.error(
       `Usage: pnpm contact-sheet "<Theme Name>"\n` +
-        `   The name must match seed/cards.json exactly.`,
+        `   The name must match seed-content/cards.json exactly.`,
     );
     process.exitCode = 1;
     return;
@@ -41,7 +41,7 @@ function main() {
   const theme = seed.themes.find((t) => t.name === themeName);
   if (!theme) {
     console.error(
-      `⛔ No theme named "${themeName}" in seed/cards.json.\n` +
+      `⛔ No theme named "${themeName}" in seed-content/cards.json.\n` +
         `   Themes: ${seed.themes.map((t) => t.name).join(", ")}`,
     );
     process.exitCode = 1;

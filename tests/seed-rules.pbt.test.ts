@@ -186,10 +186,10 @@ describe("seed schema — rejected: exactly one invariant broken", () => {
 });
 
 describe("seed schema — the committed pool satisfies the rules", () => {
-  it("the real seed/cards.json parses (the rules are forward guards, not retro-fixes)", async () => {
+  it("the real seed-content/cards.json parses (the rules are forward guards, not retro-fixes)", async () => {
     const { loadSeed } = await import("@/features/pool/loader");
     const { join } = await import("node:path");
-    const seed = loadSeed(join(process.cwd(), "seed", "cards.json"));
+    const seed = loadSeed(join(process.cwd(), "seed-content", "cards.json"));
     for (const theme of seed.themes) {
       expect(theme.cards.length).toBe(CARDS_PER_THEME);
     }

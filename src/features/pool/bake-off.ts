@@ -3,7 +3,7 @@
  *
  * #63 resolved `--review` to generating every NEW card from every registered
  * provider, so a human can compare a subject x provider row and record the pick
- * in `seed/cards.json`. This module is the scheduler for that fan-out.
+ * in `seed-content/cards.json`. This module is the scheduler for that fan-out.
  *
  * ── One pool per lane, and why it is not one pool of 90 jobs ─────────────────
  * #63 called per-provider throttling a REQUIREMENT of its decision rather than
@@ -148,7 +148,7 @@ async function runLane<T>(
       }
 
       // The provider answered, so the lane is demonstrably alive — the breaker
-      // tallies only what it claims to, and a full disk under seed/review/ is a
+      // tallies only what it claims to, and a full disk under seed-content/review/ is a
       // local problem reported as one rather than as a dead lane.
       consecutiveFailures = 0;
 

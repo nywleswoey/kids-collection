@@ -6,7 +6,7 @@ pre-generated, rarity-tiered, themed pool — with pictures, short educational
 facts, and holographic/3D card effects. Deployed on Vercel.
 
 Increments 1–22 were built with the AI-DLC v1 workflow; those design and audit
-artifacts are kept as history in `aidlc-docs/`. Current product definition lives
+artifacts are kept as history in `archive/aidlc-v1/`. Current product definition lives
 in `Product-Definition/`, produced by [aidlc-discovery](https://github.com/aws-samples/sample-aidlc-discovery)
 v2 (`/aidlc-discovery`).
 
@@ -29,17 +29,17 @@ v2 (`/aidlc-discovery`).
 
 ## Seeding the card pool
 
-To add a whole new theme, hand `seed/NEW-THEME-RUNBOOK.md` and a theme name to an agent — it authors the
+To add a whole new theme, hand `seed-content/NEW-THEME-RUNBOOK.md` and a theme name to an agent — it authors the
 30 cards, generates the art, and stops for your approval before publishing.
 
 ```bash
 pnpm seed --check-urls # schema + every sourceUrl must return 200
-pnpm seed --review     # generate preview images for NEW cards to seed/review/,
+pnpm seed --review     # generate preview images for NEW cards to seed-content/review/,
                        #   one per card PER PROVIDER (the bake-off)
 pnpm contact-sheet "<Theme Name>"
-                       # subject x provider grid to review, into seed/review/
+                       # subject x provider grid to review, into seed-content/review/
 pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent),
-                       #   recording what drew them in seed/provenance.json
+                       #   recording what drew them in seed-content/provenance.json
 ```
 
 ## Getting started
@@ -68,14 +68,14 @@ src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
 scripts/              seed CLI, contact-sheet, reconcile, backup verify, prototypes
-seed/                 card/theme source data (cards.json, provenance.json, runbook)
+seed-content/         card/theme source data (cards.json, provenance.json, runbook)
 docs/                 operational runbooks (restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
 tests/                property-based + unit tests, plus tests/contracts/ shared specs
 tests-pg/             integration tests against a real dockerized Postgres
 tests-live/           opt-in live tests against real external providers
 Product-Definition/   current vision, technical environment, open questions
-aidlc-docs/           AI-DLC v1 design + audit artifacts (increments 1–22, history)
+archive/aidlc-v1/     AI-DLC v1 design + audit artifacts (increments 1–22, history)
 ```
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for which of `tests/`, `tests-pg/`, `tests-live/` to add a test to.
 

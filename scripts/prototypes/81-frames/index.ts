@@ -78,13 +78,13 @@
  *   pnpm prototype:81            run every arm; resumes, so an interrupt is cheap
  *   pnpm prototype:81 --sheet    rebuild the contact sheet from disk, generate nothing
  *
- * Output (gitignored scratch): seed/review/prototype-81/
+ * Output (gitignored scratch): seed-content/review/prototype-81/
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { CARD_SIZE } from "@/features/pool/providers";
 
-const OUT_DIR = join(process.cwd(), "seed", "review", "prototype-81");
+const OUT_DIR = join(process.cwd(), "seed-content", "review", "prototype-81");
 const CF_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
 
 /**
@@ -115,7 +115,7 @@ const NEGATIVE =
 
 /**
  * #74's three hard subjects plus its control, with the prompts that actually
- * shipped in `seed/cards.json`. Warhorse is the load-bearing one: it dodges all
+ * shipped in `seed-content/cards.json`. Warhorse is the load-bearing one: it dodges all
  * three of the runbook's failure classes, so a frame on it cannot be blamed on a
  * difficult subject. It framed 5/5 in the baseline arm.
  */
