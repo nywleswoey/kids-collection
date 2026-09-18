@@ -4,6 +4,7 @@ import { requireAdminGate } from "@/features/admin/gate";
 import { getCatalogPreview } from "@/features/admin/catalog";
 import { ThemeSection } from "@/features/binder/ThemeSection";
 import { EffectTriggerPanel } from "@/features/admin/EffectTriggerPanel";
+import { AdminBinderSlot } from "@/features/admin/AdminBinderSlot";
 import { SoundProvider } from "@/features/sound/SoundProvider";
 import { SoundControls } from "@/features/sound/SoundControls";
 
@@ -44,7 +45,12 @@ export default async function AdminPreviewPage() {
         <EffectTriggerPanel sampleCard={sampleCard} />
 
         {catalog.themes.map((section) => (
-          <ThemeSection key={section.theme.id} section={section} admin />
+          <ThemeSection
+            key={section.theme.id}
+            section={section}
+            admin
+            renderCard={(entry) => <AdminBinderSlot entry={entry} />}
+          />
         ))}
       </main>
       <SoundControls />
