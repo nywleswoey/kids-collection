@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { cardKey, planInserts } from "@/features/pool/publish-plan";
-import type { SeedFile } from "@/features/pool/seed-schema";
+import { cardKey, planInserts } from "@/shared/pool/publish-plan";
+import type { SeedFile } from "@/shared/pool/seed-schema";
 
 /** Minimal shape — planInserts only reads theme.name and card.name. */
 const seed = (themes: Record<string, string[]>): SeedFile =>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AvatarBadge } from "@/features/ui/AvatarBadge";
+import { AvatarBadge } from "@/shared/ui/AvatarBadge";
 import { ProfileForm } from "./ProfileForm";
 import { ArchiveProfileButton } from "./ArchiveProfileButton";
 

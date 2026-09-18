@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import type { BinderCard } from "@/lib/types";
-import { RarityThumb } from "@/features/card/RarityThumb";
-import { CardModal } from "@/features/card/CardModal";
+import { RarityThumb } from "@/shared/card/RarityThumb";
+import { CardModal } from "@/shared/card/CardModal";
 import { raritySlotClass } from "@/features/binder/rarity-slot";
 import "@/features/binder/rarity-slot.css";
 

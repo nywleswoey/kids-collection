@@ -92,7 +92,7 @@ Terms introduced by the Store-seam design (see
 ## Architecture — the image-provider seam (#67, on map #61)
 
 Terms introduced by putting the seed CLI's art generation behind a port
-(`src/features/pool/providers/`), so a theme can be baked off across more than one
+(`src/shared/pool/providers/`), so a theme can be baked off across more than one
 free provider:
 
 - **Image provider (port)** — the interface in `providers/provider.ts`. One method,
@@ -110,7 +110,7 @@ free provider:
 - **Bake-off candidate** — one generated image for a `(card, provider)` pair, named
   `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed-content/review/`,
   with a `.json` **sidecar** recording the model the response actually *named*
-  (`src/features/pool/review-files.ts`).
+  (`src/shared/pool/review-files.ts`).
 - **Provenance record** — the picked candidate's sidecar, kept after review is over
   (`seed-content/provenance.json`, written by `--sync`/`--publish`, `provenance.ts`, #75).
   `seed-content/review/` is gitignored scratch, so without this the only surviving witness of
@@ -124,7 +124,7 @@ free provider:
   returned a pure black PNG for ~40% of attempts on the one prompt where it was
   measured, and never on the others tried, #78). Detected at
   the seam as an information-density floor — encoded **bytes per pixel**, no decoder
-  — in `src/features/pool/blank-frame.ts`, which holds the threshold and the
+  — in `src/shared/pool/blank-frame.ts`, which holds the threshold and the
   measurements that set it. Refused by `finishGeneration` as `ProviderRetryable`,
   because another attempt is a real remedy; a lane that keeps blanking exhausts the
   ordinary retry ladder and is counted by the circuit breaker like any other failure.
@@ -133,7 +133,7 @@ free provider:
   2026-08-15.
 - **Store budget** — how much of the plan's Blob **storage allowance** the pool has spent,
   and how many more 30-card themes fit at each lane's declared weight
-  (`src/features/pool/blob-budget.ts`, `pnpm seed --blob-budget`, #79). Reads the
+  (`src/shared/pool/blob-budget.ts`, `pnpm seed --blob-budget`, #79). Reads the
   STORE via `list()` rather than the pool's own image URLs, because `put()` adds a
   random suffix: re-publishing a card writes a new object and strands the old one,
   and the allowance is charged for both (**403 objects for 390 cards, 1.07 MB
@@ -184,7 +184,7 @@ free provider:
   `stable-diffusion-xl-lightning` answers **JPEG at 88–107 KB**, unregistered because
   a model swap is a roster decision (#69), not a file-size one.
 - **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
-  (`src/features/pool/contact-sheet.ts`), **CHECKPOINT 2** of
+  (`src/shared/pool/contact-sheet.ts`), **CHECKPOINT 2** of
   `seed-content/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
 - **`params`** — an adapter's declared, **total** request-parameter bag, hashed into
   the candidate filename so a parameter change invalidates exactly the reviews it

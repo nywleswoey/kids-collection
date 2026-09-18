@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { binderService } from "@/features/binder/service.prod";
-import { Card } from "@/features/card/Card";
+import { Card } from "@/shared/card/Card";
 import { SacrificePanel } from "@/features/pull/SacrificePanel";
 import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import { backHref } from "@/features/binder/binder-place";

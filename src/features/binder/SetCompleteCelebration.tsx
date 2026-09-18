@@ -1,9 +1,9 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { SoundContext } from "@/features/sound/SoundProvider";
-import { useSound } from "@/features/sound/useSound";
-import { Confetti } from "@/features/anim/Confetti";
+import { SoundContext } from "@/shared/sound/SoundProvider";
+import { useSound } from "@/shared/sound/useSound";
+import { Confetti } from "@/shared/anim/Confetti";
 import { storageGet, storageSet } from "@/lib/storage";
 
 /**

@@ -1,6 +1,6 @@
 import type { BinderCard } from "@/lib/types";
-import { CardImage } from "@/features/card/CardImage";
-import { RARITY_META } from "@/features/card/rarity";
+import { CardImage } from "@/shared/card/CardImage";
+import { RARITY_META } from "@/shared/card/rarity";
 import "@/features/binder/rarity-slot.css";
 
 /** Shared inner content for an owned rarity-framed slot (U5-FR2): an optional

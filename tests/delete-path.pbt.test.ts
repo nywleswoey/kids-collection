@@ -6,7 +6,7 @@ import { SACRIFICE_COST } from "@/features/pull/sacrifice";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryChildStore } from "@/db/stores/child-store.fake";
 import type { CollectionStore } from "@/db/stores/collection-store";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import type { Card, Child, Rarity } from "@/lib/types";
 

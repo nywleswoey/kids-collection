@@ -1,7 +1,7 @@
 /**
  * True when the OS asks for reduced motion. SSR-safe: returns false when there
  * is no window/matchMedia so first render is stable. One-shot snapshot — for a
- * live-updating value use features/anim/useReducedMotion.
+ * live-updating value use shared/anim/useReducedMotion.
  */
 export function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || !window.matchMedia) return false;

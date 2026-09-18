@@ -1,4 +1,4 @@
-import { AvatarBadge } from "@/features/ui/AvatarBadge";
+import { AvatarBadge } from "@/shared/ui/AvatarBadge";
 import { selectProfileAction } from "./actions";
 
 /**

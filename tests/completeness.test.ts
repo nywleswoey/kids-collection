@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { comparePoolShape, type PublishedCount } from "@/features/pool/completeness";
-import type { SeedFile } from "@/features/pool/seed-schema";
+import { comparePoolShape, type PublishedCount } from "@/shared/pool/completeness";
+import type { SeedFile } from "@/shared/pool/seed-schema";
 import { RARITIES, type Rarity } from "@/lib/types";
 
 /** A theme with the given per-rarity counts. */

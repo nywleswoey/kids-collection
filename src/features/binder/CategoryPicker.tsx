@@ -1,5 +1,5 @@
 import type { ThemeSection as ThemeSectionData } from "@/lib/types";
-import { CardImage } from "@/features/card/CardImage";
+import { CardImage } from "@/shared/card/CardImage";
 import { coverCard } from "./category-cover";
 
 /**

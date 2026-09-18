@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { neon } from "@neondatabase/serverless";
-import { listThemes } from "@/features/pool/service";
+import { listThemes } from "@/shared/pool/service";
 import { resetAll } from "./db";
 
 /**

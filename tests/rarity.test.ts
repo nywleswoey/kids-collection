@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RARITY_META } from "@/features/card/rarity";
+import { RARITY_META } from "@/shared/card/rarity";
 import { RARITIES } from "@/lib/types";
 
 describe("RARITY_META (U5-FR2)", () => {

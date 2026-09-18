@@ -8,10 +8,10 @@ import {
   summariseWeights,
   themesThatFit,
   type StoredObject,
-} from "@/features/pool/blob-budget";
+} from "@/shared/pool/blob-budget";
 // The real one, not a local 30: a projection asserted against a copy of the
 // constant would keep passing after the pyramid changed underneath it.
-import { CARDS_PER_THEME } from "@/features/pool/seed-schema";
+import { CARDS_PER_THEME } from "@/shared/pool/seed-schema";
 
 /** A store object the way `list()` reports one. */
 function obj(pathname: string, size: number, suffix = "x"): StoredObject {

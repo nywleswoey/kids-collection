@@ -26,7 +26,7 @@
  * every parent- and child-facing read, but their `collections` rows still exist and
  * can still be broken; an auditor that inherited the app's visibility filter would
  * quietly stop auditing them. The same reasoning covers `previewReset` /
- * `perChildRows` in `src/features/pool/blast-radius.ts`: a blast radius that
+ * `perChildRows` in `src/shared/pool/blast-radius.ts`: a blast radius that
  * under-reported by a whole child would be worse than useless. Both are OFFLINE
  * tools reporting to an operator at a terminal, which is why neither inherits a
  * filter written for the app's screens.

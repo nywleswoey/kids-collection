@@ -17,11 +17,11 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { loadSeed } from "@/features/pool/loader";
-import { slug } from "@/features/pool/keys";
-import { planContactSheet, renderContactSheet } from "@/features/pool/contact-sheet";
-import { parseSidecar } from "@/features/pool/review-files";
-import { PROVIDERS } from "@/features/pool/providers";
+import { loadSeed } from "@/shared/pool/loader";
+import { slug } from "@/shared/pool/keys";
+import { planContactSheet, renderContactSheet } from "@/shared/pool/contact-sheet";
+import { parseSidecar } from "@/shared/pool/review-files";
+import { PROVIDERS } from "@/shared/pool/providers";
 
 const SEED_PATH = join(process.cwd(), "seed-content", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed-content", "review");

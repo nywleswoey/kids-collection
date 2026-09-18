@@ -73,7 +73,7 @@ export const PROVENANCE_README =
   "parameter hash. `reviewed: false` means the bytes were generated at publish time under " +
   "--allow-unreviewed and no human ever saw them. Cards published before #75 are absent and stay " +
   "absent: their review files are gone and inventing entries would be fabrication. See " +
-  "src/features/pool/provenance.ts.";
+  "src/shared/pool/provenance.ts.";
 
 const cardProvenanceSchema = z.object({
   /** Registered adapter that drew the published bytes. */

@@ -1,6 +1,6 @@
 import type { ProfileStore } from "@/db/stores/profile-store";
 import type { CollectionStore } from "@/db/stores/collection-store";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import { toChild } from "@/features/profiles/child-mapper";
 import type { AdminOverview, AdminChildRow } from "@/lib/types";
 

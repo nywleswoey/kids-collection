@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createHash } from "node:crypto";
-import { slug, blobKey, promptHash, reviewKey } from "@/features/pool/keys";
-import { buildPrompt, ART_STYLE } from "@/features/pool/prompt";
+import { slug, blobKey, promptHash, reviewKey } from "@/shared/pool/keys";
+import { buildPrompt, ART_STYLE } from "@/shared/pool/prompt";
 
 const card = { name: "SR-71 Blackbird", imagePrompt: "a sleek black jet" };
 

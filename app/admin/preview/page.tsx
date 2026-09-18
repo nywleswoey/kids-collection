@@ -4,8 +4,8 @@ import { requireAdminGate } from "@/features/admin/gate";
 import { getCatalogPreview } from "@/features/admin/catalog";
 import { ThemeSection } from "@/features/binder/ThemeSection";
 import { EffectTriggerPanel } from "@/features/admin/EffectTriggerPanel";
-import { SoundProvider } from "@/features/sound/SoundProvider";
-import { SoundControls } from "@/features/sound/SoundControls";
+import { SoundProvider } from "@/shared/sound/SoundProvider";
+import { SoundControls } from "@/shared/sound/SoundControls";
 
 // Force dynamic rendering since this page requires database access
 export const dynamic = "force-dynamic";

@@ -1,5 +1,5 @@
 import type { CollectionStore } from "@/db/stores/collection-store";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import { themeProgress } from "@/lib/logic";
 import { orderCategoryCards } from "./card-order";
 import type {

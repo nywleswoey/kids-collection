@@ -3,12 +3,12 @@
 import { useState } from "react";
 import type { Card, Rarity } from "@/lib/types";
 import { RARITIES } from "@/lib/types";
-import { useSound } from "@/features/sound/useSound";
-import type { SfxName } from "@/features/sound/sfx";
-import { Confetti } from "@/features/anim/Confetti";
-import { Asteroids } from "@/features/anim/Asteroids";
-import { RevealCard } from "@/features/card/RevealCard";
-import "@/features/anim/anim.css";
+import { useSound } from "@/shared/sound/useSound";
+import type { SfxName } from "@/shared/sound/sfx";
+import { Confetti } from "@/shared/anim/Confetti";
+import { Asteroids } from "@/shared/anim/Asteroids";
+import { RevealCard } from "@/shared/card/RevealCard";
+import "@/shared/anim/anim.css";
 
 const SFX: SfxName[] = [
   "click",

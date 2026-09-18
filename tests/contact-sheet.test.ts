@@ -4,9 +4,9 @@ import {
   renderContactSheet,
   type SheetDeps,
   type SheetTheme,
-} from "@/features/pool/contact-sheet";
-import { reviewFileName } from "@/features/pool/review-files";
-import { fakeProvider } from "@/features/pool/providers/fake";
+} from "@/shared/pool/contact-sheet";
+import { reviewFileName } from "@/shared/pool/review-files";
+import { fakeProvider } from "@/shared/pool/providers/fake";
 
 /**
  * Checkpoint 2's artifact (#63 Step 7, #67).

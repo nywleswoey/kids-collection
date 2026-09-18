@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CenteredModal } from "@/features/ui/CenteredModal";
+import { CenteredModal } from "@/shared/ui/CenteredModal";
 
 /**
  * First-duplicate easter-egg hint (Inc13 FR4). Kid-friendly one-time modal that

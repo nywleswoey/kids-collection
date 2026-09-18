@@ -1,18 +1,18 @@
 "use client";
 
 import posthog from "posthog-js";
-import { CardImage } from "@/features/card/CardImage";
+import { CardImage } from "@/shared/card/CardImage";
 import { useState } from "react";
 import type { Card as CardType, Rarity } from "@/lib/types";
-import { Card } from "@/features/card/Card";
-import { RARITY_META } from "@/features/card/rarity";
-import { Fireworks } from "@/features/anim/Fireworks";
-import { ErrorBanner } from "@/features/ui/ErrorBanner";
-import { useSound } from "@/features/sound/useSound";
-import { playFanfare } from "@/features/sound/sfx";
+import { Card } from "@/shared/card/Card";
+import { RARITY_META } from "@/shared/card/rarity";
+import { Fireworks } from "@/shared/anim/Fireworks";
+import { ErrorBanner } from "@/shared/ui/ErrorBanner";
+import { useSound } from "@/shared/sound/useSound";
+import { playFanfare } from "@/shared/sound/sfx";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
-import "@/features/anim/anim.css";
+import "@/shared/anim/anim.css";
 
 type Phase = "choosing" | "revealed";
 

@@ -3,8 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startRegistration } from "@simplewebauthn/browser";
-import { ErrorBanner } from "@/features/ui/ErrorBanner";
-import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
+import { ErrorBanner } from "@/shared/ui/ErrorBanner";
+import { TEXT_INPUT_CLASS } from "@/shared/ui/styles";
 import type { PasskeySummary } from "./availability";
 import {
   beginPasskeyEnrolAction,

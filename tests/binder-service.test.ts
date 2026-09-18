@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { makeBinderService } from "@/features/binder/service";
 import { coverCard } from "@/features/binder/category-cover";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { Card, Rarity, Theme } from "@/lib/types";
 
 /** Binder assembly (owned/locked, progress, totals) through the ports. */

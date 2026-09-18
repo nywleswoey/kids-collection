@@ -3,9 +3,9 @@
 import posthog from "posthog-js";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { useSound } from "@/features/sound/useSound";
-import { playReward } from "@/features/sound/sfx";
-import { ErrorBanner } from "@/features/ui/ErrorBanner";
+import { useSound } from "@/shared/sound/useSound";
+import { playReward } from "@/shared/sound/sfx";
+import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import { sacrificeAction } from "./actions";
 
 /**

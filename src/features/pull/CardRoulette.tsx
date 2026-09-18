@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CardImage } from "@/features/card/CardImage";
+import { CardImage } from "@/shared/card/CardImage";
 import type { Card, Rarity } from "@/lib/types";
-import { shouldAnimate } from "@/features/card/rarity";
-import { rarityClass } from "@/features/card/rarity";
-import { useSound } from "@/features/sound/useSound";
+import { shouldAnimate } from "@/shared/card/rarity";
+import { rarityClass } from "@/shared/card/rarity";
+import { useSound } from "@/shared/sound/useSound";
 
 export type FlashCard = { id: string; imageUrl: string; rarity: Rarity };
 

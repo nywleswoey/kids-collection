@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
-import { RarityThumb } from "@/features/card/RarityThumb";
+import { RarityThumb } from "@/shared/card/RarityThumb";
 import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
 import { raritySlotClass } from "./rarity-slot";
 import { cardHref, type Place } from "./binder-place";

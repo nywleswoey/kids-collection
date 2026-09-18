@@ -4,13 +4,13 @@ import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
-import { RevealCard } from "@/features/card/RevealCard";
+import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
 import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
-import { useSound } from "@/features/sound/useSound";
-import { CountUp } from "@/features/anim/CountUp";
+import { useSound } from "@/shared/sound/useSound";
+import { CountUp } from "@/shared/anim/CountUp";
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,

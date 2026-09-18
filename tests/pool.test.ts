@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { parseSeed } from "@/features/pool/loader";
-import { RARITY_PYRAMID } from "@/features/pool/seed-schema";
-import { buildPrompt, ART_STYLE } from "@/features/pool/prompt";
+import { parseSeed } from "@/shared/pool/loader";
+import { RARITY_PYRAMID } from "@/shared/pool/seed-schema";
+import { buildPrompt, ART_STYLE } from "@/shared/pool/prompt";
 import { RARITIES, type Rarity } from "@/lib/types";
 
 /**
@@ -106,7 +106,7 @@ describe("buildPrompt (U3-BR5)", () => {
    * `cloudflare-sdxl` drew that literally: a wooden picture frame, a tan mat
    * with a gold rule, a rounded panel, with the subject inset inside it. The
    * measurements, and why a negative prompt is not the fix, are in
-   * `src/features/pool/prompt.ts`.
+   * `src/shared/pool/prompt.ts`.
    *
    * This is a REGRESSION GUARD, not a restatement of the constant. The removed
    * words are the natural way to describe what these images are for, so the

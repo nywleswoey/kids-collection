@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from "vitest";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
-import { uploadImage } from "@/features/pool/image";
-import { solidPng } from "@/features/pool/providers/fake";
+import { uploadImage } from "@/shared/pool/image";
+import { solidPng } from "@/shared/pool/providers/fake";
 
 /**
  * What a published card is actually NAMED (#102).

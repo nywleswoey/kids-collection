@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { BinderCard } from "@/lib/types";
-import { RarityThumb } from "@/features/card/RarityThumb";
+import { RarityThumb } from "@/shared/card/RarityThumb";
 import { SACRIFICE_COST, SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import { raritySlotClass } from "./rarity-slot";
 import { BURN, cardHref } from "./binder-place";

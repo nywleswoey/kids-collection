@@ -4,7 +4,7 @@ import { makeProfileService } from "@/features/profiles/service";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { Card, Child, Rarity } from "@/lib/types";
 
 /** These orchestration tests are only reachable because the service now accepts

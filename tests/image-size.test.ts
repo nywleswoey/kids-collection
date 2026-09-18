@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { readImageSize, contentTypeFor, EXTENSIONS } from "@/features/pool/image-size";
-import { solidPng } from "@/features/pool/providers/fake";
+import { readImageSize, contentTypeFor, EXTENSIONS } from "@/shared/pool/image-size";
+import { solidPng } from "@/shared/pool/providers/fake";
 
 /**
  * Header sniffing exists for one load-bearing assertion: cards render at

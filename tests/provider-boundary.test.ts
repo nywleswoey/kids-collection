@@ -11,7 +11,7 @@ import { join, dirname, resolve } from "node:path";
  * than a property of the code. Three adapters each reading a secret makes it
  * worth converting into a red build.
  *
- * `src/features/pool/providers/` is deliberately placed under `src/`, following
+ * `src/shared/pool/providers/` is deliberately placed under `src/`, following
  * the convention `writer.ts` and `url-check.ts` already set: seed-only pool code
  * lives with the rest of the pool code. This test is what pays for that choice.
  */

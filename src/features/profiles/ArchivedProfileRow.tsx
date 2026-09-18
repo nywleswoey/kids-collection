@@ -1,4 +1,4 @@
-import { AvatarBadge } from "@/features/ui/AvatarBadge";
+import { AvatarBadge } from "@/shared/ui/AvatarBadge";
 import { restoreProfileAction } from "./actions";
 
 /** Stable, locale-independent day stamp — "archived 3 weeks ago" would need a

@@ -5,8 +5,8 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { startQuizAction, submitQuizAction } from "./actions";
 import type { ClientQuestion, Lesson, QuizOutcome } from "./types";
-import { useSound } from "@/features/sound/useSound";
-import { Confetti } from "@/features/anim/Confetti";
+import { useSound } from "@/shared/sound/useSound";
+import { Confetti } from "@/shared/anim/Confetti";
 import { BarModel } from "./BarModel";
 
 type Phase = "lesson" | "quiz" | "result";
