@@ -49,6 +49,14 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
   `collections` has no timestamp. Said once as a band heading naming the receiver rather
   than as a per-tile badge (#110) — a tier is a property of a group, so a column is cut
   into bands (`bandsByTier`) whose order is exactly `orderByValue`'s.
+- **Good swap** — a trade that is worth making to **both** children: one of my doubles
+  the friend doesn't own, paired with one of their doubles I don't own, at the **same
+  rarity** (a swap is only legal within a rarity). The friend chip counts them,
+  `Σ min(mine, theirs)` per rarity, each distinct card spent once (#142). It used to
+  count one direction — how many of my doubles the friend lacked — which made a friend
+  sitting on a pile I needed look identical to one holding nothing. Deliberately silent
+  when it is 0: a one-sided swap stays a choice made on the board, not one the strip
+  advertises.
 - **Offer** — an HMAC-signed, expiring token pinning the exact cards/rarity the server
   chose, so a claim can't be swapped for an un-offered card (pull eggs, quiz answers).
 - **Gate** — the admin passcode gate; issues a short-lived signed cookie.
