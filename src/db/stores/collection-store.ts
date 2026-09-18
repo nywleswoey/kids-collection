@@ -58,12 +58,20 @@ export interface CollectionStore {
   ownedCardIds(childId: string): Promise<Set<string>>;
 
   /**
-   * `ownedCardIds` for several children in ONE read. Children with no cards are
-   * absent from the map (not an empty set), and an empty input issues no query.
+   * `entries` for several children in ONE read. Children with no cards are
+   * absent from the map (not an empty array), and an empty input issues no query.
    * Exists so the trade board can label every friend chip without fanning out
    * one round trip per friend (Inc22 FR7/NFR5).
+   *
+   * Carries `count`, not just the card ids, because the friend chip counts swaps
+   * that are good BOTH ways (#142): it needs each friend's duplicates (count >= 2)
+   * as well as what they own, and one column on these rows answers both. The
+   * id-only `ownedCardIdsForChildren` it replaced could only ever answer the
+   * outward half, which is the bug #142 recorded.
    */
-  ownedCardIdsForChildren(childIds: string[]): Promise<Map<string, Set<string>>>;
+  entriesForChildren(
+    childIds: string[],
+  ): Promise<Map<string, Array<{ cardId: string; count: number }>>>;
 
   /** Every owned (cardId, count) row for a child — the binder's full collection. */
   entries(childId: string): Promise<Array<{ cardId: string; count: number }>>;

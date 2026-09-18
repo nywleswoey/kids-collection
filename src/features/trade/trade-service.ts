@@ -2,11 +2,8 @@ import type { Card, Child } from "@/lib/types";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/features/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
-import { validateTrade, type TradableCard, type TradeSide } from "./trade-logic";
-import { missingCount } from "./board";
-
-/** Shared empty set for a friend who owns nothing yet. */
-const EMPTY: ReadonlySet<string> = new Set();
+import { isTradable, validateTrade, type TradableCard, type TradeSide } from "./trade-logic";
+import { goodSwapCount } from "./board";
 
 /** The slice of the profile service the trade board needs — the other players. */
 export interface ChildDirectory {
@@ -72,24 +69,49 @@ export function makeTradeService({ collections, catalog, rewards, profiles }: Tr
   }
 
   /**
-   * Every OTHER child, each with a count of how many of this child's duplicates
-   * they're missing (Inc22 FR7). One batched ownership read for all of them —
-   * never one round trip per friend (NFR5).
+   * Every OTHER child, each with a count of the swaps we could do that are good
+   * for BOTH sides (#142, replacing Inc22 FR7's outward-only count — see
+   * `goodSwapCount` for why the chip changed direction).
+   *
+   * Still ONE batched collection read for everybody — never one round trip per
+   * friend (NFR5). The active child rides INSIDE that batch rather than taking a
+   * read of their own, which is what keeps the per-friend round trips at zero
+   * even though the count now needs both directions. The rows carry `count`, so
+   * every duplicate list and every ownership set here comes off that one read;
+   * `tradableDuplicates` is no longer called at all, leaving this page one read
+   * lighter than the one-way version it replaces.
    */
   async function listFriendSummaries(
     childId: string,
-  ): Promise<Array<{ id: string; name: string; avatar: string; missingCount: number }>> {
-    const [mine, children] = await Promise.all([
-      listTradableCards(childId),
-      profiles.listChildren(),
-    ]);
+  ): Promise<Array<{ id: string; name: string; avatar: string; goodSwapCount: number }>> {
+    const [children, cards] = await Promise.all([profiles.listChildren(), catalog.listCards()]);
     const friends = children.filter((c) => c.id !== childId);
-    const owned = await collections.ownedCardIdsForChildren(friends.map((f) => f.id));
+    const entries = await collections.entriesForChildren([childId, ...friends.map((f) => f.id)]);
+    const byId = new Map(cards.map((c) => [c.id, c]));
+
+    const dupesOf = (id: string): TradableCard[] => {
+      const out: TradableCard[] = [];
+      for (const r of entries.get(id) ?? []) {
+        const card = byId.get(r.cardId);
+        if (card && isTradable(r.count)) out.push({ card, count: r.count });
+      }
+      return out;
+    };
+    const ownedBy = (id: string): ReadonlySet<string> =>
+      new Set((entries.get(id) ?? []).map((r) => r.cardId));
+
+    const mine = dupesOf(childId);
+    const myOwnedIds = ownedBy(childId);
     return friends.map((f) => ({
       id: f.id,
       name: f.name,
       avatar: f.avatar,
-      missingCount: missingCount(mine, owned.get(f.id) ?? EMPTY),
+      goodSwapCount: goodSwapCount({
+        mine,
+        theirDupes: dupesOf(f.id),
+        myOwnedIds,
+        theirOwnedIds: ownedBy(f.id),
+      }),
     }));
   }
 

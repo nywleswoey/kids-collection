@@ -136,20 +136,24 @@ export const pgCollectionStore: CollectionStore = {
     return new Set(rows.map((r) => r.cardId));
   },
 
-  async ownedCardIdsForChildren(childIds) {
-    const out = new Map<string, Set<string>>();
+  async entriesForChildren(childIds) {
+    const out = new Map<string, Array<{ cardId: string; count: number }>>();
     if (childIds.length === 0) return out; // nothing to ask the DB
     const rows = await db
-      .select({ childId: collections.childId, cardId: collections.cardId })
+      .select({
+        childId: collections.childId,
+        cardId: collections.cardId,
+        count: collections.count,
+      })
       .from(collections)
       .where(inArray(collections.childId, childIds));
     for (const r of rows) {
-      let set = out.get(r.childId);
-      if (!set) {
-        set = new Set();
-        out.set(r.childId, set);
+      let list = out.get(r.childId);
+      if (!list) {
+        list = [];
+        out.set(r.childId, list);
       }
-      set.add(r.cardId);
+      list.push({ cardId: r.cardId, count: r.count });
     }
     return out;
   },

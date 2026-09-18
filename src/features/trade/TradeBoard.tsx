@@ -19,8 +19,12 @@ export type FriendSummary = {
   id: string;
   name: string;
   avatar: string;
-  /** How many of MY duplicates this friend is missing (FR7). */
-  missingCount: number;
+  /**
+   * How many swaps this friend and I could do that are good for BOTH of us
+   * (#142). Replaces FR7's outward-only count: that one made a friend holding a
+   * pile I need look identical to a friend holding nothing.
+   */
+  goodSwapCount: number;
 };
 
 /**
@@ -151,8 +155,24 @@ export function TradeBoard({
               >
                 <AvatarBadge avatar={f.avatar} className="h-9 w-9 text-lg" />
                 <span className="font-semibold">{f.name}</span>
-                {f.missingCount > 0 ? (
-                  <span className="pill pill--gold text-xs">🎁 {f.missingCount}</span>
+                {/*
+                  #142 — 🤝, not the 🎁 this pill used to carry: inside the board
+                  🎁 still means "new to whoever receives it" (`band-copy.ts`),
+                  and one glyph meaning two things on one screen is how a child
+                  learns the wrong rule. Nothing at all when the count is zero —
+                  the pill promises a swap that suits us both, and a friend with
+                  only one-sided value makes no such promise (#111 declined the
+                  companion pill that would have said so). The number is spoken
+                  in words too: a band heading isn't announced with the button
+                  inside it, and neither is a bare glyph.
+                */}
+                {f.goodSwapCount > 0 ? (
+                  <span
+                    className="pill pill--gold text-xs"
+                    aria-label={`${f.goodSwapCount} good ${f.goodSwapCount === 1 ? "swap" : "swaps"}`}
+                  >
+                    🤝 {f.goodSwapCount}
+                  </span>
                 ) : null}
               </button>
             ))}

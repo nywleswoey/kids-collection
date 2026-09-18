@@ -3,6 +3,11 @@ import fc from "fast-check";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { CollectionSeed } from "@/db/stores/collection-store.fake";
 
+/** Entries come back in no particular order; compare them sorted. */
+function sortEntries(entries: Array<{ cardId: string; count: number }> | undefined) {
+  return [...(entries ?? [])].sort((x, y) => x.cardId.localeCompare(y.cardId));
+}
+
 /**
  * Shared CollectionStore conformance spec. Run it against BOTH adapters — the
  * in-memory fake here in Vitest, and the pg adapter in Build & Test against a
@@ -38,26 +43,31 @@ export function runCollectionStoreContract(
       expect(await store.ownedCardIds("ghost")).toEqual(new Set());
     });
 
-    it("ownedCardIdsForChildren groups several children in one read (Inc22)", async () => {
+    it("entriesForChildren groups several children in one read, WITH counts (#142)", async () => {
+      // Counts, not just ids: the friend chip needs each friend's DUPLICATES
+      // (count >= 2) as well as what they own, and both come off these rows.
       const store = await makeStore({ kid: { a: 1, b: 3 }, pal: { b: 2 } });
-      const got = await store.ownedCardIdsForChildren(["kid", "pal"]);
-      expect(got.get("kid")).toEqual(new Set(["a", "b"]));
-      expect(got.get("pal")).toEqual(new Set(["b"]));
+      const got = await store.entriesForChildren(["kid", "pal"]);
+      expect(sortEntries(got.get("kid"))).toEqual([
+        { cardId: "a", count: 1 },
+        { cardId: "b", count: 3 },
+      ]);
+      expect(sortEntries(got.get("pal"))).toEqual([{ cardId: "b", count: 2 }]);
     });
 
-    it("ownedCardIdsForChildren omits children holding nothing, and no-ops on empty input", async () => {
+    it("entriesForChildren omits children holding nothing, and no-ops on empty input", async () => {
       const store = await makeStore({ kid: { a: 1 } });
-      const got = await store.ownedCardIdsForChildren(["kid", "ghost"]);
+      const got = await store.entriesForChildren(["kid", "ghost"]);
       expect(got.has("ghost")).toBe(false);
       expect(got.size).toBe(1);
-      expect(await store.ownedCardIdsForChildren([])).toEqual(new Map());
+      expect(await store.entriesForChildren([])).toEqual(new Map());
     });
 
-    it("ownedCardIdsForChildren agrees with ownedCardIds per child", async () => {
+    it("entriesForChildren agrees with entries per child", async () => {
       const store = await makeStore({ kid: { a: 1, b: 3 }, pal: { b: 2, c: 5 } });
-      const batched = await store.ownedCardIdsForChildren(["kid", "pal"]);
+      const batched = await store.entriesForChildren(["kid", "pal"]);
       for (const id of ["kid", "pal"]) {
-        expect(batched.get(id)).toEqual(await store.ownedCardIds(id));
+        expect(sortEntries(batched.get(id))).toEqual(sortEntries(await store.entries(id)));
       }
     });
 
