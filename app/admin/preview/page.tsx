@@ -4,7 +4,7 @@ import { requireAdminGate } from "@/features/admin/gate";
 import { getCatalogPreview } from "@/features/admin/catalog";
 import { ThemeSection } from "@/features/binder/ThemeSection";
 import { EffectTriggerPanel } from "@/features/admin/EffectTriggerPanel";
-import { AdminBinderSlot } from "@/features/admin/AdminBinderSlot";
+import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
 import { SoundProvider } from "@/features/sound/SoundProvider";
 import { SoundControls } from "@/features/sound/SoundControls";
 
@@ -49,7 +49,7 @@ export default async function AdminPreviewPage() {
             key={section.theme.id}
             section={section}
             admin
-            renderCard={(entry) => <AdminBinderSlot entry={entry} />}
+            renderOwned={(entry) => <AdminCardSlot entry={entry} />}
           />
         ))}
       </main>

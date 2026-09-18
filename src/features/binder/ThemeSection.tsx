@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { BinderCard, ThemeSection as ThemeSectionData } from "@/lib/types";
 import { ProgressBar } from "./ProgressBar";
 import { CardSlot } from "./CardSlot";
@@ -15,10 +15,10 @@ export function ThemeSection({
   admin = false,
   heading = true,
   from,
-  renderCard,
+  renderOwned,
 }: {
   section: ThemeSectionData;
-  /** Admin preview: no play links, no auto-celebration. */
+  /** Admin preview: no auto-celebration. */
   admin?: boolean;
   /**
    * #108: off inside a category, where the sticky place bar already carries the
@@ -29,11 +29,11 @@ export function ThemeSection({
   /** Where a tapped card should send the child back to (#108). */
   from?: Place;
   /**
-   * Per-card override for the grid slot. Lets a caller (e.g. admin preview)
-   * compose its own slot component without this binder feature knowing about
-   * it — defaults to the play `CardSlot`.
+   * Owned-tile override, forwarded to `CardSlot`. Lets a caller (e.g. admin
+   * preview) supply its own thumbnail without this binder feature knowing
+   * about it — locked slots always use the play silhouette.
    */
-  renderCard?: (entry: BinderCard) => ReactNode;
+  renderOwned?: (entry: BinderCard) => ReactNode;
 }) {
   return (
     <section
@@ -52,13 +52,14 @@ export function ThemeSection({
         </div>
       ) : null}
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
-        {section.cards.map((entry) =>
-          renderCard ? (
-            <Fragment key={entry.card.id}>{renderCard(entry)}</Fragment>
-          ) : (
-            <CardSlot key={entry.card.id} entry={entry} from={from} />
-          ),
-        )}
+        {section.cards.map((entry) => (
+          <CardSlot
+            key={entry.card.id}
+            entry={entry}
+            from={from}
+            renderOwned={renderOwned}
+          />
+        ))}
       </div>
       {section.progress.complete && !admin ? (
         <SetCompleteCelebration themeId={section.theme.id} />
