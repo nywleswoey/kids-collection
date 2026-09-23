@@ -6,6 +6,8 @@ Parent definition: `Product-Definition/technical-environment.md` (approved 2026-
 superseded**. Everything in the parent applies unchanged; this document records only what this feature
 adds or constrains further.
 
+> **Path note (2026-09-23):** file paths below are as of this document's date. `src/features/{pool,ui,sound,anim,card}/` were later promoted to `src/shared/`; read `src/features/pool/…` here as `src/shared/pool/…`. Text left as written — it is the record.
+
 ---
 
 ## Project Technical Summary

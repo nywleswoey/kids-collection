@@ -7,6 +7,8 @@
   document records only the **deltas** for this feature; everything not restated here is inherited.
 - **Companion**: `vision-document.md` in this folder.
 
+> **Path note (2026-09-23):** file paths below are as of this document's date. `src/features/{pool,ui,sound,anim,card}/` were later promoted to `src/shared/`; read `src/features/pool/…` here as `src/shared/pool/…`. Text left as written — it is the record.
+
 > This document records constraints and decisions. It does not design the implementation.
 
 ---
