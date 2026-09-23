@@ -4,10 +4,10 @@ import {
   runImageProviderContract,
   type ContractFixtures,
 } from "./contracts/image-provider-contract";
-import { fakeProvider, picturePng, solidPng } from "@/features/pool/providers/fake";
-import { cloudflareSdxl } from "@/features/pool/providers/cloudflare-sdxl";
-import { aiHorde } from "@/features/pool/providers/ai-horde";
-import { CARD_SIZE, ProviderRetryable } from "@/features/pool/providers";
+import { fakeProvider, picturePng, solidPng } from "@/shared/pool/providers/fake";
+import { cloudflareSdxl } from "@/shared/pool/providers/cloudflare-sdxl";
+import { aiHorde } from "@/shared/pool/providers/ai-horde";
+import { CARD_SIZE, ProviderRetryable } from "@/shared/pool/providers";
 
 /**
  * The provider contract, run against every implementation (#67).

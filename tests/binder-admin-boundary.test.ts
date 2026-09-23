@@ -6,8 +6,8 @@ import { ROOT, listFiles, crawlImports } from "./module-graph";
  * Play-facing binder must never import admin (kc-binder layering follow-up).
  *
  * `src/features/binder` renders under `app/play`; `src/features/admin` is the
- * parent-gated surface. Admin composes binder's shared pieces (rarity-slot,
- * RarityThumb) itself — that direction is fine — but binder reaching back into
+ * parent-gated surface. Both compose the shared card pieces in `src/shared/card`
+ * (rarity-slot, RarityThumb) — that direction is fine — but binder reaching back into
  * admin puts admin-only UI behind a play import and inverts the boundary. The
  * crawl is transitive, so the rule is a property of the code rather than a fact
  * about today's call sites: binder → card → admin is caught too.

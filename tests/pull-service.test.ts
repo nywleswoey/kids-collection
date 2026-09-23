@@ -3,7 +3,7 @@ import { makePullService } from "@/features/pull/pull-service";
 import { makeOffer } from "@/features/pull/offer";
 import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { env } from "@/lib/env";
 import type { Card, Rarity } from "@/lib/types";

@@ -1,5 +1,5 @@
 import type { Card } from "@/lib/types";
-import { RARITY_META } from "@/features/card/rarity";
+import { RARITY_META } from "@/shared/card/rarity";
 import { isPickable, type SwapTier } from "./board";
 
 /**

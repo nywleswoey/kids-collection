@@ -16,7 +16,7 @@ v2 (`/aidlc-discovery`).
 - Vercel Blob for card images
 - Google OAuth (parent) — added in U2
 - Card images generated once (seed-time) via free image providers behind a
-  provider seam (`src/features/pool/providers/`) — added in U3
+  provider seam (`src/shared/pool/providers/`) — added in U3
 
 ## Status (build units)
 - **U1 Foundation & Data** — ✅ scaffold, schema, DB client, pure logic, tests
@@ -63,7 +63,8 @@ pnpm test                 # property-based tests (fast-check)
 ## Project layout
 ```
 app/                  Next.js routes + layout
-src/features/         product code by feature (binder, pull, trade, admin, ...)
+src/shared/           shared kernel with no outbound feature deps (pool, ui, sound, anim, card)
+src/features/         domain features (binder, pull, trade, admin, quiz, profiles, auth, rewards)
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic

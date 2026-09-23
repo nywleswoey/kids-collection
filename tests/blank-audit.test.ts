@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { auditPublishedImages } from "@/features/pool/blank-audit";
+import { auditPublishedImages } from "@/shared/pool/blank-audit";
 
 const CARD = { width: 768, height: 768 };
 

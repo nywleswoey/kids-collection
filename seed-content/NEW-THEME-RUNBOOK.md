@@ -20,7 +20,7 @@ This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authorin
 
 ## Rules the schema enforces
 
-`src/features/pool/seed-schema.ts` runs on **every** `pnpm seed` command and fails the whole file, so a
+`src/shared/pool/seed-schema.ts` runs on **every** `pnpm seed` command and fails the whole file, so a
 half-authored theme cannot be committed or published. You do not get to "fix it later":
 
 1. **Exactly 30 cards** per theme.
@@ -299,7 +299,7 @@ Rule out a candidate on:
   drew the card: a wooden frame or a tan mat with the subject inset inside it. The words are gone and the
   rate fell to about 1 in 20, so a frame is now rare rather than expected. If you see one it is a
   **re-roll, not a re-prompt** — and do not try to word your way out of it by asking for "no border",
-  which is a border cue rather than a prohibition. Measurements in `src/features/pool/prompt.ts`.
+  which is a border cue rather than a prohibition. Measurements in `src/shared/pool/prompt.ts`.
 - **A photograph or a 3D render**, whichever lane drew it (#77). The published set varies enormously in
   style, but it is always an *illustration*, so photoreal skin, camera depth-of-field blur, a naturalistic
   cast shadow, or the look of a glazed figurine on a surface reads as a different product sitting in the
@@ -314,7 +314,7 @@ Rule out a candidate on:
   lane's summary — so it reaches you as a *missing* candidate, never a black one.
   You may still meet a frame that is nearly empty but textured enough to clear the floor: that is a re-roll,
   not a re-prompt (delete that one file, re-run `--review`), and it is the one judgement the guard leaves to
-  you. See `src/features/pool/blank-frame.ts` for what the floor is measured against.
+  you. See `src/shared/pool/blank-frame.ts` for what the floor is measured against.
 
 Then, for each row, write down one of three outcomes: **a recommended provider with a one-line reason**,
 **a genuine tie** (say so — the human may have a taste preference), or **nothing usable**. Only the third
@@ -571,12 +571,12 @@ Abort the run and report. Do not improvise past any of these.
   `provider` into `seed-content/cards.json`, and by nothing else.
 - Never delete a current candidate to narrow a row. A missing cell means a lane failed; making a rival
   disappear is answering checkpoint 2 for the human.
-- Never edit `src/features/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- Never edit `src/shared/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
 - **Never hand-write or hand-edit `seed-content/provenance.json`.** It is what a publish *observed*, and a line
   typed into it by hand is indistinguishable from one the pipeline recorded. A card with no entry has no
   witness, and that is a true statement worth keeping.
 - Never move a provider between lane and escape hatch, or add one, to get a run through. The registry
-  (`src/features/pool/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
+  (`src/shared/pool/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
 - **Never turn on AI Horde's `replacement_filter` to get a blocked prompt through.** It does make the
   refusal and its IP timeout disappear — by silently rewriting the prompt before a worker sees it, with no
   signal anywhere in the response. You would then review an image drawn from words this project never sent,

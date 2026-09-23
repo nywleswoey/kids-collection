@@ -5,7 +5,7 @@ import {
   countCollections,
   deleteCardsNotIn,
   deleteThemesNotIn,
-} from "@/features/pool/writer";
+} from "@/shared/pool/writer";
 import { resetAll, seedChildren, seedCollections } from "./db";
 
 /**

@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import fc from "fast-check";
 import { RARITIES } from "@/lib/types";
-import { sfxSpec, revealIntensity, isBigReveal, rewardFanfare, type SfxName } from "@/features/sound/sfx";
+import { sfxSpec, revealIntensity, isBigReveal, rewardFanfare, type SfxName } from "@/shared/sound/sfx";
 import {
   getSfxEnabled,
   getBgmEnabled,
   setSfxEnabled,
   setBgmEnabled,
-} from "@/features/sound/settings";
+} from "@/shared/sound/settings";
 
 const ALL_SFX: SfxName[] = [
   "click",

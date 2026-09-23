@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { RARITIES, type Rarity } from "@/lib/types";
 import type { ThemeSection as ThemeSectionData } from "@/lib/types";
-import { RARITY_META } from "@/features/card/rarity";
+import { RARITY_META } from "@/shared/card/rarity";
 import { ThemeSection } from "./ThemeSection";
 import { SacrificeGrid } from "./SacrificeGrid";
 import { CategoryPicker } from "./CategoryPicker";
 import { coverCard } from "./category-cover";
-import { CardImage } from "@/features/card/CardImage";
+import { CardImage } from "@/shared/card/CardImage";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
 import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";

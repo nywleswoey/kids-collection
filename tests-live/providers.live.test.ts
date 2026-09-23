@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { runImageProviderContract } from "../tests/contracts/image-provider-contract";
-import { readImageSize } from "@/features/pool/image-size";
-import { looksBlank } from "@/features/pool/blank-frame";
-import { buildPrompt } from "@/features/pool/prompt";
-import { CARD_SIZE, PROVIDERS } from "@/features/pool/providers";
+import { readImageSize } from "@/shared/pool/image-size";
+import { looksBlank } from "@/shared/pool/blank-frame";
+import { buildPrompt } from "@/shared/pool/prompt";
+import { CARD_SIZE, PROVIDERS } from "@/shared/pool/providers";
 
 /**
  * The shared ImageProvider contract, run against the REAL endpoints (#67).

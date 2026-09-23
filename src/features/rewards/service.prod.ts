@@ -1,7 +1,7 @@
 import "server-only";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgRewardStore } from "@/db/stores/reward-store.pg";
-import { pgCatalog } from "@/features/pool/catalog.pg";
+import { pgCatalog } from "@/shared/pool/catalog.pg";
 import { makeRewardService } from "./service";
 
 /**

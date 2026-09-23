@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { readImageSize } from "@/features/pool/image-size";
-import { MIN_BYTES_PER_PIXEL, looksBlank } from "@/features/pool/blank-frame";
+import { readImageSize } from "@/shared/pool/image-size";
+import { MIN_BYTES_PER_PIXEL, looksBlank } from "@/shared/pool/blank-frame";
 import {
   CARD_SIZE,
   ProviderRetryable,
   paramHash,
   type ImageProvider,
-} from "@/features/pool/providers";
+} from "@/shared/pool/providers";
 
 /**
  * Shared ImageProvider conformance spec — what makes the provider seam real

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AvatarBadge } from "@/features/ui/AvatarBadge";
+import { AvatarBadge } from "@/shared/ui/AvatarBadge";
 import { ProgressBar } from "@/features/binder/ProgressBar";
 import { GrantControl } from "./GrantControl";
 import type { AdminChildRow as Row } from "@/lib/types";

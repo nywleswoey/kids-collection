@@ -3,8 +3,8 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { unlockAdminAction } from "./unlock-action";
-import { ErrorBanner } from "@/features/ui/ErrorBanner";
-import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
+import { ErrorBanner } from "@/shared/ui/ErrorBanner";
+import { TEXT_INPUT_CLASS } from "@/shared/ui/styles";
 import { PasskeyUnlockButton } from "./webauthn/PasskeyUnlockButton";
 
 /**

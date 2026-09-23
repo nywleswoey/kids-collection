@@ -3,7 +3,7 @@ import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { tokenService } from "@/features/pull/token-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
 import { recentCategories } from "@/features/pull/categories";
-import { listCards, listThemes } from "@/features/pool/service";
+import { listCards, listThemes } from "@/shared/pool/service";
 
 export default async function PullPage() {
   const child = await requireActivePlayer();

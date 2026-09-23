@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import { ME, bandCopy, tileLabel, type BandCopy, type Receiver } from "@/features/trade/band-copy";
 import { isPickable, type SwapTier } from "@/features/trade/board";
-import { RARITY_META } from "@/features/card/rarity";
+import { RARITY_META } from "@/shared/card/rarity";
 import { RARITIES, type Card, type Rarity } from "@/lib/types";
 
 const ANA: Receiver = { kind: "friend", name: "Ana" };

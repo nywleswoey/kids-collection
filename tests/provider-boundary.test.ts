@@ -12,12 +12,12 @@ import { ROOT, listFiles, specifiersIn, resolveSpecifier, crawlImports } from ".
  * than a property of the code. Three adapters each reading a secret makes it
  * worth converting into a red build.
  *
- * `src/features/pool/providers/` is deliberately placed under `src/`, following
+ * `src/shared/pool/providers/` is deliberately placed under `src/`, following
  * the convention `writer.ts` and `url-check.ts` already set: seed-only pool code
  * lives with the rest of the pool code. This test is what pays for that choice.
  */
 
-const FORBIDDEN = join(ROOT, "src", "features", "pool", "providers");
+const FORBIDDEN = join(ROOT, "src", "shared", "pool", "providers");
 const ENTRY_DIRS = ["app"];
 const ENTRY_FILES = ["middleware.ts", "instrumentation-client.ts", "next.config.ts"];
 
@@ -42,6 +42,6 @@ describe("provider boundary (#67)", () => {
         .map((s) => resolveSpecifier(f, s))
         .filter((t): t is string => t !== null),
     );
-    expect(reachable.some((t) => t.includes(join("src", "features")))).toBe(true);
+    expect(reachable.some((t) => t.includes(join("src", "shared", "pool")))).toBe(true);
   });
 });

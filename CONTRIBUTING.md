@@ -1,5 +1,20 @@
 # Contributing
 
+## `src/shared/` vs `src/features/`
+
+`src/shared/` holds the leaf/near-leaf modules with zero outbound feature
+imports: `pool` (catalog/seed/image pipeline, the foundation layer), `ui`
+(AvatarBadge/CenteredModal/ErrorBanner), `sound`, `anim`, and `card`. Anything
+under `src/features/` may import from `src/shared/`, but `src/shared/` must
+never import from `src/features/`.
+
+`src/features/` holds the true domain features: `admin`, `binder`, `quiz`,
+`pull`, `trade`, `profiles`, `auth`, `rewards`. These may depend on each other
+and on `src/shared/`.
+
+Both are reached through the same `@/*` alias: `@/shared/...` and
+`@/features/...`.
+
 ## Which test root to use
 
 This repo runs one spec against multiple adapters, split across three top-level

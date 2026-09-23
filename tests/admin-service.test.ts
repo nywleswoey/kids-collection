@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { makeAdminService } from "@/features/admin/service";
 import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";
 import { inMemoryCollectionStore } from "@/db/stores/collection-store.fake";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { Card, Theme } from "@/lib/types";
 
 function card(id: string, themeId: string): Card {

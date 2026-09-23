@@ -1,7 +1,7 @@
 import "server-only";
 import { pgChildStore } from "@/db/stores/child-store.pg";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
-import { pgCatalog } from "@/features/pool/catalog.pg";
+import { pgCatalog } from "@/shared/pool/catalog.pg";
 import { rewardService } from "@/features/rewards/service.prod";
 import { makePullService } from "./pull-service";
 

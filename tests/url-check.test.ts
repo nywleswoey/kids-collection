@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { checkSourceUrls, USER_AGENT } from "@/features/pool/url-check";
-import type { SeedFile } from "@/features/pool/seed-schema";
+import { checkSourceUrls, USER_AGENT } from "@/shared/pool/url-check";
+import type { SeedFile } from "@/shared/pool/seed-schema";
 
 const seed = (urls: Record<string, Record<string, string>>): SeedFile =>
   ({

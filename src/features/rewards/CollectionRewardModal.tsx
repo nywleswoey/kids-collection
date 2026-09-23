@@ -3,15 +3,15 @@
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Card } from "@/features/card/Card";
-import { RARITY_LABEL } from "@/features/card/rarity";
-import { Fireworks } from "@/features/anim/Fireworks";
-import { useSound } from "@/features/sound/useSound";
-import { CenteredModal } from "@/features/ui/CenteredModal";
-import { playFanfare, playReward } from "@/features/sound/sfx";
+import { Card } from "@/shared/card/Card";
+import { RARITY_LABEL } from "@/shared/card/rarity";
+import { Fireworks } from "@/shared/anim/Fireworks";
+import { useSound } from "@/shared/sound/useSound";
+import { CenteredModal } from "@/shared/ui/CenteredModal";
+import { playFanfare, playReward } from "@/shared/sound/sfx";
 import type { PendingReward } from "./service";
 import { markRewardsShownAction } from "./actions";
-import "@/features/anim/anim.css";
+import "@/shared/anim/anim.css";
 
 /**
  * Collection-completion celebration (Inc16 FR5). Shown on the galaxy view when

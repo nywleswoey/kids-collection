@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AVATAR_PRESETS } from "@/lib/avatars";
-import { TEXT_INPUT_CLASS } from "@/features/ui/styles";
+import { TEXT_INPUT_CLASS } from "@/shared/ui/styles";
 import { createProfileAction, updateProfileAction } from "./actions";
 
 /**

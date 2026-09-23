@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import posthog from "posthog-js";
-import { SoundProvider } from "@/features/sound/SoundProvider";
-import { SoundControls } from "@/features/sound/SoundControls";
-import { Asteroids } from "@/features/anim/Asteroids";
-import "@/features/anim/anim.css";
+import { SoundProvider } from "@/shared/sound/SoundProvider";
+import { SoundControls } from "@/shared/sound/SoundControls";
+import { Asteroids } from "@/shared/anim/Asteroids";
+import "@/shared/anim/anim.css";
 
 /**
  * Play-area shell: mounts the sound engine + controls, the galaxy asteroid

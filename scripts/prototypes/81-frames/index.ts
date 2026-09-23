@@ -28,7 +28,7 @@
  * flat band — but it under-counts every arm equally, so the ranking holds.
  *
  * ── What it found ───────────────────────────────────────────────────────────
- * Framed, by eye and by the detector on the same images. `src/features/pool/
+ * Framed, by eye and by the detector on the same images. `src/shared/pool/
  * prompt.ts` holds the canonical table and the reasoning; this is the run that
  * produced it:
  *
@@ -82,7 +82,7 @@
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CARD_SIZE } from "@/features/pool/providers";
+import { CARD_SIZE } from "@/shared/pool/providers";
 
 const OUT_DIR = join(process.cwd(), "seed-content", "review", "prototype-81");
 const CF_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";

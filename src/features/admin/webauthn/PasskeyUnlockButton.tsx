@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startAuthentication } from "@simplewebauthn/browser";
-import { ErrorBanner } from "@/features/ui/ErrorBanner";
+import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import {
   beginPasskeyUnlockAction,
   finishPasskeyUnlockAction,

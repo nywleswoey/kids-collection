@@ -1,5 +1,5 @@
 import "server-only";
-import { listThemes, listCards } from "@/features/pool/service";
+import { listThemes, listCards } from "@/shared/pool/service";
 import { buildCatalog } from "./catalog-model";
 import type { BinderView } from "@/lib/types";
 

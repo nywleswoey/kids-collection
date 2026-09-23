@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { picturePng, solidPng } from "@/features/pool/providers/fake";
+import { picturePng, solidPng } from "@/shared/pool/providers/fake";
 import {
   MIN_BYTES_PER_PIXEL,
   bytesPerPixel,
   looksBlank,
-} from "@/features/pool/blank-frame";
+} from "@/shared/pool/blank-frame";
 
 const CARD = { width: 768, height: 768 };
 

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import type { Card as CardType } from "@/lib/types";
 import { Card } from "./Card";
 import { shouldAnimate } from "./rarity";
-import { useSound } from "@/features/sound/useSound";
-import { Confetti } from "@/features/anim/Confetti";
-import { isBigReveal, playFanfare } from "@/features/sound/sfx";
+import { useSound } from "@/shared/sound/useSound";
+import { Confetti } from "@/shared/anim/Confetti";
+import { isBigReveal, playFanfare } from "@/shared/sound/sfx";
 import "./card.css";
 
 /**

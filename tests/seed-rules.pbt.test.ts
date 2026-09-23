@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { parseSeed } from "@/features/pool/loader";
-import { CARDS_PER_THEME, RARITY_PYRAMID } from "@/features/pool/seed-schema";
+import { parseSeed } from "@/shared/pool/loader";
+import { CARDS_PER_THEME, RARITY_PYRAMID } from "@/shared/pool/seed-schema";
 import { RARITIES, type Rarity } from "@/lib/types";
 
 /**
@@ -187,7 +187,7 @@ describe("seed schema — rejected: exactly one invariant broken", () => {
 
 describe("seed schema — the committed pool satisfies the rules", () => {
   it("the real seed-content/cards.json parses (the rules are forward guards, not retro-fixes)", async () => {
-    const { loadSeed } = await import("@/features/pool/loader");
+    const { loadSeed } = await import("@/shared/pool/loader");
     const { join } = await import("node:path");
     const seed = loadSeed(join(process.cwd(), "seed-content", "cards.json"));
     for (const theme of seed.themes) {

@@ -3,7 +3,7 @@ import { env } from "@/lib/env";
 import type { Card, PullResult, Rarity } from "@/lib/types";
 import type { ChildStore } from "@/db/stores/child-store";
 import type { CollectionStore } from "@/db/stores/collection-store";
-import type { Catalog } from "@/features/pool/catalog";
+import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import {
   rollEasterEgg,
