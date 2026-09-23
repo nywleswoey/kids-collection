@@ -124,7 +124,7 @@ purpose:
 - `pnpm reconcile` (`scripts/reconcile/index.ts`) — an audit of data that still
   exists. An archived child's collection is still real, and hiding it from the
   auditor would make the audit lie.
-- `src/shared/pool/blast-radius.ts` — the per-child row counts the seed CLI prints
+- `src/features/pool/blast-radius.ts` — the per-child row counts the seed CLI prints
   before a destructive operation. Those deletes cascade by `child_id` and do not
   care whether a profile is archived, so a filtered blast radius would under-report.
 
