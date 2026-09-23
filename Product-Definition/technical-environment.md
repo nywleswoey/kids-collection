@@ -224,6 +224,13 @@ Single repo, single app, organised by **feature module** with a deliberate persi
   the adapter only *declares* its limits. The registry is code, not credential detection. Nothing under
   `app/`, `middleware.ts` or the other request-path entry points may reach a provider, transitively or
   otherwise — `tests/provider-boundary.test.ts` reds the required test gate if it does.
+- **The play/admin direction** — `src/features/admin` composes play-facing pieces (`rarity-slot`,
+  `RarityThumb`); the reverse is forbidden, since it puts parent-gated UI behind a play import. Nothing
+  reachable from `src/features/binder` may import `src/features/admin`, transitively or otherwise —
+  `tests/binder-admin-boundary.test.ts` reds the required test gate if it does. A binder component that an
+  admin surface needs to render differently takes a render prop from the calling page (`CardSlot`'s
+  `renderOwned`) rather than naming the admin component. Both boundary crawls share one model of how this
+  repo resolves an import, `tests/module-graph.ts`.
 
 **Constraints**: keep pure logic separate from persistence so it stays testable without a database; don't
 reach for the `db` singleton inside a feature service; a new persistence operation gets a port method

@@ -1,4 +1,5 @@
-import type { ThemeSection as ThemeSectionData } from "@/lib/types";
+import type { ReactNode } from "react";
+import type { BinderCard, ThemeSection as ThemeSectionData } from "@/lib/types";
 import { ProgressBar } from "./ProgressBar";
 import { CardSlot } from "./CardSlot";
 import { SetCompleteCelebration } from "./SetCompleteCelebration";
@@ -14,9 +15,10 @@ export function ThemeSection({
   admin = false,
   heading = true,
   from,
+  renderOwned,
 }: {
   section: ThemeSectionData;
-  /** Admin preview: show source links, no play links, no auto-celebration. */
+  /** Admin preview: no auto-celebration. */
   admin?: boolean;
   /**
    * #108: off inside a category, where the sticky place bar already carries the
@@ -26,6 +28,12 @@ export function ThemeSection({
   heading?: boolean;
   /** Where a tapped card should send the child back to (#108). */
   from?: Place;
+  /**
+   * Owned-tile override, forwarded to `CardSlot`. Lets a caller (e.g. admin
+   * preview) supply its own thumbnail without this binder feature knowing
+   * about it — locked slots always use the play silhouette.
+   */
+  renderOwned?: (entry: BinderCard) => ReactNode;
 }) {
   return (
     <section
@@ -45,7 +53,12 @@ export function ThemeSection({
       ) : null}
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
         {section.cards.map((entry) => (
-          <CardSlot key={entry.card.id} entry={entry} admin={admin} from={from} />
+          <CardSlot
+            key={entry.card.id}
+            entry={entry}
+            from={from}
+            renderOwned={renderOwned}
+          />
         ))}
       </div>
       {section.progress.complete && !admin ? (

@@ -1,14 +1,13 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { BinderCard } from "@/lib/types";
 import { RarityThumb } from "@/shared/card/RarityThumb";
-import { AdminCardSlot } from "@/features/admin/AdminCardSlot";
 import { raritySlotClass } from "@/shared/card/rarity-slot";
 import { cardHref, type Place } from "./binder-place";
 import "@/shared/card/rarity-slot.css";
 
 /** Owned card thumbnail (tappable → detail) or a locked silhouette.
  *  Owned slots show rarity via a colored frame + glow + corner badge (U5-FR2).
- *  In `admin` mode the slot is clickable to expand (AdminCardSlot).
  *
  *  The locked tile is the one slot whose height comes from its CONTENT (a glyph
  *  plus a two-line name), and slots are grid items, so content that outgrows the
@@ -19,14 +18,17 @@ import "@/shared/card/rarity-slot.css";
  *  text scaling was enough to break the grid). */
 export function CardSlot({
   entry,
-  admin = false,
   from,
+  renderOwned,
 }: {
   entry: BinderCard;
-  admin?: boolean;
   /** The place this slot was tapped from, so card detail can send the child
    *  back there rather than to the hub (#108). */
   from?: Place;
+  /** Owned-tile override for callers with their own thumbnail (admin preview
+   *  expands into a modal instead of linking into play). Locked slots stay
+   *  identical either way, and this feature never names the admin component. */
+  renderOwned?: (entry: BinderCard) => ReactNode;
 }) {
   if (!entry.owned) {
     // Locked stays neutral — no rarity hint (U5-Q5) — but shows the name (U6-FR1).
@@ -51,9 +53,7 @@ export function CardSlot({
     );
   }
 
-  if (admin) {
-    return <AdminCardSlot entry={entry} />;
-  }
+  if (renderOwned) return <>{renderOwned(entry)}</>;
 
   return (
     <Link
