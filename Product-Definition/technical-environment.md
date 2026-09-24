@@ -208,7 +208,7 @@ problem that async solves.
 Single repo, single app, organised by **feature module** with a deliberate persistence seam.
 
 - **`src/features/<feature>/`** — one directory per feature (`trade`, `pull`, `binder`, `quiz`, `rewards`,
-  `admin`, `profiles`, `auth`, `actions`). Within a feature:
+  `admin`, `profiles`, `auth`). Within a feature:
   `actions.ts` (`"use server"` entry points), pure logic modules, components.
 - **`src/shared/<module>/`** — the leaf modules features build on (`pool`, `ui`, `sound`, `anim`, `card`).
   Features may import from `src/shared/`; `src/shared/` never imports from `src/features/`
