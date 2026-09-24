@@ -210,9 +210,8 @@ Single repo, single app, organised by **feature module** with a deliberate persi
 - **`src/features/<feature>/`** — one directory per feature (`trade`, `pull`, `binder`, `quiz`, `rewards`,
   `admin`, `profiles`, `auth`). Within a feature:
   `actions.ts` (`"use server"` entry points), pure logic modules, components.
-- **`src/shared/<module>/`** — the leaf modules features build on (`pool`, `ui`, `sound`, `anim`, `card`).
-  Features may import from `src/shared/`; `src/shared/` never imports from `src/features/`
-  (see `CONTRIBUTING.md`).
+- **`src/shared/<module>/`** — the leaf modules features build on (listed in `CONTRIBUTING.md`).
+  Features may import from `src/shared/`; `src/shared/` never imports from `src/features/`.
 - **`app/`** — routing only. Pages stay thin and delegate to feature modules.
 - **`src/db/`** — schema, migrations, pg adapters. **The only place `import "server-only"` lives.**
 - **The Store seam** — services accept **ports** (`ChildStore`, `CollectionStore`, `RewardStore`,

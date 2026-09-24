@@ -3,6 +3,7 @@
 import posthog from 'posthog-js';
 import { startTransition } from 'react';
 import { signOutAction } from '@/features/profiles/actions';
+import { recoverIfStale } from '@/shared/stale-deploy/recovery';
 
 /**
  * Sign-out button that clears PostHog identity and triggers the sign-out action.
@@ -11,8 +12,15 @@ import { signOutAction } from '@/features/profiles/actions';
 export function SignOutButton() {
   function handleClick() {
     posthog.reset();
-    startTransition(() => {
-      signOutAction();
+    // A standalone startTransition does not route rejections to an error
+    // boundary, so a page from before a deploy recovers here; anything else
+    // stays the unhandled rejection it always was, so it is still reported.
+    startTransition(async () => {
+      try {
+        await signOutAction();
+      } catch (e) {
+        if (!recoverIfStale(e)) throw e;
+      }
     });
   }
 

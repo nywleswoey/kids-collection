@@ -10,6 +10,7 @@ import { Fireworks } from "@/shared/anim/Fireworks";
 import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import { useSound } from "@/shared/sound/useSound";
 import { playFanfare } from "@/shared/sound/sfx";
+import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { claimEasterEggAction } from "./actions";
 import type { PullOutcome } from "./pull-service";
 import "@/shared/anim/anim.css";
@@ -51,7 +52,9 @@ export function EasterEggPicker({
     let result: PullOutcome;
     try {
       result = await claimEasterEggAction(offer, choices[index].id);
-    } catch {
+    } catch (e) {
+      // A page from before a deploy is reloading; say nothing about the prize.
+      if (recoverIfStale(e)) return;
       setError("That prize expired — discover again for another chance!");
       return;
     }

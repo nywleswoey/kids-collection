@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import posthog from "posthog-js";
+import { isStaleDeploymentError, recoverIfStale } from "@/shared/stale-deploy/recovery";
+import { StaleDeployMessage } from "@/shared/stale-deploy/StaleDeployNotice";
 
 export default function GlobalError({
   error,
@@ -10,9 +12,18 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // A page loaded before a deploy (#169): recover by reloading, once. If a
+  // reload was already tried, `recoverIfStale` says no and this falls through to
+  // the ordinary error screen — a second failure must surface, not loop.
+  const stale = isStaleDeploymentError(error);
+  const [recoveryDeclined, setRecoveryDeclined] = useState(false);
+  const recovering = stale && !recoveryDeclined;
+
   useEffect(() => {
+    if (stale && recoverIfStale(error)) return;
+    if (stale) setRecoveryDeclined(true);
     posthog.captureException(error);
-  }, [error]);
+  }, [error, stale]);
 
   return (
     <html lang="en">
@@ -27,8 +38,14 @@ export default function GlobalError({
           gap: "1rem",
         }}
       >
-        <h2>Something went wrong</h2>
-        <button onClick={reset}>Try again</button>
+        {recovering ? (
+          <StaleDeployMessage />
+        ) : (
+          <>
+            <h2>Something went wrong</h2>
+            <button onClick={reset}>Try again</button>
+          </>
+        )}
       </body>
     </html>
   );

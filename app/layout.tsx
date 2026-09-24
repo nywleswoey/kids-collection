@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { APP_NAME } from "@/lib/brand";
 import { getParent } from "@/features/auth/guard";
 import { PostHogIdentitySync } from "@/features/auth/PostHogIdentitySync";
+import { StaleDeployNotice } from "@/shared/stale-deploy/StaleDeployNotice";
 import "./globals.css";
 
 // Fonts are VENDORED in app/fonts/ and loaded from disk. They used to come from
@@ -75,6 +76,7 @@ export default async function RootLayout({
           />
         )}
         {children}
+        <StaleDeployNotice />
       </body>
     </html>
   );
