@@ -63,7 +63,7 @@ pnpm test                 # property-based tests (fast-check)
 ## Project layout
 ```
 app/                  Next.js routes + layout
-src/shared/           shared kernel with no outbound feature deps (pool, ui, sound, anim, card)
+src/shared/           shared kernel with no outbound feature deps (modules listed in CONTRIBUTING.md)
 src/features/         domain features (binder, pull, trade, admin, quiz, profiles, auth, rewards)
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
