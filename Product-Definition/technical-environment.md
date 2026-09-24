@@ -208,8 +208,11 @@ problem that async solves.
 Single repo, single app, organised by **feature module** with a deliberate persistence seam.
 
 - **`src/features/<feature>/`** — one directory per feature (`trade`, `pull`, `binder`, `quiz`, `rewards`,
-  `admin`, `profiles`, `card`, `pool`, `auth`, `sound`, `anim`, `ui`, `actions`). Within a feature:
+  `admin`, `profiles`, `auth`). Within a feature:
   `actions.ts` (`"use server"` entry points), pure logic modules, components.
+- **`src/shared/<module>/`** — the leaf modules features build on (`pool`, `ui`, `sound`, `anim`, `card`).
+  Features may import from `src/shared/`; `src/shared/` never imports from `src/features/`
+  (see `CONTRIBUTING.md`).
 - **`app/`** — routing only. Pages stay thin and delegate to feature modules.
 - **`src/db/`** — schema, migrations, pg adapters. **The only place `import "server-only"` lives.**
 - **The Store seam** — services accept **ports** (`ChildStore`, `CollectionStore`, `RewardStore`,
@@ -219,7 +222,7 @@ Single repo, single app, organised by **feature module** with a deliberate persi
 - **Contract suite** — one shared property-based conformance spec runs against **both** adapters (fake in
   Vitest, pg in `test:pg`), proving they agree on the atomicity contracts.
 - **The image-provider seam** — the seed-time bake-off's adapters live in
-  `src/features/pool/providers/`, one per provider, behind an `ImageProvider` interface whose `generate()`
+  `src/shared/pool/providers/`, one per provider, behind an `ImageProvider` interface whose `generate()`
   is a single logical attempt: retry, pacing and concurrency belong to the lane runner above the seam, and
   the adapter only *declares* its limits. The registry is code, not credential detection. Nothing under
   `app/`, `middleware.ts` or the other request-path entry points may reach a provider, transitively or
@@ -277,7 +280,7 @@ beyond child display names and a parent email.
 Both schema validation and application-layer guards, but the strongest guarantee here is neither.
 
 - **Zod schema validation** where structured user input enters: `profileSchema` (name trimmed, 1–40
-  chars; avatar constrained to `AVATAR_KEYS`) and the seed-file schema (`src/features/pool/seed-schema.ts`).
+  chars; avatar constrained to `AVATAR_KEYS`) and the seed-file schema (`src/shared/pool/seed-schema.ts`).
 - **Application-layer authorization guards on every Server Action**: `withActiveChild`, `requireParent()`,
   `requireAdminGate()`.
 - **The real protection — the client never asserts identity.** The active child is resolved server-side

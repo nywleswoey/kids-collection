@@ -6,6 +6,8 @@ Parent definition: `Product-Definition/vision-document.md` (approved 2026-08-03)
 This document adds a feature; where the two differ in scope, the parent governs the product and this
 governs the feature.
 
+> **Path note (2026-09-23):** file paths below are as of this document's date. `src/features/{pool,ui,sound,anim,card}/` were later promoted to `src/shared/`; read `src/features/pool/…` here as `src/shared/pool/…`. Text left as written — it is the record.
+
 ---
 
 ## Executive Summary
