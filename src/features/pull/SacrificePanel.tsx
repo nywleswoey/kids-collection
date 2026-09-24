@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSound } from "@/shared/sound/useSound";
 import { playReward } from "@/shared/sound/sfx";
 import { ErrorBanner } from "@/shared/ui/ErrorBanner";
+import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { sacrificeAction } from "./actions";
 
 /**
@@ -39,7 +40,8 @@ export function SacrificePanel({
           card_id: cardId,
           easter_egg_balance: res.newBalance,
         });
-      } catch {
+      } catch (e) {
+        if (recoverIfStale(e)) return;
         setError("Couldn't sacrifice — you need at least 3 copies.");
         play("denied");
       }

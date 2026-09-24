@@ -10,6 +10,7 @@ import { useSound } from "@/shared/sound/useSound";
 import { CenteredModal } from "@/shared/ui/CenteredModal";
 import { playFanfare, playReward } from "@/shared/sound/sfx";
 import type { PendingReward } from "./service";
+import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { markRewardsShownAction } from "./actions";
 import "@/shared/anim/anim.css";
 
@@ -33,7 +34,12 @@ export function CollectionRewardModal({ rewards }: { rewards: PendingReward[] })
   // steps through them client-side.
   useEffect(() => {
     if (rewards.length === 0) return;
-    markRewardsShownAction(rewards.map((r) => r.id));
+    markRewardsShownAction(rewards.map((r) => r.id)).catch((e) => {
+      // Fire-and-forget: a page from before a deploy reloads (and re-pops the
+      // rewards, since they were never marked shown); anything else stays the
+      // unhandled rejection it always was, so it is still reported.
+      if (!recoverIfStale(e)) throw e;
+    });
     setFire((n) => n + 1);
     playReward(play, rewards[0].rarity);
     posthog.capture("collection_reward_shown", {

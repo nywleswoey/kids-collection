@@ -10,6 +10,7 @@ import { AvatarBadge } from "@/shared/ui/AvatarBadge";
 import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import { useSound } from "@/shared/sound/useSound";
 import { playReward } from "@/shared/sound/sfx";
+import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { getTradeBoardAction, executeTradeAction } from "./actions";
 import type { TradableCard } from "./trade-logic";
 import { bandsByTier, buildColumns, isPickable, type BoardCard } from "./board";
@@ -73,7 +74,8 @@ export function TradeBoard({
     startTransition(async () => {
       try {
         setView(await getTradeBoardAction(f.id));
-      } catch {
+      } catch (e) {
+        if (recoverIfStale(e)) return;
         // NFR4: the friend strip stays usable so another friend can be tried.
         setError("Couldn't load those cards — try again.");
       }

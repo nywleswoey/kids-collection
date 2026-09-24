@@ -11,8 +11,10 @@ import { signOutAction } from '@/features/profiles/actions';
 export function SignOutButton() {
   function handleClick() {
     posthog.reset();
-    startTransition(() => {
-      signOutAction();
+    // Awaited so a failure reaches the error boundary instead of vanishing as an
+    // unhandled rejection (a stale page's Sign out did nothing at all).
+    startTransition(async () => {
+      await signOutAction();
     });
   }
 

@@ -4,7 +4,8 @@
 
 `src/shared/` holds the leaf/near-leaf modules with zero outbound feature
 imports: `pool` (catalog/seed/image pipeline, the foundation layer), `ui`
-(AvatarBadge/CenteredModal/ErrorBanner), `sound`, `anim`, and `card`. Anything
+(AvatarBadge/CenteredModal/ErrorBanner), `sound`, `anim`, `card`, and `stale-deploy` (reload-once recovery for a page
+that outlived a deploy, #169). Anything
 under `src/features/` may import from `src/shared/`, but `src/shared/` must
 never import from `src/features/`.
 
