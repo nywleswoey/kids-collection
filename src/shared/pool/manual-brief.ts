@@ -95,6 +95,7 @@ export function renderManualBrief(entries: readonly ManualBriefEntry[]): string 
     "",
     'A card with no picture shows as "not drawn" on the contact sheet.',
     "That is a missing file. It is not a drawing this lane rejected.",
+    "To replace an imported picture, delete that card's `supergrok-manual` review file (and its `.json` sidecar) before importing again.",
     "",
     `${entries.length} card(s) the bake-off would draw.`,
     "",

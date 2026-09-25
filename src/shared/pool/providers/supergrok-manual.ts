@@ -10,8 +10,10 @@
  * `--review` is what imports. `generate()` normalises the drop file to the
  * card size and to PNG, and the runner writes those bytes to the usual
  * content-addressed review path. `--sync` then publishes that file, the same
- * way it publishes every other lane — it never reads the drop folder, so a
- * picture is published only when it is the byte-for-byte reviewed file.
+ * way it publishes every other lane, without reading the drop folder, so a
+ * picture is published only when it is the byte-for-byte reviewed file. The
+ * exception is `--sync --allow-unreviewed`: a card with no review file calls
+ * `generate()`, which reads the drop folder directly.
  *
  * A missing file throws `ProviderNotDrawn` rather than a failure. The bake-off
  * counts that as "not drawn", so an empty drop never looks like a lane that

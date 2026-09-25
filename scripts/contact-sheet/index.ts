@@ -84,10 +84,11 @@ function main() {
   writeFileSync(out, renderContactSheet(sheet));
 
   const cells = sheet.rows.length * sheet.providerIds.length;
+  const withImage = sheet.rows.flatMap((r) => r.candidates).filter((c) => c.present).length;
   console.log(
     `→ ${out}\n` +
       `   ${sheet.rows.length} card(s) x ${sheet.providerIds.length} provider(s) ` +
-      `= ${cells} cell(s), ${cells - sheet.missing} with an image.`,
+      `= ${cells} cell(s), ${withImage} with an image.`,
   );
   if (sheet.missing > 0) {
     console.warn(
@@ -95,6 +96,11 @@ function main() {
         `   provider produced nothing for that card, NOT that it drew badly. Every card\n` +
         `   in the theme gets a row, including ones already published, which \`--review\`\n` +
         `   does not generate; this script reads no database and cannot tell them apart.`,
+    );
+  }
+  if (sheet.notDrawn > 0) {
+    console.log(
+      `   ${sheet.notDrawn} manual cell(s) are not drawn — no picture in the drop folder yet.`,
     );
   }
   if (sheet.unpicked > 0) {
