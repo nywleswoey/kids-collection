@@ -4,6 +4,7 @@ import { fakeProvider } from "@/shared/pool/providers/fake";
 import {
   CARD_SIZE,
   ProviderFailedTerminally,
+  ProviderNotDrawn,
   ProviderRetryable,
   type GeneratedImage,
   type ImageProvider,
@@ -256,7 +257,32 @@ describe("runBakeOff — circuit breaker (#67)", () => {
     const { deps: d } = deps({ retries: 0, breakerThreshold: 3 });
     const all = jobs("a", "b", "c", "d", "e");
     const [o] = await runBakeOff(all, [p], d);
-    expect(o.generated + o.skipped + o.failed + o.notAttempted).toBe(all.length);
+    expect(o.generated + o.skipped + o.failed + o.notDrawn + o.notAttempted).toBe(all.length);
+  });
+});
+
+describe("runBakeOff — not drawn", () => {
+  it("counts a missing picture as not drawn, and does not abandon the lane", async () => {
+    const p = fakeProvider({
+      id: "supergrok-manual",
+      script: [
+        new ProviderNotDrawn("missing"),
+        "ok",
+        new ProviderNotDrawn("missing"),
+        new ProviderNotDrawn("missing"),
+      ],
+    });
+    const { deps: d, saved } = deps({ retries: 2, breakerThreshold: 3 });
+    const [outcome] = await runBakeOff(jobs("a", "b", "c", "d"), [p], d);
+    expect(outcome).toMatchObject({
+      generated: 1,
+      failed: 0,
+      notDrawn: 3,
+      notAttempted: 0,
+      abandoned: false,
+    });
+    expect(saved).toHaveLength(1);
+    expect(p.calls).toHaveLength(4);
   });
 });
 

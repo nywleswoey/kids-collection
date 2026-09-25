@@ -141,8 +141,8 @@ wording. It is written **per provider**, because they do not fail the same way. 
 
 **`pollinations` is retired.** On *Food Around the World* every one of its 30 candidates came back with a
 "pollinations.ai" logo stamped into the corner despite `nologo=true`, and text in the image is a rejection on
-sight — so it could no longer win a row. It is gone from the registry: the one lane today is `cloudflare-sdxl`,
-with `ai-horde` as the escape hatch. Its column below is kept as the record of why earlier themes look the way
+sight — so it could no longer win a row. It is gone from the registry: the one automatic lane today is `cloudflare-sdxl`,
+with `ai-horde` as the escape hatch and `supergrok-manual` as an opt-in drop-folder lane (below). Pollinations' column below is kept as the record of why earlier themes look the way
 they do, and because its failure classes are what a replacement lane has to beat. Cards already published
 from it are unaffected — `--sync` never resolves the provider of a card it is not inserting.
 
@@ -150,11 +150,13 @@ The failure classes below were learned the hard way on *Warriors*, where a Polli
 3 usable images out of 28. #66 re-ran three of those cards through the shipped seam on both lanes, and #74
 ran them through the escape hatch. What survives is narrower than the old blanket claim:
 
-| Failure class | `pollinations` (**retired**; asked for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) |
-|---|---|---|---|
-| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had |
-| Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` |
-| **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounts (one horse where the prompt says two) |
+| Failure class | `pollinations` (**retired**; asked for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) | `supergrok-manual` (manual, opt-in) |
+|---|---|---|---|---|
+| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had | the picture you saved, or **not drawn** — this lane does not draw |
+| Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` | the picture you saved, or **not drawn** |
+| **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounts (one horse where the prompt says two) | the picture you saved, or **not drawn** |
+
+**`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
 
 **What that means for Step 3.** Niche uniforms and multi-object scenes are **no longer disqualifying** —
 a theme that needs them is viable, on the Cloudflare lane. **Small held objects still are**: both lanes fail
@@ -186,6 +188,7 @@ Wording levers, in the order worth trying — these apply to every provider:
 |---|---|---|
 | `cloudflare-sdxl` | **different bytes**, despite the same pinned seed (#66) | **does not work.** A reverted prompt draws a *new* picture on this lane |
 | `ai-horde` | unmeasured, and it is a pool of volunteer machines | **assume it does not.** Do not plan around it |
+| `supergrok-manual` | the file you saved, until you delete its review candidate | nothing to revert. Replace the drop file and delete that one review file, then re-run the import |
 
 So: **keep every superseded `imagePrompt` in the session** until the theme ships — that is the only
 record of what you tried. On a non-deterministic lane, deleting a candidate and re-running
@@ -207,6 +210,7 @@ numbers below are *why a run takes as long as it does*, not knobs for you to tur
 |---|---|---|
 | `cloudflare-sdxl` | a published 10,000 neurons/day on the free plan, but **the exhaustion signal is undocumented** (#68) — so a lane that dies for no stated reason may be this. What guarantees $0 is the card-free account, not the number | 4 at a time, ~6–8s per image |
 | `ai-horde` | **2 requests/second per IP** across the whole API, and a volunteer queue you sit at the back of at zero kudos | 1 at a time; **30–45 minutes for one image** |
+| `supergrok-manual` | none — local files, no requests | however long you take to save the pictures |
 
 A rate-limit failure is retryable and costs you nothing: re-run `pnpm seed --review` and it resumes past
 everything already on disk. It is **not** a prompt problem and does not count as a re-prompt round. If a
@@ -268,6 +272,28 @@ the run on purpose:
 ```bash
 pnpm seed --review --providers=cloudflare-sdxl
 ```
+
+`supergrok-manual` sits out of that run. It has no key, so a missing key cannot abort you for it, and it does not draw unless you name it.
+
+### The manual lane — pictures you generate in Grok
+
+Use this when you want a SuperGrok picture beside the automatic lanes. You generate it yourself, under your subscription. This repo never calls Grok.
+
+```bash
+pnpm seed --supergrok-export
+```
+
+That writes `seed-content/supergrok-drop/brief.md`: one entry per card the bake-off would draw (the same unpublished set `--review` uses). Each entry has the card name, the **exact** prompt every other lane receives (`ART_STYLE` included), and the filename to save the picture as.
+
+Work through the brief in Grok — the app, grok.com, or X. Paste the prompt. Save the picture into `seed-content/supergrok-drop/` under that filename. `.jpg`, `.jpeg`, or `.webp` is fine when that is what Grok downloaded; keep the stem. Do not add an xAI API key anywhere.
+
+```bash
+pnpm seed --review --providers=supergrok-manual
+```
+
+You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) or after the lanes have already run. Import reads the drop folder, fits each picture to 768×768 PNG (center crop, no letterbox — a letterbox is a border), and writes the usual content-addressed review file. `--sync` publishes **that** file, byte for byte, the same way it publishes any lane. It does not read the drop folder again.
+
+A card with no picture is reported as **not drawn**. The contact sheet says so in that cell. It is not a failed generation, and it does not abandon the lane. Re-running skips pictures already imported. To replace one, delete that card's `supergrok-manual` review file (and its `.json` sidecar) and run the import again.
 
 Review files land at `seed-content/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
 covers the *full* prompt including `ART_STYLE` and is identical across providers, so a subject's candidates
@@ -443,6 +469,9 @@ The page states three things rather than hiding them, and so does the command:
 - **MISSING cells** — that *lane* produced nothing for that card. A dead lane or a narrowed run, *not* a
   provider that drew badly. An escape-hatch column (`ai-horde`) is labelled as such and blank by default —
   that is the arrangement working, so it is not counted here.
+- **"not drawn" cells** — the manual lane (`supergrok-manual`) had no picture in the drop folder for that
+  card. That is a missing file, not a bad drawing, and it is not counted as a MISSING lane cell. A picture
+  you did import sits in that column beside the automatic candidates.
 - **cards with no pick** — expected at this point, since the picking happens *here*. `--sync` refuses every
   one of them until Step 8 sets a `provider` on the card or its theme.
 - **orphan files** — candidates on disk from a provider no longer registered.
@@ -483,7 +512,7 @@ exactly as it is — no other field is touched by this step:
 ```
 
 `--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes. The id
-must match a registered provider exactly (`cloudflare-sdxl`, `ai-horde`); a typo is refused
+must match a registered provider exactly (`cloudflare-sdxl`, `ai-horde`, `supergrok-manual`); a typo is refused
 by name rather than treated as a missing review.
 
 ```bash

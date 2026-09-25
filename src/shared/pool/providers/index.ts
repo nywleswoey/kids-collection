@@ -45,22 +45,31 @@
  * it that could still need it. `--sync` resolves a provider only for a card it is
  * about to INSERT, and every card whose `provider` is "pollinations" is already
  * published, so text updates on them never touch this registry.
+ *
+ * ── SuperGrok, manual ────────────────────────────────────────────────────────
+ * `supergrok-manual` is a drop folder, not an endpoint. The Grok subscription
+ * does not include an API, and the xAI API is billed, so this registry must
+ * not grow a key for it. The owner generates pictures by hand; `--review`
+ * imports the files when the lane is named. Role `manual` keeps it out of the
+ * default fan-out, so a review that is not using it neither aborts nor waits.
  */
 import { aiHorde } from "./ai-horde";
 import { cloudflareSdxl } from "./cloudflare-sdxl";
+import { supergrokManual } from "./supergrok-manual";
 import type { ImageProvider } from "./provider";
 
 export * from "./provider";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
 export { aiHorde } from "./ai-horde";
+export { supergrokManual } from "./supergrok-manual";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), aiHorde()];
+export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), aiHorde(), supergrokManual()];
 
 /** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
 
-/** The default fan-out: bake-off lanes only, escape hatches excluded (#71). */
+/** The default fan-out: bake-off lanes only. Escape hatches and manual lanes sit out. */
 export const LANES: readonly ImageProvider[] = PROVIDERS.filter((p) => p.role === "lane");
 
 /**

@@ -35,7 +35,11 @@ To add a whole new theme, hand `seed-content/NEW-THEME-RUNBOOK.md` and a theme n
 ```bash
 pnpm seed --check-urls # schema + every sourceUrl must return 200
 pnpm seed --review     # generate preview images for NEW cards to seed-content/review/,
-                       #   one per card PER PROVIDER (the bake-off)
+                       #   one per card PER lane (the bake-off)
+pnpm seed --supergrok-export
+                       # brief for pictures you generate by hand in Grok
+pnpm seed --review --providers=supergrok-manual
+                       # import that drop folder as one more bake-off column
 pnpm contact-sheet "<Theme Name>"
                        # subject x provider grid to review, into seed-content/review/
 pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent),

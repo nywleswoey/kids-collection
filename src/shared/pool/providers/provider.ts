@@ -94,8 +94,14 @@ export type ProviderParams = Readonly<Record<string, string | number | boolean>>
  * selectable by name (`--providers=ai-horde`), still resolvable by `--sync`, and
  * still names its candidates the same way — because a card published from the
  * hatch must be as traceable as any other.
+ *
+ * `manual` sits out the same way, for a different reason. The lane does not
+ * call an API: the owner supplies pictures, and a card with none is "not drawn"
+ * rather than a provider that failed. Putting it in the default fan-out would
+ * either abort every review (if it required a key) or fill every bake-off with
+ * a column nobody asked for a drawing from. Name it to include it.
  */
-export type ProviderRole = "lane" | "escape-hatch";
+export type ProviderRole = "lane" | "escape-hatch" | "manual";
 
 export interface ImageProvider {
   /** Stable slug, unique in the registry. Appears in review filenames and in `seed-content/cards.json`. */
@@ -182,6 +188,20 @@ export class ProviderFailedTerminally extends Error {
   ) {
     super(`${providerId} failed after ${attempts} attempt(s): ${String(cause)}`);
     this.name = "ProviderFailedTerminally";
+  }
+}
+
+/**
+ * No picture was supplied. An absence, not a failed attempt.
+ *
+ * The runner must not retry it, must not count it toward the circuit breaker,
+ * and must not write a candidate. Used by the manual lane when the drop folder
+ * has no file for this prompt, so the contact sheet can say "not drawn".
+ */
+export class ProviderNotDrawn extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ProviderNotDrawn";
   }
 }
 

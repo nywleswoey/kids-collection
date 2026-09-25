@@ -106,7 +106,9 @@ free provider:
   default `--review` fan-out; an **escape hatch** is registered and resolvable but
   sits out the fan-out, reached only by naming it (`--providers=<id>`). Everything
   else about a hatch is identical, so a card published from one is as traceable as
-  any other (`providers/index.ts`, #71).
+  any other (`providers/index.ts`, #71). A **manual** lane (`supergrok-manual`) also
+  sits out until named, but draws nothing: it imports pictures the owner made by hand,
+  and a card with no picture is **not drawn** — a missing file, not a failed generation.
 - **Bake-off candidate** — one generated image for a `(card, provider)` pair, named
   `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed-content/review/`,
   with a `.json` **sidecar** recording the model the response actually *named*

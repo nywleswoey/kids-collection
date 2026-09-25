@@ -226,7 +226,7 @@ describe("the registry (#67)", () => {
   });
 
   it("every registered provider declares a role", () => {
-    for (const p of PROVIDERS) expect(["lane", "escape-hatch"]).toContain(p.role);
+    for (const p of PROVIDERS) expect(["lane", "escape-hatch", "manual"]).toContain(p.role);
   });
 
   it("the default fan-out is lanes only — escape hatches sit out (#71)", () => {
@@ -247,6 +247,16 @@ describe("the registry (#67)", () => {
     expect(horde.params.model).toBeTruthy();
     // Never in the default fan-out — reachable only by name (#71).
     expect(LANES.map((p) => p.id)).not.toContain("ai-horde");
+  });
+
+  it("keeps the manual lane out of the default fan-out, and reaches it by name", () => {
+    configureAll();
+    expect(providerById("supergrok-manual")!.role).toBe("manual");
+    expect(LANES.map((p) => p.id)).not.toContain("supergrok-manual");
+    expect(selectLanes().map((p) => p.id)).not.toContain("supergrok-manual");
+    // No key to forget. Naming it cannot abort the way an unconfigured lane does,
+    // and leaving it unnamed cannot abort a review that is not using it.
+    expect(selectLanes(["supergrok-manual"]).map((p) => p.id)).toEqual(["supergrok-manual"]);
   });
 
   it("reaches the escape hatch when it is named, and only then (#71)", () => {

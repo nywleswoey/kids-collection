@@ -114,6 +114,35 @@ describe("planContactSheet — the three absences it must not hide", () => {
     expect(cf.every((c) => !c.present)).toBe(true);
   });
 
+  it("labels a manual lane's blanks as not drawn, and does not count them as missing", () => {
+    const manual = fakeProvider({ id: "supergrok-manual", role: "manual" });
+    const sheet = planContactSheet(theme, [...PROVIDERS, manual], deps(allFiles(theme)));
+    expect(sheet.manualIds).toEqual(["supergrok-manual"]);
+    expect(sheet.missing).toBe(0);
+    expect(sheet.notDrawn).toBe(2);
+    const cells = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "supergrok-manual"));
+    expect(cells.every((c) => c.notDrawn && !c.present)).toBe(true);
+
+    const html = renderContactSheet(sheet);
+    expect(html).toContain("not drawn");
+    expect(html).toContain(">manual</div>");
+    expect(html).not.toContain("have no candidate on disk");
+    expect(html).not.toContain(">MISSING</div>");
+  });
+
+  it("shows an imported manual picture beside an undrawn sibling", () => {
+    const manual = fakeProvider({ id: "supergrok-manual", role: "manual" });
+    const present = reviewFileName(theme.name, cards[0], manual);
+    const sheet = planContactSheet(theme, [manual], deps([present]));
+    expect(sheet.notDrawn).toBe(1);
+    const drawn = sheet.rows.flatMap((r) => r.candidates).find((c) => c.fileName === present)!;
+    expect(drawn.present).toBe(true);
+    expect(drawn.notDrawn).toBe(false);
+    const html = renderContactSheet(sheet);
+    expect(html).toContain("not drawn");
+    expect(html).toContain(present);
+  });
+
   it("does not count an escape hatch's blanks as missing candidates (#71, #74)", () => {
     // An escape hatch sits out the fan-out by design, so it has no candidate for
     // almost every card — that is the arrangement working, not a gap. Counting
