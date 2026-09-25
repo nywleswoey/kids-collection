@@ -54,7 +54,14 @@ const selected = named
   ? PROVIDERS.filter((p) => named.includes(p.id))
   : PROVIDERS.filter((p) => p.role === "lane");
 
-const sittingOut = PROVIDERS.filter((p) => !selected.includes(p));
+const manual = PROVIDERS.filter((p) => p.role === "manual");
+if (manual.length > 0) {
+  console.warn(
+    `\n⚠️  Not a live endpoint: ${manual.map((p) => p.id).join(", ")}` +
+      `\n   Drop-folder lane. The fixture contract covers it. There is nothing to call.\n`,
+  );
+}
+const sittingOut = PROVIDERS.filter((p) => p.role !== "manual" && !selected.includes(p));
 if (sittingOut.length > 0) {
   console.warn(
     `\n⚠️  Not covered by this run: ${sittingOut.map((p) => p.id).join(", ")}` +

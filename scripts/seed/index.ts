@@ -8,9 +8,16 @@
  *                                 allowance and project how many themes still fit, per
  *                                 lane (#79), then exit
  *   pnpm seed --review            generate images for NEW cards to seed-content/review/,
- *                                 from EVERY registered provider (the bake-off)
+ *                                 from EVERY registered lane (the bake-off)
  *   pnpm seed --review --providers=cloudflare-sdxl
  *                                 narrow the bake-off to named provider(s)
+ *   pnpm seed --supergrok-export  write the manual-lane brief: one entry per card
+ *                                 the bake-off would draw, with the exact prompt
+ *                                 and the filename to save the picture as
+ *   pnpm seed --review --providers=supergrok-manual
+ *                                 import pictures from seed-content/supergrok-drop/
+ *                                 as that lane's candidates. A card with no picture
+ *                                 is "not drawn", not a failed generation.
  *   pnpm seed --publish           generate -> upload to Blob -> insert NEW cards (idempotent)
  *   pnpm seed --publish --reset   wipe the whole pool first, then republish everything
  *   pnpm seed --sync              DELTA: image-generate only NEW cards, update text
@@ -25,7 +32,8 @@
  *                                 reviewed image. Defeats the kid-safety guarantee.
  *
  * Requires DATABASE_URL (all modes) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
- * `--review` additionally requires each provider's key; see `.env.example`.
+ * `--review` additionally requires each selected provider's key; see `.env.example`.
+ * `supergrok-manual` has no key. It sits out unless named.
  *
  * ── Destructive-operation guards (Inc23) ─────────────────────────────────────
  * `cards.theme_id` and `collections.card_id` both cascade, so deleting pool rows
@@ -86,6 +94,12 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadSeed } from "@/shared/pool/loader";
 import { buildPrompt } from "@/shared/pool/prompt";
+import {
+  planManualBrief,
+  renderManualBrief,
+  SUPERGROK_BRIEF_NAME,
+  SUPERGROK_DROP_DIR,
+} from "@/shared/pool/manual-brief";
 import { uploadImage } from "@/shared/pool/image";
 import { blobKey } from "@/shared/pool/keys";
 import { runBakeOff, makeGate, withRetry, type BakeOffJob } from "@/shared/pool/bake-off";
@@ -349,6 +363,39 @@ async function main() {
       console.error(`   [${f.status}] ${f.theme} / ${f.card}\n        ${f.url}`);
     }
     process.exitCode = 1;
+    return;
+  }
+
+  // ── --supergrok-export: the manual lane's brief. Standalone; runs and exits.
+  //
+  // Same card set `--review` would draw (planned inserts), so the file the
+  // owner works through cannot disagree with the bake-off. Reads the pool to
+  // learn which cards are already published. Writes one markdown file into the
+  // drop folder and does not generate, upload, or insert anything.
+  if (process.argv.includes("--supergrok-export")) {
+    if (process.argv.includes("--sync") || process.argv.includes("--publish")) {
+      throw new Error(
+        "--supergrok-export only writes a brief. It does not publish. Run it on its own.",
+      );
+    }
+    if (!process.env.DATABASE_URL) {
+      throw new Error(
+        "DATABASE_URL is not set. Run with your env loaded, e.g. `tsx --env-file=.env.local scripts/seed/index.ts --supergrok-export`.",
+      );
+    }
+    const published = await listPublishedCardKeys();
+    const planned = new Set(planInserts(seed, published).map((p) => cardKey(p.theme, p.card)));
+    const entries = planManualBrief(seed.themes, planned);
+    const dropDir = join(process.cwd(), SUPERGROK_DROP_DIR);
+    mkdirSync(dropDir, { recursive: true });
+    const briefPath = join(dropDir, SUPERGROK_BRIEF_NAME);
+    writeFileSync(briefPath, renderManualBrief(entries));
+    console.log(
+      `${entries.length} card(s) the bake-off would draw.\n` +
+        `Brief: ${briefPath}\n` +
+        `Save each picture into ${dropDir} under the name the brief gives, then:\n` +
+        `  pnpm seed --review --providers=supergrok-manual`,
+    );
     return;
   }
 
@@ -754,10 +801,19 @@ async function review(
       `already had ${o.skipped}`,
       `failed ${o.failed}`,
     ];
+    if (o.notDrawn > 0) parts.push(`not drawn ${o.notDrawn}`);
     if (o.abandoned) parts.push(`ABANDONED, ${o.notAttempted} not attempted`);
     console.log(`   ${o.providerId}: ${parts.join(", ")} (of ${jobs.length})`);
   }
   console.log(`Review images in: ${REVIEW_DIR}`);
+
+  const undrawn = outcomes.filter((o) => o.notDrawn > 0);
+  if (undrawn.length > 0) {
+    console.log(
+      `\n   ${undrawn.map((o) => `${o.providerId}: ${o.notDrawn} not drawn`).join("; ")}.\n` +
+        `   No picture in the drop folder for those cards. That is not a failed drawing.`,
+    );
+  }
 
   // A lane that died leaves the contact sheet with holes. Say so here rather
   // than letting the human infer "that provider draws badly" from a blank cell.

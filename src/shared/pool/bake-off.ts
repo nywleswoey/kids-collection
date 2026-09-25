@@ -39,6 +39,7 @@
  */
 import {
   ProviderFailedTerminally,
+  ProviderNotDrawn,
   ProviderRetryable,
   type GeneratedImage,
   type ImageProvider,
@@ -57,6 +58,11 @@ export interface LaneOutcome {
   skipped: number;
   /** Jobs attempted and terminally failed. */
   failed: number;
+  /**
+   * Jobs with no picture supplied (`ProviderNotDrawn`). Not a failure: the
+   * lane was not asked to draw, so these do not abandon it.
+   */
+  notDrawn: number;
   /** Jobs never attempted because the breaker tripped first. */
   notAttempted: number;
   abandoned: boolean;
@@ -106,6 +112,7 @@ async function runLane<T>(
     generated: 0,
     skipped: 0,
     failed: 0,
+    notDrawn: 0,
     notAttempted: 0,
     abandoned: false,
   };
@@ -134,6 +141,14 @@ async function runLane<T>(
           sleep,
         );
       } catch (err) {
+        // An absent manual picture is not the lane dying. Leave the breaker
+        // alone — do not increment it, and do not reset it — so three missing
+        // files never abandon the lane, and a real failure streak still counts.
+        if (err instanceof ProviderNotDrawn) {
+          outcome.notDrawn++;
+          deps.log(`  – ${job.theme} / ${describe(job.card)} [${provider.id}]: not drawn`);
+          continue;
+        }
         outcome.failed++;
         consecutiveFailures++;
         deps.error(`  ✗ ${job.theme} / ${describe(job.card)} [${provider.id}]: ${String(err)}`);
@@ -175,7 +190,7 @@ async function runLane<T>(
   // Exact by subtraction, which avoids racing several workers to read the
   // queue's length at the moment the breaker trips.
   outcome.notAttempted =
-    jobs.length - outcome.generated - outcome.skipped - outcome.failed;
+    jobs.length - outcome.generated - outcome.skipped - outcome.failed - outcome.notDrawn;
   return outcome;
 }
 
@@ -187,6 +202,10 @@ async function runLane<T>(
  * the provider has already judged just spends the lane's budget on a guaranteed
  * failure. Either way what escapes is `ProviderFailedTerminally` carrying no
  * classification of the cause (#68).
+ *
+ * `ProviderNotDrawn` is the exception that stays itself. It is an absence, not
+ * a judged failure, and wrapping it would make a missing manual picture look
+ * like the lane died.
  *
  * Exported because `--publish --allow-unreviewed` generates outside a lane and
  * must honour the same `SEED_RETRIES` budget. A second ladder there would drift
@@ -211,6 +230,7 @@ export async function withRetry<T>(
     try {
       return await attempt();
     } catch (err) {
+      if (err instanceof ProviderNotDrawn) throw err;
       lastErr = err;
       if (!(err instanceof ProviderRetryable)) break;
       if (n === retries) break;

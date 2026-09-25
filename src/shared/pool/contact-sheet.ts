@@ -32,6 +32,11 @@
  *     reviewer to ignore the one warning that says a lane died. Its column still
  *     renders, because a hatch that WAS invoked for a card has to be visible
  *     beside the lanes it beat.
+ *   - a NOT DRAWN cell — a manual lane whose drop folder had no picture for
+ *     that card. The words are "not drawn", and the cell is not counted as a
+ *     lane that produced nothing, because nobody asked this lane to draw. The
+ *     column still renders, so a picture that WAS supplied sits beside the
+ *     automatic candidates, and a card that was skipped stays visible.
  *   - an UNPICKED row — no `provider` resolved, so `--sync` will refuse the card.
  *     Better learned here than at the publish gate.
  *   - an ORPHAN file — a candidate on disk belonging to no registered provider,
@@ -85,6 +90,11 @@ export interface SheetCandidate {
   model?: string;
   /** Is this the candidate `--sync` would publish? */
   isPick: boolean;
+  /**
+   * No picture was supplied for a manual lane. Distinct from `present: false`
+   * on a lane, which means that lane produced nothing.
+   */
+  notDrawn: boolean;
 }
 
 export interface SheetRow {
@@ -100,9 +110,13 @@ export interface ContactSheet {
   providerIds: string[];
   /** Of those, the ones that sit out the fan-out (#71) — expected to be sparse. */
   escapeHatchIds: string[];
+  /** Drop-folder lanes. A blank cell here is "not drawn". */
+  manualIds: string[];
   rows: SheetRow[];
-  /** (card, provider) pairs with no candidate on disk. */
+  /** (card, lane) pairs with no candidate on disk. Manual blanks are not in this. */
   missing: number;
+  /** Manual cells with no picture in the drop folder. */
+  notDrawn: number;
   /** Cards with no provider resolved — `--sync` would refuse these. */
   unpicked: number;
   /** Candidate files for this theme belonging to no registered provider. */
@@ -134,6 +148,7 @@ export function planContactSheet(
 ): ContactSheet {
   const expected = new Set<string>();
   let missing = 0;
+  let notDrawn = 0;
   let unpicked = 0;
 
   const rows: SheetRow[] = [...theme.cards]
@@ -146,8 +161,11 @@ export function planContactSheet(
         const fileName = reviewFileName(theme.name, card, provider);
         expected.add(fileName);
         const present = deps.exists(fileName);
-        // A hatch's blank is not a gap — see the header note.
-        if (!present && provider.role === "lane") missing++;
+        // A hatch's blank is not a gap — see the header note. A manual blank
+        // is "not drawn": visible, and not a lane that failed.
+        const undrawn = !present && provider.role === "manual";
+        if (undrawn) notDrawn++;
+        else if (!present && provider.role === "lane") missing++;
         return {
           providerId: provider.id,
           fileName,
@@ -156,6 +174,7 @@ export function planContactSheet(
             ? deps.readSidecar(fileName.replace(/\.[^.]+$/, ".json"))?.model
             : undefined,
           isPick: provider.id === resolved,
+          notDrawn: undrawn,
         };
       });
 
@@ -191,8 +210,10 @@ export function planContactSheet(
     theme: theme.name,
     providerIds: providers.map((p) => p.id),
     escapeHatchIds: providers.filter((p) => p.role === "escape-hatch").map((p) => p.id),
+    manualIds: providers.filter((p) => p.role === "manual").map((p) => p.id),
     rows,
     missing,
+    notDrawn,
     unpicked,
     orphans,
   };
@@ -211,6 +232,9 @@ export function renderContactSheet(sheet: ContactSheet): string {
     sheet.escapeHatchIds.length > 0
       ? `<p class="sub">${sheet.escapeHatchIds.map(esc).join(", ")} ${sheet.escapeHatchIds.length === 1 ? "is an escape hatch" : "are escape hatches"} (#71): not part of the fan-out, so blank is the normal state. A filled cell there means someone invoked it deliberately for that card.</p>`
       : "",
+    sheet.manualIds.length > 0
+      ? `<p class="sub">${sheet.manualIds.map(esc).join(", ")} ${sheet.manualIds.length === 1 ? "is a manual lane" : "are manual lanes"}: a cell that says "not drawn" had no picture in the drop folder. That is not a drawing the lane rejected.${sheet.notDrawn > 0 ? ` ${sheet.notDrawn} cell(s) are not drawn.` : ""}</p>`
+      : "",
     sheet.orphans.length > 0
       ? `<p class="warn">⚠ ${sheet.orphans.length} file(s) in seed-content/review/ belong to no registered provider (a rename or a retirement): ${sheet.orphans.map(esc).join(", ")}</p>`
       : "",
@@ -227,7 +251,9 @@ ${row.candidates
     (c) => `<td class="${c.isPick ? "pick" : ""}">${
       c.present
         ? `<img src="${esc(c.fileName)}" loading="lazy" alt="${esc(row.name)} by ${esc(c.providerId)}">`
-        : `<div class="miss">MISSING</div>`
+        : c.notDrawn
+          ? `<div class="undrawn">not drawn</div>`
+          : `<div class="miss">MISSING</div>`
     }<div class="m">${esc(c.model ?? (c.present ? "model not reported" : ""))}</div></td>`,
   )
   .join("")}
@@ -254,6 +280,7 @@ img{width:100%;border-radius:8px;display:block;background:#222}
 .m{font-size:11px;opacity:.55;margin-top:4px}
 .hatch{font-size:10px;opacity:.6;font-weight:400;letter-spacing:.04em;margin-top:3px}
 .miss{color:#f66;border:1px dashed #f66;border-radius:8px;padding:24px;text-align:center}
+.undrawn{color:#aaa;border:1px dashed #555;border-radius:8px;padding:24px;text-align:center}
 td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 </style>
 <h1>${esc(sheet.theme)} — ${sheet.rows.length} card(s) in the seed</h1>
@@ -264,7 +291,11 @@ ${banner}
     .map(
       (p) =>
         `<th>${esc(p)}${
-          sheet.escapeHatchIds.includes(p) ? `<div class="hatch">escape hatch</div>` : ""
+          sheet.escapeHatchIds.includes(p)
+            ? `<div class="hatch">escape hatch</div>`
+            : sheet.manualIds.includes(p)
+              ? `<div class="hatch">manual</div>`
+              : ""
         }</th>`,
     )
     .join("")}</tr></thead>
