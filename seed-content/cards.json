@@ -4325,6 +4325,221 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Injera"
         }
       ]
+    },
+    {
+      "name": "Musical Instruments",
+      "cards": [
+        {
+          "name": "Pipe Organ",
+          "rarity": "legendary",
+          "eduText": "The biggest pipe organs have thousands of pipes. Air rushing through each pipe plays one note.",
+          "imagePrompt": "a single grand pipe organ, front view: rows of tall shiny silver metal pipes rising in steps from short to very tall, above a carved wooden console with several rows of keyboards, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pipe_organ"
+        },
+        {
+          "name": "Didgeridoo",
+          "rarity": "legendary",
+          "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
+          "imagePrompt": "a single didgeridoo lying on its side: a very long straight hollow wooden tube, wider at one end, painted with Aboriginal dot patterns in red, yellow and white, with a smooth round mouthpiece rim at the narrow end, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo"
+        },
+        {
+          "name": "Theremin",
+          "rarity": "epic",
+          "eduText": "You play a theremin without touching it! Moving your hands near its two antennas changes the sound.",
+          "imagePrompt": "a single theremin, front view: a small wooden cabinet box on four thin legs, a tall straight metal rod antenna sticking up from its right side and a looped metal antenna sticking out sideways from its left side, with round knobs on the front, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Theremin"
+        },
+        {
+          "name": "Bagpipes",
+          "rarity": "epic",
+          "eduText": "Bagpipes are famous in Scotland. The player blows into a bag, then squeezes it to keep the pipes sounding.",
+          "imagePrompt": "a single set of Scottish bagpipes lying flat: a tartan cloth-covered bag with three tall black wooden drone pipes with ivory rings sticking up from it, a short blowpipe, and a black chanter pipe with finger holes hanging down, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bagpipes"
+        },
+        {
+          "name": "Harp",
+          "rarity": "epic",
+          "eduText": "A concert harp has 47 strings. Its red strings are all C notes, so the harpist can find their place.",
+          "imagePrompt": "a single tall golden concert harp standing upright, side view: a big triangle-shaped frame with a curved neck on top, a straight carved column at the front, and many long strings running down to a slanted wooden soundboard, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Harp"
+        },
+        {
+          "name": "Electric Guitar",
+          "rarity": "epic",
+          "eduText": "An electric guitar is quiet on its own. Magnets called pickups send the sound to a loud amplifier.",
+          "imagePrompt": "a single bright red electric guitar standing upright, front view: a solid flat body with two pointed horns, three silver pickups, round volume knobs, six strings and a long neck with a headstock and tuning pegs, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Electric_guitar"
+        },
+        {
+          "name": "Sitar",
+          "rarity": "epic",
+          "eduText": "The sitar from India has a very long neck. Extra strings hidden under the main ones hum along when it is played.",
+          "imagePrompt": "a single Indian sitar lying on its side: a big round gourd body at the bottom, a very long wide wooden neck with curved metal frets and tuning pegs down its side, and a second small round gourd near the top, decorated with carved patterns, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sitar"
+        },
+        {
+          "name": "Tabla",
+          "rarity": "rare",
+          "eduText": "Tabla is a pair of drums from India. The black circle on each drumhead helps it ring with a clear note.",
+          "imagePrompt": "a pair of Indian tabla drums side by side: a small tall wooden drum and a wider round metal drum, each with a tight tan skin head with a black circle in the middle, laced with leather straps and small wooden blocks around the sides, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tabla"
+        },
+        {
+          "name": "Djembe",
+          "rarity": "rare",
+          "eduText": "The djembe comes from West Africa. It is carved from one piece of wood and played with bare hands.",
+          "imagePrompt": "a single West African djembe drum standing upright: a goblet shape with a wide round top and a narrow stem, carved from dark wood, with a pale goatskin drumhead laced tight by criss-crossing ropes, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Djembe"
+        },
+        {
+          "name": "Steel Drum",
+          "rarity": "rare",
+          "eduText": "Steel drums were invented in Trinidad and Tobago from old oil barrels. Each dent in the top plays a different note.",
+          "imagePrompt": "a single Caribbean steel drum seen from a little above: a shiny silver metal bowl like the top of a barrel, its surface hammered into many round dented note areas, on a short metal stand, with two rubber-tipped sticks resting on it, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Steelpan"
+        },
+        {
+          "name": "Pan Flute",
+          "rarity": "rare",
+          "eduText": "A pan flute is a row of tubes tied together. Short tubes play high notes and long tubes play low ones.",
+          "imagePrompt": "a single pan flute, front view: a row of hollow bamboo tubes tied side by side with a woven band, going from long to short in a slanting stepped shape, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pan_flute"
+        },
+        {
+          "name": "Erhu",
+          "rarity": "rare",
+          "eduText": "The erhu from China has just two strings. Its bow's hair runs between them, so the bow and erhu stay joined.",
+          "imagePrompt": "a single Chinese erhu standing upright: a small six-sided wooden drum body covered with patterned skin at the bottom, a long thin wooden neck rising straight up, two tuning pegs at the top, two strings, and a long bow threaded between the strings, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Erhu"
+        },
+        {
+          "name": "Balalaika",
+          "rarity": "rare",
+          "eduText": "The balalaika is a Russian instrument with a triangle-shaped body and usually just three strings.",
+          "imagePrompt": "a single Russian balalaika standing upright, front view: a flat triangle-shaped light wooden body with a small round sound hole, a long thin neck with frets, and three strings, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Balalaika"
+        },
+        {
+          "name": "Koto",
+          "rarity": "rare",
+          "eduText": "The koto is Japan's national instrument. It lies on the floor and has 13 strings, each with its own bridge.",
+          "imagePrompt": "a single Japanese koto lying flat, seen from a little above: a very long, low wooden board with a gently curved top, thirteen strings running along its length, each string resting on its own small white bridge, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Koto_(instrument)"
+        },
+        {
+          "name": "Gong",
+          "rarity": "rare",
+          "eduText": "Gongs are big metal discs from East and Southeast Asia. Hit with a soft mallet, they boom and shimmer for a long time.",
+          "imagePrompt": "a single large round bronze gong with a raised bump in its centre, hanging by two cords from a red carved wooden frame, with a soft padded mallet leaning against the frame, front view, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gong"
+        },
+        {
+          "name": "Violin",
+          "rarity": "common",
+          "eduText": "A violin is the smallest and highest-sounding of its family. Its bow is strung with hair from horses' tails.",
+          "imagePrompt": "a single violin lying flat, front view: a curvy reddish-brown wooden body with two f-shaped sound holes, four strings over a small bridge, a black fingerboard and a curled scroll at the top, with its bow lying beside it, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Violin"
+        },
+        {
+          "name": "Piano",
+          "rarity": "common",
+          "eduText": "Pressing a piano key makes a small felt hammer hit a string inside. Most pianos have 88 keys.",
+          "imagePrompt": "a single shiny black grand piano, side view: its curved lid propped open, a long row of black and white keys at the front, three legs and pedals underneath, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Piano"
+        },
+        {
+          "name": "Guitar",
+          "rarity": "common",
+          "eduText": "Most guitars have six strings. Pressing a string against the neck makes it shorter and the note higher.",
+          "imagePrompt": "a single acoustic guitar standing upright, front view: a light wooden body curved like a figure eight with a round sound hole, six strings, and a long brown neck with frets and tuning pegs, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Guitar"
+        },
+        {
+          "name": "Snare Drum",
+          "rarity": "common",
+          "eduText": "A snare drum has wires stretched under its bottom skin. They rattle to give it a crisp, snappy sound.",
+          "imagePrompt": "a single snare drum seen from a little above: a short, wide round drum with a shiny red shell, a white drumhead, silver metal rods around the sides, and two wooden drumsticks crossed on top, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snare_drum"
+        },
+        {
+          "name": "Trumpet",
+          "rarity": "common",
+          "eduText": "A trumpet has three valves. Pressing them sends the air through extra tubing to change the note.",
+          "imagePrompt": "a single shiny gold brass trumpet, side view: a long looped tube with three piston valves on top, a small mouthpiece at one end and a wide flared bell at the other, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Trumpet"
+        },
+        {
+          "name": "Saxophone",
+          "rarity": "common",
+          "eduText": "Adolphe Sax invented the saxophone in the 1840s. It is made of brass but belongs to the woodwind family.",
+          "imagePrompt": "a single shiny gold saxophone standing upright, side view: a curved J-shaped brass body with many round keys down its front, an upturned flared bell at the bottom, and a bent neck with a black mouthpiece at the top, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saxophone"
+        },
+        {
+          "name": "Xylophone",
+          "rarity": "common",
+          "eduText": "Xylophone means 'wood sound' in Greek. Its short wooden bars play high notes and its long bars play low ones.",
+          "imagePrompt": "a single xylophone seen from a little above: a row of polished brown wooden bars getting shorter from left to right on a low wooden frame, with two round-headed mallets resting on top, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Xylophone"
+        },
+        {
+          "name": "Cello",
+          "rarity": "common",
+          "eduText": "A cello is so big that players sit down and rest it on the floor on a metal spike called an endpin.",
+          "imagePrompt": "a single large cello standing upright on its thin metal spike, front view: a big curvy reddish-brown wooden body with two f-shaped sound holes, four strings, a long black fingerboard and a curled scroll at the top, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cello"
+        },
+        {
+          "name": "Trombone",
+          "rarity": "common",
+          "eduText": "A trombone changes note with a long slide. Pushing the slide out makes the tube longer and the note lower.",
+          "imagePrompt": "a single shiny gold trombone, side view: a long straight U-shaped slide stretched out in front, a wide flared bell, and a small mouthpiece, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Trombone"
+        },
+        {
+          "name": "Accordion",
+          "rarity": "common",
+          "eduText": "An accordion has bellows the player squeezes and pulls. Air flows past small metal reeds to make the sound.",
+          "imagePrompt": "a single red accordion, front view: pleated folding bellows stretched open in the middle, a piano-style keyboard of black and white keys on the right side, and rows of small round buttons on the left side, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Accordion"
+        },
+        {
+          "name": "Tambourine",
+          "rarity": "common",
+          "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
+          "imagePrompt": "a single tambourine seen from a little above: a round wooden frame with a tight skin drumhead, and pairs of small shiny metal jingles set into slots around the rim, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine"
+        },
+        {
+          "name": "Ukulele",
+          "rarity": "common",
+          "eduText": "The ukulele was made in Hawaii in the 1880s from small guitars brought by Portuguese settlers. It has four strings.",
+          "imagePrompt": "a single small ukulele standing upright, front view: a light wooden figure-eight body with a round sound hole and a painted yellow hibiscus flower, four strings, and a short neck with frets, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ukulele"
+        },
+        {
+          "name": "French Horn",
+          "rarity": "common",
+          "eduText": "A French horn's brass tube is almost 4 metres long, coiled into a circle. Players often put a hand in the bell.",
+          "imagePrompt": "a single shiny gold French horn, side view: a long brass tube coiled round and round in a circle, three rotary valves with levers in the middle, a narrow mouthpiece and a very wide flared bell, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/French_horn"
+        },
+        {
+          "name": "Tuba",
+          "rarity": "common",
+          "eduText": "The tuba is the biggest and lowest-sounding brass instrument. Its long tube is coiled up so it can be carried.",
+          "imagePrompt": "a single huge shiny gold tuba standing upright, front view: thick coiled brass tubing, four big valves in the middle, and a very wide bell pointing straight up, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tuba"
+        },
+        {
+          "name": "Bongos",
+          "rarity": "common",
+          "eduText": "Bongos are two small drums joined together, one bigger than the other. They come from Cuba and are played with fingers.",
+          "imagePrompt": "a pair of bongo drums joined side by side by a wooden block, one small and one slightly larger, both short wooden drums with tan skin tops and silver metal tuning lugs around the rims, seen from a little above, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bongo_drum"
+        }
+      ]
     }
   ]
 }
