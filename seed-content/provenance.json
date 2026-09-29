@@ -3117,6 +3117,398 @@
         "reviewKey": "trees-weeping-willow-7db0aad1-cloudflare-sdxl-2211",
         "reviewed": true
       }
+    },
+    "Wild Weather": {
+      "Ball Lightning": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-ball-lightning-d6e08a1d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Blizzard": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-blizzard-15f12c64-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cirrus Cloud": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-cirrus-cloud-bf1150c5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cumulus Cloud": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-cumulus-cloud-fe4ea29a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Dust Devil": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-dust-devil-2eed2b02-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Fog": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-fog-cbdcfc04-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Frost": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-frost-b729e6c1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Geyser": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-geyser-8f2373c7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hail": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-hail-de1cdd39-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Hurricane": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-hurricane-5c9d08a0-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ice Storm": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-ice-storm-1429e5dc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Iridescent Cloud": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-iridescent-cloud-71dfc3b9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lava Fountain": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-lava-fountain-4c12b711-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lava Lake": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-lava-lake-1558b5f9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lenticular Cloud": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-lenticular-cloud-62f1aa95-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lightning": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-lightning-be51cf1d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Morning Dew": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-morning-dew-3855204c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rain": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-rain-4ee7f736-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rainbow": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-rainbow-b1df3aaf-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sea of Clouds": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-sea-of-clouds-47664d07-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sleet": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-sleet-4da1e217-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Snow": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-snow-770fadef-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Snowflake": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-snowflake-5bd0602e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sun Halo": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-sun-halo-15a40410-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sun Rays": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-sun-rays-a204c03c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Supercell": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-supercell-6101ac73-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Thunderstorm": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-thunderstorm-01947b58-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tornado": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-tornado-1f37d6c7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Wave Cloud": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-wave-cloud-803e1b2d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Whirlpool": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "wild-weather-whirlpool-f22906ae-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
     }
   }
 }

@@ -32,7 +32,7 @@ export const RARITY_PYRAMID: Record<Rarity, number> = {
 /** Zod schema for a single card in the seed file. */
 export const seedCardSchema = z.object({
   name: z.string().trim().min(1),
-  rarity: z.enum(RARITIES as unknown as [string, ...string[]]),
+  rarity: z.enum(RARITIES),
   // <=120 chars: readable by a 7-year-old and fits the card face (FR5).
   eduText: z.string().trim().min(1).max(120),
   imagePrompt: z.string().trim().min(1),
@@ -65,7 +65,7 @@ export const seedCardSchema = z.object({
 export const themeSeedSchema = z
   .object({
     name: z.string().trim().min(1),
-    cards: z.array(seedCardSchema).min(1),
+    cards: z.array(seedCardSchema),
     /** Default provider for this theme's cards; a card's own `provider` wins (#63). */
     provider: z.string().trim().min(1).optional(),
   })

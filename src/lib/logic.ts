@@ -62,6 +62,10 @@ function groupByRarity(pool: Card[]): Record<Rarity, Card[]> {
  * Apply a pull to a child + their current entry for the drawn card (BR6/BR8/BR9).
  * Pure: returns the updated child and collection entry; caller persists atomically.
  * Precondition (enforced atomically by the caller): child.pullTokens >= 1.
+ *
+ * No production caller — production spends via `ChildStore.spendOne`, pinned by
+ * the child-store contract suite. This model is exercised only by
+ * `tests/logic.pbt.test.ts`.
  */
 export function applyPull(
   child: Child,
@@ -83,7 +87,13 @@ export function applyPull(
   };
 }
 
-/** Grant/adjust tokens; balance never goes negative (BR5/BR7). */
+/**
+ * Grant/adjust tokens; balance never goes negative (BR5/BR7).
+ *
+ * No production caller — production grants via `ChildStore.clampedGrant`, pinned
+ * by the child-store contract suite. This model is exercised only by
+ * `tests/logic.pbt.test.ts`.
+ */
 export function grantTokens(child: Child, delta: number): Child {
   const next = Math.max(0, child.pullTokens + delta);
   return { ...child, pullTokens: next };

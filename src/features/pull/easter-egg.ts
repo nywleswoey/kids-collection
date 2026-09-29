@@ -12,7 +12,7 @@ export const EGG_CHANCE = 0.01;
 
 /**
  * Roll a rarity by the normal pull odds (Inc19 FR3): weighted by RARITY_WEIGHTS
- * (common 60 / rare 25 / epic 12 / legendary 3). PURE so the unified Easter Egg
+ * (common 70 / rare 21 / epic 7 / legendary 2). PURE so the unified Easter Egg
  * ticket's tier distribution is property-testable and client-tamper-proof.
  */
 export function rollWeightedRarity(rng: Rng = Math.random): Rarity {

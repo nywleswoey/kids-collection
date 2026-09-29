@@ -37,10 +37,10 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
   a lens applied inside one and resets on entry (`src/features/binder/binder-place.ts`).
 - **Pull** — spending a token to draw a rarity-weighted card. May branch into an
   **easter egg**: a signed pick-1-of-N **offer** the child claims later.
-- **Ticket** — a spendable column on `children`: normal `pullTokens`, special egg
-  tickets (`epic`/`lucky`), and rarity-pick tickets (`{rarity}_pick_tickets`).
-- **Sacrifice** — burn N copies of a card for a rarity-pick ticket (same tier or one
-  up, 50/50).
+- **Ticket** — a spendable column on `children`: normal `pullTokens`, and unified
+  `easterEggTickets` (migration 0005 replaced the old `epic`/`lucky` and
+  `{rarity}_pick_tickets` columns).
+- **Sacrifice** — burn N copies of a card for one Easter Egg ticket.
 - **Trade** — atomic two-sided duplicate swap between two children.
 - **Swap tier** — what a trade is worth to whoever **receives** the card, and how both
   swap-board columns are ordered (#109): **new** (they own none) → **one-away** (they
@@ -65,22 +65,22 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
 
 ## Architecture — the persistence seam (Candidate 1)
 
-Terms introduced by the Store-seam design (see
-`docs/architecture/deepening-candidates.md`):
+Terms introduced by the Store-seam design (the design doc,
+`docs/architecture/deepening-candidates.md`, was removed once the seam shipped):
 
 - **Port** — a per-aggregate persistence **interface** a service accepts as a
   dependency (rather than importing the `db` singleton). Deep by design: one method
   per atomic unit of persistence; transactions never cross the seam.
 - **Store** — collective name for the ports. Named ports: **`ChildStore`**
-  (token/ticket columns — `spendOne`, `incrementColumn`, `clampedGrant`, `balances`),
+  (token/ticket columns — `spendOne`, `incrementColumn`, `clampedGrant`, `readColumn`),
   **`CollectionStore`** (card copies — `grantCard`, `removeCard`, `swapCards`,
   `ownedCounts`, `cardCount`, `tradableDuplicates`), **`RewardStore`**,
-  **`QuizStore`**.
+  **`QuizStore`**, **`ProfileStore`**, **`AdminCredentialStore`**.
 - **Catalog** — the read-only port for the static card/theme pool (`listCards` /
-  `getCard`), injected like a Store so services stay testable.
+  `getCard` / `listThemes`), injected like a Store so services stay testable.
 - **Adapter** — a concrete port implementation. Two per port: the **pg adapter**
-  (prod, the only place `import "server-only"` lives) and the **in-memory fake**
-  (tests).
+  (prod) and the **in-memory fake** (tests). `import "server-only"` is not unique to
+  the pg adapters; it also guards other server-only modules (about two dozen files).
 - **Factory (feature service)** — `makeTradeService(deps)` etc.: binds a feature's
   function cluster to its ports once, returns the cluster. Prod wires a singleton;
   tests construct with fakes.
@@ -140,8 +140,8 @@ free provider:
   random suffix: re-publishing a card writes a new object and strands the old one,
   and the allowance is charged for both (**403 objects for 390 cards, 1.07 MB
   stranded**, 2026-08-15). Stranded bytes are reported, never deleted. Measured
-  that day: **31.36 MB of 1 GB**, i.e. 415 more Pollinations-weight themes or 39
-  Cloudflare-weight ones. The plan is **Hobby**, so exceeding an allowance is not a
+  that day: **31.36 MB of 1 GB**, i.e. 39 more Cloudflare-weight themes. The plan
+  is **Hobby**, so exceeding an allowance is not a
   bill — it cuts off the store for the rest of the 30-day window, and a card whose
   optimized variant is not already cached then renders as its `alt` text. Covers
   **storage only**: image transformations are a deployment meter with no read path

@@ -57,11 +57,6 @@ export function unlock(): void {
   }
 }
 
-/** True if Web Audio is available and not blocked. */
-export function isAvailable(): boolean {
-  return available;
-}
-
 /** Shared AudioContext (creates/returns it) for the music engine. Null if blocked. */
 export function acquireContext(): AudioContext | null {
   return ensureCtx();

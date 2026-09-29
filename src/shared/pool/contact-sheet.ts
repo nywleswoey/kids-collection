@@ -47,8 +47,14 @@
  * is testable and the script stays a thin shell.
  */
 import { slug } from "./keys";
-import { reviewFileName, resolveProviderId, type NamingProvider } from "./review-files";
+import {
+  reviewFileName,
+  resolveProviderId,
+  sidecarFileName,
+  type NamingProvider,
+} from "./review-files";
 import type { ProviderRole } from "./providers/provider";
+import { RARITIES } from "@/lib/types";
 
 /**
  * What the grid needs to know about a provider: how to name its file, and
@@ -60,13 +66,14 @@ import type { ProviderRole } from "./providers/provider";
  */
 export type SheetProvider = NamingProvider & { role: ProviderRole };
 
-/** Display order — legendary first, so the cards that matter most are seen first. */
-const RARITY_ORDER: Record<string, number> = {
-  legendary: 0,
-  epic: 1,
-  rare: 2,
-  common: 3,
-};
+/**
+ * Display order — legendary first, so the cards that matter most are seen first.
+ * The reverse of `RARITIES` (common-first), not a second source of truth for
+ * the rarity set itself.
+ */
+const RARITY_ORDER: Record<string, number> = Object.fromEntries(
+  [...RARITIES].reverse().map((r, i) => [r, i]),
+);
 
 export interface SheetCard {
   name: string;
@@ -171,7 +178,7 @@ export function planContactSheet(
           fileName,
           present,
           model: present
-            ? deps.readSidecar(fileName.replace(/\.[^.]+$/, ".json"))?.model
+            ? deps.readSidecar(sidecarFileName(theme.name, card, provider))?.model
             : undefined,
           isPick: provider.id === resolved,
           notDrawn: undrawn,

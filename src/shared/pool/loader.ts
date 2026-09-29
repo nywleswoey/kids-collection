@@ -7,8 +7,7 @@ import { seedFileSchema, type SeedFile } from "./seed-schema";
  */
 export function loadSeed(path: string): SeedFile {
   const raw = readFileSync(path, "utf8");
-  const json = JSON.parse(raw);
-  return seedFileSchema.parse(json);
+  return parseSeed(JSON.parse(raw));
 }
 
 /** Validate an already-parsed object (used by tests). */

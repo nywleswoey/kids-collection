@@ -68,10 +68,12 @@ knowing what it takes with it.
 3. Apply to production with `pnpm db:migrate`.
 4. Verify (see §6).
 
-Deploy order does not matter. The new code reads `archived_at IS NULL`, which an
-un-migrated database cannot answer — so migrate first — but the *old* code ignores the
-column entirely, so a migrated database serving old code behaves exactly as before.
-There is no window in which either half of a deploy corrupts data.
+Deploy order does not matter **for data safety**, but it does matter for availability: the
+new code reads `archived_at IS NULL`, which an un-migrated database cannot answer — code
+deployed ahead of the migration 500s on every route (#104) — so migrate first. The *old*
+code ignores the column entirely, so a migrated database serving old code behaves exactly
+as before. There is no window in which either half of a deploy corrupts data, but shipping
+the code before the migration is applied takes the app down.
 
 ## 5. Rollback
 

@@ -1,5 +1,10 @@
 # PostHog post-wizard report
 
+> **As of 2026-07-24.** This is a point-in-time wizard output, not maintained documentation: the
+> file/event table below has already drifted from the code (e.g. `TradeFlow.tsx` is now
+> `TradeBoard.tsx`, and the ticket-related events predate migration 0005's Easter Egg ticket
+> unification). Read it as history, not as a current reference.
+
 The wizard has completed a deep integration of your project. The kids-collection app already had a solid PostHog foundation (SDK init, reverse proxy, server client, user identification, and exception capture). This run supplemented that with two new events covering the last meaningful gaps: set-completion rewards and the trade funnel entry point. Environment variables were written to `.env.local`.
 
 ## Events instrumented

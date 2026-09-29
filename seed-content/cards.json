@@ -4543,6 +4543,222 @@
       ]
     },
     {
+      "name": "Wild Weather",
+      "provider": "cloudflare-sdxl",
+      "cards": [
+        {
+          "name": "Supercell",
+          "rarity": "legendary",
+          "eduText": "A supercell is a rare thunderstorm with spinning rising air, and it can make the strongest tornadoes.",
+          "imagePrompt": "a gigantic round storm cloud with stacked spiral bands, shaped like a huge swirling disc hovering low over flat green farmland, with a dark sky and a curtain of rain on one side",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Supercell"
+        },
+        {
+          "name": "Lava Fountain",
+          "rarity": "legendary",
+          "eduText": "A lava fountain is a jet of molten rock shot upward by gas during a gentle volcanic eruption.",
+          "imagePrompt": "a tall fountain of glowing orange lava spraying high into the air from a vent in black volcanic rock, with glowing drops arcing back down, under a dark evening sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hawaiian_eruption"
+        },
+        {
+          "name": "Tornado",
+          "rarity": "epic",
+          "eduText": "A tornado is a spinning column of air that reaches from a thunderstorm cloud down to the ground.",
+          "imagePrompt": "a single tall narrow grey tornado funnel twisting down from a dark storm cloud and touching the flat empty prairie ground, with a swirl of dust at its base, seen from far away",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tornado"
+        },
+        {
+          "name": "Hurricane",
+          "rarity": "epic",
+          "eduText": "A hurricane is a strong tropical cyclone: a huge storm that spins over warm seas, with a calm eye in the middle.",
+          "imagePrompt": "a huge white spiral of swirling storm clouds with a clear round eye in the middle, over dark blue ocean, seen from high above in space",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tropical_cyclone"
+        },
+        {
+          "name": "Rainbow",
+          "rarity": "epic",
+          "eduText": "A rainbow appears when sunlight bends through raindrops and splits into bands of color.",
+          "imagePrompt": "a single bright rainbow arching over a green meadow under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rainbow"
+        },
+        {
+          "name": "Ball Lightning",
+          "rarity": "epic",
+          "eduText": "Ball lightning is a rare glowing ball seen during some storms, and scientists still know little about it.",
+          "imagePrompt": "a floating glowing sphere of crackling electric light with tiny sparks and thin lightning threads around it, hovering in the air on a dark rainy thunderstorm night",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ball_lightning"
+        },
+        {
+          "name": "Geyser",
+          "rarity": "epic",
+          "eduText": "A geyser shoots hot water and steam into the air when boiling water underground builds up pressure.",
+          "imagePrompt": "a single tall column of white water and steam rising from rocky ground under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Geyser"
+        },
+        {
+          "name": "Whirlpool",
+          "rarity": "rare",
+          "eduText": "A whirlpool is sea water spinning round in a circle, made where fast currents or tides rush past each other.",
+          "imagePrompt": "a big round whirlpool of blue sea water spinning in a spiral with white foam around its edge, seen from above on a calm grey day",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Whirlpool"
+        },
+        {
+          "name": "Sea of Clouds",
+          "rarity": "rare",
+          "eduText": "From a high mountain you can look down on a sea of clouds, held low in the valleys by a layer of warmer air above.",
+          "imagePrompt": "a flat white sea of fluffy clouds filling the valleys far below, with rocky mountain peaks poking up through it, in golden morning light",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sea_of_clouds"
+        },
+        {
+          "name": "Lenticular Cloud",
+          "rarity": "rare",
+          "eduText": "A lenticular cloud is a smooth saucer-shaped cloud that forms when wind flows over a mountain.",
+          "imagePrompt": "a single smooth lens-shaped cloud made of stacked layers, sitting still above a snowy mountain peak in a clear sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lenticular_cloud"
+        },
+        {
+          "name": "Sun Halo",
+          "rarity": "rare",
+          "eduText": "A sun halo is a ring of light around the sun, made when tiny ice crystals high in the sky bend sunlight.",
+          "imagePrompt": "a big bright circle of light ringing the sun high in a pale blue sky, the ring faintly tinted red on its inside edge, above quiet snowy land",
+          "sourceUrl": "https://en.wikipedia.org/wiki/22%C2%B0_halo"
+        },
+        {
+          "name": "Iridescent Cloud",
+          "rarity": "rare",
+          "eduText": "An iridescent cloud glows with soap-bubble colors when its tiny droplets scatter the sunlight.",
+          "imagePrompt": "a single thin cloud glowing with soft pastel rainbow colors in a blue sky above green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cloud_iridescence"
+        },
+        {
+          "name": "Lava Lake",
+          "rarity": "rare",
+          "eduText": "A lava lake is a pool of molten rock that collects and stays inside a volcanic crater.",
+          "imagePrompt": "a wide lake of glowing orange lava inside a volcano crater, its dark cooled crust cracked into glowing lines, seen from the crater rim at dusk",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lava_lake"
+        },
+        {
+          "name": "Dust Devil",
+          "rarity": "rare",
+          "eduText": "A dust devil is a small spinning column of dust that forms on a sunny day, not inside a thunderstorm.",
+          "imagePrompt": "a single tall thin whirl of tan dust spinning upward from flat dry desert ground, like a small dusty tornado, seen from the side from far away under a clear hot sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dust_devil"
+        },
+        {
+          "name": "Wave Cloud",
+          "rarity": "rare",
+          "eduText": "A wave cloud curls over like a breaking ocean wave when faster air slides across slower air.",
+          "imagePrompt": "a row of white cloud swirls, each one curling over into a spiral, evenly lined up in a straight line along a flat cloud layer, in a blue evening sky over dark hills",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kelvin-Helmholtz_instability"
+        },
+        {
+          "name": "Rain",
+          "rarity": "common",
+          "eduText": "Rain falls when drops of water in a cloud grow heavy enough to fall all the way to the ground.",
+          "imagePrompt": "heavy rain falling in long streaks from a dark grey cloud, with raindrops splashing into round rippling puddles on the ground",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rain"
+        },
+        {
+          "name": "Snow",
+          "rarity": "common",
+          "eduText": "Snow is made of ice crystals that grow inside cold clouds and fall once they become heavy.",
+          "imagePrompt": "falling white snow over a pale field under a light blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snow"
+        },
+        {
+          "name": "Fog",
+          "rarity": "common",
+          "eduText": "Fog is a cloud sitting on the ground, made of tiny drops of water floating in the air.",
+          "imagePrompt": "thick white fog filling a quiet valley so only the tops of the trees poke out, in soft early morning light",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fog"
+        },
+        {
+          "name": "Cumulus Cloud",
+          "rarity": "common",
+          "eduText": "A cumulus cloud is a puffy white cloud made when warm air rises and its moisture turns into droplets.",
+          "imagePrompt": "a single puffy white cloud in a bright blue sky above green grass",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cumulus_cloud"
+        },
+        {
+          "name": "Cirrus Cloud",
+          "rarity": "common",
+          "eduText": "Cirrus clouds are thin and wispy, high in the sky, and they are made of ice crystals.",
+          "imagePrompt": "thin wispy white cloud streaks with curled hooked ends, high in a deep blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cirrus_cloud"
+        },
+        {
+          "name": "Snowflake",
+          "rarity": "common",
+          "eduText": "Every snowflake is a tiny ice crystal with six sides, and each one grows its own branching pattern.",
+          "imagePrompt": "a single large six-pointed snowflake with delicate branching arms, floating in front of a soft grey-blue winter sky, close-up",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snowflake"
+        },
+        {
+          "name": "Lightning",
+          "rarity": "common",
+          "eduText": "Lightning is a giant electric spark that flashes when charges in a storm cloud grow very strong.",
+          "imagePrompt": "a single bright white lightning bolt in a blue-grey sky above an empty green field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lightning"
+        },
+        {
+          "name": "Hail",
+          "rarity": "common",
+          "eduText": "Hailstones are balls of ice that grow while strong winds toss them around inside a thunderstorm.",
+          "imagePrompt": "small round white hailstones the size of peas falling from a dark storm cloud and scattered across green grass, with a few bouncing in the air",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hail"
+        },
+        {
+          "name": "Frost",
+          "rarity": "common",
+          "eduText": "Frost is a coat of ice crystals that forms when water vapor freezes onto cold grass.",
+          "imagePrompt": "close-up of delicate white feathery ice crystals covering a green leaf and blades of grass on a cold clear morning",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Frost"
+        },
+        {
+          "name": "Morning Dew",
+          "rarity": "common",
+          "eduText": "Morning dew is water drops that form when damp air cools and condenses on grass.",
+          "imagePrompt": "tiny clear water beads on blades of green grass in a sunny field under a blue sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dew"
+        },
+        {
+          "name": "Thunderstorm",
+          "rarity": "common",
+          "eduText": "A thunderstorm is a tall cloud that brings heavy rain, bright lightning, and booming thunder.",
+          "imagePrompt": "a single tall dark thunderstorm cloud with grey curtains of rain pouring from its base and a bright lightning bolt, seen from far across open fields",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thunderstorm"
+        },
+        {
+          "name": "Blizzard",
+          "rarity": "common",
+          "eduText": "A blizzard is a snowstorm with strong wind that blows the snow and makes it hard to see far.",
+          "imagePrompt": "thick snow blowing sideways in strong wind across a white snowy landscape with deep drifts, a few bent pine trees and a grey sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Blizzard"
+        },
+        {
+          "name": "Sleet",
+          "rarity": "common",
+          "eduText": "In the United States, sleet means small ice pellets. In many other countries, sleet means rain mixed with snow.",
+          "imagePrompt": "a cold grey winter day with tiny white ice grains and raindrops falling from grey clouds onto a wet path with puddles and a thin layer of white slush at its edges",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ice_pellets"
+        },
+        {
+          "name": "Sun Rays",
+          "rarity": "common",
+          "eduText": "Sun rays are beams of sunlight that stream through gaps in clouds and look like they fan out.",
+          "imagePrompt": "bright straight beams of sunlight fanning out from behind a dark cloud and shining down onto the land",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Crepuscular_rays"
+        },
+        {
+          "name": "Ice Storm",
+          "rarity": "common",
+          "eduText": "An ice storm coats trees and the ground in clear ice when liquid rain freezes as soon as it lands.",
+          "imagePrompt": "a single tree with every branch coated in thick clear glassy ice and small icicles hanging down, sparkling under a grey winter sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ice_storm"
+        }
+      ]
+    },
+    {
       "name": "Reptiles",
       "cards": [
         {
