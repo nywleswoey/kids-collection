@@ -31,8 +31,8 @@
  *                                 as above, permitting inserts of cards with no
  *                                 reviewed image. Defeats the kid-safety guarantee.
  *
- * Requires DATABASE_URL (all modes except --check-urls, which is network-only and
- * DB-free) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
+ * Requires DATABASE_URL (all modes, even --check-urls: the DB module loads at
+ * startup) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
  * `--review` additionally requires each selected provider's key; see `.env.example`.
  * `supergrok-manual` has no key. It sits out unless named.
  *
