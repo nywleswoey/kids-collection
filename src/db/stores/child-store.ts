@@ -1,4 +1,10 @@
-import type { BalanceColumn } from "@/features/pull/pick-tickets";
+/**
+ * Spendable/grantable integer columns on the `children` table (Inc19): the normal
+ * pull token and the unified Easter Egg ticket. Shared by token-service (grant),
+ * pull-service (spend), and the ChildStore adapters, which drive atomic per-column
+ * updates off this string key.
+ */
+export type BalanceColumn = "pullTokens" | "easterEggTickets";
 
 /**
  * ChildStore — the persistence port for a child's spendable integer columns on

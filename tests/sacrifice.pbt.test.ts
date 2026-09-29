@@ -19,7 +19,7 @@ const poolArb = fc
   .chain((n) => fc.tuple(...Array.from({ length: n }, (_, i) => cardArb(i))))
   .map((cards) => cards as Card[]);
 
-describe("tier helpers (nextTier + pickUpgradeCard, used by collection rewards)", () => {
+describe("tier helpers (nextTier + pickUpgradeCard; only pickUpgradeCard is used by collection rewards)", () => {
   it("nextTier caps at legendary, else steps up exactly one", () => {
     expect(nextTier("common")).toBe("rare");
     expect(nextTier("rare")).toBe("epic");

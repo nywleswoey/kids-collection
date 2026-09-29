@@ -21,7 +21,10 @@ export interface TradableCard {
   count: number;
 }
 
-/** Counterparty cards eligible for a swap: same rarity AND a duplicate. */
+/**
+ * Counterparty cards eligible for a swap: same rarity AND a duplicate. No
+ * production caller today — exercised only by `tests/trade-logic.pbt.test.ts`.
+ */
 export function filterTradable(cards: TradableCard[], rarity: Rarity): TradableCard[] {
   return cards.filter((t) => t.count >= 2 && t.card.rarity === rarity);
 }

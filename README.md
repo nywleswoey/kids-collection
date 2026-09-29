@@ -19,6 +19,9 @@ v2 (`/aidlc-discovery`).
   provider seam (`src/shared/pool/providers/`) — added in U3
 
 ## Status (build units)
+Frozen since the initial build (`archive/aidlc-v1/`) — the product has shipped many
+increments on top of it since (trades, quizzes, easter eggs, sacrifice, admin
+oversight, …); see the git log and issue tracker for what's landed since U7.
 - **U1 Foundation & Data** — ✅ scaffold, schema, DB client, pure logic, tests
 - **U2 Auth & Profiles** — ✅ Google sign-in (allowlist), child profiles, picker
 - **U3 Pool & Seeding** — ✅ seed pipeline (image providers → Blob → DB), pool reader
@@ -61,7 +64,7 @@ pnpm dev                  # http://localhost:3000
 
 # quality
 pnpm typecheck
-pnpm test                 # property-based tests (fast-check)
+pnpm test                 # unit tests + property-based tests (fast-check)
 ```
 
 ## Project layout
@@ -84,7 +87,11 @@ archive/aidlc-v1/     AI-DLC v1 design + audit artifacts (increments 1–22, his
 ```
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for which of `tests/`, `tests-pg/`, `tests-live/` to add a test to.
 
-## Data model (U1)
+## Data model
 - `themes` 1—* `cards` (shared pool; rarity ∈ common/rare/epic/legendary)
-- `children` (per-family; `pull_tokens >= 0`, starts at 3)
+- `children` (per-family; `pull_tokens >= 0` starts at 3, `easter_egg_tickets >= 0`)
 - `collections` (childId+card_id PK, `count >= 1` for duplicates)
+- `quiz_completions` (one row per quiz attempt), `quiz_seen_questions` (answered
+  question ids, dedupes the question bank per child/topic)
+- `collection_rewards` (one row per rewarded child/theme/rarity set-completion bonus)
+- `admin_credentials` (parent-gate WebAuthn passkeys)

@@ -8,10 +8,12 @@ import { playReward } from "@/shared/sound/sfx";
 import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { sacrificeAction } from "./actions";
+import { SACRIFICE_COST, SACRIFICE_MIN } from "./sacrifice";
 
 /**
  * Sacrifice-to-upgrade panel (Inc8 FR2). Shown on the card detail page when the
- * child owns ≥3 copies. Burns 3 copies for a random same-or-higher-tier card.
+ * child owns ≥SACRIFICE_MIN copies. Burns SACRIFICE_COST copies for 1 Easter
+ * Egg ticket.
  */
 export function SacrificePanel({
   cardId,
@@ -42,7 +44,7 @@ export function SacrificePanel({
         });
       } catch (e) {
         if (recoverIfStale(e)) return;
-        setError("Couldn't sacrifice — you need at least 3 copies.");
+        setError(`Couldn't sacrifice — you need at least ${SACRIFICE_MIN} copies.`);
         play("denied");
       }
     });
@@ -72,14 +74,14 @@ export function SacrificePanel({
       <button
         type="button"
         onClick={doSacrifice}
-        disabled={pending || count < 3}
+        disabled={pending || count < SACRIFICE_MIN}
         data-testid="sacrifice-button"
         className="btn btn--primary"
       >
-        {pending ? "Fusing…" : "✨ Sacrifice 3 → mystery upgrade"}
+        {pending ? "Fusing…" : `✨ Sacrifice ${SACRIFICE_COST} → 1 🥚 Easter Egg ticket`}
       </button>
       <p className="text-xs text-[color:var(--ink-mute)]">
-        Burns 3 copies for a random card of the same or higher tier.
+        Burns {SACRIFICE_COST} copies for 1 🥚 Easter Egg ticket. Needs {SACRIFICE_MIN}+ copies.
       </p>
       <ErrorBanner
         testId="sacrifice-error"

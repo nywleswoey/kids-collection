@@ -15,7 +15,7 @@ This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authorin
 | **Input** | A theme name. Nothing else. Any extra steer from the human (e.g. "lean historical") overrides this document's defaults where they conflict. |
 | **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed-content/cards.json`, committed on a branch, a PR open. |
 | **Human checkpoints** | Exactly **two**: the 30-name list (Step 3), and the image contact sheet (Step 7). Still two — the bake-off did **not** add a third; it changed what the second one *is*, from approve/reject to **choose among N candidates**. Stop dead at both — do not proceed on silence, and never answer them yourself. |
-| **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. |
+| **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. `--blob-budget` reads the DB and Blob but writes nothing; `--supergrok-export` reads the DB and writes only the export brief. |
 | **Session** | One theme per run. Do not batch two themes. |
 
 ## Rules the schema enforces
@@ -117,7 +117,9 @@ added at Step 6, on the theme and — sparsely — on individual cards.
 
 - **Theme name** — short, title-case, matching the existing set (*Animals*, *Mythic Creatures*,
   *Dinosaurs*, *Superheroes*, *Country*, *Famous People*, *Weird Insects*, *Special Plants*,
-  *Spooky Legends*, *Deep Sea Creatures*, *Flying Machines*, *Ocean Machines*).
+  *Spooky Legends*, *Deep Sea Creatures*, *Flying Machines*, *Ocean Machines*, *Warriors*,
+  *Artillery*, *Outer Space*, *Land Machines*, *Rocks and Gems*, *Trees*, *Birds*,
+  *Food Around the World*).
 - **`eduText`** — true, simple, readable by a 7-year-old, ≤ 120 chars. For **fictional** subjects the
   fact is about the *story or folklore* ("Mary Shelley wrote Frankenstein at 18…") — never present
   fiction as fact.
@@ -238,10 +240,10 @@ pnpm seed --blob-budget    # is there room in Blob for another 30 cards? (#79)
 ```
 
 Read-only. It prints how much of the plan's storage allowance the pool has spent, plus how many more
-30-card themes fit **at each lane's measured weight**. Run it here rather than after publishing, because
-it is only useful while you can still act on it. On 2026-08-15 it read *31.36 MB of 1.00 GB, 415 more
-Pollinations themes or 39 Cloudflare ones* — so the honest summary is **there is room, and the lanes
-differ by an order of magnitude in how fast it goes**. If it warns, stop: see *Hard stops*.
+30-card themes fit **at each registered lane's measured weight**. Run it here rather than after publishing,
+because it is only useful while you can still act on it. On 2026-08-15 it read *31.36 MB of 1.00 GB, 39 more
+Cloudflare themes* — so the honest summary is **there is room, and lanes can differ by an order of
+magnitude in how fast it goes**. If it warns, stop: see *Hard stops*.
 
 Two things it does **not** cover, so you know what it is not telling you. It watches Blob **storage**
 only; image transformations are a deployment meter with no read path from the CLI, and on 2026-08-15 that
@@ -259,7 +261,8 @@ pnpm seed --review         # generates images for NEW cards only, into seed-cont
 nothing to it. It skips cards already published and already-reviewed prompts, so an interrupted or
 rate-limited run resumes rather than restarting.
 
-`--review` is a **bake-off** (#63): it generates each new card from **every registered lane**, in parallel,
+`--review` is a **bake-off** (#63): it generates each new card from **every provider whose `role` is
+`lane`**, in parallel,
 so a human can compare candidates side by side and pick the best draughtsman per subject. A 30-card theme is
 30 images *per lane* — 30 today, on `cloudflare-sdxl` alone, in a few minutes. With more than one lane they
 run alongside each other and pace themselves independently, so the wall-clock is the slowest lane, not the
@@ -397,8 +400,8 @@ re-prompting fixes the wrong words.**
 | One candidate is nearly empty, the rest are fine | **Re-roll** that one file. Not a re-prompt round. An outright *black* frame no longer reaches you — the seam refuses it and the lane redraws (#78) |
 | One cell is missing from the sheet entirely | Not a judgement call: that lane failed the card and printed a `✗` line naming it. Re-run `--review` |
 
-**To re-prompt, edit the `imagePrompt`** — deleting files and re-running is a re-roll, not a re-prompt, and
-on a deterministic provider it would regenerate the picture you just rejected. Editing the prompt changes `<hash8>`, which both asks for a different picture on every lane
+**To re-prompt, edit the `imagePrompt`** — deleting files and re-running is a re-roll, not a re-prompt.
+Editing the prompt changes `<hash8>`, which both asks for a different picture on every lane
 *and* makes the old candidates stop matching.
 
 Those old candidates are now **N files per card, plus their `.json` sidecars**, and they are invisible to
@@ -464,7 +467,7 @@ One HTML page: **one row per subject, one column per provider**, so the human co
 opening a folder. Each cell is labelled with the model that actually answered, and the cell `--sync` would
 publish is outlined.
 
-The page states three things rather than hiding them, and so does the command:
+The page states four things rather than hiding them, and so does the command:
 
 - **MISSING cells** — that *lane* produced nothing for that card. A dead lane or a narrowed run, *not* a
   provider that drew badly. An escape-hatch column (`ai-horde`) is labelled as such and blank by default —
@@ -512,8 +515,9 @@ exactly as it is — no other field is touched by this step:
 ```
 
 `--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes. The id
-must match a registered provider exactly (`cloudflare-sdxl`, `ai-horde`, `supergrok-manual`); a typo is refused
-by name rather than treated as a missing review.
+must match a registered provider exactly — see the registry at `src/shared/pool/providers/index.ts`, or run
+`--sync` on an unknown id to have it print every registered id; a typo is refused by name rather than
+treated as a missing review.
 
 ```bash
 git add seed-content/cards.json && git commit -m "feat(seed): record the <Theme> bake-off picks"
