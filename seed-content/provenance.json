@@ -1559,6 +1559,398 @@
         "reviewed": true
       }
     },
+    "Musical Instruments": {
+      "Accordion": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-accordion-fd4e87c9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bagpipes": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-bagpipes-fb1834a3-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Balalaika": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-balalaika-35c9e3d9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Banjo": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-banjo-77519e3f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bass Drum": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-bass-drum-4a84621f-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bongos": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-bongos-0b2a7e5d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Cello": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-cello-ea6f7d40-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Djembe": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-djembe-3a490624-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Electric Guitar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-electric-guitar-09c8c803-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Erhu": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-erhu-ec6c4aef-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "French Horn": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-french-horn-d02e4b7b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Gong": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-gong-1072573d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Guitar": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-guitar-651ef2ff-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Harmonica": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-harmonica-a4d48ee5-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Harp": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-harp-5319471d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Koto": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-koto-98cb5f2a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Lyre": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-lyre-9bb8f1ed-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Maracas": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-maracas-c284c2cd-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pan Flute": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-pan-flute-8c054c08-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Piano": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-piano-6a4b9ee7-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Pipe Organ": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-pipe-organ-e6bd0e69-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Saxophone": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-saxophone-20ac5b2e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Snare Drum": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-snare-drum-626df4e1-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tabla": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-tabla-94830353-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Trombone": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-trombone-b905ed36-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Trumpet": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-trumpet-7eaeb358-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tuba": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-tuba-57063d2a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ukulele": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-ukulele-bc055c5d-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Violin": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-violin-9d8891e9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Xylophone": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "musical-instruments-xylophone-f8adfca6-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
+    },
     "Outer Space": {
       "Andromeda Galaxy": {
         "provider": "pollinations",
