@@ -4331,6 +4331,22 @@
       "provider": "cloudflare-sdxl",
       "cards": [
         {
+          "name": "Didgeridoo",
+          "rarity": "legendary",
+          "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
+          "imagePrompt": "a long straight brown wooden didgeridoo painted with yellow and white dots, one single instrument lying on its side, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo",
+          "provider": "ai-horde"
+        },
+        {
+          "name": "Tambourine",
+          "rarity": "common",
+          "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
+          "imagePrompt": "a round tambourine with pairs of shiny silver jingles set around its wooden rim and a white drumhead, one single instrument lying flat, seen from above, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine",
+          "provider": "ai-horde"
+        },
+        {
           "name": "Pipe Organ",
           "rarity": "legendary",
           "eduText": "The biggest pipe organs have thousands of pipes. Air rushing through each pipe plays one note.",
@@ -4338,24 +4354,17 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Pipe_organ"
         },
         {
-          "name": "Didgeridoo",
-          "rarity": "legendary",
-          "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
-          "imagePrompt": "a single didgeridoo lying diagonally from corner to corner: one long straight brown wooden tube, a little wider at one end, painted with yellow and white dots, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo"
-        },
-        {
-          "name": "Theremin",
+          "name": "Banjo",
           "rarity": "epic",
-          "eduText": "You play a theremin without touching it! Moving your hands near its two antennas changes the sound.",
-          "imagePrompt": "a single theremin, an electronic instrument: a small wooden box on a three-legged stand, with a long thin silver antenna pointing straight up from its right end and a silver hoop-shaped antenna at its left end, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Theremin"
+          "eduText": "The banjo grew from African instruments, first made in the Americas by African people. Its round body is a drum!",
+          "imagePrompt": "a single banjo lying diagonally: a round body like a small drum with a white drumhead and a shiny silver metal rim, five strings, and a long thin wooden neck with tuning pegs, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banjo"
         },
         {
           "name": "Bagpipes",
           "rarity": "epic",
           "eduText": "Bagpipes are famous in Scotland. The player blows into a bag, then squeezes it to keep the pipes sounding.",
-          "imagePrompt": "a single bagpipe lying diagonally: one puffy red cloth bag with three black drone pipes poking out of its top and one thin black chanter pipe with finger holes poking out of its bottom, on a plain soft grey background",
+          "imagePrompt": "a single set of Scottish bagpipes lying flat: a tartan cloth-covered bag with three tall black wooden drone pipes with ivory rings sticking up from it, a short blowpipe, and a black chanter pipe with finger holes hanging down, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Bagpipes"
         },
         {
@@ -4373,17 +4382,17 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Electric_guitar"
         },
         {
-          "name": "Sitar",
+          "name": "Bass Drum",
           "rarity": "epic",
-          "eduText": "The sitar from India has a very long neck. Extra strings hidden under the main ones hum along when it is played.",
-          "imagePrompt": "a single long-necked Indian sitar lying diagonally: a round orange gourd body at the bottom, a very long thin wooden neck four times as long as the body with curved metal frets, and a second small round gourd at the top of the neck, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Sitar"
+          "eduText": "The bass drum is the biggest drum in a band. It is played with a foot pedal, or carried and hit with a soft mallet.",
+          "imagePrompt": "a single big bass drum standing on its side, seen at a slight angle: one very large round drum with a white drumhead facing forward, a shiny red shell and silver tuning rods around the rim, with a soft round-headed mallet leaning against it, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bass_drum"
         },
         {
           "name": "Tabla",
           "rarity": "rare",
           "eduText": "Tabla is a pair of drums from India. The black circle on each drumhead helps it ring with a clear note.",
-          "imagePrompt": "two Indian tabla drums seen from above at an angle: a small wooden drum and a bigger silver metal drum, both short and round like cooking pots, each drumhead pale with a big black dot in the middle, on a plain soft grey background",
+          "imagePrompt": "a pair of Indian tabla drums side by side: a small tall wooden drum and a wider round metal drum, each with a tight tan skin head with a black circle in the middle, laced with leather straps and small wooden blocks around the sides, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tabla"
         },
         {
@@ -4394,17 +4403,17 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Djembe"
         },
         {
-          "name": "Steel Drum",
+          "name": "Maracas",
           "rarity": "rare",
-          "eduText": "Steel drums were invented in Trinidad and Tobago from old oil barrels. Each dent in the top plays a different note.",
-          "imagePrompt": "a single shiny silver steelpan seen from directly above, looking down into it: a round metal bowl whose inside is hammered into many smooth oval dents, each dent a different note, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Steelpan"
+          "eduText": "Maracas come from Latin America. They are rattles filled with seeds or beads that go shh-shh when you shake them.",
+          "imagePrompt": "a pair of maracas crossed like an X: two round rattles on short wooden handles, painted bright red and yellow, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Maraca"
         },
         {
           "name": "Pan Flute",
           "rarity": "rare",
           "eduText": "A pan flute is a row of tubes tied together. Short tubes play high notes and long tubes play low ones.",
-          "imagePrompt": "a single pan flute: eight hollow bamboo tubes glued side by side, the first tube very long and each next tube shorter, so together they make a triangle shape, tied with one cord across the middle, on a plain soft grey background",
+          "imagePrompt": "a single pan flute lying flat, front view: about eight bamboo tubes of different lengths bound together into one instrument with a cord, long on the left and short on the right, so the bottom edge slants, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pan_flute"
         },
         {
@@ -4504,13 +4513,6 @@
           "eduText": "An accordion has bellows the player squeezes and pulls. Air flows past small metal reeds to make the sound.",
           "imagePrompt": "a single red piano accordion standing upright, front view: a boxy instrument with a keyboard of black and white piano keys down its right side, a grey folded bellows in the middle, and a panel of small round buttons on its left side, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Accordion"
-        },
-        {
-          "name": "Tambourine",
-          "rarity": "common",
-          "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
-          "imagePrompt": "a single tambourine lying flat, seen from above: a round wooden frame covered by a flat white drum skin like the top of a drum, with five pairs of little silver cymbals fitted into gaps in the frame, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine"
         },
         {
           "name": "Ukulele",
