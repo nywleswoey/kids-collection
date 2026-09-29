@@ -4331,20 +4331,18 @@
       "provider": "cloudflare-sdxl",
       "cards": [
         {
-          "name": "Didgeridoo",
+          "name": "Lyre",
           "rarity": "legendary",
-          "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
-          "imagePrompt": "a long straight brown wooden didgeridoo painted with yellow and white dots, one single instrument lying on its side, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo",
-          "provider": "ai-horde"
+          "eduText": "The lyre is over 4,000 years old. In Greek myths, the god Apollo played a golden lyre.",
+          "imagePrompt": "a single golden ancient Greek lyre: a U-shaped frame with two gently curved arms, a straight crossbar across the top, and seven strings running down from the crossbar to a round wooden sound box at the bottom, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lyre"
         },
         {
-          "name": "Tambourine",
+          "name": "Recorder",
           "rarity": "common",
-          "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
-          "imagePrompt": "a round tambourine with pairs of shiny silver jingles set around its wooden rim and a white drumhead, one single instrument lying flat, seen from above, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine",
-          "provider": "ai-horde"
+          "eduText": "Many children learn the recorder first at school. You blow gently and cover its finger holes to change the note.",
+          "imagePrompt": "a single recorder lying diagonally: one long cream-coloured tube with a beak-shaped mouthpiece at the top, finger holes down its front, and a slightly flared end, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Recorder_(musical_instrument)"
         },
         {
           "name": "Pipe Organ",
