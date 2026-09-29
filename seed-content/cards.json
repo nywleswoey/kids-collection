@@ -4338,11 +4338,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Lyre"
         },
         {
-          "name": "Recorder",
+          "name": "Harmonica",
           "rarity": "common",
-          "eduText": "Many children learn the recorder first at school. You blow gently and cover its finger holes to change the note.",
-          "imagePrompt": "a single recorder, a plastic school flute, lying diagonally, seen from above: a long thin cream tube with a whistle mouthpiece at the top end, a line of round black finger holes along its middle, and a slightly wider bell at the bottom end, on a plain soft grey background",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Recorder_(musical_instrument)"
+          "eduText": "A harmonica has tiny metal reeds inside. You can play notes by blowing out and also by breathing in!",
+          "imagePrompt": "a single harmonica lying diagonally, seen from a little above: a small flat rectangular instrument with shiny silver metal covers on the top and bottom, a light wooden middle, and small square holes along its front edge, on a plain soft grey background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Harmonica"
         },
         {
           "name": "Pipe Organ",
