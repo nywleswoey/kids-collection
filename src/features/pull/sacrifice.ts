@@ -22,8 +22,9 @@ export const SACRIFICE_COST = 3;
 export const SACRIFICE_MIN = SACRIFICE_COST + 1;
 
 /**
- * The next rarity up, capped at the top tier (legendary → legendary). Still used
- * by the collection-completion reward (rewards/service.ts). PURE function.
+ * The next rarity up, capped at the top tier (legendary → legendary). PURE
+ * function. No production caller today — exercised only by
+ * `tests/sacrifice.pbt.test.ts`.
  */
 export function nextTier(r: Rarity): Rarity {
   const i = RARITIES.indexOf(r);

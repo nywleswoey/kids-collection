@@ -1,5 +1,4 @@
-import type { ChildStore } from "@/db/stores/child-store";
-import type { BalanceColumn } from "./pick-tickets";
+import type { BalanceColumn, ChildStore } from "@/db/stores/child-store";
 
 export interface TokenDeps {
   children: ChildStore;
@@ -12,7 +11,7 @@ export interface TokenDeps {
  */
 export function makeTokenService({ children }: TokenDeps) {
   /** Clamped grant/adjust of one column; validate the delta, delegate the
-   *  `GREATEST(0, …)` to the store. Shared body of the three grant entry points. */
+   *  `GREATEST(0, …)` to the store. Shared body of the two grant entry points. */
   async function grantColumn(
     childId: string,
     key: BalanceColumn,

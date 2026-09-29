@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CenteredModal } from "@/shared/ui/CenteredModal";
+import { SACRIFICE_MIN } from "./sacrifice";
 
 /**
  * First-duplicate easter-egg hint (Inc13 FR4). Kid-friendly one-time modal that
@@ -26,8 +27,8 @@ export function SacrificeHintModal({
         You got a double!
       </h2>
       <p className="text-[color:var(--ink)]">
-        Snap! You already have this card. Got doubles? You can trade them in to
-        power up and win a rarer card! ✨
+        Snap! You already have this card. Collect {SACRIFICE_MIN} of the same
+        card and you can trade them in for a 🥚 Easter Egg ticket! ✨
       </p>
       <div className="flex flex-wrap justify-center gap-3">
         <Link

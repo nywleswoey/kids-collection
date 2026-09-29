@@ -45,7 +45,7 @@ export async function upsertTheme(
 }
 
 /** True if a card with this theme+name already exists. */
-export async function cardExists(
+async function cardExists(
   themeId: string,
   name: string,
 ): Promise<boolean> {
@@ -135,7 +135,8 @@ export async function updateCardMeta(input: {
 
 /**
  * Prune themes whose names are not in `keepNames` (cascades their cards +
- * collections). Removes categories dropped from the seed (e.g. Superheroes).
+ * collections). Removes categories dropped from the seed (a theme whose name no
+ * longer appears in `seed-content/cards.json`).
  * Returns the number of themes deleted.
  */
 export async function deleteThemesNotIn(keepNames: string[]): Promise<number> {

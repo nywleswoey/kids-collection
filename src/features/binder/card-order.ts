@@ -36,7 +36,7 @@ import type { BinderCard } from "@/lib/types";
  *
  * Ascending, because it is what the grid already shows. Every theme in
  * `seed-content/cards.json` is authored commons-first — `seed-schema.ts` enforces the
- * 15/8/5/2 pyramid, and all 18 themes read `ccccccccccccccc rrrrrrrr eeeee ll`
+ * 15/8/5/2 pyramid, and all 20 themes read `ccccccccccccccc rrrrrrrr eeeee ll`
  * — so heap order has been reproducing rarity-ascending all along. Pinning it
  * moves not one tile a child already knows, and it opens a category on the
  * slots most likely to be filled rather than on two anonymous legendaries.

@@ -31,7 +31,8 @@
  *                                 as above, permitting inserts of cards with no
  *                                 reviewed image. Defeats the kid-safety guarantee.
  *
- * Requires DATABASE_URL (all modes) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
+ * Requires DATABASE_URL (all modes except --check-urls, which is network-only and
+ * DB-free) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
  * `--review` additionally requires each selected provider's key; see `.env.example`.
  * `supergrok-manual` has no key. It sits out unless named.
  *
@@ -171,12 +172,14 @@ const REVIEW_DIR = join(process.cwd(), "seed-content", "review");
 const PROVENANCE_PATH = join(process.cwd(), "seed-content", "provenance.json");
 
 // Retry budget per (card, provider) attempt, honoured by both generation paths —
-// the lane runner and `--allow-unreviewed`. Concurrency and pacing are NOT here
-// any more: they differ per provider by orders of magnitude — Pollinations is
-// capped at one request per 15s where Cloudflare tolerates 720 a minute — so each
-// adapter declares its own and the lane runner enforces it (#63, #67). The env
-// knobs this replaces existed "so a keyed tier can crank them up", which is now
-// what a committed adapter constant says out loud.
+// the lane runner and `--allow-unreviewed`. Per-provider concurrency and pacing
+// are NOT env-configurable any more: they differ per provider by orders of
+// magnitude — Cloudflare tolerates 720 requests a minute where a slower lane
+// tolerates far less — so each adapter declares its own and the lane runner
+// enforces it (#63, #67). The per-provider env knobs THAT replaces existed "so a
+// keyed tier can crank them up", which is now what a committed adapter constant
+// says out loud. SEED_RETRIES/SEED_CONCURRENCY below are unrelated, still-live
+// knobs — see `.env.example`.
 const RETRIES = intEnv("SEED_RETRIES", 5);
 
 /**
@@ -201,6 +204,12 @@ function reviewPath(themeName: string, card: NamedCard, provider: ImageProvider)
  * commands are: presentation is the bulk of it, and `main` is already the
  * longest thing here.
  */
+function requireDatabaseUrl(usage: string): void {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(`DATABASE_URL is not set. Run with your env loaded, e.g. ${usage}.`);
+  }
+}
+
 function reportBlobBudget(budget: BlobBudget, publishedCount: number): boolean {
   const pct = (budget.usedFraction * 100).toFixed(1);
   console.log(
@@ -378,11 +387,7 @@ async function main() {
         "--supergrok-export only writes a brief. It does not publish. Run it on its own.",
       );
     }
-    if (!process.env.DATABASE_URL) {
-      throw new Error(
-        "DATABASE_URL is not set. Run with your env loaded, e.g. `tsx --env-file=.env.local scripts/seed/index.ts --supergrok-export`.",
-      );
-    }
+    requireDatabaseUrl("`tsx --env-file=.env.local scripts/seed/index.ts --supergrok-export`");
     const published = await listPublishedCardKeys();
     const planned = new Set(planInserts(seed, published).map((p) => cardKey(p.theme, p.card)));
     const entries = planManualBrief(seed.themes, planned);
@@ -410,11 +415,7 @@ async function main() {
   // DATABASE_URL is required in EVERY mode since Inc24: --review reads the pool to
   // scope itself to unpublished cards. Failing fast beats silently reverting to a
   // whole-pool review run, which is the 360-image behaviour FR10 exists to remove.
-  if (!process.env.DATABASE_URL) {
-    throw new Error(
-      "DATABASE_URL is not set. Run with your env loaded, e.g. `tsx --env-file=.env.local scripts/seed/index.ts` (or `pnpm seed --sync`).",
-    );
-  }
+  requireDatabaseUrl("`tsx --env-file=.env.local scripts/seed/index.ts` (or `pnpm seed --sync`)");
   if (mode !== "review" && !process.env.BLOB_READ_WRITE_TOKEN) {
     console.warn(
       "⚠️  BLOB_READ_WRITE_TOKEN not set — image uploads for new cards will fail.",
@@ -659,7 +660,7 @@ async function main() {
         const res = await insertCardIfNew({
           themeId,
           name: card.name,
-          rarity: card.rarity as Rarity,
+          rarity: card.rarity,
           imageUrl,
           eduText: card.eduText,
           sourceUrl: card.sourceUrl,
@@ -701,7 +702,7 @@ async function main() {
     }
   }
 
-  // Sync: prune whole themes dropped from the seed (e.g. Superheroes).
+  // Sync: prune whole themes dropped from the seed (name no longer in cards.json).
   if (mode === "sync") {
     report.prunedThemes = await deleteThemesNotIn(themes.map((t) => t.name));
     if (report.prunedThemes > 0) {

@@ -1,5 +1,4 @@
-import type { ChildStore } from "./child-store";
-import type { BalanceColumn } from "@/features/pull/pick-tickets";
+import type { BalanceColumn, ChildStore } from "./child-store";
 
 /** Seed shape: `{ [childId]: { pullTokens?, easterEggTickets? } }`. Absent columns
  *  read as 0; a childId absent from the seed is an absent child. */

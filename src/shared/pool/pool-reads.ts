@@ -61,7 +61,7 @@ export async function readPublishedShape(): Promise<PublishedCount[]> {
     .groupBy(themes.name, cards.rarity);
   return rows.map((r) => ({
     theme: r.theme,
-    rarity: r.rarity as Rarity,
+    rarity: r.rarity,
     n: Number(r.n),
   }));
 }

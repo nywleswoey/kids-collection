@@ -11,7 +11,7 @@ const PULL_PATHS = ["/play/pull", "/play/binder"] as const;
 
 /**
  * Parent-gated grant of `amount` (validated as a nonzero integer), revalidating
- * the given admin path plus the pull view. Shared body of the three grant entries.
+ * the given admin path plus the pull view. Shared body of the two grant entries.
  */
 function parentGrant(
   amount: number,
@@ -46,7 +46,7 @@ export async function claimEasterEggAction(
   );
 }
 
-/** Sacrifice 3 copies of a card for a rarity-pick ticket (Inc16 FR1). Parent-gated
+/** Sacrifice 3 copies of a card for an Easter Egg ticket (Inc16 FR1). Parent-gated
  * (the check moved up from the service when it moved behind the Store seam). */
 export async function sacrificeAction(
   cardId: string,
