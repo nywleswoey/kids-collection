@@ -4341,21 +4341,21 @@
           "name": "Didgeridoo",
           "rarity": "legendary",
           "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
-          "imagePrompt": "a single didgeridoo standing straight up, front view: one long straight brown wooden tube, a little wider at the bottom, painted with white and yellow dots, with a dark round mouthpiece at the top, on a plain soft grey background",
+          "imagePrompt": "a single didgeridoo lying diagonally from corner to corner: one long straight brown wooden tube, a little wider at one end, painted with yellow and white dots, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo"
         },
         {
           "name": "Theremin",
           "rarity": "epic",
           "eduText": "You play a theremin without touching it! Moving your hands near its two antennas changes the sound.",
-          "imagePrompt": "a single theremin: one small brown wooden box on a stand, with one tall straight silver rod sticking straight up from its right end, one silver loop sticking out sideways from its left end, and three knobs on its front, on a plain soft grey background",
+          "imagePrompt": "a single theremin, an electronic instrument: a small wooden box on a three-legged stand, with a long thin silver antenna pointing straight up from its right end and a silver hoop-shaped antenna at its left end, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Theremin"
         },
         {
           "name": "Bagpipes",
           "rarity": "epic",
           "eduText": "Bagpipes are famous in Scotland. The player blows into a bag, then squeezes it to keep the pipes sounding.",
-          "imagePrompt": "a single set of Scottish bagpipes lying on its side: one dark red cloth bag, three long black pipes with silver rings sticking up out of the bag, and one black pipe with finger holes hanging down below it, on a plain soft grey background",
+          "imagePrompt": "a single bagpipe lying diagonally: one puffy red cloth bag with three black drone pipes poking out of its top and one thin black chanter pipe with finger holes poking out of its bottom, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Bagpipes"
         },
         {
@@ -4376,14 +4376,14 @@
           "name": "Sitar",
           "rarity": "epic",
           "eduText": "The sitar from India has a very long neck. Extra strings hidden under the main ones hum along when it is played.",
-          "imagePrompt": "a single Indian sitar lying diagonally: a very long, wide, straight wooden neck, three times as long as the body, with curved metal frets and tuning pegs along its side, a large round pumpkin-shaped gourd body at the bottom end, and a small second round gourd at the top end, on a plain soft grey background",
+          "imagePrompt": "a single long-necked Indian sitar lying diagonally: a round orange gourd body at the bottom, a very long thin wooden neck four times as long as the body with curved metal frets, and a second small round gourd at the top of the neck, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Sitar"
         },
         {
           "name": "Tabla",
           "rarity": "rare",
           "eduText": "Tabla is a pair of drums from India. The black circle on each drumhead helps it ring with a clear note.",
-          "imagePrompt": "a pair of Indian tabla drums side by side, seen from a little above: a narrow wooden drum on the right and a wider round silver metal drum on the left, each drumhead tan with a big solid black circle in its centre, on a plain soft grey background",
+          "imagePrompt": "two Indian tabla drums seen from above at an angle: a small wooden drum and a bigger silver metal drum, both short and round like cooking pots, each drumhead pale with a big black dot in the middle, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tabla"
         },
         {
@@ -4397,14 +4397,14 @@
           "name": "Steel Drum",
           "rarity": "rare",
           "eduText": "Steel drums were invented in Trinidad and Tobago from old oil barrels. Each dent in the top plays a different note.",
-          "imagePrompt": "a single shiny silver steel drum made from the top of an oil barrel, seen from a little above: a short metal drum whose top sinks into a shallow bowl covered with oval dimpled note shapes, on three thin chrome legs, on a plain soft grey background",
+          "imagePrompt": "a single shiny silver steelpan seen from directly above, looking down into it: a round metal bowl whose inside is hammered into many smooth oval dents, each dent a different note, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Steelpan"
         },
         {
           "name": "Pan Flute",
           "rarity": "rare",
           "eduText": "A pan flute is a row of tubes tied together. Short tubes play high notes and long tubes play low ones.",
-          "imagePrompt": "a single pan flute lying flat, front view: about eight bamboo tubes of different lengths bound together into one instrument with a cord, long on the left and short on the right, so the bottom edge slants, on a plain soft grey background",
+          "imagePrompt": "a single pan flute: eight hollow bamboo tubes glued side by side, the first tube very long and each next tube shorter, so together they make a triangle shape, tied with one cord across the middle, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pan_flute"
         },
         {
@@ -4509,14 +4509,14 @@
           "name": "Tambourine",
           "rarity": "common",
           "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
-          "imagePrompt": "a single tambourine lying on its back, seen from a little above: a round wooden hoop with a pale skin stretched over it like a drum, and small pairs of shiny silver metal discs set into slots around the hoop, on a plain soft grey background",
+          "imagePrompt": "a single tambourine lying flat, seen from above: a round wooden frame covered by a flat white drum skin like the top of a drum, with five pairs of little silver cymbals fitted into gaps in the frame, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine"
         },
         {
           "name": "Ukulele",
           "rarity": "common",
           "eduText": "The ukulele was made in Hawaii in the 1880s from small guitars brought by Portuguese settlers. It has four strings.",
-          "imagePrompt": "a single small ukulele standing upright, front view: a pale yellow wooden body shaped like a small figure eight, a round sound hole, only four strings, and a short stubby neck with a few frets and two tuning pegs on each side of the head, on a plain soft grey background",
+          "imagePrompt": "a single small yellow ukulele lying diagonally: a small wooden body shaped like a figure eight with a round sound hole, four strings, and a short neck with four tuning pegs, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Ukulele"
         },
         {
