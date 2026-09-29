@@ -4328,33 +4328,34 @@
     },
     {
       "name": "Musical Instruments",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Pipe Organ",
           "rarity": "legendary",
           "eduText": "The biggest pipe organs have thousands of pipes. Air rushing through each pipe plays one note.",
-          "imagePrompt": "a single grand pipe organ, front view: rows of tall shiny silver metal pipes rising in steps from short to very tall, above a carved wooden console with several rows of keyboards, on a plain soft grey background",
+          "imagePrompt": "a single big church pipe organ, front view: a tall carved wooden case filled with long silver organ pipes, the tallest in the middle and shorter ones towards each side, and a wooden keyboard desk with a bench in front, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pipe_organ"
         },
         {
           "name": "Didgeridoo",
           "rarity": "legendary",
           "eduText": "Aboriginal Australians make it from a branch hollowed out by termites. Players breathe in and keep playing at once!",
-          "imagePrompt": "a single didgeridoo lying on its side: a very long straight hollow wooden tube, wider at one end, painted with Aboriginal dot patterns in red, yellow and white, with a smooth round mouthpiece rim at the narrow end, on a plain soft grey background",
+          "imagePrompt": "a single didgeridoo standing straight up, front view: one long straight brown wooden tube, a little wider at the bottom, painted with white and yellow dots, with a dark round mouthpiece at the top, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Didgeridoo"
         },
         {
           "name": "Theremin",
           "rarity": "epic",
           "eduText": "You play a theremin without touching it! Moving your hands near its two antennas changes the sound.",
-          "imagePrompt": "a single theremin, front view: a small wooden cabinet box on four thin legs, a tall straight metal rod antenna sticking up from its right side and a looped metal antenna sticking out sideways from its left side, with round knobs on the front, on a plain soft grey background",
+          "imagePrompt": "a single theremin: one small brown wooden box on a stand, with one tall straight silver rod sticking straight up from its right end, one silver loop sticking out sideways from its left end, and three knobs on its front, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Theremin"
         },
         {
           "name": "Bagpipes",
           "rarity": "epic",
           "eduText": "Bagpipes are famous in Scotland. The player blows into a bag, then squeezes it to keep the pipes sounding.",
-          "imagePrompt": "a single set of Scottish bagpipes lying flat: a tartan cloth-covered bag with three tall black wooden drone pipes with ivory rings sticking up from it, a short blowpipe, and a black chanter pipe with finger holes hanging down, on a plain soft grey background",
+          "imagePrompt": "a single set of Scottish bagpipes lying on its side: one dark red cloth bag, three long black pipes with silver rings sticking up out of the bag, and one black pipe with finger holes hanging down below it, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Bagpipes"
         },
         {
@@ -4375,14 +4376,14 @@
           "name": "Sitar",
           "rarity": "epic",
           "eduText": "The sitar from India has a very long neck. Extra strings hidden under the main ones hum along when it is played.",
-          "imagePrompt": "a single Indian sitar lying on its side: a big round gourd body at the bottom, a very long wide wooden neck with curved metal frets and tuning pegs down its side, and a second small round gourd near the top, decorated with carved patterns, on a plain soft grey background",
+          "imagePrompt": "a single Indian sitar lying diagonally: a very long, wide, straight wooden neck, three times as long as the body, with curved metal frets and tuning pegs along its side, a large round pumpkin-shaped gourd body at the bottom end, and a small second round gourd at the top end, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Sitar"
         },
         {
           "name": "Tabla",
           "rarity": "rare",
           "eduText": "Tabla is a pair of drums from India. The black circle on each drumhead helps it ring with a clear note.",
-          "imagePrompt": "a pair of Indian tabla drums side by side: a small tall wooden drum and a wider round metal drum, each with a tight tan skin head with a black circle in the middle, laced with leather straps and small wooden blocks around the sides, on a plain soft grey background",
+          "imagePrompt": "a pair of Indian tabla drums side by side, seen from a little above: a narrow wooden drum on the right and a wider round silver metal drum on the left, each drumhead tan with a big solid black circle in its centre, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tabla"
         },
         {
@@ -4396,21 +4397,21 @@
           "name": "Steel Drum",
           "rarity": "rare",
           "eduText": "Steel drums were invented in Trinidad and Tobago from old oil barrels. Each dent in the top plays a different note.",
-          "imagePrompt": "a single Caribbean steel drum seen from a little above: a shiny silver metal bowl like the top of a barrel, its surface hammered into many round dented note areas, on a short metal stand, with two rubber-tipped sticks resting on it, on a plain soft grey background",
+          "imagePrompt": "a single shiny silver steel drum made from the top of an oil barrel, seen from a little above: a short metal drum whose top sinks into a shallow bowl covered with oval dimpled note shapes, on three thin chrome legs, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Steelpan"
         },
         {
           "name": "Pan Flute",
           "rarity": "rare",
           "eduText": "A pan flute is a row of tubes tied together. Short tubes play high notes and long tubes play low ones.",
-          "imagePrompt": "a single pan flute, front view: a row of hollow bamboo tubes tied side by side with a woven band, going from long to short in a slanting stepped shape, on a plain soft grey background",
+          "imagePrompt": "a single pan flute lying flat, front view: about eight bamboo tubes of different lengths bound together into one instrument with a cord, long on the left and short on the right, so the bottom edge slants, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Pan_flute"
         },
         {
           "name": "Erhu",
           "rarity": "rare",
           "eduText": "The erhu from China has just two strings. Its bow's hair runs between them, so the bow and erhu stay joined.",
-          "imagePrompt": "a single Chinese erhu standing upright: a small six-sided wooden drum body covered with patterned skin at the bottom, a long thin wooden neck rising straight up, two tuning pegs at the top, two strings, and a long bow threaded between the strings, on a plain soft grey background",
+          "imagePrompt": "a single Chinese erhu standing straight up: a long thin wooden pole with two tuning pegs at the top, two strings running down it to a small wooden cup-shaped sound box at the bottom, and a long thin bow crossing the strings near the bottom, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Erhu"
         },
         {
@@ -4424,7 +4425,7 @@
           "name": "Koto",
           "rarity": "rare",
           "eduText": "The koto is Japan's national instrument. It lies on the floor and has 13 strings, each with its own bridge.",
-          "imagePrompt": "a single Japanese koto lying flat, seen from a little above: a very long, low wooden board with a gently curved top, thirteen strings running along its length, each string resting on its own small white bridge, on a plain soft grey background",
+          "imagePrompt": "a single Japanese koto resting directly on the floor, seen from a little above at an angle: one long, low, gently arched wooden body with thirteen strings running its whole length, each string held up by its own small white bridge shaped like an upside-down V, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Koto_(instrument)"
         },
         {
@@ -4438,7 +4439,7 @@
           "name": "Violin",
           "rarity": "common",
           "eduText": "A violin is the smallest and highest-sounding of its family. Its bow is strung with hair from horses' tails.",
-          "imagePrompt": "a single violin lying flat, front view: a curvy reddish-brown wooden body with two f-shaped sound holes, four strings over a small bridge, a black fingerboard and a curled scroll at the top, with its bow lying beside it, on a plain soft grey background",
+          "imagePrompt": "a single violin lying diagonally, seen from above: a small curvy orange-brown wooden body with two f-shaped sound holes, a black chin rest at the bottom, four strings, a black fingerboard and a curled scroll at the top, with its bow resting across it, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Violin"
         },
         {
@@ -4466,7 +4467,7 @@
           "name": "Trumpet",
           "rarity": "common",
           "eduText": "A trumpet has three valves. Pressing them sends the air through extra tubing to change the note.",
-          "imagePrompt": "a single shiny gold brass trumpet, side view: a long looped tube with three piston valves on top, a small mouthpiece at one end and a wide flared bell at the other, on a plain soft grey background",
+          "imagePrompt": "a single shiny gold trumpet lying on its side, side view, pointing to the right: a straight tube ending in a wide flared bell on the right, a folded loop of tubing in the middle with three upright piston valves on top, and a small mouthpiece on the left, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Trumpet"
         },
         {
@@ -4480,42 +4481,42 @@
           "name": "Xylophone",
           "rarity": "common",
           "eduText": "Xylophone means 'wood sound' in Greek. Its short wooden bars play high notes and its long bars play low ones.",
-          "imagePrompt": "a single xylophone seen from a little above: a row of polished brown wooden bars getting shorter from left to right on a low wooden frame, with two round-headed mallets resting on top, on a plain soft grey background",
+          "imagePrompt": "a single xylophone seen from a little above: wooden bars painted in rainbow colours lying across a low wooden frame, getting shorter from left to right like a staircase, with two round-headed mallets resting on top, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Xylophone"
         },
         {
           "name": "Cello",
           "rarity": "common",
           "eduText": "A cello is so big that players sit down and rest it on the floor on a metal spike called an endpin.",
-          "imagePrompt": "a single large cello standing upright on its thin metal spike, front view: a big curvy reddish-brown wooden body with two f-shaped sound holes, four strings, a long black fingerboard and a curled scroll at the top, on a plain soft grey background",
+          "imagePrompt": "a single large cello standing upright on its long metal spike next to a small wooden chair, front view: a big curvy reddish-brown wooden body taller than the chair seat, two f-shaped sound holes, four strings, a black fingerboard and a curled scroll at the top, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Cello"
         },
         {
           "name": "Trombone",
           "rarity": "common",
           "eduText": "A trombone changes note with a long slide. Pushing the slide out makes the tube longer and the note lower.",
-          "imagePrompt": "a single shiny gold trombone, side view: a long straight U-shaped slide stretched out in front, a wide flared bell, and a small mouthpiece, on a plain soft grey background",
+          "imagePrompt": "a single shiny gold trombone lying on its side, side view, much longer than it is tall: a long thin U-shaped slide stretched out to the left, a wide flared bell pointing to the right, and a small mouthpiece, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Trombone"
         },
         {
           "name": "Accordion",
           "rarity": "common",
           "eduText": "An accordion has bellows the player squeezes and pulls. Air flows past small metal reeds to make the sound.",
-          "imagePrompt": "a single red accordion, front view: pleated folding bellows stretched open in the middle, a piano-style keyboard of black and white keys on the right side, and rows of small round buttons on the left side, on a plain soft grey background",
+          "imagePrompt": "a single red piano accordion standing upright, front view: a boxy instrument with a keyboard of black and white piano keys down its right side, a grey folded bellows in the middle, and a panel of small round buttons on its left side, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Accordion"
         },
         {
           "name": "Tambourine",
           "rarity": "common",
           "eduText": "A tambourine is a small hand drum with pairs of metal jingles around its rim. You can shake it or tap it!",
-          "imagePrompt": "a single tambourine seen from a little above: a round wooden frame with a tight skin drumhead, and pairs of small shiny metal jingles set into slots around the rim, on a plain soft grey background",
+          "imagePrompt": "a single tambourine lying on its back, seen from a little above: a round wooden hoop with a pale skin stretched over it like a drum, and small pairs of shiny silver metal discs set into slots around the hoop, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tambourine"
         },
         {
           "name": "Ukulele",
           "rarity": "common",
           "eduText": "The ukulele was made in Hawaii in the 1880s from small guitars brought by Portuguese settlers. It has four strings.",
-          "imagePrompt": "a single small ukulele standing upright, front view: a light wooden figure-eight body with a round sound hole and a painted yellow hibiscus flower, four strings, and a short neck with frets, on a plain soft grey background",
+          "imagePrompt": "a single small ukulele standing upright, front view: a pale yellow wooden body shaped like a small figure eight, a round sound hole, only four strings, and a short stubby neck with a few frets and two tuning pegs on each side of the head, on a plain soft grey background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Ukulele"
         },
         {
