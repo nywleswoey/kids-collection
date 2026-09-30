@@ -31,6 +31,9 @@
  *                                 as above, permitting inserts of cards with no
  *                                 reviewed image. Defeats the kid-safety guarantee.
  *
+ * No command flag means `--review`. Unknown flags, two command flags, or a
+ * modifier on the wrong command are rejected before anything runs (`./args.ts`).
+ *
  * Requires DATABASE_URL (all modes, even --check-urls: the DB module loads at
  * startup) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
  * `--review` additionally requires each selected provider's key; see `.env.example`.
