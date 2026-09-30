@@ -2338,6 +2338,398 @@
         "reviewed": true
       }
     },
+    "Reptiles": {
+      "Asian Water Monitor": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-asian-water-monitor-d33224c6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Ball Python": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-ball-python-6bb2ef0a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Banded Sea Krait": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-banded-sea-krait-4b84ac45-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Bearded Dragon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-bearded-dragon-138840a9-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Box Turtle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-box-turtle-8fb5f3f6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Collared Lizard": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-collared-lizard-de5f2001-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Corn Snake": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-corn-snake-4959605a-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Frilled Lizard": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-frilled-lizard-f589efc2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Galapagos Giant Tortoise": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-galapagos-giant-tortoise-d6a1df0c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Garter Snake": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-garter-snake-472ea28b-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Gila Monster": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-gila-monster-49170eb2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Green Anaconda": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-green-anaconda-5b35c9bb-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Green Anole": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-green-anole-aed10ebd-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Green Iguana": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-green-iguana-c0072123-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Green Sea Turtle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-green-sea-turtle-9b44d94c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Green Tree Python": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-green-tree-python-bb3b81aa-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Indian Star Tortoise": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-indian-star-tortoise-dbffeddc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Komodo Dragon": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-komodo-dragon-f0640a4c-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Leatherback Sea Turtle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-leatherback-sea-turtle-207ec944-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Leopard Gecko": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-leopard-gecko-8b4cdeb6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Marine Iguana": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-marine-iguana-90cb5cb2-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rainbow Boa": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-rainbow-boa-c47c0fb6-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Rat Snake": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-rat-snake-cac8914e-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Red-eared Slider": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-red-eared-slider-47000a70-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Saltwater Crocodile": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-saltwater-crocodile-d47d3907-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Snake-necked Turtle": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-snake-necked-turtle-7dc82767-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Sulcata Tortoise": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-sulcata-tortoise-d69146df-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Thorny Devil": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-thorny-devil-5aef0f38-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tokay Gecko": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-tokay-gecko-0a1145bc-cloudflare-sdxl-2211",
+        "reviewed": true
+      },
+      "Tuatara": {
+        "provider": "cloudflare-sdxl",
+        "model": null,
+        "params": {
+          "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+          "num_steps": 20,
+          "guidance": 7.5,
+          "seed": 42
+        },
+        "format": "png",
+        "reviewKey": "reptiles-tuatara-8e0a6651-cloudflare-sdxl-2211",
+        "reviewed": true
+      }
+    },
     "Rocks and Gems": {
       "Agate": {
         "provider": "cloudflare-sdxl",
