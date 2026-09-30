@@ -4902,11 +4902,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Carolina_anole"
         },
         {
-          "name": "Horned Lizard",
+          "name": "Sulcata Tortoise",
           "rarity": "common",
-          "eduText": "People call it a horned toad because it is round and flat, but it is really a lizard with horns on its head.",
-          "imagePrompt": "a single horned lizard with a crown of big pointed horns around the back of its head, a wide flat round body and one short tail, crawling on desert sand, seen from the side",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Horned_lizard"
+          "eduText": "The sulcata is the biggest tortoise that lives on a mainland. It digs long burrows to hide from the desert heat.",
+          "imagePrompt": "a single big sandy-yellow tortoise with a high tan shell with deep grooved rings on every plate and thick scaly front legs, walking on dry desert sand under a blue sky, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/African_spurred_tortoise"
         },
         {
           "name": "Collared Lizard",
