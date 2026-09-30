@@ -4793,14 +4793,14 @@
           "name": "Frilled Lizard",
           "rarity": "epic",
           "eduText": "When surprised, the frilled lizard opens a big frill around its neck like an umbrella, so it looks much bigger.",
-          "imagePrompt": "a single frilled lizard with a big round orange skin frill open around its neck like a collar, standing on four legs on red sand, front view",
+          "imagePrompt": "a single lizard with a huge round orange frill spread wide open around its neck like an umbrella, standing on red sandy ground under a blue sky, front view, cheerful",
           "sourceUrl": "https://en.wikipedia.org/wiki/Frilled-neck_lizard"
         },
         {
           "name": "Leatherback Sea Turtle",
           "rarity": "epic",
           "eduText": "The leatherback is the biggest turtle in the world. Its shell is soft and leathery, not hard.",
-          "imagePrompt": "long raised ridges running down the smooth dark leathery back of a single huge blue-black sea turtle with small white spots and very long front flippers, swimming in open blue sea, side view",
+          "imagePrompt": "a smooth rubbery blue-black back with long ridges from head to tail, like a big dark teardrop, on a single leatherback sea turtle with small white dots and huge front flippers, swimming alone in deep blue sea, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Leatherback_sea_turtle"
         },
         {
@@ -4905,7 +4905,7 @@
           "name": "Horned Lizard",
           "rarity": "common",
           "eduText": "People call it a horned toad because it is round and flat, but it is really a lizard with horns on its head.",
-          "imagePrompt": "a crown of pointed horns on the head of a single small round flat sandy-brown lizard, sitting on desert sand, side view, friendly",
+          "imagePrompt": "a single small round flat sandy-brown lizard with one short tail, lying flat on desert sand on all four legs, with a crown of pointed horns at the back of its head, side view, friendly",
           "sourceUrl": "https://en.wikipedia.org/wiki/Horned_lizard"
         },
         {
@@ -4968,7 +4968,7 @@
           "name": "Asian Water Monitor",
           "rarity": "common",
           "eduText": "The Asian water monitor is a great swimmer. It is often seen in Singapore's parks, rivers and canals.",
-          "imagePrompt": "a single dark grey lizard with pale yellow spots swimming in a green pond, only its head and back above the water, green reeds behind, side view",
+          "imagePrompt": "a single dark grey-black lizard covered in rows of small pale yellow spots, swimming with its head and back above calm pond water, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Asian_water_monitor"
         }
       ]
