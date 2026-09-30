@@ -4760,6 +4760,7 @@
     },
     {
       "name": "Reptiles",
+      "provider": "cloudflare-sdxl",
       "cards": [
         {
           "name": "Komodo Dragon",
