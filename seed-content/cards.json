@@ -4786,35 +4786,35 @@
           "name": "Green Anaconda",
           "rarity": "epic",
           "eduText": "The green anaconda is the heaviest snake in the world. It spends most of its time in rivers and swamps.",
-          "imagePrompt": "a single very thick olive-green snake with round black spots, resting half in calm swamp water among green reeds, friendly face, side view",
+          "imagePrompt": "a single very thick olive-green snake covered in big round black spots, lying stretched out in shallow brown swamp water beside green reeds, side view, friendly face",
           "sourceUrl": "https://en.wikipedia.org/wiki/Green_anaconda"
         },
         {
           "name": "Frilled Lizard",
           "rarity": "epic",
           "eduText": "When surprised, the frilled lizard opens a big frill around its neck like an umbrella, so it looks much bigger.",
-          "imagePrompt": "a single lizard with a huge round orange frill spread wide open around its neck like an umbrella, standing on red sandy ground under a blue sky, front view, cheerful",
+          "imagePrompt": "a wide round orange frill fanned out all around the head of a single brown lizard, like an open umbrella around its face, standing on four legs on red sand, front view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Frilled-neck_lizard"
         },
         {
           "name": "Gharial",
           "rarity": "epic",
           "eduText": "The gharial has a very long, thin snout. Grown-up males have a round bump on the tip of their nose.",
-          "imagePrompt": "a single crocodile-like reptile with an extremely long, very thin, narrow snout and a round bump on the tip of its nose, resting on a sandy riverbank under a blue sky, side view, calm and friendly",
+          "imagePrompt": "an extremely long, very thin, straight snout like a pencil on a single slim olive-green crocodile lying flat on a sandy riverbank, mouth closed, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Gharial"
         },
         {
           "name": "Tuatara",
           "rarity": "epic",
           "eduText": "Tuatara look like lizards but are not. Their family lived with the dinosaurs, and today they live only in New Zealand.",
-          "imagePrompt": "a single stout olive-green reptile with a row of white spikes running down its back, a big round head and dark eyes, sitting on a mossy rock in a green forest, side view, friendly",
+          "imagePrompt": "a single olive-grey lizard-like reptile crawling low on all four legs, with a crest of white spikes along its back, on a mossy log in a green forest, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Tuatara"
         },
         {
           "name": "Thorny Devil",
           "rarity": "rare",
           "eduText": "The thorny devil is covered in spikes. Tiny grooves in its skin carry water all the way to its mouth.",
-          "imagePrompt": "a single small desert lizard covered all over in pointed spikes, with bands of yellow and red-brown, standing on orange sand under a blue sky, side view, cheerful",
+          "imagePrompt": "a single small lizard covered all over its head, body, legs and tail in cone-shaped spikes, with sandy yellow and red-brown patches, crawling on orange desert sand, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Thorny_devil"
         },
         {
@@ -4828,14 +4828,14 @@
           "name": "Indian Star Tortoise",
           "rarity": "rare",
           "eduText": "The Indian star tortoise has yellow star patterns on its shell. They help it hide among dry grass.",
-          "imagePrompt": "a single tortoise whose high domed dark brown shell is covered in bright yellow star patterns, walking on dry grass under a blue sky, side view",
+          "imagePrompt": "bright yellow star patterns on every plate of the high domed black shell of a single tortoise, walking on dry grass under a blue sky, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Indian_star_tortoise"
         },
         {
           "name": "Snake-necked Turtle",
           "rarity": "rare",
           "eduText": "The snake-necked turtle has a neck so long it cannot pull its head straight in. It tucks it sideways under its shell.",
-          "imagePrompt": "a single turtle with an extremely long thin neck as long as its flat brown shell, stretching its head forward, sitting on a log beside a pond, side view",
+          "imagePrompt": "a single turtle with a very long thin snake-like neck, as long as its shell, stretched far forward, sitting on a log beside a pond, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Eastern_long-necked_turtle"
         },
         {
@@ -4856,14 +4856,14 @@
           "name": "Softshell Turtle",
           "rarity": "rare",
           "eduText": "A softshell turtle has a flat, leathery shell. It pokes its long nose out of the water like a snorkel to breathe.",
-          "imagePrompt": "a single turtle with a flat round leathery shell like a pancake and a long pointed snorkel-like nose, resting on a sandy riverbank, side view",
+          "imagePrompt": "a single turtle with a flat, smooth, round shell like a pancake with no plates or bumps, and a long thin pointed nose like a snorkel, lying on a sandy riverbank, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Softshell_turtle"
         },
         {
           "name": "Banded Sea Krait",
           "rarity": "rare",
           "eduText": "The banded sea krait swims in warm seas, but it comes onto land to rest and to lay its eggs.",
-          "imagePrompt": "a single sea snake with bold black and pale blue stripes all along its body and a flat paddle-shaped tail, swimming in clear blue water above a sandy seabed, side view",
+          "imagePrompt": "a single slim sea snake with bold black and light blue-grey rings all along its body, swimming over a sandy seabed in clear blue water, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Banded_sea_krait"
         },
         {
@@ -4877,7 +4877,7 @@
           "name": "Leopard Gecko",
           "rarity": "common",
           "eduText": "Unlike most geckos, the leopard gecko has eyelids and can blink. It stores fat in its thick tail.",
-          "imagePrompt": "a single yellow gecko covered in black leopard spots, with a thick striped tail and a big smiling face, sitting on sandy ground, side view",
+          "imagePrompt": "a single yellow gecko covered in small black spots, standing on all four legs with one thick spotted tail, on sandy ground, side view, smiling",
           "sourceUrl": "https://en.wikipedia.org/wiki/Common_leopard_gecko"
         },
         {
@@ -4898,35 +4898,35 @@
           "name": "Green Anole",
           "rarity": "common",
           "eduText": "The green anole can change colour from bright green to brown. Males puff out a pink fan under their throat.",
-          "imagePrompt": "a single small slim bright green lizard puffing out a round pink throat fan, sitting on a big green leaf, side view",
+          "imagePrompt": "a round bright pink throat fan puffed out under the chin of a single small slim green lizard, clinging on all four legs to a brown branch, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Carolina_anole"
         },
         {
           "name": "Blue-tongued Skink",
           "rarity": "common",
           "eduText": "When worried, a blue-tongued skink sticks out its bright blue tongue to surprise other animals.",
-          "imagePrompt": "a single chunky smooth-scaled lizard with grey and brown bands and short legs, sticking out a bright blue tongue, on green grass under a blue sky, side view",
+          "imagePrompt": "a bright blue tongue poking out of the mouth of a single chunky lizard with short legs and smooth grey and brown striped scales, no teeth, on green grass, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Blue-tongued_skink"
         },
         {
           "name": "Collared Lizard",
           "rarity": "common",
           "eduText": "The collared lizard can run fast on just its two back legs, like a tiny dinosaur!",
-          "imagePrompt": "a single lizard with a bright turquoise-green body, a yellow head and two black stripes around its neck like a collar, standing on a desert rock under a blue sky, side view",
+          "imagePrompt": "two thick black stripes around the neck like a collar on a single lizard with a turquoise-green body and a yellow head, standing on a desert rock, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Common_collared_lizard"
         },
         {
           "name": "Corn Snake",
           "rarity": "common",
           "eduText": "The corn snake may be named for its belly, which has a black and white pattern like kernels on an ear of corn.",
-          "imagePrompt": "a single orange snake with red-orange blotches edged in black along its back, curled on green grass, friendly face, side view",
+          "imagePrompt": "only one single orange snake with red blotches outlined in black along its back, lying in one loose loop on green grass, side view, friendly face",
           "sourceUrl": "https://en.wikipedia.org/wiki/Corn_snake"
         },
         {
           "name": "Milk Snake",
           "rarity": "common",
           "eduText": "Milk snakes got their name from an old story that they drank milk from cows. That story is not true!",
-          "imagePrompt": "a single snake with bold rings of red, black and yellow all around its body, curled on green grass under a blue sky, side view, friendly face",
+          "imagePrompt": "a single snake with wide bands of red, black and yellow going all the way around its body, lying in one loose loop on green grass under a blue sky, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Milk_snake"
         },
         {
@@ -4968,7 +4968,7 @@
           "name": "Asian Water Monitor",
           "rarity": "common",
           "eduText": "The Asian water monitor is a great swimmer. It is often seen in Singapore's parks, rivers and canals.",
-          "imagePrompt": "a single dark lizard covered in rows of pale yellow spots, with a long neck and a long tail, swimming across a calm green pond, side view",
+          "imagePrompt": "a single dark grey-black lizard covered in rows of small pale yellow spots, swimming with its head and back above calm pond water, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Asian_water_monitor"
         }
       ]
