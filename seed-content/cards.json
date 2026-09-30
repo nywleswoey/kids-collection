@@ -4800,7 +4800,7 @@
           "name": "Leatherback Sea Turtle",
           "rarity": "epic",
           "eduText": "The leatherback is the biggest turtle in the world. Its shell is soft and leathery, not hard.",
-          "imagePrompt": "a smooth rubbery blue-black back with long ridges from head to tail, like a big dark teardrop, on a single leatherback sea turtle with small white dots and huge front flippers, swimming alone in deep blue sea, side view",
+          "imagePrompt": "seen from above: a single huge dark blue-black leatherback sea turtle whose back is one smooth teardrop shape with five thin raised stripes running from neck to tail, speckled with white dots, huge flippers spread wide, swimming in deep blue sea",
           "sourceUrl": "https://en.wikipedia.org/wiki/Leatherback_sea_turtle"
         },
         {
@@ -4905,7 +4905,7 @@
           "name": "Horned Lizard",
           "rarity": "common",
           "eduText": "People call it a horned toad because it is round and flat, but it is really a lizard with horns on its head.",
-          "imagePrompt": "a single small round flat sandy-brown lizard with one short tail, lying flat on desert sand on all four legs, with a crown of pointed horns at the back of its head, side view, friendly",
+          "imagePrompt": "a single horned lizard with a crown of big pointed horns around the back of its head, a wide flat round body and one short tail, crawling on desert sand, seen from the side",
           "sourceUrl": "https://en.wikipedia.org/wiki/Horned_lizard"
         },
         {
