@@ -7,10 +7,11 @@
  * SAME predicate the pruners use, so the report can never be narrower than the
  * deletion it describes.
  */
-import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { themes, cards, collections, children } from "@/db/schema";
 import type { SeedFile } from "./seed-schema";
+import { notKept } from "./prune-predicate";
 
 export interface BlastRadius {
   themes: number;
@@ -92,7 +93,7 @@ export async function previewPrune(seed: SeedFile): Promise<BlastRadius> {
   const doomedThemes = await db
     .select({ id: themes.id, name: themes.name })
     .from(themes)
-    .where(keepThemes.length ? notInArray(themes.name, keepThemes) : undefined);
+    .where(notKept(themes.name, keepThemes));
 
   const doomedThemeIds = doomedThemes.map((t) => t.id);
   const cardsOfDoomedThemes = doomedThemeIds.length
@@ -109,14 +110,11 @@ export async function previewPrune(seed: SeedFile): Promise<BlastRadius> {
     const row = await db.query.themes.findFirst({ where: eq(themes.name, theme.name) });
     if (!row) continue; // new theme — nothing of it exists to prune
     const keep = theme.cards.map((c) => c.name);
+    const keptFilter = notKept(cards.name, keep);
     const doomed = await db
       .select({ id: cards.id, name: cards.name })
       .from(cards)
-      .where(
-        keep.length
-          ? and(eq(cards.themeId, row.id), notInArray(cards.name, keep))
-          : eq(cards.themeId, row.id),
-      );
+      .where(keptFilter ? and(eq(cards.themeId, row.id), keptFilter) : eq(cards.themeId, row.id));
     doomedCards.push(...doomed.map((c) => ({ ...c, theme: theme.name })));
   }
 

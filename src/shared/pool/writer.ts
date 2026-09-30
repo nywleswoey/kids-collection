@@ -1,13 +1,15 @@
-import { and, eq, notInArray, sql, type SQL } from "drizzle-orm";
+import { and, eq, sql, type SQL } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { themes, cards, collections } from "@/db/schema";
 import type { Rarity } from "@/lib/types";
+import { notKept } from "./prune-predicate";
 
 /**
- * Delete rows from `table` whose `nameCol` is not in `keepNames`, optionally
- * scoped by `base`. An empty `keepNames` deletes every (scoped) row. Returns the
- * number of rows deleted. Shared by the theme/card delta-sync pruners.
+ * Delete rows from `table` whose `nameCol` is not in `keepNames` (`notKept`,
+ * shared with `blast-radius.ts`'s `previewPrune` — A1), optionally scoped by
+ * `base`. Returns the number of rows deleted. Shared by the theme/card
+ * delta-sync pruners.
  */
 async function pruneNotIn(
   table: PgTable,
@@ -16,7 +18,7 @@ async function pruneNotIn(
   keepNames: string[],
   base?: SQL,
 ): Promise<number> {
-  const keep = keepNames.length === 0 ? undefined : notInArray(nameCol, keepNames);
+  const keep = notKept(nameCol, keepNames);
   const where = base && keep ? and(base, keep) : (base ?? keep);
   const deleted = await db.delete(table).where(where).returning({ id: idCol });
   return deleted.length;
