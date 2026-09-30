@@ -4797,11 +4797,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Frilled-neck_lizard"
         },
         {
-          "name": "Gharial",
+          "name": "Leatherback Sea Turtle",
           "rarity": "epic",
-          "eduText": "The gharial has a very long, thin snout. Grown-up males have a round bump on the tip of their nose.",
-          "imagePrompt": "a single gharial crocodile with a very long, skinny, straight snout as thin as a stick, lying on a sandy riverbank, mouth closed, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Gharial"
+          "eduText": "The leatherback is the biggest turtle in the world. Its shell is soft and leathery, not hard.",
+          "imagePrompt": "long raised ridges running down the smooth dark leathery back of a single huge blue-black sea turtle with small white spots and very long front flippers, swimming in open blue sea, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leatherback_sea_turtle"
         },
         {
           "name": "Tuatara",
@@ -4853,11 +4853,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Marine_iguana"
         },
         {
-          "name": "Softshell Turtle",
+          "name": "Rainbow Boa",
           "rarity": "rare",
-          "eduText": "A softshell turtle has a flat, leathery shell. It pokes its long nose out of the water like a snorkel to breathe.",
-          "imagePrompt": "a single flat round greenish-brown turtle, flat like a pancake, with a soft smooth shell and a long pointy nose, lying on sand beside a river, seen from above",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Softshell_turtle"
+          "eduText": "The scales of a rainbow boa shine with rainbow colours in the sunlight, like a soap bubble.",
+          "imagePrompt": "shiny scales shimmering with rainbow colours on a single orange-brown snake with dark rings along its back and one head, lying in one loose loop on a flat grey rock, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rainbow_boa"
         },
         {
           "name": "Banded Sea Krait",
@@ -4902,11 +4902,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Carolina_anole"
         },
         {
-          "name": "Blue-tongued Skink",
+          "name": "Horned Lizard",
           "rarity": "common",
-          "eduText": "When worried, a blue-tongued skink sticks out its bright blue tongue to surprise other animals.",
-          "imagePrompt": "a single fat smooth skink lizard with short little legs and brown striped scales, its bright blue tongue sticking out, on green grass, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Blue-tongued_skink"
+          "eduText": "People call it a horned toad because it is round and flat, but it is really a lizard with horns on its head.",
+          "imagePrompt": "a crown of pointed horns on the head of a single small round flat sandy-brown lizard, sitting on desert sand, side view, friendly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Horned_lizard"
         },
         {
           "name": "Collared Lizard",
@@ -4923,11 +4923,11 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Corn_snake"
         },
         {
-          "name": "Milk Snake",
+          "name": "Rat Snake",
           "rarity": "common",
-          "eduText": "Milk snakes got their name from an old story that they drank milk from cows. That story is not true!",
-          "imagePrompt": "a single milk snake with red, black and yellow stripes around its body and one head, curled in a loose coil on a flat grey rock, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Milk_snake"
+          "eduText": "Rat snakes are great climbers. They can go straight up a tree trunk by gripping the bark.",
+          "imagePrompt": "a single long plain shiny black snake with a white chin and one head, lying in one loose loop on a flat grey rock, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rat_snake"
         },
         {
           "name": "Ball Python",
