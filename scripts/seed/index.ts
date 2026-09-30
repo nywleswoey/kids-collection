@@ -132,7 +132,6 @@ import {
   PROVIDER_IDS,
   PROVIDERS,
   ProviderSelectionError,
-  parseProvidersFlag,
   providerById,
   selectLanes,
   type ImageProvider,
@@ -164,6 +163,7 @@ import {
 import { previewReset, previewPrune, isEmpty } from "@/shared/pool/blast-radius";
 import { isProductionDatabaseUrl, describeTarget } from "@/shared/pool/db-target";
 import { confirmDestructive } from "./guard";
+import { parseSeedArgs, SeedArgsError, type Command } from "./args";
 import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed-content", "cards.json");
@@ -190,6 +190,24 @@ const RETRIES = intEnv("SEED_RETRIES", 5);
 const PUBLISH_CONCURRENCY = intEnv("SEED_CONCURRENCY", 4);
 
 type Mode = "review" | "publish" | "sync";
+
+/**
+ * The console-shaped seam `runSeed` dispatches through (A2) — the same idea as
+ * `BakeOffDeps`'s `log`/`warn`/`error` in `bake-off.ts`, at the top-level
+ * dispatcher instead of one lane. Defaults to the real console; a test can
+ * inject a fake to assert what a command prints without a live terminal.
+ */
+export interface SeedIO {
+  log: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+}
+
+const consoleIO: SeedIO = {
+  log: (...args) => console.log(...args),
+  warn: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+};
 
 /** Absolute path of one bake-off candidate. */
 function reviewPath(themeName: string, card: NamedCard, provider: ImageProvider): string {
@@ -263,11 +281,27 @@ function reportBlobBudget(budget: BlobBudget, publishedCount: number): boolean {
 }
 
 async function main() {
-  const mode: Mode = process.argv.includes("--sync")
-    ? "sync"
-    : process.argv.includes("--publish")
-      ? "publish"
-      : "review";
+  let command: Command;
+  try {
+    command = parseSeedArgs(process.argv.slice(2));
+  } catch (err) {
+    if (!(err instanceof SeedArgsError)) throw err;
+    console.error(`\n⛔ ${err.message}\n`);
+    process.exitCode = 1;
+    return;
+  }
+  await runSeed(command);
+}
+
+/**
+ * The seed CLI's dispatcher (A2) — every `Command` `parseSeedArgs` can
+ * produce, in one switch, instead of `main()`'s old chain of
+ * `process.argv.includes(...)` checks that resolved conflicts by which `if`
+ * happened to run first. Split out so `main()` stays "parse, then dispatch"
+ * and this can take injected I/O, the way `runBakeOff` takes injected deps.
+ */
+async function runSeed(command: Command, io: SeedIO = consoleIO): Promise<void> {
+  const mode: Mode = command.kind === "sync" ? "sync" : command.kind === "publish" ? "publish" : "review";
 
   // ── --check-images: weigh every PUBLISHED card's art and report anything too
   // sparse to be a picture (#78). Standalone; runs and exits.
@@ -280,19 +314,19 @@ async function main() {
   // Ahead of `loadSeed`, unlike --check-urls: this reads the DATABASE and touches
   // no seed data, so failing it on an unrelated authoring error in cards.json
   // would refuse to answer a question about the live pool for no reason.
-  if (process.argv.includes("--check-images")) {
+  if (command.kind === "check-images") {
     const published = await readPublishedImages();
-    console.log(`Weighing ${published.length} published card image(s)…`);
+    io.log(`Weighing ${published.length} published card image(s)…`);
     const report = await auditPublishedImages(published, { size: CARD_SIZE });
 
     // Printed FIRST, because everything below is a statement about the images
     // that were actually weighed, and this says which ones were not.
     if (report.unreadable.length > 0) {
-      console.warn(`\n⚠️  ${report.unreadable.length} image(s) could not be weighed:\n`);
+      io.warn(`\n⚠️  ${report.unreadable.length} image(s) could not be weighed:\n`);
       for (const u of report.unreadable) {
-        console.warn(`   ${u.theme} / ${u.card} — ${u.reason}\n        ${u.url}`);
+        io.warn(`   ${u.theme} / ${u.card} — ${u.reason}\n        ${u.url}`);
       }
-      console.warn(
+      io.warn(
         `\n   That is a fact about the request, NOT about the art. Nothing here needs\n` +
           `   republishing on this evidence — but nothing here has been cleared either.`,
       );
@@ -301,20 +335,20 @@ async function main() {
     if (report.suspects.length === 0) {
       // Never "all clear" over images nobody weighed — that is an all-clear
       // earned by not looking, which is the shape of the bug this issue is about.
-      console.log(`✓ no blank frames among the ${weighed} image(s) weighed (of ${report.checked}).`);
+      io.log(`✓ no blank frames among the ${weighed} image(s) weighed (of ${report.checked}).`);
       if (report.unreadable.length > 0) process.exitCode = 1;
       return;
     }
-    console.error(
+    io.error(
       `\n⛔ ${report.suspects.length} of ${weighed} weighed image(s) look blank:\n`,
     );
     for (const s of report.suspects) {
-      console.error(
+      io.error(
         `   ${s.theme} / ${s.card} — ${s.byteLength} bytes ` +
           `(${s.bytesPerPixel.toFixed(4)} B/px)\n        ${s.url}`,
       );
     }
-    console.error(
+    io.error(
       `\n   Look at each one before acting: this weighs bytes, it does not decode\n` +
         `   pixels. Republishing a card means removing it from the pool and running\n` +
         `   --review then --sync, which destroys its collection rows — read the\n` +
@@ -339,8 +373,8 @@ async function main() {
   // Reads the STORE, not the pool: `put()` adds a random suffix, so a re-publish
   // strands the old object and the pool's own URLs cannot see it. Read-only —
   // stranded bytes are reported and never deleted.
-  if (process.argv.includes("--blob-budget")) {
-    console.log(`Weighing the Blob store…`);
+  if (command.kind === "blob-budget") {
+    io.log(`Weighing the Blob store…`);
     const [objects, published] = await Promise.all([
       readStoreObjects(),
       readPublishedImages(),
@@ -359,17 +393,17 @@ async function main() {
   // ── --check-urls: standalone, network-only, DB-free. Runs and exits (FR11).
   // Deliberately not coupled to a publish: it is safe to run at any point during
   // authoring, and a publish should not fail for a reason unrelated to publishing.
-  if (process.argv.includes("--check-urls")) {
+  if (command.kind === "check-urls") {
     const total = seed.themes.reduce((n, t) => n + t.cards.length, 0);
-    console.log(`Checking ${total} sourceUrl(s)…`);
+    io.log(`Checking ${total} sourceUrl(s)…`);
     const failures = await checkSourceUrls(seed);
     if (failures.length === 0) {
-      console.log(`✓ all ${total} sourceUrl(s) returned 200.`);
+      io.log(`✓ all ${total} sourceUrl(s) returned 200.`);
       return;
     }
-    console.error(`\n⛔ ${failures.length} of ${total} sourceUrl(s) failed:\n`);
+    io.error(`\n⛔ ${failures.length} of ${total} sourceUrl(s) failed:\n`);
     for (const f of failures) {
-      console.error(`   [${f.status}] ${f.theme} / ${f.card}\n        ${f.url}`);
+      io.error(`   [${f.status}] ${f.theme} / ${f.card}\n        ${f.url}`);
     }
     process.exitCode = 1;
     return;
@@ -381,12 +415,9 @@ async function main() {
   // owner works through cannot disagree with the bake-off. Reads the pool to
   // learn which cards are already published. Writes one markdown file into the
   // drop folder and does not generate, upload, or insert anything.
-  if (process.argv.includes("--supergrok-export")) {
-    if (process.argv.includes("--sync") || process.argv.includes("--publish")) {
-      throw new Error(
-        "--supergrok-export only writes a brief. It does not publish. Run it on its own.",
-      );
-    }
+  if (command.kind === "supergrok-export") {
+    // parseSeedArgs already refuses --supergrok-export combined with --sync or
+    // --publish (a conflicting-command-flags error) before this ever runs.
     requireDatabaseUrl("`tsx --env-file=.env.local scripts/seed/index.ts --supergrok-export`");
     const published = await listPublishedCardKeys();
     const planned = new Set(planInserts(seed, published).map((p) => cardKey(p.theme, p.card)));
@@ -395,7 +426,7 @@ async function main() {
     mkdirSync(dropDir, { recursive: true });
     const briefPath = join(dropDir, SUPERGROK_BRIEF_NAME);
     writeFileSync(briefPath, renderManualBrief(entries));
-    console.log(
+    io.log(
       `${entries.length} card(s) the bake-off would draw.\n` +
         `Brief: ${briefPath}\n` +
         `Save each picture into ${dropDir} under the name the brief gives, then:\n` +
@@ -404,10 +435,16 @@ async function main() {
     return;
   }
 
+  // Every other Command kind returned above; narrows `command` for the rest
+  // of this function to the three that share the plan/guard/publish pipeline.
+  if (command.kind !== "review" && command.kind !== "publish" && command.kind !== "sync") {
+    throw new Error(`internal: unhandled seed command "${(command as Command).kind}"`);
+  }
+
   if (mode === "review") mkdirSync(REVIEW_DIR, { recursive: true });
 
   const totalCards = seed.themes.reduce((n, t) => n + t.cards.length, 0);
-  console.log(
+  io.log(
     `Seed starting — mode=${mode}, ${seed.themes.length} themes, ${totalCards} cards.`,
   );
 
@@ -417,7 +454,7 @@ async function main() {
   // whole-pool review run, which is the 360-image behaviour FR10 exists to remove.
   requireDatabaseUrl("`tsx --env-file=.env.local scripts/seed/index.ts` (or `pnpm seed --sync`)");
   if (mode !== "review" && !process.env.BLOB_READ_WRITE_TOKEN) {
-    console.warn(
+    io.warn(
       "⚠️  BLOB_READ_WRITE_TOKEN not set — image uploads for new cards will fail.",
     );
   }
@@ -427,16 +464,16 @@ async function main() {
   // quietly narrowing the bake-off — a lane silently absent from a comparison
   // looks like a provider that drew badly (#67).
   let lanes: readonly ImageProvider[] = [];
-  if (mode === "review") {
+  if (command.kind === "review") {
     try {
-      lanes = selectLanes(parseProvidersFlag(process.argv));
+      lanes = selectLanes(command.providers);
     } catch (err) {
       if (!(err instanceof ProviderSelectionError)) throw err;
-      console.error(`\n⛔ ${err.message}\n`);
+      io.error(`\n⛔ ${err.message}\n`);
       process.exitCode = 1;
       return;
     }
-    console.log(`Providers: ${lanes.map((p) => p.id).join(", ")}`);
+    io.log(`Providers: ${lanes.map((p) => p.id).join(", ")}`);
   }
 
   // Destructive-operation guards (Inc23 FR3–FR8). Both run BEFORE any write:
@@ -447,28 +484,28 @@ async function main() {
 
   // --reset wipes the existing pool first (full rebuild, U4-FR4). resetPool()
   // itself refuses when the pool is owned; this is the operator-facing half.
-  if (mode === "publish" && process.argv.includes("--reset")) {
+  if (command.kind === "publish" && command.reset) {
     const radius = await previewReset();
     await confirmDestructive({ operation: "reset", target, isProduction, radius });
-    console.log("--reset: wiping existing pool (cards, themes)…");
+    io.log("--reset: wiping existing pool (cards, themes)…");
     await resetPool();
   }
 
   // Sync prunes anything missing from the seed file, and those deletes cascade
   // into the children's cards. Decide up front: with prunes pending and no
   // --allow-prune, abort before a single row is inserted, updated or deleted.
-  if (mode === "sync") {
+  if (command.kind === "sync") {
     const radius = await previewPrune(seed);
     if (!isEmpty(radius)) {
-      if (!process.argv.includes("--allow-prune")) {
-        console.error(
+      if (!command.allowPrune) {
+        io.error(
           `\n⛔ --sync would prune ${radius.themes} theme(s) and ${radius.cards} card(s), ` +
             `destroying ${radius.collectionRows} collection row(s).\n` +
             `   Nothing has been written. Re-run with --allow-prune if that is intended.\n`,
         );
-        console.error(`   Themes: ${radius.themeNames.join(", ") || "(none)"}`);
+        io.error(`   Themes: ${radius.themeNames.join(", ") || "(none)"}`);
         for (const c of radius.perChild) {
-          console.error(`   ${c.name}: ${c.rows} card row(s)`);
+          io.error(`   ${c.name}: ${c.rows} card row(s)`);
         }
         process.exitCode = 1;
         return;
@@ -490,7 +527,7 @@ async function main() {
   // publish path's per-theme loop — nothing here writes to the database, and a
   // lane spans every theme in one queue so its pacing is spent on generating
   // rather than on waiting at theme boundaries.
-  if (mode === "review") {
+  if (command.kind === "review") {
     await review(themes, planned, lanes);
     return;
   }
@@ -519,9 +556,9 @@ async function main() {
   // that could never satisfy the guard (#67).
   const unknown = unknownProviders(themes, planned, providerById);
   if (unknown.length > 0) {
-    console.error(`\n⛔ ${unknown.length} card(s) name a provider that is not registered:\n`);
-    for (const u of unknown) console.error(`   ${u.theme} / ${u.card} → "${u.providerId}"`);
-    console.error(
+    io.error(`\n⛔ ${unknown.length} card(s) name a provider that is not registered:\n`);
+    for (const u of unknown) io.error(`   ${u.theme} / ${u.card} → "${u.providerId}"`);
+    io.error(
       `\n   Registered: ${PROVIDER_IDS.join(", ")}\n` +
         `   Nothing has been written. Fix the \`provider\` value in seed-content/cards.json.\n`,
     );
@@ -532,14 +569,14 @@ async function main() {
   const unreviewed = missingReviews(themes, planned, providerById, (name) =>
     existsSync(join(REVIEW_DIR, name)),
   );
-  if (unreviewed.length > 0 && !process.argv.includes("--allow-unreviewed")) {
-    console.error(
+  if (unreviewed.length > 0 && !command.allowUnreviewed) {
+    io.error(
       `\n⛔ ${unreviewed.length} card(s) would be inserted with no reviewed image:\n`,
     );
     for (const p of unreviewed) {
-      console.error(`   ${p.theme} / ${p.card} — ${p.reason}`);
+      io.error(`   ${p.theme} / ${p.card} — ${p.reason}`);
     }
-    console.error(
+    io.error(
       `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
         `   every image. Cards marked "no provider chosen" need a \`provider\` on the\n` +
         `   card or its theme in seed-content/cards.json — that is the bake-off pick.\n` +
@@ -550,7 +587,7 @@ async function main() {
     return;
   }
   if (unreviewed.length > 0) {
-    console.warn(
+    io.warn(
       `⚠️  --allow-unreviewed: publishing ${unreviewed.length} card(s) no human has seen.`,
     );
   }
@@ -590,7 +627,7 @@ async function main() {
               sourceUrl: card.sourceUrl,
             });
             report.updated++;
-            console.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
+            io.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
             return;
           }
           // Publish: leave it alone.
@@ -618,7 +655,7 @@ async function main() {
           reviewed = true;
           sidecar = readSidecar(theme.name, card, provider);
           if (!sidecar) {
-            console.warn(
+            io.warn(
               `⚠️  ${theme.name} / ${card.name}: no readable sidecar beside the reviewed image — ` +
                 `publishing it, but nothing will record what drew it.`,
             );
@@ -638,7 +675,7 @@ async function main() {
               `provider ${provider.id} is not configured (set ${provider.requiredEnv.join(" and ")})`,
             );
           }
-          console.log(`🖼️  generating image: ${theme.name} / ${card.name} [${provider.id}]…`);
+          io.log(`🖼️  generating image: ${theme.name} / ${card.name} [${provider.id}]…`);
           // Same bounded ladder the lane runner uses, so SEED_RETRIES means the
           // same thing on both generation paths. `generate()` is still one
           // logical attempt; the gate is re-entered per attempt so a retry pays
@@ -681,13 +718,13 @@ async function main() {
               ),
             });
           }
-          console.log(`✓ inserted ${theme.name} / ${card.name}`);
+          io.log(`✓ inserted ${theme.name} / ${card.name}`);
         } else {
           report.skipped++;
         }
       } catch (err) {
         report.failed++;
-        console.error(`✗ ${theme.name} / ${card.name}: ${String(err)}`);
+        io.error(`✗ ${theme.name} / ${card.name}: ${String(err)}`);
       }
     });
 
@@ -698,7 +735,7 @@ async function main() {
         theme.cards.map((c) => c.name),
       );
       report.prunedCards += n;
-      if (n > 0) console.log(`🗑️  pruned ${n} card(s) from ${theme.name}`);
+      if (n > 0) io.log(`🗑️  pruned ${n} card(s) from ${theme.name}`);
     }
   }
 
@@ -706,7 +743,7 @@ async function main() {
   if (mode === "sync") {
     report.prunedThemes = await deleteThemesNotIn(themes.map((t) => t.name));
     if (report.prunedThemes > 0) {
-      console.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
+      io.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
     }
   }
 
@@ -720,13 +757,13 @@ async function main() {
       PROVENANCE_PATH,
       serializeProvenance(recordProvenance(provenanceBefore, publishedCards)),
     );
-    console.log(
+    io.log(
       `✎ seed-content/provenance.json: recorded what drew ${publishedCards.length} newly published card(s). ` +
         `Commit it with the theme.`,
     );
   }
 
-  console.log(`\nSeed (${mode}) complete:`, report);
+  io.log(`\nSeed (${mode}) complete:`, report);
 
   // ── FR12: did every theme actually land? In-band, so it cannot be forgotten.
   // The schema already proved the FILE is correct, so a shortfall here is a failed
@@ -735,14 +772,14 @@ async function main() {
   if (mode === "sync") {
     const shortfalls = comparePoolShape(seed, await readPublishedShape());
     if (shortfalls.length === 0) {
-      console.log(`✓ completeness: all ${seed.themes.length} theme(s) published in full.`);
+      io.log(`✓ completeness: all ${seed.themes.length} theme(s) published in full.`);
       return;
     }
-    console.error(`\n⛔ completeness: ${shortfalls.length} (theme, rarity) short:\n`);
+    io.error(`\n⛔ completeness: ${shortfalls.length} (theme, rarity) short:\n`);
     for (const s of shortfalls) {
-      console.error(`   ${s.theme} / ${s.rarity}: expected ${s.expected}, found ${s.found}`);
+      io.error(`   ${s.theme} / ${s.rarity}: expected ${s.expected}, found ${s.found}`);
     }
-    console.error(
+    io.error(
       `\n   Re-run \`pnpm seed --sync\` — it is idempotent and inserts only what is\n` +
         `   missing. Never prune, never reset. No child has lost anything; the only\n` +
         `   consequence is that those set-completion rewards are unreachable until\n` +
