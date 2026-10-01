@@ -4757,6 +4757,222 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Ice_storm"
         }
       ]
+    },
+    {
+      "name": "Reptiles",
+      "provider": "cloudflare-sdxl",
+      "cards": [
+        {
+          "name": "Komodo Dragon",
+          "rarity": "legendary",
+          "eduText": "The Komodo dragon is the biggest lizard in the world. It can grow up to 3 metres long and lives on islands in Indonesia.",
+          "imagePrompt": "a single huge friendly Komodo dragon lizard with rough grey-brown scaly skin, strong bent legs and a long heavy tail, walking calmly on sandy ground under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Komodo_dragon"
+        },
+        {
+          "name": "Galapagos Giant Tortoise",
+          "rarity": "legendary",
+          "eduText": "Galapagos giant tortoises are the biggest tortoises alive, and they can live for more than 100 years.",
+          "imagePrompt": "a single giant tortoise with a huge high-domed dark grey shell and a long wrinkly neck stretched out, standing on green grass under a blue sky, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gal%C3%A1pagos_tortoise"
+        },
+        {
+          "name": "Saltwater Crocodile",
+          "rarity": "epic",
+          "eduText": "The saltwater crocodile is the biggest reptile alive. It can swim far out to sea from one island to another.",
+          "imagePrompt": "a single long crocodile with a pointed V-shaped snout, its mouth gently closed, and a bumpy olive-green back, lying calmly on a sandy riverbank under a blue sky, side view, friendly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saltwater_crocodile"
+        },
+        {
+          "name": "Green Anaconda",
+          "rarity": "epic",
+          "eduText": "The green anaconda is the heaviest snake in the world. It spends most of its time in rivers and swamps.",
+          "imagePrompt": "a single big olive-green snake with black spots, its one head resting on its coiled body, lying half in swamp water beside reeds, mouth closed, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Green_anaconda"
+        },
+        {
+          "name": "Frilled Lizard",
+          "rarity": "epic",
+          "eduText": "When surprised, the frilled lizard opens a big frill around its neck like an umbrella, so it looks much bigger.",
+          "imagePrompt": "a single lizard with a huge round orange frill spread wide open around its neck like an umbrella, standing on red sandy ground under a blue sky, front view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Frilled-neck_lizard"
+        },
+        {
+          "name": "Leatherback Sea Turtle",
+          "rarity": "epic",
+          "eduText": "The leatherback is the biggest turtle in the world. Its shell is soft and leathery, not hard.",
+          "imagePrompt": "seen from above: a single huge dark blue-black leatherback sea turtle whose back is one smooth teardrop shape with five thin raised stripes running from neck to tail, speckled with white dots, huge flippers spread wide, swimming in deep blue sea",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leatherback_sea_turtle"
+        },
+        {
+          "name": "Tuatara",
+          "rarity": "epic",
+          "eduText": "Tuatara look like lizards but are not. Their family lived with the dinosaurs, and today they live only in New Zealand.",
+          "imagePrompt": "a single olive-grey lizard-like reptile crawling low on all four legs, with a crest of white spikes along its back, on a mossy log in a green forest, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tuatara"
+        },
+        {
+          "name": "Thorny Devil",
+          "rarity": "rare",
+          "eduText": "The thorny devil is covered in spikes. Tiny grooves in its skin carry water all the way to its mouth.",
+          "imagePrompt": "a single thorny devil lizard, its whole body bumpy with many small brown spikes, tan and brown patches, crawling on orange sand, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thorny_devil"
+        },
+        {
+          "name": "Green Tree Python",
+          "rarity": "rare",
+          "eduText": "Green tree pythons rest in loops over branches. Their babies are yellow or red and turn green as they grow up.",
+          "imagePrompt": "a single bright green snake with a few small white spots, coiled in neat loops over a tree branch, green leaves behind, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Green_tree_python"
+        },
+        {
+          "name": "Indian Star Tortoise",
+          "rarity": "rare",
+          "eduText": "The Indian star tortoise has yellow star patterns on its shell. They help it hide among dry grass.",
+          "imagePrompt": "a single tortoise with a black shell covered in yellow star shapes, one yellow star on each bump of the shell, on dry grass in daytime, blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Indian_star_tortoise"
+        },
+        {
+          "name": "Snake-necked Turtle",
+          "rarity": "rare",
+          "eduText": "The snake-necked turtle has a neck so long it cannot pull its head straight in. It tucks it sideways under its shell.",
+          "imagePrompt": "a single turtle with a very long thin snake-like neck, as long as its shell, stretched far forward, sitting on a log beside a pond, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eastern_long-necked_turtle"
+        },
+        {
+          "name": "Gila Monster",
+          "rarity": "rare",
+          "eduText": "The Gila monster stores fat in its thick tail, so it can go for months without eating.",
+          "imagePrompt": "a single chunky lizard with bumpy beaded skin in bright pink-orange and black patches and a short fat tail, resting on desert sand beside a cactus, side view, friendly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gila_monster"
+        },
+        {
+          "name": "Marine Iguana",
+          "rarity": "rare",
+          "eduText": "The marine iguana of the Galapagos Islands is the only lizard that swims and feeds in the sea.",
+          "imagePrompt": "a single black lizard with a spiky back and a short blunt face, sitting on dark rocks beside the sea with white waves behind, under a blue sky, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Marine_iguana"
+        },
+        {
+          "name": "Rainbow Boa",
+          "rarity": "rare",
+          "eduText": "The scales of a rainbow boa shine with rainbow colours in the sunlight, like a soap bubble.",
+          "imagePrompt": "shiny scales shimmering with rainbow colours on a single orange-brown snake with dark rings along its back and one head, lying in one loose loop on a flat grey rock, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rainbow_boa"
+        },
+        {
+          "name": "Banded Sea Krait",
+          "rarity": "rare",
+          "eduText": "The banded sea krait swims in warm seas, but it comes onto land to rest and to lay its eggs.",
+          "imagePrompt": "a single slim sea snake with bold black and light blue-grey rings all along its body, swimming over a sandy seabed in clear blue water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Banded_sea_krait"
+        },
+        {
+          "name": "Bearded Dragon",
+          "rarity": "common",
+          "eduText": "A bearded dragon can puff out the spiky skin under its chin. It looks like a beard and can even turn dark.",
+          "imagePrompt": "a single tan lizard with a spiky beard of soft spines under its chin and small spikes along its sides, sitting on a warm rock in the sun, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pogona"
+        },
+        {
+          "name": "Leopard Gecko",
+          "rarity": "common",
+          "eduText": "Unlike most geckos, the leopard gecko has eyelids and can blink. It stores fat in its thick tail.",
+          "imagePrompt": "a single yellow gecko covered in small black spots, standing on all four legs with one thick spotted tail, on sandy ground, side view, smiling",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_leopard_gecko"
+        },
+        {
+          "name": "Tokay Gecko",
+          "rarity": "common",
+          "eduText": "The tokay gecko is named after its loud call, which sounds like 'to-kay!' Its sticky toes let it climb up walls.",
+          "imagePrompt": "a single blue-grey gecko covered in bright orange spots, with big yellow eyes and wide toe pads, clinging to a tree trunk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tokay_gecko"
+        },
+        {
+          "name": "Green Iguana",
+          "rarity": "common",
+          "eduText": "The green iguana eats only plants, like leaves, flowers and fruit. It is also a strong swimmer.",
+          "imagePrompt": "a single big bright green lizard with a row of spikes down its back, a round flap of skin under its chin and a long striped tail, resting on a tree branch, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Green_iguana"
+        },
+        {
+          "name": "Green Anole",
+          "rarity": "common",
+          "eduText": "The green anole can change colour from bright green to brown. Males puff out a pink fan under their throat.",
+          "imagePrompt": "a single small thin green lizard on a twig, with a small pink fan of skin under its chin, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Carolina_anole"
+        },
+        {
+          "name": "Sulcata Tortoise",
+          "rarity": "common",
+          "eduText": "The sulcata is the biggest tortoise that lives on a mainland. It digs long burrows to hide from the desert heat.",
+          "imagePrompt": "a single big sandy-yellow tortoise with a high tan shell with deep grooved rings on every plate and thick scaly front legs, walking on dry desert sand under a blue sky, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/African_spurred_tortoise"
+        },
+        {
+          "name": "Collared Lizard",
+          "rarity": "common",
+          "eduText": "The collared lizard can run fast on just its two back legs, like a tiny dinosaur!",
+          "imagePrompt": "a single lizard on all four legs with a green-blue body, a yellow head and two black bands around its neck, on a desert rock, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_collared_lizard"
+        },
+        {
+          "name": "Corn Snake",
+          "rarity": "common",
+          "eduText": "The corn snake may be named for its belly, which has a black and white pattern like kernels on an ear of corn.",
+          "imagePrompt": "a single orange corn snake with red patches and one head, curled in a loose coil on a flat grey rock, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Corn_snake"
+        },
+        {
+          "name": "Rat Snake",
+          "rarity": "common",
+          "eduText": "Rat snakes are great climbers. They can go straight up a tree trunk by gripping the bark.",
+          "imagePrompt": "a single long plain shiny black snake with a white chin and one head, lying in one loose loop on a flat grey rock, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rat_snake"
+        },
+        {
+          "name": "Ball Python",
+          "rarity": "common",
+          "eduText": "When scared, a ball python curls up into a tight ball and hides its head in the middle.",
+          "imagePrompt": "a single brown and gold patterned snake curled up into a tight round ball, with its head peeking out, on green grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ball_python"
+        },
+        {
+          "name": "Garter Snake",
+          "rarity": "common",
+          "eduText": "Garter snakes are some of the most common snakes in North America. They are often seen in gardens.",
+          "imagePrompt": "a single slim dark green snake with three long yellow stripes running from head to tail, on green grass under a blue sky, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Garter_snake"
+        },
+        {
+          "name": "Green Sea Turtle",
+          "rarity": "common",
+          "eduText": "The green sea turtle is named for the green fat under its shell, which comes from eating seagrass.",
+          "imagePrompt": "a single sea turtle with a smooth olive-brown patterned shell and flipper legs, swimming in clear blue water above a sandy seabed, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Green_sea_turtle"
+        },
+        {
+          "name": "Red-eared Slider",
+          "rarity": "common",
+          "eduText": "The red-eared slider has a red stripe behind each eye. It slides off rocks and logs into the water.",
+          "imagePrompt": "a single small pond turtle with a bright red stripe behind each eye and yellow stripes on its green head, basking on a log by a pond, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red-eared_slider"
+        },
+        {
+          "name": "Box Turtle",
+          "rarity": "common",
+          "eduText": "A box turtle can close its shell up tight like a box, with its head and legs safe inside.",
+          "imagePrompt": "a single small turtle with a tall domed brown shell covered in yellow-orange markings, walking on fallen leaves in a forest, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Box_turtle"
+        },
+        {
+          "name": "Asian Water Monitor",
+          "rarity": "common",
+          "eduText": "The Asian water monitor is a great swimmer. It is often seen in Singapore's parks, rivers and canals.",
+          "imagePrompt": "a single dark grey-black lizard covered in rows of small pale yellow spots, swimming with its head and back above calm pond water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Asian_water_monitor"
+        }
+      ]
     }
   ]
 }
