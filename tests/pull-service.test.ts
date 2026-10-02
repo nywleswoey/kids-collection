@@ -202,11 +202,26 @@ describe("makePullService.pull request-level idempotency (#kcpi)", () => {
     const next = await service.pull("kid", undefined, "req-next");
     if (!("card" in next)) throw new Error("expected a card outcome");
     expect(next.newBalance).toBe(1); // 1 + 1 refunded - 1 spent
-    expect(await claims.read("req-abandoned")).toMatchObject({ status: "done", outcome: { outOfTokens: true } });
+    expect(await claims.read("req-abandoned")).toMatchObject({ status: "done", outcome: { refunded: true } });
     expect(await claims.read("req-recent")).toMatchObject({ status: "granting" });
 
     await service.pull("kid", undefined, "req-after");
     expect(await children.readColumn("kid", "pullTokens")).toBe(0); // not refunded twice
+  });
+
+  it("replaying a swept request id reports the refund with the live balance", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    let nowMs = 1_000;
+    const { service, claims } = setup({ kid: { pullTokens: 3 } }, {}, [card("c1")], () => nowMs);
+
+    const abandoned = await claims.claimAndSpend("req-x", "kid"); // tab A, killed after spend
+    if (abandoned.kind !== "fresh") throw new Error("expected a fresh claim");
+    nowMs += 11 * 60_000;
+    await service.pull("kid", undefined, "req-y"); // tab B sweeps req-x
+
+    const replay = await service.pull("kid", undefined, "req-x"); // tab A taps again
+
+    expect(replay).toEqual({ outOfTokens: false, refunded: true, newBalance: 2 });
   });
 
   it("a draw failure refunds and frees the request id for a clean retry", async () => {

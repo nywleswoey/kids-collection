@@ -105,7 +105,7 @@ export interface ClaimStore {
    * longer than `staleMs` — attempts no retry will ever come back for — other
    * than `excludeRequestId`, the one the caller is about to resolve itself via
    * the duplicate/takeover path, which can still deliver its card. Each is
-   * marked "done" with `{outOfTokens:true}` and its fence bumped in the same
+   * marked "done" with `{refunded:true}` and its fence bumped in the same
    * write (so a late finish/takeover from its old holder no-ops), and the child
    * gets back exactly one `pullTokens` per claim swept. Returns how many.
    */

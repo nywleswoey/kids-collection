@@ -21,6 +21,7 @@ export interface EasterEggOutcome {
   outOfTokens: false;
   easterEgg: true;
   stillInProgress?: false;
+  refunded?: false;
   choices: Card[];
   /** Inc16 FR4: active child's current owned count per choice card (0 = new). */
   ownedCounts: Record<string, number>;
@@ -44,15 +45,29 @@ export interface PullStillInProgressOutcome {
   outOfTokens: false;
   easterEgg?: false;
   stillInProgress: true;
+  refunded?: false;
   /** Live balance, so a refund swept in this same call still shows. */
   newBalance: number;
 }
 
+/**
+ * A request id whose claim was swept as abandoned (#kcpi): its ticket was
+ * given back and nothing was drawn. `newBalance` is read live on replay.
+ */
+export interface PullRefundedOutcome {
+  outOfTokens: false;
+  easterEgg?: false;
+  stillInProgress?: false;
+  refunded: true;
+  newBalance: number;
+}
+
 export type PullOutcome =
-  | ({ outOfTokens: false; easterEgg?: false; stillInProgress?: false } & PullResult)
+  | ({ outOfTokens: false; easterEgg?: false; stillInProgress?: false; refunded?: false } & PullResult)
   | EasterEggOutcome
-  | { outOfTokens: true; stillInProgress?: false }
-  | PullStillInProgressOutcome;
+  | { outOfTokens: true; stillInProgress?: false; refunded?: false }
+  | PullStillInProgressOutcome
+  | PullRefundedOutcome;
 
 export interface SacrificeResult {
   /** Easter Egg ticket balance after the sacrifice granted one (Inc19 FR7). */
@@ -82,8 +97,7 @@ const CLAIM_STALE_MS = 15_000;
  * Swept opportunistically at the start of `pull()` — no background job.
  * The current tap's own request id is excluded: if a child reopens the SAME
  * tab/id after this long, the duplicate-id path takes over and completes the
- * draw for that spend, instead of the sweep refunding it and replaying it as
- * out-of-tokens moments before.
+ * draw for that spend, instead of the sweep refunding it moments before.
  */
 const ABANDONED_CLAIM_SWEEP_MS = 10 * 60 * 1000;
 
@@ -109,6 +123,14 @@ export function makePullService({ children, collections, catalog, rewards, claim
   async function stillInProgress(childId: string): Promise<PullStillInProgressOutcome> {
     const newBalance = await children.readColumn(childId, "pullTokens");
     return { outOfTokens: false, stillInProgress: true, newBalance };
+  }
+
+  /** Replay a finished claim's stored outcome; a swept (refunded) one gets
+   *  the live balance, since the sweep stores no per-claim balance. */
+  async function replayDone(childId: string, outcome: unknown): Promise<PullOutcome> {
+    if ((outcome as { refunded?: boolean } | null)?.refunded !== true) return outcome as PullOutcome;
+    const newBalance = await children.readColumn(childId, "pullTokens");
+    return { outOfTokens: false, refunded: true, newBalance };
   }
 
   /**
@@ -187,7 +209,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
   async function recoverLostLease(requestId: string, childId: string): Promise<PullOutcome> {
     const existing = await claims.read(requestId);
     if (existing && existing.childId === childId && existing.status === "done") {
-      return existing.outcome as PullOutcome;
+      return replayDone(childId, existing.outcome);
     }
     return stillInProgress(childId);
   }
@@ -287,7 +309,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     if (existing.childId !== childId) {
       throw new Error("pull: request id belongs to a different child");
     }
-    if (existing.status === "done") return existing.outcome as PullOutcome;
+    if (existing.status === "done") return replayDone(childId, existing.outcome);
 
     const takeover = await claims.takeOverIfStale(requestId, CLAIM_STALE_MS);
     if (!takeover) return stillInProgress(childId);
