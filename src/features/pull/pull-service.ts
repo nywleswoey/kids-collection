@@ -44,6 +44,8 @@ export interface PullStillInProgressOutcome {
   outOfTokens: false;
   easterEgg?: false;
   stillInProgress: true;
+  /** Live balance, so a refund swept in this same call still shows. */
+  newBalance: number;
 }
 
 export type PullOutcome =
@@ -78,12 +80,12 @@ const CLAIM_STALE_MS = 15_000;
  * come back for (tab closed, another device, sessionStorage lost). Far longer
  * than any request can run, so it only ever catches one that's truly gone.
  * Swept opportunistically at the start of `pull()` — no background job.
+ * The current tap's own request id is excluded: if a child reopens the SAME
+ * tab/id after this long, the duplicate-id path takes over and completes the
+ * draw for that spend, instead of the sweep refunding it and replaying it as
+ * out-of-tokens moments before.
  */
 const ABANDONED_CLAIM_SWEEP_MS = 10 * 60 * 1000;
-
-/** `pull()`'s answer when a duplicate request id's original attempt is still
- *  actively being completed (not stale yet) — nothing was spent or granted. */
-const STILL_IN_PROGRESS: PullStillInProgressOutcome = { outOfTokens: false, stillInProgress: true };
 
 export interface PullDeps {
   children: ChildStore;
@@ -102,6 +104,13 @@ export interface PullDeps {
  * gating now lives at the action layer. Prod wiring: `pull-service.prod.ts`.
  */
 export function makePullService({ children, collections, catalog, rewards, claims }: PullDeps) {
+  /** `pull()`'s answer when a duplicate request id's original attempt is still
+   *  actively being completed (not stale yet) — nothing was spent or granted. */
+  async function stillInProgress(childId: string): Promise<PullStillInProgressOutcome> {
+    const newBalance = await children.readColumn(childId, "pullTokens");
+    return { outOfTokens: false, stillInProgress: true, newBalance };
+  }
+
   /**
    * Assemble a pick-1-of-N easter-egg outcome: sign the offer (pure crypto,
    * always FIRST so a caller's later side-effect can't double-fire on failure),
@@ -180,7 +189,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     if (existing && existing.childId === childId && existing.status === "done") {
       return existing.outcome as PullOutcome;
     }
-    return STILL_IN_PROGRESS;
+    return stillInProgress(childId);
   }
 
   /**
@@ -253,7 +262,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
    *    abandoned (no activity for `CLAIM_STALE_MS` — i.e. killed or timed
    *    out), a retry takes over and completes the draw for that SAME spend
    *    rather than charging a new one; if it's still genuinely in flight, the
-   *    retry gets `{outOfTokens:false, stillInProgress:true}` without touching
+   *    retry gets `{outOfTokens:false, stillInProgress:true, newBalance}` without touching
    *    anything (a return value, not a thrown error — it has to survive the
    *    server action boundary, where Next.js can redact a thrown message).
    *
@@ -264,7 +273,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
-    await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS);
+    await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId);
     const claimed = await claims.claimAndSpend(requestId, childId);
     if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
     if (claimed.kind === "fresh") {
@@ -281,7 +290,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     if (existing.status === "done") return existing.outcome as PullOutcome;
 
     const takeover = await claims.takeOverIfStale(requestId, CLAIM_STALE_MS);
-    if (!takeover) return STILL_IN_PROGRESS;
+    if (!takeover) return stillInProgress(childId);
     return completeGrant(childId, themeId, requestId, takeover.lease, takeover.spentBalance);
   }
 

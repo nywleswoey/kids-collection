@@ -129,7 +129,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     // No backdate — the claim is well within the staleness window.
     const retry = await service.pull("kid", undefined, "req-fresh");
 
-    expect(retry).toEqual({ outOfTokens: false, stillInProgress: true });
+    expect(retry).toEqual({ outOfTokens: false, stillInProgress: true, newBalance: 9 });
     expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9); // untouched
   });
 
@@ -213,8 +213,8 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     await backdateClaim("req-abandoned", 11 * 60);
 
     const swept = await Promise.all([
-      pgClaimStore.sweepAbandoned("kid", 10 * 60_000),
-      pgClaimStore.sweepAbandoned("kid", 10 * 60_000),
+      pgClaimStore.sweepAbandoned("kid", 10 * 60_000, "req-other"),
+      pgClaimStore.sweepAbandoned("kid", 10 * 60_000, "req-other"),
     ]);
     await Promise.all([service.pull("kid", undefined, "req-a"), service.pull("kid", undefined, "req-b")]);
 
@@ -231,7 +231,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     const claimed = await pgClaimStore.claimAndSpend("req-slow", "kid");
     if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
     await backdateClaim("req-slow", 11 * 60);
-    expect(await pgClaimStore.sweepAbandoned("kid", 10 * 60_000)).toBe(1);
+    expect(await pgClaimStore.sweepAbandoned("kid", 10 * 60_000, "req-other")).toBe(1);
 
     const late = await pgClaimStore.finishWithCardGrant(claimed.lease, "req-slow", "kid", "c1", card("c1"), 9);
     await pgClaimStore.cleanupFailure(claimed.lease, "req-slow", "kid");
@@ -239,5 +239,23 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     expect(late).toBeNull();
     expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(0);
     expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(10); // refunded once by the sweep only
+  });
+
+  it("a same-id retry after the sweep threshold still gets its card for the original spend", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1")]);
+
+    const claimed = await pgClaimStore.claimAndSpend("req-late", "kid");
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    await backdateClaim("req-late", 11 * 60); // same tab, reopened much later
+
+    const recovered = await service.pull("kid", undefined, "req-late");
+
+    if (!("card" in recovered)) throw new Error("expected a card outcome");
+    expect(recovered.newBalance).toBe(9); // the original spend: no refund, no second charge
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9);
+    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(1);
   });
 });
