@@ -53,6 +53,12 @@ export async function seedQuizCompletions(rows: QuizSeedRow[]): Promise<void> {
   }
 }
 
+/** Backdate a pull_claims row's `claimed_at` so a stale-recovery check (#kcpi)
+ *  sees it as abandoned, without the test actually sleeping. */
+export async function backdateClaim(requestId: string, secondsAgo: number): Promise<void> {
+  await sql`UPDATE pull_claims SET claimed_at = now() - (${secondsAgo}::double precision * interval '1 second') WHERE request_id = ${requestId}`;
+}
+
 export async function seedCollections(seed: CollectionSeed): Promise<void> {
   for (const [childId, cards] of Object.entries(seed)) {
     for (const [cardId, count] of Object.entries(cards)) {

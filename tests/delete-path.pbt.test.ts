@@ -5,6 +5,7 @@ import { makePullService } from "@/features/pull/pull-service";
 import { SACRIFICE_COST } from "@/features/pull/sacrifice";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryChildStore } from "@/db/stores/child-store.fake";
+import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
@@ -156,13 +157,15 @@ function makeTrade(collections: CollectionStore) {
 }
 
 function makePull(collections: CollectionStore) {
+  const children = inMemoryChildStore(
+    Object.fromEntries(CHILD_IDS.map((id) => [id, { easterEggTickets: 0, pullTokens: 0 }])),
+  );
   return makePullService({
-    children: inMemoryChildStore(
-      Object.fromEntries(CHILD_IDS.map((id) => [id, { easterEggTickets: 0, pullTokens: 0 }])),
-    ),
+    children,
     collections,
     catalog: fakeCatalog(ALL_CARDS),
     rewards: noRewards,
+    claims: inMemoryClaimStore(children, collections),
   });
 }
 

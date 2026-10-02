@@ -24,9 +24,18 @@ function parentGrant(
   return withParent(() => run(n), [adminPath, "/play/pull"], label);
 }
 
-/** Pull for the current active child (C1). Optional category (Inc8 FR3). */
-export async function pullAction(themeId?: string): Promise<PullOutcome> {
-  return withActiveChild((childId) => pullService.pull(childId, themeId), PULL_PATHS, { label: "pull" });
+/**
+ * Pull for the current active child (C1). Optional category (Inc8 FR3).
+ *
+ * `requestId` is a client-generated id for one tap (#kcpi): the client keeps
+ * it until an outcome is shown, so a reload or a stuck-loading retry replays
+ * the SAME request instead of spending a new ticket. See pull-service.ts
+ * `pull()` for the idempotency contract.
+ */
+export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
+  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId), PULL_PATHS, {
+    label: "pull",
+  });
 }
 
 /** Redeem the unified Easter Egg ticket for a weighted-roll pick-1-of-5 (Inc19 FR3). */

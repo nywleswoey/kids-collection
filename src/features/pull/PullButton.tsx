@@ -2,7 +2,7 @@
 
 import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { PullOutcome } from "./pull-service";
+import type { PullOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
 import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
@@ -11,6 +11,52 @@ import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/shared/sound/useSound";
 import { CountUp } from "@/shared/anim/CountUp";
+
+/** How long a pull may sit "Launching…" before the UI admits something might
+ *  be wrong (#kcpi) — a genuinely stuck fetch/response never resolves on its
+ *  own, so only a client-side timeout can offer a way out. Shorter than the
+ *  server's CLAIM_STALE_MS (pull-service.ts) so the child/parent sees this
+ *  message before a retry could possibly recover the original attempt. */
+const STUCK_TIMEOUT_MS = 8000;
+
+function pendingRequestKey(childId: string): string {
+  return `pull:pending:${childId}`;
+}
+
+/**
+ * The request id for the NEXT tap (#kcpi): reuse whatever is already stored
+ * for this child (an earlier tap that hasn't shown its outcome yet — e.g. the
+ * page was reloaded mid-pull) rather than minting a fresh one, so a reload or
+ * a stuck-loading retry replays the same attempt instead of spending a new
+ * ticket. `sessionStorage` may be unavailable (private mode, blocked); falling
+ * back to a fresh id just means that one tap's idempotency won't survive a
+ * reload, not that the pull itself is unsafe.
+ */
+function getOrCreateRequestId(childId: string): string {
+  try {
+    const existing = sessionStorage.getItem(pendingRequestKey(childId));
+    if (existing) return existing;
+  } catch {
+    // ignore — fall through to a fresh id
+  }
+  const fresh = crypto.randomUUID();
+  try {
+    sessionStorage.setItem(pendingRequestKey(childId), fresh);
+  } catch {
+    // best-effort only
+  }
+  return fresh;
+}
+
+/** The pull's outcome has been shown (or definitively failed) — stop holding
+ *  this child's in-flight request id; the NEXT tap mints a fresh one. */
+function clearPendingRequestId(childId: string): void {
+  try {
+    sessionStorage.removeItem(pendingRequestKey(childId));
+  } catch {
+    // ignore
+  }
+}
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,
@@ -32,13 +78,34 @@ export function PullButton({
 }) {
   const [balance, setBalance] = useState(initialBalance);
   const [eggs, setEggs] = useState(easterEggTickets);
-  const [outcome, setOutcome] = useState<PullOutcome | null>(null);
+  // `stillInProgress` is never actually stored here — `runPull` returns before
+  // calling `setOutcome` for that case (#kcpi) — so excluding it up front keeps
+  // every downstream `outcome.card`/`.easterEgg` access narrowed without extra
+  // guards scattered through this component.
+  const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
+  const [stuck, setStuck] = useState(false); // #kcpi: stuck-loading timeout fired
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
+  // #kcpi: tags each launch so a reply from an abandoned attempt (the client
+  // timed out and the child retried) can be told apart from the CURRENT one
+  // and ignored — a hung request may still resolve long after we stopped
+  // waiting on it.
+  const attemptRef = useRef(0);
+  const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function disarmStuckTimer() {
+    if (stuckTimerRef.current !== null) {
+      clearTimeout(stuckTimerRef.current);
+      stuckTimerRef.current = null;
+    }
+  }
+
+  // Never leave a timer running past unmount.
+  useEffect(() => disarmStuckTimer, []);
 
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
@@ -71,12 +138,46 @@ export function PullButton({
   // cues, reset the picker, then dispatch. On success a normal card pull kicks off
   // the slot-machine build-up (Inc7 FR1); an easter-egg outcome plays the
   // picker-appear cue instead (Inc15 FR3).
+  //
+  // #kcpi: arms a client-side stuck-loading timeout independent of `pending`
+  // (a genuinely hung fetch never resolves on its own, so `pending` alone
+  // can't recover), and tags this call with `attemptRef` so a reply arriving
+  // after the child already retried is ignored rather than clobbering the
+  // newer attempt's state.
   function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg") {
     play("click");
     play("packOpen");
     setOutcome(null);
+    setStuck(false);
+    const attemptId = ++attemptRef.current;
+    disarmStuckTimer();
+    stuckTimerRef.current = setTimeout(() => {
+      if (attemptRef.current === attemptId) setStuck(true);
+    }, STUCK_TIMEOUT_MS);
+
     startTransition(async () => {
-      const res = await action();
+      let res: PullOutcome;
+      try {
+        res = await action();
+      } catch {
+        if (attemptRef.current !== attemptId) return; // superseded by a retry
+        disarmStuckTimer();
+        setStuck(false);
+        play("denied");
+        return;
+      }
+      if (attemptRef.current !== attemptId) return; // superseded by a retry
+      disarmStuckTimer();
+
+      if (res.stillInProgress) {
+        // A previous attempt for this SAME request id is still being
+        // completed server-side (not stale yet) — nothing was spent or
+        // granted just now. Keep the stored id so the next tap retries it.
+        setStuck(true);
+        return;
+      }
+      setStuck(false);
+      clearPendingRequestId(childId); // outcome is about to be shown
       setOutcome(res);
       if (res.outOfTokens) {
         play("denied");
@@ -101,7 +202,8 @@ export function PullButton({
   }
 
   function doPull() {
-    runPull(() => pullAction(themeId || undefined), "normal");
+    const requestId = getOrCreateRequestId(childId);
+    runPull(() => pullAction(requestId, themeId || undefined), "normal");
   }
 
   // Inc19: redeem the unified Easter Egg ticket → weighted-roll pick-1-of-5.
@@ -165,9 +267,24 @@ export function PullButton({
               outOfTokens ? "opacity-50" : ""
             }`}
           >
-            {pending ? "Launching…" : "🚀 Discover a card"}
+            {pending ? (stuck ? "⏳ Still working…" : "Launching…") : "🚀 Discover a card"}
           </button>
-          {outOfTokens && hasEggs ? (
+          {stuck ? (
+            <div
+              data-testid="pull-stuck-message"
+              className="panel max-w-xs px-4 py-3 text-center text-sm text-[color:var(--ink-soft)]"
+            >
+              <p>This is taking longer than usual. Check your tickets — nothing extra was charged.</p>
+              <button
+                type="button"
+                onClick={doPull}
+                data-testid="pull-retry-button"
+                className="btn btn--primary mt-2 press font-bold"
+              >
+                Try again
+              </button>
+            </div>
+          ) : outOfTokens && hasEggs ? (
             <span
               data-testid="use-special-hint"
               className="text-sm text-[color:var(--ink-soft)]"
