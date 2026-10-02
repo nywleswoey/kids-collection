@@ -1,14 +1,14 @@
 /**
  * Migration gate (#104, F1).
  *
- *   tsx scripts/backup/check-migrations.ts <prod-migrations.tsv>
+ *   node scripts/backup/check-migrations.ts <prod-migrations.tsv>
  *
  * `prod-migrations.tsv` is `hash<TAB>created_at` lines read from production's
  * `drizzle.__drizzle_migrations`, in the same unaligned tuples-only psql format
  * `backup.yml` already uses for the row-count drill. Exits non-zero when
  * production hasn't run every migration `src/db/migrations/meta/_journal.json`
- * registers — see migration-report.ts for why that's the same check
- * drizzle-orm's migrator makes before deciding what still needs to run.
+ * registers; hash mismatches and extra rows are printed as warnings only — see
+ * migration-report.ts for exactly what is compared.
  *
  * Imports only node:fs/path/url (plus migration-report.ts, same constraint) so
  * this runs under plain `node` with Node 24's built-in type stripping — no
@@ -21,7 +21,7 @@ import {
   diffMigrations,
   expectedMigrations,
   formatMigrationDiff,
-  isClean,
+  gatePasses,
   parseMigrationRows,
 } from "./migration-report.ts";
 
@@ -47,7 +47,7 @@ function main(): void {
   const diff = diffMigrations(expected, actual);
 
   console.log(formatMigrationDiff(diff));
-  if (!isClean(diff)) process.exit(1);
+  if (!gatePasses(diff)) process.exit(1);
 
   console.log(`  ${expected.length} migration(s) verified against production.`);
 }

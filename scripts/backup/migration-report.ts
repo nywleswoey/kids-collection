@@ -4,11 +4,19 @@
  * Nothing before this read `drizzle.__drizzle_migrations` outside docs and
  * tests — `pg-gate` only replays migrations into an *empty* database, so it
  * can never catch prod sitting on an older schema. This compares the rows
- * drizzle-orm's own migrator leaves in `__drizzle_migrations` (hash,
- * created_at) against `src/db/migrations/meta/_journal.json` and the `.sql`
- * files it names — the exact inputs that migrator (`readMigrationFiles`,
- * `drizzle-orm/neon-http/migrator`) uses to decide what still needs to run,
- * so a mismatch here is the same signal the migrator itself would act on.
+ * drizzle-orm's migrator leaves in `__drizzle_migrations` (hash, created_at)
+ * against `src/db/migrations/meta/_journal.json` and the `.sql` files it names.
+ *
+ * What fails: a journal entry whose `when` matches no row's `created_at` — a
+ * migration production has not run. created_at/when is the key drizzle-orm's
+ * migrator (`drizzle-orm/neon-http/migrator`) uses too, but it only compares
+ * the newest row's created_at against each entry's `when`; checking every
+ * entry here also catches a gap behind the newest row.
+ *
+ * What only warns: a row whose created_at matches an entry but whose hash
+ * differs from the file's sha256 (the file was edited after it was applied),
+ * and a row whose created_at matches no entry. drizzle's migrator ignores
+ * both, so neither means prod is missing a migration.
  *
  * Deliberately pure string/hash work with no database driver, mirroring
  * count-report.ts: the assertion that guards a missed-migration outage
@@ -76,9 +84,11 @@ export function parseMigrationRows(tsv: string): MigrationRow[] {
 }
 
 export interface MigrationDiff {
-  /** Journal entries with no matching (hash, created_at) row in production. */
+  /** Journal entries with no production row whose created_at equals their `when`. Fails the gate. */
   missing: ExpectedMigration[];
-  /** Rows in production that match no journal entry at all. */
+  /** Journal entries applied in production under a different hash. Warning only. */
+  hashMismatch: ExpectedMigration[];
+  /** Rows in production whose created_at matches no journal entry. Warning only. */
   unexpected: MigrationRow[];
 }
 
@@ -87,31 +97,42 @@ export function diffMigrations(
   expected: ExpectedMigration[],
   actual: MigrationRow[],
 ): MigrationDiff {
-  const actualKeys = new Set(actual.map((r) => `${r.hash}:${r.createdAt}`));
-  const expectedKeys = new Set(expected.map((e) => `${e.hash}:${e.when}`));
-
-  const missing = expected.filter((e) => !actualKeys.has(`${e.hash}:${e.when}`));
-  const unexpected = actual.filter((r) => !expectedKeys.has(`${r.hash}:${r.createdAt}`));
-
-  return { missing, unexpected };
-}
-
-/** True if the diff shows no discrepancies (production matches the journal exactly). */
-export function isClean(d: MigrationDiff): boolean {
-  return d.missing.length === 0 && d.unexpected.length === 0;
-}
-
-/** Human-readable failure report for the workflow log. Contains no credentials. */
-export function formatMigrationDiff(d: MigrationDiff): string {
-  if (isClean(d)) {
-    return "Migration gate verified: production has run every registered migration.";
+  const hashesByCreatedAt = new Map<number, Set<string>>();
+  for (const r of actual) {
+    const hashes = hashesByCreatedAt.get(r.createdAt) ?? new Set<string>();
+    hashes.add(r.hash);
+    hashesByCreatedAt.set(r.createdAt, hashes);
   }
-  const lines: string[] = ["Migration gate FAILED — production does not match meta/_journal.json."];
+  const expectedWhens = new Set(expected.map((e) => e.when));
+
+  const missing = expected.filter((e) => !hashesByCreatedAt.has(e.when));
+  const hashMismatch = expected.filter((e) => {
+    const hashes = hashesByCreatedAt.get(e.when);
+    return hashes !== undefined && !hashes.has(e.hash);
+  });
+  const unexpected = actual.filter((r) => !expectedWhens.has(r.createdAt));
+
+  return { missing, hashMismatch, unexpected };
+}
+
+/** True if production has a row for every registered migration. Warnings don't fail it. */
+export function gatePasses(d: MigrationDiff): boolean {
+  return d.missing.length === 0;
+}
+
+/** Human-readable report for the workflow log. Contains no credentials. */
+export function formatMigrationDiff(d: MigrationDiff): string {
+  const lines: string[] = gatePasses(d)
+    ? ["Migration gate verified: production has run every registered migration."]
+    : ["Migration gate FAILED — production has not run every migration in meta/_journal.json."];
   for (const m of d.missing) {
     lines.push(`  not applied in production: ${m.tag} (when=${m.when})`);
   }
+  for (const m of d.hashMismatch) {
+    lines.push(`  warning: ${m.tag} (when=${m.when}) applied in production with a different hash than its file`);
+  }
   for (const r of d.unexpected) {
-    lines.push(`  unexpected row in production: hash=${r.hash} created_at=${r.createdAt}`);
+    lines.push(`  warning: row in production matches no journal entry: hash=${r.hash} created_at=${r.createdAt}`);
   }
   return lines.join("\n");
 }

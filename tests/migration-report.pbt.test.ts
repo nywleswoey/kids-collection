@@ -4,7 +4,7 @@ import {
   diffMigrations,
   expectedMigrations,
   formatMigrationDiff,
-  isClean,
+  gatePasses,
   migrationHash,
   parseMigrationRows,
   type ExpectedMigration,
@@ -52,7 +52,8 @@ describe("migration-report — the migration gate's assertion (#104, F1)", () =>
         const expected = expectedFor(entries);
         const actual = expected.map((e) => ({ hash: e.hash, createdAt: e.when }));
         const d = diffMigrations(expected, actual);
-        expect(isClean(d)).toBe(true);
+        expect(d).toEqual({ missing: [], hashMismatch: [], unexpected: [] });
+        expect(gatePasses(d)).toBe(true);
         expect(formatMigrationDiff(d)).toMatch(/verified/);
       }),
     );
@@ -67,25 +68,49 @@ describe("migration-report — the migration gate's assertion (#104, F1)", () =>
           .filter((_, j) => j !== i)
           .map((e) => ({ hash: e.hash, createdAt: e.when }));
         const d = diffMigrations(expected, actual);
-        expect(isClean(d)).toBe(false);
+        expect(gatePasses(d)).toBe(false);
         expect(d.missing).toEqual([expected[i]]);
+        expect(formatMigrationDiff(d)).toMatch(/FAILED/);
         expect(formatMigrationDiff(d)).toContain(expected[i].tag);
       }),
     );
   });
 
-  it("catches a row in production whose hash doesn't match the registered file — a changed/unregistered migration", () => {
+  it("only warns when production applied a registered migration under a different hash", () => {
     fc.assert(
       fc.property(journalArb, fc.nat(), (entries, idxSeed) => {
         const expected = expectedFor(entries);
         const i = idxSeed % expected.length;
         const actual = expected.map((e, j) =>
-          j === i ? { hash: "tampered", createdAt: e.when } : { hash: e.hash, createdAt: e.when },
+          j === i ? { hash: "edited", createdAt: e.when } : { hash: e.hash, createdAt: e.when },
         );
         const d = diffMigrations(expected, actual);
-        expect(isClean(d)).toBe(false);
-        expect(d.missing).toEqual([expected[i]]);
-        expect(d.unexpected).toEqual([{ hash: "tampered", createdAt: expected[i].when }]);
+        expect(gatePasses(d)).toBe(true);
+        expect(d.missing).toEqual([]);
+        expect(d.hashMismatch).toEqual([expected[i]]);
+        expect(d.unexpected).toEqual([]);
+        expect(formatMigrationDiff(d)).toMatch(/verified/);
+        expect(formatMigrationDiff(d)).toContain(`warning: ${expected[i].tag}`);
+      }),
+    );
+  });
+
+  it("only warns on a production row that matches no journal entry", () => {
+    fc.assert(
+      fc.property(journalArb, (entries) => {
+        const expected = expectedFor(entries);
+        const extraAt = Math.max(...expected.map((e) => e.when)) + 1;
+        const actual = [
+          ...expected.map((e) => ({ hash: e.hash, createdAt: e.when })),
+          { hash: "extra", createdAt: extraAt },
+        ];
+        const d = diffMigrations(expected, actual);
+        expect(gatePasses(d)).toBe(true);
+        expect(d.missing).toEqual([]);
+        expect(d.hashMismatch).toEqual([]);
+        expect(d.unexpected).toEqual([{ hash: "extra", createdAt: extraAt }]);
+        expect(formatMigrationDiff(d)).toMatch(/verified/);
+        expect(formatMigrationDiff(d)).toContain(`created_at=${extraAt}`);
       }),
     );
   });
