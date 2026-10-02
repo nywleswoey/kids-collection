@@ -78,6 +78,13 @@
       "when": 1788062365419,
       "tag": "0010_drop_theme_cover_url",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790951353619,
+      "tag": "0011_fixed_shiva",
+      "breakpoints": true
     }
   ]
 }

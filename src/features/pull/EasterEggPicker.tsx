@@ -37,7 +37,10 @@ export function EasterEggPicker({
    *  revealed above the choices. Absent for the random ~1% eggs. */
   revealRarity?: Rarity;
   offer: string;
-  onDone: (result: Extract<PullOutcome, { outOfTokens: false }>) => void;
+  // `claimEasterEggAction` never returns the pull()-only "still in progress"
+  // outcome (#kcpi), so excluding it keeps the callback's `card`/`isDuplicate`
+  // fields narrowed without the caller needing its own guard.
+  onDone: (result: Extract<PullOutcome, { outOfTokens: false; stillInProgress?: false }>) => void;
 }) {
   const [phase, setPhase] = useState<Phase>("choosing");
   const [active, setActive] = useState(-1);
