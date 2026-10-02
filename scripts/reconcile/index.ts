@@ -5,6 +5,8 @@
  *   pnpm reconcile --fix           show the exact grants that would repair broken
  *                                  sets (still a dry run — writes nothing)
  *   pnpm reconcile --fix --yes     apply those grants (+1 each missing set card)
+ *                                  — against a non-local DATABASE_URL, only after
+ *                                  typing the grant count at a TTY prompt
  *
  * Requires DATABASE_URL in env (same as `pnpm seed`).
  *

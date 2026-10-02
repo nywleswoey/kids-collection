@@ -78,8 +78,9 @@ jobs:
         ORDER BY 1, 2;
       # F1 (#104): the (hash, created_at) rows drizzle-orm's migrator leaves
       # behind. check-migrations.ts compares these against
-      # src/db/migrations/meta/_journal.json — a mismatch means prod never
-      # ran a migration the deployed code needs.
+      # src/db/migrations/meta/_journal.json — a journal entry with no
+      # matching row means prod never ran a migration the deployed code needs
+      # (see migration-report.ts for what fails vs. only warns).
       MIGRATIONS_SQL: >-
         SELECT hash, created_at FROM drizzle.__drizzle_migrations ORDER BY created_at;
 
