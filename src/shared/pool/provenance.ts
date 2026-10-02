@@ -163,8 +163,7 @@ export function toProvenance(
  *
  * An existing entry for the same card is REPLACED. A card is only ever recorded
  * on an INSERT, so reaching an existing entry means the card was published,
- * removed from the pool, and published again — a `--publish --reset` rebuild, or
- * a prune followed by a re-add. `blobKey` is stable and prompt-independent, so
+ * removed from the pool, and published again — a prune followed by a re-add. `blobKey` is stable and prompt-independent, so
  * that second publish overwrote the object its binder page points at. The record
  * follows the bytes; the old one describes art nobody has any more.
  */

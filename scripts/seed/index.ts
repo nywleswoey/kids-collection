@@ -543,7 +543,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
         }
         return 1;
       }
-      await deps.confirmDestructive({ operation: "prune", target, isProduction, radius });
+      await deps.confirmDestructive({ target, isProduction, radius });
     }
   }
 

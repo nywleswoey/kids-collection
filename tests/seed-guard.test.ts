@@ -38,7 +38,7 @@ afterEach(() => {
 describe("confirmDestructive", () => {
   it("reports the blast radius and proceeds against a local target", async () => {
     await expect(
-      confirmDestructive({ operation: "prune", target: "localhost:5499", isProduction: false, radius: RADIUS }),
+      confirmDestructive({ target: "localhost:5499", isProduction: false, radius: RADIUS }),
     ).resolves.toBeUndefined();
 
     const report = printed.join("\n");
@@ -47,13 +47,10 @@ describe("confirmDestructive", () => {
     expect(report).toContain("Ada");
   });
 
-  it.each(["reset", "prune"] as const)(
-    "refuses a production %s when stdin is not a terminal",
-    async (operation) => {
-      await expect(
-        confirmDestructive({ operation, target: "prod.example", isProduction: true, radius: RADIUS }),
-      ).rejects.toBeInstanceOf(DestructiveOperationAborted);
-      expect(printed.join("\n")).toContain("PRODUCTION");
-    },
-  );
+  it("refuses a production prune when stdin is not a terminal", async () => {
+    await expect(
+      confirmDestructive({ target: "prod.example", isProduction: true, radius: RADIUS }),
+    ).rejects.toBeInstanceOf(DestructiveOperationAborted);
+    expect(printed.join("\n")).toContain("PRODUCTION");
+  });
 });
