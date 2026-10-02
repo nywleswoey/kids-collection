@@ -14,9 +14,10 @@ import type { SeedCard } from "./seed-schema";
  * THE NUMBERS BELOW ARE THE CANONICAL ONES. Everywhere else that mentions this —
  * the Cloudflare adapter, `NEW-THEME-RUNBOOK.md`, the guard in `pool.test.ts` —
  * points here rather than restating them, so re-measuring is one edit.
- * `pnpm prototype:81` regenerates the images and the contact sheet they were
- * judged from; the detector column is a one-off cross-check that is NOT in the
- * repo, for the reason that prototype's header gives.
+ * `tsx --env-file-if-exists=.env.local archive/prototypes/81-frames/index.ts` regenerates the
+ * images and the contact sheet they were judged from (archived, Pollinations-dependent — see
+ * its header); the detector column is a one-off cross-check that is NOT in the repo, for the
+ * reason that prototype's header gives.
  *
  * Measured on paired samples, 4 subjects x 5 seeds per arm, seed-paired so each
  * treated sample has its own control. Two instruments, because a frame is

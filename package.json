@@ -25,9 +25,7 @@
     "seed": "tsx --env-file-if-exists=.env.local scripts/seed/index.ts",
     "contact-sheet": "tsx --env-file-if-exists=.env.local scripts/contact-sheet/index.ts",
     "reconcile": "tsx --env-file-if-exists=.env.local scripts/reconcile/index.ts",
-    "backup:verify": "tsx scripts/backup/verify.ts",
-    "prototype:79": "tsx --env-file-if-exists=.env.local scripts/prototypes/79-weight/index.ts",
-    "prototype:81": "tsx --env-file-if-exists=.env.local scripts/prototypes/81-frames/index.ts"
+    "backup:verify": "tsx scripts/backup/verify.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
