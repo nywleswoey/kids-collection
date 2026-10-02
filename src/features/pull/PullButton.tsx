@@ -4,6 +4,7 @@ import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
+import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./pending-request";
 import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
@@ -18,45 +19,6 @@ import { CountUp } from "@/shared/anim/CountUp";
  *  server's CLAIM_STALE_MS (pull-service.ts) so the child/parent sees this
  *  message before a retry could possibly recover the original attempt. */
 const STUCK_TIMEOUT_MS = 8000;
-
-function pendingRequestKey(childId: string): string {
-  return `pull:pending:${childId}`;
-}
-
-/**
- * The request id for the NEXT tap (#kcpi): reuse whatever is already stored
- * for this child (an earlier tap that hasn't shown its outcome yet — e.g. the
- * page was reloaded mid-pull) rather than minting a fresh one, so a reload or
- * a stuck-loading retry replays the same attempt instead of spending a new
- * ticket. `sessionStorage` may be unavailable (private mode, blocked); falling
- * back to a fresh id just means that one tap's idempotency won't survive a
- * reload, not that the pull itself is unsafe.
- */
-function getOrCreateRequestId(childId: string): string {
-  try {
-    const existing = sessionStorage.getItem(pendingRequestKey(childId));
-    if (existing) return existing;
-  } catch {
-    // ignore — fall through to a fresh id
-  }
-  const fresh = crypto.randomUUID();
-  try {
-    sessionStorage.setItem(pendingRequestKey(childId), fresh);
-  } catch {
-    // best-effort only
-  }
-  return fresh;
-}
-
-/** The pull's outcome has been shown (or definitively failed) — stop holding
- *  this child's in-flight request id; the NEXT tap mints a fresh one. */
-function clearPendingRequestId(childId: string): void {
-  try {
-    sessionStorage.removeItem(pendingRequestKey(childId));
-  } catch {
-    // ignore
-  }
-}
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,
@@ -277,7 +239,7 @@ export function PullButton({
               <p>This is taking longer than usual. Check your tickets — nothing extra was charged.</p>
               <button
                 type="button"
-                onClick={doPull}
+                onClick={reloadStuckPull}
                 data-testid="pull-retry-button"
                 className="btn btn--primary mt-2 press font-bold"
               >

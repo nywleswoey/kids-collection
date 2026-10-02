@@ -41,3 +41,14 @@ export function storageSet(kind: StorageKind, key: string, value: string): void 
     /* storage blocked (private mode / quota) — silent, non-fatal */
   }
 }
+
+/** Remove a value from storage; silently fails if unavailable or blocked. */
+export function storageRemove(kind: StorageKind, key: string): void {
+  const store = resolveStorage(kind);
+  if (!store) return;
+  try {
+    store.removeItem(key);
+  } catch {
+    /* storage blocked — silent, non-fatal */
+  }
+}

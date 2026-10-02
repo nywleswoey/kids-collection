@@ -99,4 +99,13 @@ export interface ClaimStore {
    * lease was lost (the new owner is responsible for the eventual outcome).
    */
   cleanupFailure(lease: unknown, requestId: string, childId: string): Promise<void>;
+
+  /**
+   * Refund and close every one of `childId`'s "granting" claims untouched for
+   * longer than `staleMs` — attempts no retry will ever come back for. Each is
+   * marked "done" with `{outOfTokens:true}` and its fence bumped in the same
+   * write (so a late finish/takeover from its old holder no-ops), and the child
+   * gets back exactly one `pullTokens` per claim swept. Returns how many.
+   */
+  sweepAbandoned(childId: string, staleMs: number): Promise<number>;
 }

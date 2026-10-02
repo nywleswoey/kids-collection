@@ -100,5 +100,20 @@ export function inMemoryClaimStore(
       await children.incrementColumn(childId, "pullTokens", 1);
       claims.delete(requestId);
     },
+
+    async sweepAbandoned(childId, staleMs) {
+      let swept = 0;
+      for (const row of claims.values()) {
+        if (row.childId !== childId || row.status !== "granting") continue;
+        if (now() - row.claimedAtMs < staleMs) continue;
+        row.status = "done";
+        row.fence += 1;
+        row.claimedAtMs = now();
+        row.outcome = { outOfTokens: true };
+        swept += 1;
+      }
+      if (swept > 0) await children.incrementColumn(childId, "pullTokens", swept);
+      return swept;
+    },
   };
 }

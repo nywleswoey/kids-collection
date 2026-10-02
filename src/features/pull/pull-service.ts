@@ -70,6 +70,17 @@ const OFFER_TTL_MS = 120_000; // 2 min
  */
 const CLAIM_STALE_MS = 15_000;
 
+/**
+ * How long a "granting" claim must sit untouched before the child's NEXT pull
+ * (any request id) refunds it outright (#kcpi). CLAIM_STALE_MS is the short
+ * same-tab window for a live retry of the SAME id to take over and finish the
+ * draw; this is the long cross-session one, for a claim no retry will ever
+ * come back for (tab closed, another device, sessionStorage lost). Far longer
+ * than any request can run, so it only ever catches one that's truly gone.
+ * Swept opportunistically at the start of `pull()` — no background job.
+ */
+const ABANDONED_CLAIM_SWEEP_MS = 10 * 60 * 1000;
+
 /** `pull()`'s answer when a duplicate request id's original attempt is still
  *  actively being completed (not stale yet) — nothing was spent or granted. */
 const STILL_IN_PROGRESS: PullStillInProgressOutcome = { outOfTokens: false, stillInProgress: true };
@@ -196,13 +207,13 @@ export function makePullService({ children, collections, catalog, rewards, claim
       // Egg 1 (U6-FR2): rare roll → pick-1-of-5 epic+. Eggs draw from the FULL pool.
       if (rollEasterEgg()) {
         const choices = pickEasterEggChoices(pool, 5);
-        if (choices.length > 0) return finishEggOutcome(childId, requestId, lease, choices, spentBalance);
+        if (choices.length > 0) return await finishEggOutcome(childId, requestId, lease, choices, spentBalance);
       }
 
       // Egg 2 (Inc8 FR1): independent rare roll → pick-1-of-5 common/rare.
       if (rollEasterEgg()) {
         const choices = pickCommonRareChoices(pool, 5);
-        if (choices.length > 0) return finishEggOutcome(childId, requestId, lease, choices, spentBalance);
+        if (choices.length > 0) return await finishEggOutcome(childId, requestId, lease, choices, spentBalance);
       }
 
       // Draw (rarity-weighted, pure). Category-scoped if a theme was chosen.
@@ -253,6 +264,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
+    await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS);
     const claimed = await claims.claimAndSpend(requestId, childId);
     if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
     if (claimed.kind === "fresh") {
