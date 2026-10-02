@@ -106,6 +106,9 @@ export async function countCollections(): Promise<number> {
  * There is deliberately NO override parameter. Re-adding one re-arms the exact
  * defect this exists to remove — see "What Must NOT Change" in the feature's
  * vision document. A caller that genuinely wants both operations calls both.
+ *
+ * No CLI path reaches this any more: `pnpm seed --publish --reset` was removed
+ * (A3). It survives so `tests-pg` can pin the guard directly.
  */
 export async function resetPool(): Promise<void> {
   const owned = await countCollections();
