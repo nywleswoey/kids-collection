@@ -4,6 +4,8 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 
 - New card themes follow `seed-content/NEW-THEME-RUNBOOK.md`. Lanes are the registry in `src/shared/pool/providers/index.ts`. `supergrok-manual` is an opt-in drop folder (`pnpm seed --supergrok-export`); there is no xAI API key.
 - `scripts/seed/index.ts`'s CLI flags are parsed by `scripts/seed/args.ts` (`parseSeedArgs`, strict `node:util parseArgs`). Add a new flag or command there, not via `process.argv.includes` in `main()`/`runSeed()`. Any code that deletes pool rows by a keep-list (prune previews or the real pruners) should share `notKept()` in `src/shared/pool/prune-predicate.ts` rather than re-implementing the empty-keep-list rule.
+- `scripts/backup/*.ts` must stay dependency-free (only `node:fs`/`node:crypto`/`node:path`/`node:url`): `backup.yml` runs them with plain `node` (Node 24's built-in type stripping), not `tsx`, so the nightly job needs no `pnpm install` next to `secrets.BACKUP_DATABASE_URL`. A relative import between them needs an explicit `.ts` extension (`tsconfig.json`'s `allowImportingTsExtensions`) because Node's ESM resolver, unlike `tsx`, requires one. `backup.yml` also gates on `drizzle.__drizzle_migrations` vs. `src/db/migrations/meta/_journal.json` (`scripts/backup/check-migrations.ts`) — see CONTRIBUTING.md's Migrations section.
+- `tests-pg/db.ts`'s `resetAll()` derives its `TRUNCATE` table list from `src/db/schema.ts` via `drizzle-orm`'s `isTable`/`getTableName` — a new table needs no edit there.
 
 ## Maintaining this file
 

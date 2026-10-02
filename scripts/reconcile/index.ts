@@ -39,20 +39,46 @@
  * cards only when you explicitly opt in, after reading the report and judging
  * whether a real loss (not a sacrifice) occurred.
  */
+import { createInterface } from "node:readline/promises";
 import { sql } from "drizzle-orm";
 import { db, schema } from "@/db";
-import { isRaritySetComplete } from "@/features/rewards/collection-reward";
+import { isProductionDatabaseUrl, describeTarget } from "@/shared/pool/db-target";
+import { findBrokenSets } from "./find-broken-sets";
 import type { Card } from "@/lib/types";
 
 const { cards, themes, children, collections, collectionRewards } = schema;
 
-interface BrokenSet {
-  childId: string;
-  childName: string;
-  themeId: string;
-  themeName: string;
-  rarity: string;
-  missing: { id: string; name: string }[];
+/**
+ * Production guard for `--fix --yes` (mirrors `scripts/seed/guard.ts`'s
+ * confirmDestructive): a write against a URL that isn't provably localhost
+ * must come from a real terminal and name the exact grant count, so it can't
+ * be triggered by a stale `.env.local` value or a piped `--yes`.
+ */
+async function confirmApply(databaseUrl: string | undefined, grantCount: number): Promise<void> {
+  const isProduction = isProductionDatabaseUrl(databaseUrl);
+  console.log(
+    `\nTarget: ${isProduction ? "⚠️  PRODUCTION" : "local"} — ${describeTarget(databaseUrl)}`,
+  );
+  if (!isProduction) return;
+
+  if (!process.stdin.isTTY) {
+    throw new Error(
+      "Aborted: not an interactive terminal. `reconcile --fix --yes` against production " +
+        "requires a TTY confirmation — re-run this from a real terminal.",
+    );
+  }
+
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const answer = await rl.question(
+      `Type the number of grants to apply (${grantCount}) to confirm writing to PRODUCTION: `,
+    );
+    if (answer.trim() !== String(grantCount)) {
+      throw new Error("Aborted: confirmation did not match.");
+    }
+  } finally {
+    rl.close();
+  }
 }
 
 async function main() {
@@ -87,23 +113,7 @@ async function main() {
   );
 
   // ── 2. Reward-vs-holdings: completed sets the child no longer fully owns ─────
-  const broken: BrokenSet[] = [];
-  for (const rw of rewardRows) {
-    const owned = ownedByChild.get(rw.childId) ?? new Set<string>();
-    if (isRaritySetComplete(pool, rw.themeId, rw.rarity, owned)) continue; // intact
-    const missing = pool
-      .filter((c) => c.themeId === rw.themeId && c.rarity === rw.rarity && !owned.has(c.id))
-      .map((c) => ({ id: c.id, name: c.name }));
-    if (missing.length === 0) continue; // set became empty (cards pruned) — not a loss
-    broken.push({
-      childId: rw.childId,
-      childName: childName.get(rw.childId) ?? rw.childId,
-      themeId: rw.themeId,
-      themeName: themeName.get(rw.themeId) ?? rw.themeId,
-      rarity: rw.rarity,
-      missing,
-    });
-  }
+  const broken = findBrokenSets({ pool, rewardRows, ownedByChild, themeName, childName });
 
   // ── Report ──────────────────────────────────────────────────────────────────
   console.log("── Collection reconciliation ─────────────────────────────────");
@@ -150,6 +160,8 @@ async function main() {
     console.log("\nDry run — nothing written. Add `--yes` to apply.");
     return;
   }
+
+  await confirmApply(process.env.DATABASE_URL, grants.length);
 
   // Restore each missing set card: +1 on the (child, card) unique conflict.
   for (const g of grants) {

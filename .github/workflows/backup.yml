@@ -76,6 +76,12 @@ jobs:
         WHERE c.relkind = 'r' AND n.nspname NOT IN ('pg_catalog','information_schema')
           AND n.nspname NOT LIKE 'pg_toast%'
         ORDER BY 1, 2;
+      # F1 (#104): the (hash, created_at) rows drizzle-orm's migrator leaves
+      # behind. check-migrations.ts compares these against
+      # src/db/migrations/meta/_journal.json — a mismatch means prod never
+      # ran a migration the deployed code needs.
+      MIGRATIONS_SQL: >-
+        SELECT hash, created_at FROM drizzle.__drizzle_migrations ORDER BY created_at;
 
     steps:
       # Majors are kept level with ci.yml, and moved with it in one commit (#31)
@@ -86,31 +92,22 @@ jobs:
       - uses: actions/checkout@v7
 
       # Node version comes from `engines.node` in package.json rather than a
-      # literal here, for the same reason pnpm's does below: one source of
-      # truth. setup-node reads `volta.node`, then `devEngines.runtime`, then
-      # `engines.node` — we only set the last. Still true on v7.
+      # literal here — one source of truth. setup-node reads `volta.node`,
+      # then `devEngines.runtime`, then `engines.node` — we only set the
+      # last. Still true on v7.
       #
-      # `package-manager-cache: false` because v5 added automatic caching for
-      # any package.json carrying `packageManager`, and for pnpm that shells out
-      # to a pnpm that this step has not installed yet. v6 narrowed the automatic
-      # case to npm, so the default is already off here — this states it rather
-      # than depending on it. It matters more in this file than in ci.yml: this
-      # job holds a production credential, and GitHub's own guidance is to turn
-      # automatic caching off in workflows with access to sensitive information.
+      # This job runs `scripts/backup/verify.ts` and `check-migrations.ts`
+      # directly with `node` (F3), relying on the Node 24 from `engines.node`
+      # stripping their types natively. Those two scripts and the modules
+      # they import touch only `node:fs`/`node:crypto`/`node:path`/`node:url`
+      # — no third-party dependency — so this job needs no package manager at
+      # all: no `pnpm/action-setup` (a tag-pinned third-party action) and no
+      # `pnpm install`, which used to run a full dependency tree (sharp,
+      # esbuild, core-js build scripts included) in the same job that holds
+      # `secrets.BACKUP_DATABASE_URL`.
       - uses: actions/setup-node@v7
         with:
           node-version-file: package.json
-          package-manager-cache: false
-
-      # No version here on purpose: the action reads `packageManager` from
-      # package.json, so the pnpm running here is the exact one the developer
-      # ran. Pinning it again would give the repo two answers to one question.
-      # Not the successor `pnpm/setup`, which requires pnpm v11 and this repo is
-      # on 10.32.1.
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - run: pnpm install --frozen-lockfile
 
       - name: Pull the Postgres client image
         run: docker pull -q "$PG_IMAGE"
@@ -148,6 +145,24 @@ jobs:
           docker run --rm -e PGURL -e COUNT_SQL "$PG_IMAGE" \
             sh -c 'psql "$PGURL" -At -F "$(printf "\t")" -c "$COUNT_SQL"' > prod-counts.tsv
           echo "captured $(wc -l < prod-counts.tsv) tables"
+        shell: bash
+
+      # F1 (#104): nothing before this read drizzle.__drizzle_migrations
+      # outside docs and tests. pg-gate only replays migrations into an
+      # EMPTY database, so it can never catch prod sitting on an older
+      # schema than the deployed code expects. This only detects that within
+      # the next 24h, rather than preventing the deploy — see CONTRIBUTING.md.
+      # Captured here, next to the row counts, but CHECKED only after the
+      # dump is made, encrypted and restore-verified below: a migration
+      # drift found tonight must not cost tonight's backup too.
+      - name: Capture production migration history
+        env:
+          PGURL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          docker run --rm -e PGURL -e MIGRATIONS_SQL "$PG_IMAGE" \
+            sh -c 'psql "$PGURL" -At -F "$(printf "\t")" -c "$MIGRATIONS_SQL"' > prod-migrations.tsv
+          echo "captured $(wc -l < prod-migrations.tsv) migration row(s)"
         shell: bash
 
       # No -t and no -n, ever. The full dump is the mechanism, not a default:
@@ -303,7 +318,14 @@ jobs:
         shell: bash
 
       - name: Verify the backup restores exactly
-        run: pnpm backup:verify prod-counts.tsv restored-counts.tsv
+        run: node scripts/backup/verify.ts prod-counts.tsv restored-counts.tsv
+
+      # F1 (#104) gate: checked only now, after a verified backup already
+      # exists for tonight, so this failing still leaves a usable dump
+      # uploaded above — it only withholds the dead-man's-switch ping (next
+      # step), the same way any other failure here already does.
+      - name: Verify production ran every registered migration
+        run: node scripts/backup/check-migrations.ts prod-migrations.tsv
 
       # The dead-man's switch, and the ONLY thing here that can report a backup
       # which never ran. Everything else in this file reports on a run that

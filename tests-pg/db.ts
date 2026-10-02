@@ -1,4 +1,6 @@
 import { neon } from "@neondatabase/serverless";
+import { getTableName, isTable } from "drizzle-orm";
+import * as schema from "@/db/schema";
 import type { ChildSeed } from "@/db/stores/child-store.fake";
 import type { CollectionSeed } from "@/db/stores/collection-store.fake";
 import type { QuizSeedRow } from "@/db/stores/quiz-store.fake";
@@ -8,9 +10,12 @@ const sql = neon(process.env.DATABASE_URL!);
 
 const BALANCE_COLUMNS = ["pullTokens", "easterEggTickets"] as const;
 
+/** Every table in the schema (D3) — a table added there needs no edit here. */
+const TABLE_NAMES = (Object.values(schema) as unknown[]).filter(isTable).map(getTableName);
+
 /** Wipe every table so each makeStore() call yields a fresh, isolated store. */
 export async function resetAll(): Promise<void> {
-  await sql`TRUNCATE collections, collection_rewards, quiz_completions, quiz_seen_questions, children, cards, themes, admin_credentials RESTART IDENTITY CASCADE`;
+  await sql(`TRUNCATE ${TABLE_NAMES.join(", ")} RESTART IDENTITY CASCADE`);
 }
 
 /** Insert children with both balance columns set explicitly (0 unless the seed
