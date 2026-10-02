@@ -147,12 +147,13 @@ export const pgClaimStore: ClaimStore = {
     `);
   },
 
-  async sweepAbandoned(childId, staleMs) {
+  async sweepAbandoned(childId, staleMs, excludeRequestId) {
     const result = await db.execute<{ swept: number }>(sql`
       WITH swept AS (
         UPDATE pull_claims
         SET status = 'done', fence = fence + 1, claimed_at = now(), outcome = '{"outOfTokens":true}'::jsonb
         WHERE child_id = ${childId}
+          AND request_id != ${excludeRequestId}
           AND status = 'granting'
           AND claimed_at < now() - (${staleMs}::double precision * interval '1 millisecond')
         RETURNING 1

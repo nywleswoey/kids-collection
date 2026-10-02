@@ -101,9 +101,10 @@ export function inMemoryClaimStore(
       claims.delete(requestId);
     },
 
-    async sweepAbandoned(childId, staleMs) {
+    async sweepAbandoned(childId, staleMs, excludeRequestId) {
       let swept = 0;
-      for (const row of claims.values()) {
+      for (const [id, row] of claims.entries()) {
+        if (id === excludeRequestId) continue;
         if (row.childId !== childId || row.status !== "granting") continue;
         if (now() - row.claimedAtMs < staleMs) continue;
         row.status = "done";

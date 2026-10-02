@@ -195,7 +195,7 @@ describe("makePullService.pull request-level idempotency (#kcpi)", () => {
     nowMs += 5_000; // well under CLAIM_STALE_MS (15s) — still "in flight"
     const retry = await service.pull("kid", undefined, "req-stuck");
 
-    expect(retry).toEqual({ outOfTokens: false, stillInProgress: true });
+    expect(retry).toEqual({ outOfTokens: false, stillInProgress: true, newBalance: 1 });
     expect(await children.readColumn("kid", "pullTokens")).toBe(1); // untouched
   });
 

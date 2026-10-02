@@ -135,6 +135,7 @@ export function PullButton({
         // A previous attempt for this SAME request id is still being
         // completed server-side (not stale yet) — nothing was spent or
         // granted just now. Keep the stored id so the next tap retries it.
+        setBalance(res.newBalance);
         setStuck(true);
         return;
       }
