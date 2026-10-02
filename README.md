@@ -75,7 +75,7 @@ src/features/         domain features (binder, pull, trade, admin, quiz, profile
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
-scripts/              seed CLI, contact-sheet, reconcile, backup verify, prototypes
+scripts/              seed CLI, contact-sheet, reconcile, backup verify
 seed-content/         card/theme source data (cards.json, provenance.json, runbook)
 docs/                 operational runbooks (restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
@@ -84,6 +84,7 @@ tests-pg/             integration tests against a real dockerized Postgres
 tests-live/           opt-in live tests against real external providers
 Product-Definition/   current vision, technical environment, open questions
 archive/aidlc-v1/     AI-DLC v1 design + audit artifacts (increments 1–22, history)
+archive/prototypes/   retired prototype scripts, kept as reproducers (run with tsx)
 ```
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for which of `tests/`, `tests-pg/`, `tests-live/` to add a test to.
 
