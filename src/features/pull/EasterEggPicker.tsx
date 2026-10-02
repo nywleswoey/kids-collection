@@ -40,7 +40,7 @@ export function EasterEggPicker({
   // `claimEasterEggAction` never returns the pull()-only "still in progress"
   // outcome (#kcpi), so excluding it keeps the callback's `card`/`isDuplicate`
   // fields narrowed without the caller needing its own guard.
-  onDone: (result: Extract<PullOutcome, { outOfTokens: false; stillInProgress?: false }>) => void;
+  onDone: (result: Extract<PullOutcome, { outOfTokens: false; stillInProgress?: false; refunded?: false }>) => void;
 }) {
   const [phase, setPhase] = useState<Phase>("choosing");
   const [active, setActive] = useState(-1);

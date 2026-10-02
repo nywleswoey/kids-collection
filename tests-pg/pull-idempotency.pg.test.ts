@@ -179,7 +179,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     expect(await pgClaimStore.read("req-abandoned")).toEqual({
       childId: "kid",
       status: "done",
-      outcome: { outOfTokens: true },
+      outcome: { refunded: true },
     });
 
     await service.pull("kid", undefined, "req-after");
@@ -257,5 +257,23 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     expect(recovered.newBalance).toBe(9); // the original spend: no refund, no second charge
     expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9);
     expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(1);
+  });
+
+  it("another tab replaying a request id swept by a different pull sees the refund, not a denial", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1")]);
+
+    const claimed = await pgClaimStore.claimAndSpend("req-x", "kid"); // tab A, killed after spend
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    await backdateClaim("req-x", 11 * 60);
+    await service.pull("kid", undefined, "req-y"); // tab B: sweeps req-x, then spends
+
+    const replay = await service.pull("kid", undefined, "req-x"); // tab A taps again
+
+    const live = await pgChildStore.readColumn("kid", "pullTokens");
+    expect(live).toBe(9); // 10 - 1 (x) + 1 (refund) - 1 (y)
+    expect(replay).toEqual({ outOfTokens: false, refunded: true, newBalance: live });
   });
 });

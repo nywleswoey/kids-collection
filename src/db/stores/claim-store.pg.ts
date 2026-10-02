@@ -151,7 +151,7 @@ export const pgClaimStore: ClaimStore = {
     const result = await db.execute<{ swept: number }>(sql`
       WITH swept AS (
         UPDATE pull_claims
-        SET status = 'done', fence = fence + 1, claimed_at = now(), outcome = '{"outOfTokens":true}'::jsonb
+        SET status = 'done', fence = fence + 1, claimed_at = now(), outcome = '{"refunded":true}'::jsonb
         WHERE child_id = ${childId}
           AND request_id != ${excludeRequestId}
           AND status = 'granting'

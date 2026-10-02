@@ -2,7 +2,7 @@
 
 import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { PullOutcome, PullStillInProgressOutcome } from "./pull-service";
+import type { PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
 import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./pending-request";
 import { RevealCard } from "@/shared/card/RevealCard";
@@ -40,15 +40,16 @@ export function PullButton({
 }) {
   const [balance, setBalance] = useState(initialBalance);
   const [eggs, setEggs] = useState(easterEggTickets);
-  // `stillInProgress` is never actually stored here — `runPull` returns before
-  // calling `setOutcome` for that case (#kcpi) — so excluding it up front keeps
+  // `stillInProgress`/`refunded` are never actually stored here — `runPull`
+  // returns before calling `setOutcome` for those (#kcpi) — so excluding them up front keeps
   // every downstream `outcome.card`/`.easterEgg` access narrowed without extra
   // guards scattered through this component.
-  const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome> | null>(null);
+  const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome | PullRefundedOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [stuck, setStuck] = useState(false); // #kcpi: stuck-loading timeout fired
+  const [refundedNotice, setRefundedNotice] = useState(false); // #kcpi: swept claim replayed
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
@@ -111,6 +112,7 @@ export function PullButton({
     play("packOpen");
     setOutcome(null);
     setStuck(false);
+    setRefundedNotice(false);
     const attemptId = ++attemptRef.current;
     disarmStuckTimer();
     stuckTimerRef.current = setTimeout(() => {
@@ -141,6 +143,11 @@ export function PullButton({
       }
       setStuck(false);
       clearPendingRequestId(childId); // outcome is about to be shown
+      if (res.refunded) {
+        setBalance(res.newBalance);
+        setRefundedNotice(true);
+        return;
+      }
       setOutcome(res);
       if (res.outOfTokens) {
         play("denied");
@@ -247,6 +254,13 @@ export function PullButton({
                 Try again
               </button>
             </div>
+          ) : refundedNotice ? (
+            <p
+              data-testid="pull-refunded-message"
+              className="panel max-w-xs px-4 py-3 text-center text-sm text-[color:var(--ink-soft)]"
+            >
+              Your ticket was given back — tap Discover a card to try again. 🎟️
+            </p>
           ) : outOfTokens && hasEggs ? (
             <span
               data-testid="use-special-hint"

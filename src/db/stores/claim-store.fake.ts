@@ -110,7 +110,7 @@ export function inMemoryClaimStore(
         row.status = "done";
         row.fence += 1;
         row.claimedAtMs = now();
-        row.outcome = { outOfTokens: true };
+        row.outcome = { refunded: true };
         swept += 1;
       }
       if (swept > 0) await children.incrementColumn(childId, "pullTokens", swept);
