@@ -15,11 +15,17 @@ function card(id: string, rarity: Rarity = "common", themeId = "t1"): Card {
   return { id, themeId, name: id, rarity, imageUrl: "", eduText: "", sourceUrl: "" };
 }
 
-function fakeCatalog(cards: Card[]): Catalog {
+/** Records every `listCards` call's `themeId` arg and, like the real pg adapter,
+ *  actually filters by it — so a themed-pull test can prove both the SQL-level
+ *  filter and the full-pool fallback behave correctly. */
+function fakeCatalog(cards: Card[]): Catalog & { listCardsCalls: Array<string | undefined> } {
   const byId = new Map(cards.map((c) => [c.id, c]));
+  const listCardsCalls: Array<string | undefined> = [];
   return {
-    async listCards() {
-      return cards;
+    listCardsCalls,
+    async listCards(themeId) {
+      listCardsCalls.push(themeId);
+      return themeId ? cards.filter((c) => c.themeId === themeId) : cards;
     },
     async getCard(id) {
       return byId.get(id) ?? null;
@@ -30,12 +36,12 @@ function fakeCatalog(cards: Card[]): Catalog {
   };
 }
 
-function recordingRewards(): RewardGranter & { calls: Array<[string, string[]]> } {
-  const calls: Array<[string, string[]]> = [];
+function recordingRewards(): RewardGranter & { calls: Array<[string, string[], Card[] | undefined]> } {
+  const calls: Array<[string, string[], Card[] | undefined]> = [];
   return {
     calls,
-    async grantCompletionRewards(childId, addedCardIds) {
-      calls.push([childId, addedCardIds]);
+    async grantCompletionRewards(childId, addedCardIds, pool) {
+      calls.push([childId, addedCardIds, pool]);
       return [];
     },
   };
@@ -45,13 +51,14 @@ function setup(childSeed: ChildSeed, collSeed: CollectionSeed, cards: Card[]) {
   const childrenStore = inMemoryChildStore(childSeed);
   const collections = inMemoryCollectionStore(collSeed);
   const rewards = recordingRewards();
+  const catalog = fakeCatalog(cards);
   const service = makePullService({
     children: childrenStore,
     collections,
-    catalog: fakeCatalog(cards),
+    catalog,
     rewards,
   });
-  return { service, children: childrenStore, collections, rewards };
+  return { service, children: childrenStore, collections, rewards, catalog };
 }
 
 afterEach(() => vi.restoreAllMocks());
@@ -60,10 +67,11 @@ describe("makePullService.pull", () => {
   it("spends a token, draws, grants, and fans out a reward", async () => {
     // 0.99 keeps both rare egg rolls from firing → deterministic normal draw.
     vi.spyOn(Math, "random").mockReturnValue(0.99);
+    const pool = [card("c1")];
     const { service, children, collections, rewards } = setup(
       { kid: { pullTokens: 2 } },
       {},
-      [card("c1")], // single-card pool → draw is deterministic
+      pool, // single-card pool → draw is deterministic
     );
 
     const result = await service.pull("kid");
@@ -74,7 +82,9 @@ describe("makePullService.pull", () => {
     expect(result.newBalance).toBe(1);
     expect(await children.readColumn("kid", "pullTokens")).toBe(1);
     expect(await collections.cardCount("kid", "c1")).toBe(1);
-    expect(rewards.calls).toEqual([["kid", ["c1"]]]);
+    // The pool the draw used is forwarded to the reward cascade instead of it
+    // re-fetching the catalog itself (the redundant-scan fix).
+    expect(rewards.calls).toEqual([["kid", ["c1"], pool]]);
 
     const again = await service.pull("kid");
     if (!("card" in again)) throw new Error("expected a card outcome");
@@ -85,6 +95,42 @@ describe("makePullService.pull", () => {
     const { service, rewards } = setup({ kid: { pullTokens: 0 } }, {}, [card("c1")]);
     expect(await service.pull("kid")).toEqual({ outOfTokens: true });
     expect(rewards.calls).toHaveLength(0);
+  });
+
+  it("reads the catalog exactly once for a non-egg pull (no redundant second scan)", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    const { service, catalog } = setup({ kid: { pullTokens: 1 } }, {}, [card("c1")]);
+
+    await service.pull("kid");
+
+    expect(catalog.listCardsCalls).toHaveLength(1);
+  });
+
+  it("pushes a chosen theme's filter into listCards(themeId) instead of fetching everything", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    const pool = [card("a1", "common", "animals"), card("s1", "common", "space")];
+    const { service, catalog, rewards } = setup({ kid: { pullTokens: 1 } }, {}, pool);
+
+    const result = await service.pull("kid", "space");
+
+    if (!("card" in result)) throw new Error("expected a card outcome");
+    expect(result.card.id).toBe("s1"); // only the "space" card was eligible
+    expect(catalog.listCardsCalls).toEqual(["space"]); // filter pushed to the catalog call
+    // The reward cascade only ever needs the drawn card's own theme, so the
+    // already-filtered (not the full) pool is reused — no second fetch either.
+    expect(rewards.calls[0][2]).toEqual([card("s1", "common", "space")]);
+  });
+
+  it("falls back to the full catalog when the chosen theme has no cards", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    const pool = [card("a1", "common", "animals")];
+    const { service, catalog } = setup({ kid: { pullTokens: 1 } }, {}, pool);
+
+    const result = await service.pull("kid", "no-such-theme");
+
+    if (!("card" in result)) throw new Error("expected a card outcome");
+    expect(result.card.id).toBe("a1"); // fell back to the full pool
+    expect(catalog.listCardsCalls).toEqual(["no-such-theme", undefined]);
   });
 });
 

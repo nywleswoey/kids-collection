@@ -1,3 +1,5 @@
+import type { Card } from "@/lib/types";
+
 /**
  * RewardGranter — the reward-cascade surface a mutating service depends on. The
  * rewards feature satisfies it via `grantCompletionRewards`; injected as a port
@@ -5,5 +7,7 @@
  * in the rewards slice.
  */
 export interface RewardGranter {
-  grantCompletionRewards(childId: string, addedCardIds: string[]): Promise<unknown>;
+  /** `pool`: an already-fetched catalog a caller can hand over to skip a
+   *  redundant re-fetch (see `grantCompletionRewards`'s own doc for details). */
+  grantCompletionRewards(childId: string, addedCardIds: string[], pool?: Card[]): Promise<unknown>;
 }
