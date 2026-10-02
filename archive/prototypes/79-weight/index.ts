@@ -1,6 +1,12 @@
 /**
  * PROTOTYPE — #79. Throwaway. Do not import this from anything.
  *
+ * ARCHIVED (tech-debt review, B3): moved out of `scripts/prototypes/` because it fetches the
+ * retired `image.pollinations.ai` endpoint and writes probe files to the PRODUCTION Blob store
+ * (`--delivered`), and is no longer runnable via a `pnpm prototype:*` script. Kept — not deleted
+ * — because it is cited as the reproducer for #79's measurements (`CONTEXT.md`). Run directly
+ * with `tsx --env-file-if-exists=.env.local archive/prototypes/79-weight/index.ts`.
+ *
  * The question: Cloudflare SDXL's cards are ~10x heavier than Pollinations'.
  * Who pays for that? #79 named two payers — the Blob allowance and "a
  * seven-year-old's connection" — and two possible remedies: re-encode, or ask

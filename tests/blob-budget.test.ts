@@ -111,10 +111,10 @@ describe("blob budget", () => {
     const budget = buildBlobBudget({
       objects: [obj("cards/a.jpg", 100)],
       liveUrls: new Set(),
-      lanes: [{ id: "ai-horde" }],
+      lanes: [{ id: "hatch-a" }],
       cardsPerTheme: CARDS_PER_THEME,
     });
-    expect(budget.projections).toEqual([{ id: "ai-horde", perCardBytes: null, themes: null }]);
+    expect(budget.projections).toEqual([{ id: "hatch-a", perCardBytes: null, themes: null }]);
   });
 
   it("raises the warning line before the ceiling, not at it", () => {

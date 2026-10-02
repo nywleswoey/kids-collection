@@ -150,11 +150,11 @@ describe("planContactSheet — the three absences it must not hide", () => {
     // forever, which trains a reviewer to ignore the one warning that tells them
     // a LANE died. The column still renders: a hatch that WAS invoked for a card
     // has to be visible next to the lanes that lost to it.
-    const hatch = { ...fakeProvider({ id: "ai-horde", role: "escape-hatch" }), format: "webp" as const };
+    const hatch = { ...fakeProvider({ id: "hatch-a", role: "escape-hatch" }), format: "webp" as const };
     const sheet = planContactSheet(theme, [...PROVIDERS, hatch], deps(allFiles(theme)));
-    expect(sheet.providerIds).toContain("ai-horde");
+    expect(sheet.providerIds).toContain("hatch-a");
     expect(sheet.missing).toBe(0);
-    const cells = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "ai-horde"));
+    const cells = sheet.rows.flatMap((r) => r.candidates.filter((c) => c.providerId === "hatch-a"));
     expect(cells).toHaveLength(2);
     expect(cells.every((c) => !c.present)).toBe(true);
   });
@@ -162,7 +162,7 @@ describe("planContactSheet — the three absences it must not hide", () => {
   it("still counts a LANE's blanks when a hatch is in the grid too", () => {
     // The exemption is about the hatch, not about the sheet giving up on
     // counting. A dead lane must still be reported while a hatch sits out.
-    const hatch = { ...fakeProvider({ id: "ai-horde", role: "escape-hatch" }), format: "webp" as const };
+    const hatch = { ...fakeProvider({ id: "hatch-a", role: "escape-hatch" }), format: "webp" as const };
     const onlyJpeg = theme.cards.map((c) => reviewFileName(theme.name, c, jpegProvider));
     const sheet = planContactSheet(theme, [...PROVIDERS, hatch], deps(onlyJpeg));
     expect(sheet.missing).toBe(2);
@@ -178,7 +178,7 @@ describe("planContactSheet — the three absences it must not hide", () => {
   it("reports files belonging to no registered provider", () => {
     // A rename or a retirement leaves candidates behind. Column-driven rendering
     // cannot show them, so they are found by scanning instead.
-    const orphan = "warriors-longbowman-deadbeef-ai-horde-1234.webp";
+    const orphan = "warriors-longbowman-deadbeef-hatch-a-1234.webp";
     const sheet = planContactSheet(theme, PROVIDERS, deps([...allFiles(theme), orphan]));
     expect(sheet.orphans).toEqual([orphan]);
   });

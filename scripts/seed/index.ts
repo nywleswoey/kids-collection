@@ -18,24 +18,20 @@
  *                                 import pictures from seed-content/supergrok-drop/
  *                                 as that lane's candidates. A card with no picture
  *                                 is "not drawn", not a failed generation.
- *   pnpm seed --publish           generate -> upload to Blob -> insert NEW cards (idempotent)
- *   pnpm seed --publish --reset   wipe the whole pool first, then republish everything
  *   pnpm seed --sync              DELTA: image-generate only NEW cards, update text
  *                                 (eduText/sourceUrl) on existing ones, and prune
  *                                 themes/cards dropped from the seed. No image regen
- *                                 for unchanged cards.
+ *                                 for unchanged cards. Refuses to insert a card with
+ *                                 no reviewed image — there is no bypass flag.
  *   pnpm seed --sync --allow-prune
  *                                 as above, permitting the prune. Without this flag a
  *                                 sync with pending prunes aborts before ANY write.
- *   pnpm seed --sync --allow-unreviewed
- *                                 as above, permitting inserts of cards with no
- *                                 reviewed image. Defeats the kid-safety guarantee.
  *
  * No command flag means `--review`. Unknown flags, two command flags, or a
  * modifier on the wrong command are rejected before anything runs (`./args.ts`).
  *
  * Requires DATABASE_URL (all modes, even --check-urls: the DB module loads at
- * startup) and, for --publish/--sync, BLOB_READ_WRITE_TOKEN.
+ * startup) and, for --sync, BLOB_READ_WRITE_TOKEN.
  * `--review` additionally requires each selected provider's key; see `.env.example`.
  * `supergrok-manual` has no key. It sits out unless named.
  *
@@ -107,7 +103,7 @@ import {
 } from "@/shared/pool/manual-brief";
 import { uploadImage } from "@/shared/pool/image";
 import { blobKey } from "@/shared/pool/keys";
-import { runBakeOff, makeGate, withRetry, type BakeOffJob } from "@/shared/pool/bake-off";
+import { runBakeOff, type BakeOffJob } from "@/shared/pool/bake-off";
 import {
   buildSidecar,
   missingReviews,
@@ -159,12 +155,11 @@ import {
 import {
   upsertTheme,
   insertCardIfNew,
-  resetPool,
   updateCardMeta,
   deleteThemesNotIn,
   deleteCardsNotIn,
 } from "@/shared/pool/writer";
-import { previewReset, previewPrune, isEmpty } from "@/shared/pool/blast-radius";
+import { previewPrune, isEmpty } from "@/shared/pool/blast-radius";
 import { isProductionDatabaseUrl, describeTarget } from "@/shared/pool/db-target";
 import { confirmDestructive } from "./guard";
 import { parseSeedArgs, SeedArgsError, type Command } from "./args";
@@ -175,9 +170,8 @@ const REVIEW_DIR = join(process.cwd(), "seed-content", "review");
 /** Committed, generated, never hand-edited — see `shared/pool/provenance.ts` (#75). */
 const PROVENANCE_PATH = join(process.cwd(), "seed-content", "provenance.json");
 
-// Retry budget per (card, provider) attempt, honoured by both generation paths —
-// the lane runner and `--allow-unreviewed`. Per-provider concurrency and pacing
-// are NOT env-configurable any more: they differ per provider by orders of
+// Retry budget per (card, provider) attempt, honoured by the lane runner.
+// Per-provider concurrency and pacing are NOT env-configurable any more: they differ per provider by orders of
 // magnitude — Cloudflare tolerates 720 requests a minute where a slower lane
 // tolerates far less — so each adapter declares its own and the lane runner
 // enforces it (#63, #67). The per-provider env knobs THAT replaces existed "so a
@@ -193,15 +187,15 @@ const RETRIES = intEnv("SEED_RETRIES", 5);
  */
 const PUBLISH_CONCURRENCY = intEnv("SEED_CONCURRENCY", 4);
 
-type Mode = "review" | "publish" | "sync";
+type Mode = "review" | "sync";
 
 /**
  * Everything `runSeed` reads, writes or asks (A2) — the same idea as
  * `BakeOffDeps` in `bake-off.ts`, at the top-level dispatcher instead of one
  * lane. `realSeedDeps()` wires the database, Blob, the filesystem and the TTY
  * guard; a test injects fakes to check the ordering invariants (prune decision
- * and FR9 refusal before any write, provenance for `inserted` only, the plan
- * re-read after `--reset`) with no database at all.
+ * and FR9 refusal before any write, provenance for `inserted` only) with no
+ * database at all.
  */
 export interface SeedDeps {
   env: { databaseUrl?: string; blobToken?: string };
@@ -214,8 +208,6 @@ export interface SeedDeps {
   updateCardMeta: typeof updateCardMeta;
   deleteCardsNotIn: typeof deleteCardsNotIn;
   deleteThemesNotIn: typeof deleteThemesNotIn;
-  resetPool: typeof resetPool;
-  previewReset: typeof previewReset;
   previewPrune: typeof previewPrune;
   confirmDestructive: typeof confirmDestructive;
   uploadImage: typeof uploadImage;
@@ -245,8 +237,6 @@ export function realSeedDeps(): SeedDeps {
     updateCardMeta,
     deleteCardsNotIn,
     deleteThemesNotIn,
-    resetPool,
-    previewReset,
     previewPrune,
     confirmDestructive,
     uploadImage,
@@ -359,7 +349,7 @@ async function main() {
  * process exit code.
  */
 export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps()): Promise<number> {
-  const mode: Mode = command.kind === "sync" ? "sync" : command.kind === "publish" ? "publish" : "review";
+  const mode: Mode = command.kind === "sync" ? "sync" : "review";
 
   // ── --check-images: weigh every PUBLISHED card's art and report anything too
   // sparse to be a picture (#78). Standalone; runs and exits.
@@ -470,8 +460,8 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   // learn which cards are already published. Writes one markdown file into the
   // drop folder and does not generate, upload, or insert anything.
   if (command.kind === "supergrok-export") {
-    // parseSeedArgs already refuses --supergrok-export combined with --sync or
-    // --publish (a conflicting-command-flags error) before this ever runs.
+    // parseSeedArgs already refuses --supergrok-export combined with --sync
+    // (a conflicting-command-flags error) before this ever runs.
     requireDatabaseUrl(deps, "`tsx --env-file=.env.local scripts/seed/index.ts --supergrok-export`");
     const published = await deps.listPublishedCardKeys();
     const planned = new Set(planInserts(seed, published).map((p) => cardKey(p.theme, p.card)));
@@ -490,8 +480,8 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   }
 
   // Every other Command kind returned above; narrows `command` for the rest
-  // of this function to the three that share the plan/guard/publish pipeline.
-  if (command.kind !== "review" && command.kind !== "publish" && command.kind !== "sync") {
+  // of this function to the two that share the plan/guard/publish pipeline.
+  if (command.kind !== "review" && command.kind !== "sync") {
     throw new Error(`internal: unhandled seed command "${(command as Command).kind}"`);
   }
 
@@ -529,20 +519,11 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
     deps.log(`Providers: ${lanes.map((p) => p.id).join(", ")}`);
   }
 
-  // Destructive-operation guards (Inc23 FR3–FR8). Both run BEFORE any write:
-  // every pool delete cascades into `collections`, so the decision to proceed
-  // has to be made while nothing has happened yet.
+  // Destructive-operation guard (Inc23 FR3–FR8). Runs BEFORE any write: every
+  // pool delete cascades into `collections`, so the decision to proceed has to
+  // be made while nothing has happened yet.
   const isProduction = isProductionDatabaseUrl(deps.env.databaseUrl);
   const target = describeTarget(deps.env.databaseUrl);
-
-  // --reset wipes the existing pool first (full rebuild, U4-FR4). resetPool()
-  // itself refuses when the pool is owned; this is the operator-facing half.
-  if (command.kind === "publish" && command.reset) {
-    const radius = await deps.previewReset();
-    await deps.confirmDestructive({ operation: "reset", target, isProduction, radius });
-    deps.log("--reset: wiping existing pool (cards, themes)…");
-    await deps.resetPool();
-  }
 
   // Sync prunes anything missing from the seed file, and those deletes cascade
   // into the children's cards. Decide up front: with prunes pending and no
@@ -562,14 +543,11 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
         }
         return 1;
       }
-      await deps.confirmDestructive({ operation: "prune", target, isProduction, radius });
+      await deps.confirmDestructive({ target, isProduction, radius });
     }
   }
 
-  // Which cards would this run insert? Read AFTER any --reset, which empties the
-  // pool: a plan computed before it would be stale and the FR9 guard below would
-  // check the wrong set. (After a reset the plan is the entire pool, so a full
-  // republish correctly demands a full re-review.)
+  // Which cards would this run insert?
   const published = await deps.listPublishedCardKeys();
   const plan = planInserts(seed, published);
   const planned = new Set(plan.map((p) => cardKey(p.theme, p.card)));
@@ -593,14 +571,13 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   const provenanceBefore = loadProvenance(deps);
 
   // ── FR9: refuse to publish an image no human has seen. Before any write, on
-  // every insert path — --publish reaches insertCardIfNew too, and the invariant
-  // ("no unreviewed content path to a child, ever") carries no mode qualifier.
+  // every insert path, and with no override — the invariant ("no unreviewed
+  // content path to a child, ever") carries no mode qualifier and no bypass
+  // flag. `--allow-unreviewed` existed for this and was removed: it was the
+  // only way `insertCardIfNew` ever saw unreviewed bytes.
   //
   // Insert-scoped: the already-published cards are not in `plan`, so they never
   // need a review file and no back-fill of seed-content/review/ is required.
-  //
-  // Same idiom as --allow-prune: named flag, printed blast radius, non-zero exit
-  // by default, nothing written.
   //
   // An unknown provider id is checked FIRST and is not overridable. It is an
   // authoring mistake — a typo, or an adapter that has since been retired — and
@@ -620,7 +597,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   const unreviewed = missingReviews(themes, planned, providerById, (name) =>
     deps.fs.exists(join(REVIEW_DIR, name)),
   );
-  if (unreviewed.length > 0 && !command.allowUnreviewed) {
+  if (unreviewed.length > 0) {
     deps.error(
       `\n⛔ ${unreviewed.length} card(s) would be inserted with no reviewed image:\n`,
     );
@@ -631,15 +608,9 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
       `\n   Nothing has been written. Run \`pnpm seed --review\` first, and look at\n` +
         `   every image. Cards marked "no provider chosen" need a \`provider\` on the\n` +
         `   card or its theme in seed-content/cards.json — that is the bake-off pick.\n` +
-        `   \`--allow-unreviewed\` exists but defeats the guarantee that no unreviewed\n` +
-        `   image reaches a child.\n`,
+        `   There is no bypass flag.\n`,
     );
     return 1;
-  }
-  if (unreviewed.length > 0) {
-    deps.warn(
-      `⚠️  --allow-unreviewed: publishing ${unreviewed.length} card(s) no human has seen.`,
-    );
   }
 
   // Every card whose bytes this run actually published, with what drew them.
@@ -666,82 +637,34 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
       try {
         const isNew = planned.has(cardKey(theme.name, card.name));
 
-        // Already published.
+        // Already published: update text only (no image regeneration).
         if (!isNew) {
-          // Sync: update text only (no image regeneration).
-          if (mode === "sync") {
-            await deps.updateCardMeta({
-              themeId,
-              name: card.name,
-              eduText: card.eduText,
-              sourceUrl: card.sourceUrl,
-            });
-            report.updated++;
-            deps.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
-            return;
-          }
-          // Publish: leave it alone.
-          report.skipped++;
+          await deps.updateCardMeta({
+            themeId,
+            name: card.name,
+            eduText: card.eduText,
+            sourceUrl: card.sourceUrl,
+          });
+          report.updated++;
+          deps.log(`✎ updated ${theme.name} / ${card.name} (text only)`);
           return;
         }
 
-        // Publish the REVIEWED bytes when they exist (FR8). Generating a fresh
-        // image for a card that has a matching review file is a regression, not
-        // an optimisation — it re-opens the gap where the parent reviewed image A
-        // and the child received image B.
-        const provider = resolveProvider(theme, card);
-        const reviewFile = provider ? reviewPath(theme.name, card, provider) : undefined;
+        // Publish the REVIEWED bytes (FR8/FR9) — the only path left. The FR9
+        // check above already proved a provider resolves and its review file
+        // exists for every planned card, so there is nothing to fall back to.
+        const provider = resolveProvider(theme, card)!;
+        const reviewFile = reviewPath(theme.name, card, provider);
 
-        let bytes: Uint8Array;
-        // What drew these bytes, for the durable record (#75). Undefined only
-        // where nothing witnessed them — a candidate whose sidecar is gone —
-        // and that is reported, never guessed at from today's adapter.
-        let sidecar: ReviewSidecar | undefined;
-        // Did a human see them? True off the review folder, false on the
-        // --allow-unreviewed path below, and recorded either way.
-        let reviewed = false;
-        if (provider && reviewFile && deps.fs.exists(reviewFile)) {
-          bytes = deps.fs.read(reviewFile);
-          reviewed = true;
-          sidecar = readSidecar(deps, theme.name, card, provider);
-          if (!sidecar) {
-            deps.warn(
-              `⚠️  ${theme.name} / ${card.name}: no readable sidecar beside the reviewed image — ` +
-                `publishing it, but nothing will record what drew it.`,
-            );
-          }
-          report.reused++;
-        } else {
-          // Only reachable via --allow-unreviewed, which needs a live provider —
-          // the one path in the CLI that generates at publish time, and the flag
-          // already announces that it defeats the review guarantee.
-          if (!provider) {
-            throw new Error(
-              `no provider resolved (set \`provider\` on the card or its theme; registered: ${PROVIDER_IDS.join(", ")})`,
-            );
-          }
-          if (!provider.isConfigured()) {
-            throw new Error(
-              `provider ${provider.id} is not configured (set ${provider.requiredEnv.join(" and ")})`,
-            );
-          }
-          deps.log(`🖼️  generating image: ${theme.name} / ${card.name} [${provider.id}]…`);
-          // Same bounded ladder the lane runner uses, so SEED_RETRIES means the
-          // same thing on both generation paths. `generate()` is still one
-          // logical attempt; the gate is re-entered per attempt so a retry pays
-          // the provider's pacing rather than jumping it.
-          const gate = publishGate(provider);
-          const image = await withRetry(
-            provider,
-            () => gate().then(() => provider.generate(buildPrompt(card), CARD_SIZE)),
-            { retries: RETRIES },
+        const bytes = deps.fs.read(reviewFile);
+        const sidecar = readSidecar(deps, theme.name, card, provider);
+        if (!sidecar) {
+          deps.warn(
+            `⚠️  ${theme.name} / ${card.name}: no readable sidecar beside the reviewed image — ` +
+              `publishing it, but nothing will record what drew it.`,
           );
-          bytes = image.bytes;
-          // Generated here, so the witness is in hand and needs no sidecar on
-          // disk. `--allow-unreviewed` defeats the review guarantee; it does not
-          // get to defeat the record as well.
-          sidecar = buildSidecar(provider, image);
         }
+        report.reused++;
 
         const imageUrl = await deps.uploadImage(blobKey(theme.name, card.name), bytes);
         const res = await deps.insertCardIfNew({
@@ -757,15 +680,14 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
           // Recorded on `inserted` only: this is the run that put these bytes in
           // a child's binder (#75). A `skipped` card was published by some
           // earlier run, whose record — or absence of one — is the true one.
-          if (provider && sidecar) {
+          // `reviewed` is always true: every insert now publishes bytes read
+          // straight from `seed-content/review/`, which only exist once a human
+          // has seen them.
+          if (sidecar) {
             publishedCards.push({
               theme: theme.name,
               card: card.name,
-              provenance: toProvenance(
-                sidecar,
-                reviewStem(theme.name, card, provider),
-                reviewed,
-              ),
+              provenance: toProvenance(sidecar, reviewStem(theme.name, card, provider), true),
             });
           }
           deps.log(`✓ inserted ${theme.name} / ${card.name}`);
@@ -965,22 +887,6 @@ function readSidecar(
 function resolveProvider(theme: ThemeSeed, card: SeedCard): ImageProvider | undefined {
   const id = resolveProviderId(theme, card);
   return id === undefined ? undefined : providerById(id);
-}
-
-/**
- * Publish-time pacing, one gate per provider, created on first use.
- *
- * Only ever reached via `--allow-unreviewed`. Kept per-provider anyway so that
- * path cannot become the one place a global gate survives.
- */
-const publishGates = new Map<string, () => Promise<void>>();
-function publishGate(provider: ImageProvider): () => Promise<void> {
-  let gate = publishGates.get(provider.id);
-  if (!gate) {
-    gate = makeGate(provider.minIntervalMs);
-    publishGates.set(provider.id, gate);
-  }
-  return gate;
 }
 
 /** Read a non-negative integer from env, falling back to `def` if unset/invalid. */

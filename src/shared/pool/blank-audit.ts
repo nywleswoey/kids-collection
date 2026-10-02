@@ -11,8 +11,7 @@
  * worth one pass over the pool before assuming not" — and the honest answer needs
  * a measurement rather than the argument that Pollinations has never been seen to
  * do it. This is that pass, made repeatable rather than one-off: any future
- * publish through `--allow-unreviewed`, or from a provider yet to be registered,
- * deserves the same look.
+ * publish from a provider yet to be registered deserves the same look.
  *
  * ── What the pass found, 2026-08-15 ──────────────────────────────────────────
  * 390 published images, 390 weighed, ZERO below the floor and zero unreadable.

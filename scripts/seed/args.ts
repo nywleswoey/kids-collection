@@ -27,8 +27,7 @@ export type Command =
   | { kind: "check-urls" }
   | { kind: "supergrok-export" }
   | { kind: "review"; providers?: string[] }
-  | { kind: "publish"; reset: boolean; allowUnreviewed: boolean }
-  | { kind: "sync"; allowPrune: boolean; allowUnreviewed: boolean };
+  | { kind: "sync"; allowPrune: boolean };
 
 /** Thrown by `parseSeedArgs` for an unknown, malformed, or conflicting flag. Never thrown after any write. */
 export class SeedArgsError extends Error {
@@ -45,7 +44,6 @@ const COMMAND_FLAGS = [
   "check-urls",
   "supergrok-export",
   "review",
-  "publish",
   "sync",
 ] as const satisfies readonly Command["kind"][];
 
@@ -60,11 +58,8 @@ export function parseSeedArgs(argv: readonly string[]): Command {
         "check-urls": { type: "boolean" },
         "supergrok-export": { type: "boolean" },
         review: { type: "boolean" },
-        publish: { type: "boolean" },
         sync: { type: "boolean" },
-        reset: { type: "boolean" },
         "allow-prune": { type: "boolean" },
-        "allow-unreviewed": { type: "boolean" },
         providers: { type: "string" },
       },
       strict: true,
@@ -84,14 +79,8 @@ export function parseSeedArgs(argv: readonly string[]): Command {
   }
   const kind: Command["kind"] = present[0] ?? "review";
 
-  if (values.reset && kind !== "publish") {
-    throw new SeedArgsError("--reset is only valid with --publish.");
-  }
   if (values["allow-prune"] && kind !== "sync") {
     throw new SeedArgsError("--allow-prune is only valid with --sync.");
-  }
-  if (values["allow-unreviewed"] && kind !== "publish" && kind !== "sync") {
-    throw new SeedArgsError("--allow-unreviewed is only valid with --publish or --sync.");
   }
   if (values.providers !== undefined && kind !== "review") {
     throw new SeedArgsError(
@@ -116,17 +105,10 @@ export function parseSeedArgs(argv: readonly string[]): Command {
                 .map((s) => s.trim())
                 .filter((s) => s.length > 0),
       };
-    case "publish":
-      return {
-        kind: "publish",
-        reset: values.reset === true,
-        allowUnreviewed: values["allow-unreviewed"] === true,
-      };
     case "sync":
       return {
         kind: "sync",
         allowPrune: values["allow-prune"] === true,
-        allowUnreviewed: values["allow-unreviewed"] === true,
       };
   }
 }

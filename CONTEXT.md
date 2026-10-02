@@ -106,21 +106,25 @@ free provider:
   default `--review` fan-out; an **escape hatch** is registered and resolvable but
   sits out the fan-out, reached only by naming it (`--providers=<id>`). Everything
   else about a hatch is identical, so a card published from one is as traceable as
-  any other (`providers/index.ts`, #71). A **manual** lane (`supergrok-manual`) also
-  sits out until named, but draws nothing: it imports pictures the owner made by hand,
-  and a card with no picture is **not drawn** — a missing file, not a failed generation.
+  any other (`providers/index.ts`, #71). **No hatch is currently registered** — AI
+  Horde, the first one, was retired (its pinned model lost its workers; no published
+  card was drawn by it) — but the role stays, with its machinery exercised by an
+  injected registry in tests, for whatever the next one is. A **manual** lane
+  (`supergrok-manual`) also sits out until named, but draws nothing: it imports
+  pictures the owner made by hand, and a card with no picture is **not drawn** — a
+  missing file, not a failed generation.
 - **Bake-off candidate** — one generated image for a `(card, provider)` pair, named
   `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>.<ext>` in `seed-content/review/`,
   with a `.json` **sidecar** recording the model the response actually *named*
   (`src/shared/pool/review-files.ts`).
 - **Provenance record** — the picked candidate's sidecar, kept after review is over
-  (`seed-content/provenance.json`, written by `--sync`/`--publish`, `provenance.ts`, #75).
+  (`seed-content/provenance.json`, written by `--sync`, `provenance.ts`, #75).
   `seed-content/review/` is gitignored scratch, so without this the only surviving witness of
   a shipped card is `provider` — the **lane**, which #64 proved is not the model.
   Generated and never hand-edited, unlike `seed-content/cards.json`. Its `model` is what the
   response *named* and is **`null`** where a provider names nothing (Cloudflare), never
   back-filled from the `params.model` that was *asked for*; its `reviewed` flag is FR9's
-  durable receipt, false only on the `--allow-unreviewed` path.
+  durable receipt, always `true` now that `--allow-unreviewed` has been removed.
 - **Blank frame** — a response that is a well-formed image of *nothing*: a real,
   exactly-768×768, correctly-formatted frame carrying no subject (Cloudflare SDXL
   returned a pure black PNG for ~40% of attempts on the one prompt where it was
@@ -179,8 +183,9 @@ free provider:
   JPEG delivered **9.6 KB**. Delivered weight tracks picture complexity, not source
   encoding — so a heavier lane is a *storage* question and not a child-facing
   performance one. Replicated on a second run, where the inversion held (924.7 KB →
-  32.2 KB against 108.7 KB → 44.2 KB). Reproduce with `pnpm prototype:79 --delivered`
-  (`scripts/prototypes/79-weight/`), which also carries `--steer`: Cloudflare SDXL has
+  32.2 KB against 108.7 KB → 44.2 KB). Reproduce with
+  `tsx --env-file-if-exists=.env.local archive/prototypes/79-weight/index.ts --delivered`
+  (archived, Pollinations-dependent — see its header), which also carries `--steer`: Cloudflare SDXL has
   **no output-format parameter** — `Accept: image/jpeg` and an invented
   `response_format` are both silently dropped — while
   `stable-diffusion-xl-lightning` answers **JPEG at 88–107 KB**, unregistered because

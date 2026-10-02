@@ -3,7 +3,7 @@
  *
  * Two callers need this answer and they must never disagree:
  *
- *   FR9   `--sync`/`--publish` refuse to insert a card with no reviewed image.
+ *   FR9   `--sync` refuses to insert a card with no reviewed image.
  *   FR10  `--review` generates images for exactly the cards that would be inserted.
  *
  * If those sets could differ, an honest review sitting could still leave the guard

@@ -33,18 +33,19 @@ const SALT = `kc-live-${Date.now()}`;
  * Which providers this run covers.
  *
  * Lanes by default; an escape hatch only when NAMED — the same rule `selectLanes`
- * applies to `--review`, for a sharper reason here. AI Horde is queue-backed and
- * this project's account holds no kudos, so #74 measured a queue position of 352
- * and a ~2850s wait for one generation. The contract makes several generations
- * per provider. Including the hatch by default would turn `pnpm test:providers`
- * from a ten-minute check into an all-afternoon one that times out anyway, and a
- * suite nobody can afford to run is a suite nobody runs.
+ * applies to `--review`, for a sharper reason here. The retired AI Horde hatch
+ * was queue-backed and this project's account held no kudos, so #74 measured a
+ * queue position of 352 and a ~2850s wait for one generation — a reminder that
+ * a future hatch may need the same care: including one by default in the
+ * contract's several-generations-per-provider run could turn `pnpm
+ * test:providers` from a ten-minute check into an all-afternoon one that times
+ * out anyway, and a suite nobody can afford to run is a suite nobody runs.
  *
- *   LIVE_PROVIDERS=ai-horde pnpm test:providers   # just the hatch
- *   LIVE_PROVIDERS=ai-horde,cloudflare-sdxl ...   # both
+ *   LIVE_PROVIDERS=<hatch-id> pnpm test:providers        # just the hatch
+ *   LIVE_PROVIDERS=<hatch-id>,cloudflare-sdxl ...        # both
  *
  * Set `testTimeout` accordingly when you do — the default 180s will not cover a
- * cold horde queue.
+ * cold, queue-backed hatch.
  */
 const named = process.env.LIVE_PROVIDERS?.split(",")
   .map((s) => s.trim())
