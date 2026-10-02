@@ -143,35 +143,38 @@ wording. It is written **per provider**, because they do not fail the same way. 
 
 **`pollinations` is retired.** On *Food Around the World* every one of its 30 candidates came back with a
 "pollinations.ai" logo stamped into the corner despite `nologo=true`, and text in the image is a rejection on
-sight — so it could no longer win a row. It is gone from the registry: the one automatic lane today is `cloudflare-sdxl`,
-with `ai-horde` as the escape hatch and `supergrok-manual` as an opt-in drop-folder lane (below). Pollinations' column below is kept as the record of why earlier themes look the way
-they do, and because its failure classes are what a replacement lane has to beat. Cards already published
-from it are unaffected — `--sync` never resolves the provider of a card it is not inserting.
+sight — so it could no longer win a row. It is gone from the registry: the one automatic lane today is
+`cloudflare-sdxl`, with `supergrok-manual` as an opt-in drop-folder lane (below) and **no escape hatch
+currently registered** — `ai-horde`, the first one, was retired after its pinned model lost its workers.
+Pollinations' column below is kept as the record of why earlier themes look the way they do, and because
+its failure classes are what a replacement lane (or hatch) has to beat. Cards already published from it are
+unaffected — `--sync` never resolves the provider of a card it is not inserting.
 
 The failure classes below were learned the hard way on *Warriors*, where a Pollinations-only pass returned
 3 usable images out of 28. #66 re-ran three of those cards through the shipped seam on both lanes, and #74
-ran them through the escape hatch. What survives is narrower than the old blanket claim:
+ran them through the (since-retired) escape hatch. What survives is narrower than the old blanket claim:
 
-| Failure class | `pollinations` (**retired**; asked for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch) | `supergrok-manual` (manual, opt-in) |
+| Failure class | `pollinations` (**retired**; asked for `flux`, served by `sana` — #64) | `cloudflare-sdxl` | `ai-horde` (escape hatch, **retired**) | `supergrok-manual` (manual, opt-in) |
 |---|---|---|---|---|
-| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixes** — #74's single bow, single arrow: the first usable Longbowman this project has had | the picture you saved, or **not drawn** — this lane does not draw |
-| Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **fails differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` | the picture you saved, or **not drawn** |
-| **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounts (one horse where the prompt says two) | the picture you saved, or **not drawn** |
+| Identity rests on a **small held object** — bow, spear, tool | **fails** — the object goes wire-thin, smears, or duplicates | **fails** — right style, still draws two bows. (#74 also saw a frame border on every sample; that was #81's bug in `ART_STYLE`, since fixed, and is no longer part of this row) | **the one it fixed** — #74's single bow, single arrow: the first usable Longbowman this project had | the picture you saved, or **not drawn** — this lane does not draw |
+| Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **failed differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` | the picture you saved, or **not drawn** |
+| **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounted (one horse where the prompt said two) | the picture you saved, or **not drawn** |
 
 **`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
 
 **What that means for Step 3.** Niche uniforms and multi-object scenes are **no longer disqualifying** —
-a theme that needs them is viable, on the Cloudflare lane. **Small held objects still are**: both lanes fail
-them, and the two answers are cheap-then-expensive — drop the object and let clothing carry the subject
-(the wording lever below), or reach for the escape hatch at 30–45 minutes per image. Budget one or two such
-cards per theme, not fifteen.
+a theme that needs them is viable, on the Cloudflare lane. **Small held objects still are**: the lane fails
+them, and with the escape hatch retired and no replacement registered, the only remaining lever is
+cheap-then-expensive — drop the object and let clothing carry the subject (the wording lever below), or
+hand-draw it yourself through `supergrok-manual` (Step 6). Budget one or two such cards per theme, not
+fifteen, and expect to spend manual-lane time on them.
 
 `ART_STYLE` asks for a bright cartoon, and **the lanes do not agree about what they are drawing**:
-Cloudflare renders bright cartoon, `sana` (retired Pollinations) rendered painterly semi-realism on *every* subject, and the horde's
-model drifts photo-real on costume subjects. So a picture that looks wrong in style is usually the wrong
-lane rather than the wrong words. Long, photo-real prompts make it worse everywhere. The prompts that land
-look like the ones already in `cards.json`: a short noun phrase, **one** cheerful subject, outdoors in
-daylight, **at most one** held object.
+Cloudflare renders bright cartoon; `sana` (retired Pollinations) rendered painterly semi-realism on *every*
+subject, and the retired hatch's model drifted photo-real on costume subjects. So a picture that looks wrong
+in style is usually the wrong lane rather than the wrong words. Long, photo-real prompts make it worse
+everywhere. The prompts that land look like the ones already in `cards.json`: a short noun phrase, **one**
+cheerful subject, outdoors in daylight, **at most one** held object.
 
 Wording levers, in the order worth trying — these apply to every provider:
 
@@ -189,7 +192,6 @@ Wording levers, in the order worth trying — these apply to every provider:
 | Provider | Same prompt twice | So the revert trick… |
 |---|---|---|
 | `cloudflare-sdxl` | **different bytes**, despite the same pinned seed (#66) | **does not work.** A reverted prompt draws a *new* picture on this lane |
-| `ai-horde` | unmeasured, and it is a pool of volunteer machines | **assume it does not.** Do not plan around it |
 | `supergrok-manual` | the file you saved, until you delete its review candidate | nothing to revert. Replace the drop file and delete that one review file, then re-run the import |
 
 So: **keep every superseded `imagePrompt` in the session** until the theme ships — that is the only
@@ -211,7 +213,6 @@ numbers below are *why a run takes as long as it does*, not knobs for you to tur
 | Provider | The ceiling | What you see |
 |---|---|---|
 | `cloudflare-sdxl` | a published 10,000 neurons/day on the free plan, but **the exhaustion signal is undocumented** (#68) — so a lane that dies for no stated reason may be this. What guarantees $0 is the card-free account, not the number | 4 at a time, ~6–8s per image |
-| `ai-horde` | **2 requests/second per IP** across the whole API, and a volunteer queue you sit at the back of at zero kudos | 1 at a time; **30–45 minutes for one image** |
 | `supergrok-manual` | none — local files, no requests | however long you take to save the pictures |
 
 A rate-limit failure is retryable and costs you nothing: re-run `pnpm seed --review` and it resumes past
@@ -266,7 +267,8 @@ rate-limited run resumes rather than restarting.
 so a human can compare candidates side by side and pick the best draughtsman per subject. A 30-card theme is
 30 images *per lane* — 30 today, on `cloudflare-sdxl` alone, in a few minutes. With more than one lane they
 run alongside each other and pace themselves independently, so the wall-clock is the slowest lane, not the
-sum. `ai-horde` is an **escape hatch**, not a lane, and sits out unless named (below).
+sum. An **escape hatch** — registered but not a lane, sitting out unless named (below) — is a role the
+registry still supports; none is currently registered (`ai-horde`, the first one, was retired).
 
 If a provider's key is missing the run **aborts and generates nothing**, rather than quietly leaving that
 provider out — a lane absent from a comparison looks like a provider that drew badly. Add the key, or narrow
@@ -301,8 +303,8 @@ A card with no picture is reported as **not drawn**. The contact sheet says so i
 Review files land at `seed-content/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
 covers the *full* prompt including `ART_STYLE` and is identical across providers, so a subject's candidates
 sort together. `<params4>` covers that provider's request settings, so changing them invalidates the reviews
-they would change. The extension follows the provider — Cloudflare writes PNG, AI Horde WebP (retired
-Pollinations wrote JPEG). Each image has a `.json` sidecar recording what was requested and, *where the provider says so*, which
+they would change. The extension follows the provider — Cloudflare writes PNG (the retired AI Horde adapter
+wrote WebP; retired Pollinations wrote JPEG). Each image has a `.json` sidecar recording what was requested and, *where the provider says so*, which
 model actually answered: Cloudflare names nothing at all,
 so a blank `model` means unwitnessed, never "the model I asked for".
 
@@ -396,7 +398,7 @@ re-prompting fixes the wrong words.**
 | One provider drew it well, another badly | **Neither.** That is a *pick* — record it in Step 8. Do not re-prompt a card another lane already nailed (#63) |
 | Every candidate is the same subject drawn in a style you dislike | **Pick**, or accept. Style is a property of the lane, not of your wording — see the per-provider table in Step 4 |
 | Every candidate misreads the *subject* — wrong object, fused parts, duplicated weapon | **Re-prompt.** Apply Step 4's wording levers |
-| Every candidate fails and the subject is a small held object | **The escape hatch**, below. Re-prompting this class has never fixed it on either lane |
+| Every candidate fails and the subject is a small held object | **`supergrok-manual`**, below (Step 6) — no escape hatch is currently registered. Re-prompting this class has never fixed it on the lane |
 | One candidate is nearly empty, the rest are fine | **Re-roll** that one file. Not a re-prompt round. An outright *black* frame no longer reaches you — the seam refuses it and the lane redraws (#78) |
 | One cell is missing from the sheet entirely | Not a judgement call: that lane failed the card and printed a `✗` line naming it. Re-run `--review` |
 
@@ -419,40 +421,18 @@ Then re-run `pnpm seed --review`. **Re-prompt only the cards that NO provider dr
 at 2 re-prompt rounds.** If a card still fails everywhere after two, take it to the human at the checkpoint
 with the problem named — do not swap the subject silently, and do not spend the session fighting the model.
 
-**The escape hatch, for a card the lanes refuse.** `ai-horde` is registered but sits out the fan-out (#71),
-so it never appears in a normal run. Two signatures say to reach for it:
+**No escape hatch for a card the lane refuses.** `ai-horde`, the first one, was retired because its pinned
+model lost its workers — the registry still supports the role (`escape-hatch`), but nothing is currently
+registered under it. A card that fails the small-held-object
+class (Step 4) or that Cloudflare refuses outright now has exactly two levers, both in Step 4/6: reword it
+(drop the weapon, let clothing carry the subject) or draw it yourself through `supergrok-manual`. Treat
+small-held-object subjects as a real constraint on Step 3's subject list again, not a solved problem.
 
-- **a subject only the hatch draws** — the small-held-object class in Step 4's table; or
-- **"Cloudflare returned nothing and won't say why"** — that lane has an undocumented, non-disablable NSFW
-  input filter (error 3030) with no opt-out. #66 never once made it fire, including on a longbow and a
-  chariot, so this is rare rather than expected — but an unexplained Cloudflare refusal on a
-  weapon-bearing subject is what it looks like, and the hatch is the only provider whose content policy
-  plainly permits those subjects.
-
-Reach it by name, for the handful of cards that need it:
-
-```bash
-pnpm seed --review --providers=ai-horde     # after the lanes have run; it resumes past what exists
-```
-
-It exists for **permission** first — it is the only provider whose content policy plainly allows
-weapon-bearing subjects — and #74 found it also draws the one class both lanes fail: a **small held object**
-(the first clean single bow this project has had). It is not better in general: it renders costume subjects
-photo-real and loses `ART_STYLE`. It is also the slowest thing in this runbook by an order of magnitude — a
-volunteer queue, and this project's account holds no kudos, so **one image can take 30–45 minutes**. Use it
-for the one or two cards that earned it, never for a theme. Its candidates land in `seed-content/review/` and appear
-in the contact sheet exactly like a lane's, so a pick on the hatch is recorded exactly like any other.
-
-**If the horde refuses the prompt, stop — do not re-run it.** Two or more matches against its content regex
-in one prompt is a `CorruptPrompt`: a terminal failure *plus* a timeout on this machine's IP that escalates
-**3 → 9 → 15 → 21 minutes**, on a 24-hour counter. Retrying immediately makes the next wait longer. The
-refusal is also information — this prompt is unworkable on the one provider whose policy was supposed to be
-permissive — so the response is to reword it (Step 4's levers) or take the card to the human, never to
-re-submit it as-is. Only the hatch's lane is affected; Cloudflare carries on.
-
-One thing is easier here than anywhere else: **on AI Horde, paying is not merely forbidden, it is
-impossible.** The service has no payment surface at all, so this is the only provider where the $0 constraint
-is enforced by the service rather than by the account state you are trusted to preserve.
+**Cloudflare can still refuse outright, with no hatch to fall back on.** It has an undocumented,
+non-disablable NSFW input filter (error 3030) with no opt-out. #66 never once made it fire, including on a
+longbow and a chariot, so this is rare rather than expected — but an unexplained Cloudflare refusal on a
+weapon-bearing subject is what it looks like. Reword (Step 4's levers) or take the card to the human,
+same as any other failure that survives two re-prompt rounds.
 
 Amend the commit if you changed any `imagePrompt`. **Do not write a `provider` value yet** — that is the
 human's choice, recorded in Step 8.
@@ -470,8 +450,8 @@ publish is outlined.
 The page states four things rather than hiding them, and so does the command:
 
 - **MISSING cells** — that *lane* produced nothing for that card. A dead lane or a narrowed run, *not* a
-  provider that drew badly. An escape-hatch column (`ai-horde`) is labelled as such and blank by default —
-  that is the arrangement working, so it is not counted here.
+  provider that drew badly. An escape-hatch column, if one is ever registered again, is labelled as such and
+  blank by default — that is the arrangement working, so it is not counted here.
 - **"not drawn" cells** — the manual lane (`supergrok-manual`) had no picture in the drop folder for that
   card. That is a missing file, not a bad drawing, and it is not counted as a MISSING lane cell. A picture
   you did import sits in that column beside the automatic candidates.
@@ -511,7 +491,7 @@ exactly as it is — no other field is touched by this step:
 "provider": "cloudflare-sdxl",
 
 // on a card object that a different provider won, alongside its five fields:
-"provider": "ai-horde",
+"provider": "supergrok-manual",
 ```
 
 `--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes. The id
@@ -546,7 +526,7 @@ re-generated and never re-audited by any other command, so this is the only pass
 **The fail-safe, stated so nobody works around it:** a theme with **no pick recorded publishes nothing.**
 `--sync` reports each such card as *"no provider chosen (bake-off not judged)"* and exits without writing.
 That is the design working — an unjudged bake-off has no reviewed image, only candidates — not a bug. The
-fix is always Step 8, never `--allow-unreviewed`.
+fix is always Step 8 — there is no bypass flag; `--allow-unreviewed` was removed from the CLI entirely.
 
 `--sync` also rewrites **`seed-content/provenance.json`**, one entry per card it just published, recording what
 actually drew it — the model the response *named*, the parameters that were *asked for*, and the review key
@@ -563,9 +543,9 @@ gh pr create --fill
 If a card publishes with *"no readable sidecar beside the reviewed image"*, that card gets no entry. Report
 it; do not invent one — a `params` bag copied from today's adapter is a guess, not a record.
 
-Every entry a runbook run produces reads `"reviewed": true`. A `false` there means the bytes were generated
-at publish time under `--allow-unreviewed` and no human ever saw them, which the *Never* list forbids — so
-if you see one in a diff, something went badly wrong and it is worth stopping over.
+Every entry a runbook run produces reads `"reviewed": true` — there is no longer a way to publish
+unreviewed bytes, so no entry can read otherwise. If you ever see `"reviewed": false` in a diff, the
+provenance file was hand-edited or predates this; stop and report rather than committing it.
 
 Report to the human: cards inserted, images published, the PR URL.
 
@@ -578,8 +558,8 @@ Abort the run and report. Do not improvise past any of these.
 | Signal | Why you stop |
 |---|---|
 | `--sync` reports a pending **prune**, or asks you to type a collection-row count | Something was renamed or dropped in the seed file. A prune deletes cards **out of the children's collections**. Fix the file. **Never pass `--allow-prune`.** |
-| `--sync` refuses: "would be inserted with no reviewed image" | Run `--review` first. **Never pass `--allow-unreviewed`** — it defeats the guarantee that no unreviewed image reaches a child. |
-| `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed-content/cards.json`. Never route around it with `--allow-unreviewed`. |
+| `--sync` refuses: "would be inserted with no reviewed image" | Run `--review` first. There is no bypass flag — `--allow-unreviewed` was removed from the CLI because it defeated the guarantee that no unreviewed image reaches a child. |
+| `--sync` refuses: "no provider chosen (bake-off not judged)" | The pick was never recorded. Go back to Step 8 — the human's choice, written into `seed-content/cards.json`. There is no flag to route around it. |
 | `--sync` refuses: "name a provider that is not registered" | A typo, or an adapter that was retired. Fix the `provider` value; re-running `--review` cannot satisfy this one. |
 | `--sync` refuses: "seed-content/provenance.json is unreadable" | The generated provenance record was hand-edited or truncated. Nothing has been written. Restore it with `git checkout seed-content/provenance.json`; never repair it by hand. |
 | `--review` aborts naming an unconfigured provider | Add the key, or narrow the run *on purpose* with `--providers=`. Never let a lane drop out silently — a blank column reads as a provider that drew badly. |
@@ -594,7 +574,7 @@ Abort the run and report. Do not improvise past any of these.
 - Never remove or rename an existing theme or card. Removal from the seed file **prunes it from every
   child's collection**.
 - Never reorder the `themes` array.
-- Never pass `--allow-prune`, `--allow-unreviewed`, or `--reset`.
+- Never pass `--allow-prune`. (`--allow-unreviewed`, `--publish` and `--reset` no longer exist in the CLI.)
 - Never answer a checkpoint on the human's behalf — including the bake-off pick, which is a *choice* the
   human makes at checkpoint 2 and you only ever recommend.
 - **Never rename, copy or hand-edit a file in `seed-content/review/` to make a card look picked.** The filename is
@@ -610,11 +590,11 @@ Abort the run and report. Do not improvise past any of these.
   witness, and that is a true statement worth keeping.
 - Never move a provider between lane and escape hatch, or add one, to get a run through. The registry
   (`src/shared/pool/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
-- **Never turn on AI Horde's `replacement_filter` to get a blocked prompt through.** It does make the
-  refusal and its IP timeout disappear — by silently rewriting the prompt before a worker sees it, with no
-  signal anywhere in the response. You would then review an image drawn from words this project never sent,
-  filed under a hash of the words it did. Same for any other pinned request parameter: they are pinned
-  because they change the bytes.
+- **Never silently tolerate a provider rewriting the prompt to get a blocked request through** (the retired
+  AI Horde adapter's `replacement_filter` did exactly this). That kind of flag makes the refusal disappear by
+  rewriting the prompt before anything sees it, with no signal anywhere in the response — you would then
+  review an image drawn from words this project never sent, filed under a hash of the words it did. Any
+  pinned request parameter on a current adapter is pinned for the same reason: it changes the bytes.
 - **Never attach a payment method to an image-provider account, and never sign in to one that already
   has a card.** Recurring cost for this pipeline is $0, and the guarantee is the account state, not a
   budget: a card-free account can only ever refuse a request, whereas a carded one bills silently and you

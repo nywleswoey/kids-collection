@@ -9,9 +9,10 @@
  * string constant rather than a parameter.
  *
  * ── What one generate() call owns ────────────────────────────────────────────
- * ONE logical attempt, however many HTTP round-trips that takes. AI Horde
- * submits then polls; that loop lives inside its adapter, so the runner never
- * learns that one provider is asynchronous and the others are not.
+ * ONE logical attempt, however many HTTP round-trips that takes. A
+ * submit-then-poll provider (the retired AI Horde adapter was one) hides that
+ * loop inside its own adapter, so the runner never learns that one provider is
+ * asynchronous and the others are not.
  *
  * It does NOT own retry, backoff, concurrency or pacing. #63 made per-provider
  * throttling a requirement rather than an optimisation (a single global gate
@@ -64,10 +65,11 @@ export interface GeneratedImage {
   /** Encoded format, sniffed from the bytes rather than trusted from a header. */
   format: ImageFormat;
   /**
-   * The model the response actually NAMED, where the provider says so
-   * (Pollinations' `x-model-used`, AI Horde's worker model). Undefined when the
-   * provider reports nothing. Never the model that was requested — #64 proved
-   * those differ, silently.
+   * The model the response actually NAMED, where the provider says so (the
+   * retired Pollinations adapter read `x-model-used`; the retired AI Horde
+   * adapter read the worker's reported model). Undefined when the provider
+   * reports nothing — true of every adapter currently registered. Never the
+   * model that was requested — #64 proved those differ, silently.
    */
   model?: string;
 }
@@ -83,17 +85,17 @@ export type ProviderParams = Readonly<Record<string, string | number | boolean>>
  * Whether a provider takes part in the eager bake-off (#71).
  *
  * #63 fans `--review` out across every provider. #71 carved out an exception and
- * made expressing it this ticket's job: AI Horde is keyed and wired, but it is
- * NOT a lane. Registration buys about one image of kudos permanently, a 30-card
- * burst costs ~720, and 768x768 is conditional on live queue depth — so it loses
- * the throughput driver outright, and its claim on quality is permission rather
- * than skill. It earns its place as insurance for cards the lanes refused or
- * drew badly, invoked deliberately.
+ * made expressing it this ticket's job: a hatch is keyed and wired, but it is
+ * NOT a lane — registered and resolvable, yet it sits out the default fan-out
+ * and is reached only by naming it (`--providers=<id>`), still resolvable by
+ * `--sync`, and still names its candidates the same way a lane's would, because
+ * a card published from the hatch must be as traceable as any other.
  *
- * The distinction is only about the DEFAULT set. An escape hatch is still
- * selectable by name (`--providers=ai-horde`), still resolvable by `--sync`, and
- * still names its candidates the same way — because a card published from the
- * hatch must be as traceable as any other.
+ * AI Horde was the first `escape-hatch` member (#71) and has since been
+ * retired (the owner's pinned model lost its workers; no published card was
+ * drawn by it). The role is kept with no member registered rather than
+ * removed — it is cheap, the tests exercise it with an injected registry
+ * (`providers/index.ts`'s `selectLanes`), and the next hatch needs it.
  *
  * `manual` sits out the same way, for a different reason. The lane does not
  * call an API: the owner supplies pictures, and a card with none is "not drawn"
