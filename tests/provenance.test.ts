@@ -78,12 +78,11 @@ describe("toProvenance (#75)", () => {
     });
   });
 
-  it("records that nobody saw the bytes, where nobody did", () => {
-    // The --allow-unreviewed path generates at publish time. Its reviewKey is a
-    // correct content address for bytes that were never in a review folder and
-    // never in front of a human, and the run's warning scrolls past — so the
-    // record carries the fact instead. FR9 is still the guarantee; this is its
-    // receipt.
+  it("still carries `reviewed` mechanically — the caller decides the value", () => {
+    // `toProvenance` is a pure, generic mapping; it is `scripts/seed/index.ts`
+    // that now only ever calls it with `true` (A4 removed the one path that
+    // passed `false`, `--allow-unreviewed`). This pins that the field itself
+    // is not hardcoded inside the function.
     expect(toProvenance(witnessed, REVIEW_KEY, false).reviewed).toBe(false);
   });
 });

@@ -17,5 +17,6 @@ Non-negotiables, restated so they cannot be lost mid-run — the runbook has the
 - **Two human checkpoints, both blocking**: the 30-name list before any JSON is written, and the image
   contact sheet before publishing. Never answer either on the human's behalf; never proceed on silence.
 - **`pnpm seed --sync` writes to the production DB and Blob store the children play against.** Only after
-  approval. Never pass `--allow-prune`, `--allow-unreviewed` or `--reset`; stop and report instead.
+  approval. Never pass `--allow-prune`; stop and report instead. (`--allow-unreviewed`, `--publish` and
+  `--reset` no longer exist in the CLI.)
 - Branch first, never author on `main`.

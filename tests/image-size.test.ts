@@ -4,10 +4,11 @@ import { solidPng } from "@/shared/pool/providers/fake";
 
 /**
  * Header sniffing exists for one load-bearing assertion: cards render at
- * 768x768, and the shortlisted providers disagree on format — Pollinations
- * serves JPEG, Cloudflare Workers AI serves PNG, AI Horde serves WebP. It is
- * also how `uploadImage` learns a card's real content type, so a PNG card is
- * never published announcing itself as a JPEG.
+ * 768x768, and the providers disagree on format — the retired Pollinations
+ * adapter served JPEG, Cloudflare Workers AI serves PNG, and the retired AI
+ * Horde adapter served WebP (kept covered: a hand-saved SuperGrok drop file
+ * may also be `.webp`). It is also how `uploadImage` learns a card's real
+ * content type, so a PNG card is never published announcing itself as a JPEG.
  */
 
 function jpeg(width: number, height: number, opts: { withApp0?: boolean } = {}): Uint8Array {

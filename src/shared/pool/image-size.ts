@@ -9,10 +9,13 @@
  * adapter written against it would silently return the wrong size. The provider
  * contract suite decodes what each adapter actually returns and refuses it.
  *
- * Three formats, because the shortlisted providers disagree: Pollinations serves
- * JPEG, Cloudflare Workers AI serves PNG, AI Horde serves WebP. Sniffing the
- * bytes is also how `uploadImage` learns a card's real content type, so a PNG
- * card is never published announcing itself as a JPEG.
+ * Three formats: the retired Pollinations adapter served JPEG, Cloudflare
+ * Workers AI serves PNG, and the retired AI Horde adapter served WebP. WebP
+ * sniffing stays even with no adapter currently emitting it — a SuperGrok drop
+ * file may be saved as `.webp` (`supergrok-manual.ts`'s accepted extensions),
+ * and the fixture tests exercise this format directly. Sniffing the bytes is
+ * also how `uploadImage` learns a card's real content type, so a PNG card is
+ * never published announcing itself as a JPEG.
  *
  * Returns null for anything it does not recognise — callers treat that as "not a
  * usable image", which is the same outcome as a zero-length body.
@@ -104,8 +107,9 @@ function readJpeg(b: Uint8Array): ImageSize | null {
 
 // ── WebP ─────────────────────────────────────────────────────────────────────
 // RIFF container with three possible payload chunks, each storing the size
-// differently. AI Horde returns WebP, and which chunk it uses depends on whether
-// the worker encoded lossy, lossless or extended.
+// differently (lossy, lossless or extended) — the retired AI Horde adapter's
+// responses varied across all three, and a hand-saved SuperGrok drop file
+// could in principle be any of them too.
 function readWebp(b: Uint8Array): ImageSize | null {
   if (b.length < 16) return null;
   if (ascii(b, 0, 4) !== "RIFF" || ascii(b, 8, 4) !== "WEBP") return null;

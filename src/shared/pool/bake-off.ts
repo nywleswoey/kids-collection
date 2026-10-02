@@ -206,12 +206,8 @@ async function runLane<T>(
  * `ProviderNotDrawn` is the exception that stays itself. It is an absence, not
  * a judged failure, and wrapping it would make a missing manual picture look
  * like the lane died.
- *
- * Exported because `--publish --allow-unreviewed` generates outside a lane and
- * must honour the same `SEED_RETRIES` budget. A second ladder there would drift
- * from this one, and `generate()` stays ONE logical attempt either way.
  */
-export async function withRetry<T>(
+async function withRetry<T>(
   provider: Pick<ImageProvider, "id">,
   attempt: () => Promise<T>,
   deps: Pick<BakeOffDeps<never>, "retries" | "baseDelayMs" | "rateLimitDelayMs">,

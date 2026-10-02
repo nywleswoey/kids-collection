@@ -16,25 +16,23 @@
  * startup before a single image is generated rather than vanishing from the run.
  *
  * ── Lanes and escape hatches ─────────────────────────────────────────────────
- * #71 resolved AI Horde to "keyed and wired, but NOT a bake-off lane", and made
- * expressing that this seam's job. So `role` splits the registry: the default
- * fan-out is the lanes, while an escape hatch is reachable only by naming it.
+ * `role` splits the registry: the default fan-out is the lanes, while an escape
+ * hatch is registered but reachable only by naming it (`--providers=<id>`).
  * Everything else about a hatch is identical — `--sync` resolves it, and its
  * candidates are named the same way — because a card published from the hatch
- * must be as traceable as any other.
+ * must be as traceable as any other. The role itself is kept even with no
+ * member currently registered (below) — the next hatch needs it, and the tests
+ * exercise it with an injected registry rather than a real adapter.
  *
- * ── AI Horde, and why its model is in code rather than in the environment ────
- * #71 settled its request parameters (`slow_workers: true` mandatory,
- * `allow_downgrade` never set, `replacement_filter: false`) but explicitly left
- * the model to #74. #74 pinned it, so the hatch registers here.
- *
- * The model lives in `ai-horde.ts` and NOT in `AIHORDE_MODEL`, for this file's
- * own reason one level down. The environment carries secrets; anything that
- * changes the BYTES belongs in a diff. A model name changes the bytes twice
- * over: `params` is hashed into the review filename, so an env-driven model
- * would silently rename every reviewed candidate when someone edited their
- * `.env.local` — and on this provider a mistyped name is not a 404 but a
- * DIFFERENT model, with the horde's most-served models being NSFW ones.
+ * ── AI Horde, retired ─────────────────────────────────────────────────────────
+ * #71 resolved AI Horde to "keyed and wired, but NOT a bake-off lane" (the first
+ * `escape-hatch` member), and #74 pinned its model. The owner reports the
+ * pinned model ("AlbedoBase XL (SDXL)") no longer has workers online, surfacing
+ * as `ai-horde: no worker can serve this request`. `grep -c ai-horde` on
+ * `seed-content/cards.json` and `provenance.json` both return 0 — no published
+ * card was drawn by it — so retiring it needed no registry comment the way
+ * Pollinations' did. The adapter (`ai-horde.ts`) is deleted; see git history for
+ * it and for the request-parameter and model decisions above.
  *
  * ── Pollinations, retired ────────────────────────────────────────────────────
  * Pollinations was a lane until the Food Around the World bake-off, where all 30
@@ -53,18 +51,16 @@
  * imports the files when the lane is named. Role `manual` keeps it out of the
  * default fan-out, so a review that is not using it neither aborts nor waits.
  */
-import { aiHorde } from "./ai-horde";
 import { cloudflareSdxl } from "./cloudflare-sdxl";
 import { supergrokManual } from "./supergrok-manual";
 import type { ImageProvider } from "./provider";
 
 export * from "./provider";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
-export { aiHorde } from "./ai-horde";
 export { supergrokManual } from "./supergrok-manual";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), aiHorde(), supergrokManual()];
+export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), supergrokManual()];
 
 /** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
@@ -99,9 +95,11 @@ export class ProviderSelectionError extends Error {
  * message. Called before anything is generated, so a misconfigured run costs
  * nothing and writes nothing — the `DATABASE_URL` treatment, applied to keys.
  *
- * Naming a provider explicitly reaches an escape hatch too — that IS how #71
- * intends the hatch to be invoked, for cards the lanes refused or drew badly.
- * The role only decides the DEFAULT set.
+ * Naming a provider explicitly would also reach an escape hatch, if one were
+ * registered — that is what the role is for. The role only decides the
+ * DEFAULT set. No hatch is currently registered (AI Horde, retired above); the
+ * manual lane (`supergrok-manual`) is the present-day answer for a subject a
+ * lane keeps drawing badly.
  *
  * @param requested ids from `--providers=a,b`; undefined means every lane.
  * @param registry defaults to the real one; injectable so the escape-hatch path

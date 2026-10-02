@@ -39,43 +39,17 @@ describe("parseSeedArgs (A2)", () => {
       });
     });
 
-    it("parses bare --publish", () => {
-      expect(parse(["--publish"])).toEqual({
-        kind: "publish",
-        reset: false,
-        allowUnreviewed: false,
-      });
-    });
-
-    it("parses --publish --reset", () => {
-      expect(parse(["--publish", "--reset"])).toEqual({
-        kind: "publish",
-        reset: true,
-        allowUnreviewed: false,
-      });
-    });
-
-    it("parses --publish --allow-unreviewed", () => {
-      expect(parse(["--publish", "--allow-unreviewed"])).toEqual({
-        kind: "publish",
-        reset: false,
-        allowUnreviewed: true,
-      });
-    });
-
     it("parses bare --sync", () => {
       expect(parse(["--sync"])).toEqual({
         kind: "sync",
         allowPrune: false,
-        allowUnreviewed: false,
       });
     });
 
-    it("parses --sync --allow-prune --allow-unreviewed", () => {
-      expect(parse(["--sync", "--allow-prune", "--allow-unreviewed"])).toEqual({
+    it("parses --sync --allow-prune", () => {
+      expect(parse(["--sync", "--allow-prune"])).toEqual({
         kind: "sync",
         allowPrune: true,
-        allowUnreviewed: true,
       });
     });
 
@@ -101,10 +75,6 @@ describe("parseSeedArgs (A2)", () => {
   });
 
   describe("conflicting command flags are rejected, not resolved by line order", () => {
-    it("rejects --sync --publish together", () => {
-      rejects(["--sync", "--publish"]);
-    });
-
     it("rejects --sync --check-urls together (previously silently ran only --check-urls)", () => {
       rejects(["--sync", "--check-urls"]);
     });
@@ -117,46 +87,32 @@ describe("parseSeedArgs (A2)", () => {
       rejects(["--supergrok-export", "--sync"]);
     });
 
-    it("rejects --supergrok-export combined with --publish", () => {
-      rejects(["--supergrok-export", "--publish"]);
-    });
-
     it("rejects --check-images --blob-budget together", () => {
       rejects(["--check-images", "--blob-budget"]);
     });
   });
 
   describe("modifier flags are scoped to the command that uses them", () => {
-    it("rejects --reset without --publish", () => {
-      rejects(["--reset"]);
-    });
-
-    it("rejects --sync --reset", () => {
-      rejects(["--sync", "--reset"]);
-    });
-
     it("rejects --allow-prune without --sync", () => {
       rejects(["--allow-prune"]);
-    });
-
-    it("rejects --publish --allow-prune", () => {
-      rejects(["--publish", "--allow-prune"]);
-    });
-
-    it("rejects --allow-unreviewed on a command that never inserts", () => {
-      rejects(["--check-urls", "--allow-unreviewed"]);
-    });
-
-    it("rejects bare --allow-unreviewed (defaults to review, which never inserts)", () => {
-      rejects(["--allow-unreviewed"]);
     });
 
     it("rejects --providers outside --review (previously silently ignored)", () => {
       rejects(["--sync", "--providers=a"]);
     });
+  });
 
-    it("rejects --publish --providers=a", () => {
-      rejects(["--publish", "--providers=a"]);
+  describe("removed flags are unknown, not silently tolerated", () => {
+    it("rejects --publish — the mode was removed (A3)", () => {
+      rejects(["--publish"]);
+    });
+
+    it("rejects --reset — removed along with --publish (A3)", () => {
+      rejects(["--reset"]);
+    });
+
+    it("rejects --allow-unreviewed — removed along with its publish-time generation path (A4)", () => {
+      rejects(["--sync", "--allow-unreviewed"]);
     });
   });
 });
