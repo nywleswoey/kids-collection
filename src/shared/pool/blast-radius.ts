@@ -57,7 +57,7 @@ async function perChildRows(
 }
 
 /**
- * `--publish --reset` deletes the ENTIRE pool, so every collection row is in
+ * `resetPool` deletes the ENTIRE pool, so every collection row is in
  * scope. Counted without a join for exactly that reason: there is no way for
  * this number to end up narrower than the delete.
  */

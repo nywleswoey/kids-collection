@@ -22,14 +22,12 @@ export class DestructiveOperationAborted extends Error {
 }
 
 function printReport(
-  operation: "reset" | "prune",
   target: string,
   isProduction: boolean,
   radius: BlastRadius,
 ): void {
-  const label = operation === "reset" ? "POOL RESET" : "SEED PRUNE";
   console.log(`\n${"─".repeat(64)}`);
-  console.log(`${isProduction ? "⚠️  PRODUCTION" : "local"} — ${label}`);
+  console.log(`${isProduction ? "⚠️  PRODUCTION" : "local"} — SEED PRUNE`);
   console.log(`Target: ${target}`);
   console.log(`${"─".repeat(64)}`);
   console.log(`Themes to delete:      ${radius.themes}`);
@@ -56,13 +54,12 @@ function printReport(
  * Local targets get the report but no prompt: the guard exists for production.
  */
 export async function confirmDestructive(input: {
-  operation: "reset" | "prune";
   target: string;
   isProduction: boolean;
   radius: BlastRadius;
 }): Promise<void> {
-  const { operation, target, isProduction, radius } = input;
-  printReport(operation, target, isProduction, radius);
+  const { target, isProduction, radius } = input;
+  printReport(target, isProduction, radius);
 
   if (!isProduction) return;
 
