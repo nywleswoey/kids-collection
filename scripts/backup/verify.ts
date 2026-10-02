@@ -17,7 +17,7 @@ import {
   diffCounts,
   isClean,
   formatDiff,
-} from "./count-report";
+} from "./count-report.ts";
 
 function main(): void {
   const [beforePath, afterPath] = process.argv.slice(2);

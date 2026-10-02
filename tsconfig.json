@@ -11,6 +11,12 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // Lets scripts/backup/*.ts import each other with an explicit .ts
+    // extension — required for them to run under plain `node` via Node 24's
+    // built-in type stripping (F3), which needs the extension Node's own ESM
+    // resolver requires. Safe only because noEmit is set above: tsc never
+    // writes out a .ts-importing .js file for a bundler to choke on.
+    "allowImportingTsExtensions": true,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [{ "name": "next" }],

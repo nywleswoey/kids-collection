@@ -48,3 +48,9 @@ need to cover it.
 
 Never add `--passWithNoTests` to `test`, `test:pg`, or `test:providers` — see
 the comment block in `vitest.config.ts` for why.
+
+## Migrations
+
+Run `pnpm db:migrate` against production *before* merging a PR that adds a migration —
+deploying the new code first 500s every route against the un-migrated schema (#104);
+`backup.yml`'s nightly migration gate only catches a missed one after the fact, within 24h.
