@@ -5,6 +5,7 @@ import { getParent } from "@/features/auth/guard";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { pullService } from "./pull-service.prod";
 import { tokenService } from "./token-service.prod";
+import { isPullRequestId } from "./pending-request";
 import type { PullOutcome, SacrificeResult } from "./pull-service";
 
 const PULL_PATHS = ["/play/pull", "/play/binder"] as const;
@@ -30,9 +31,12 @@ function parentGrant(
  * `requestId` is a client-generated id for one tap (#kcpi): the client keeps
  * it until an outcome is shown, so a reload or a stuck-loading retry replays
  * the SAME request instead of spending a new ticket. See pull-service.ts
- * `pull()` for the idempotency contract.
+ * `pull()` for the idempotency contract. A tab still running a pre-#kcpi
+ * bundle calls this as `pullAction(themeId?)`; rejecting a non-id here keeps
+ * that from crashing the insert or replaying one draw forever per theme.
  */
 export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
+  if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
   return withActiveChild((childId) => pullService.pull(childId, themeId, requestId), PULL_PATHS, {
     label: "pull",
   });

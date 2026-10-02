@@ -70,6 +70,17 @@ const OFFER_TTL_MS = 120_000; // 2 min
  */
 const CLAIM_STALE_MS = 15_000;
 
+/**
+ * How long a "granting" claim must sit untouched before the child's NEXT pull
+ * (any request id) refunds it outright (#kcpi). CLAIM_STALE_MS is the short
+ * same-tab window for a live retry of the SAME id to take over and finish the
+ * draw; this is the long cross-session one, for a claim no retry will ever
+ * come back for (tab closed, another device, sessionStorage lost). Far longer
+ * than any request can run, so it only ever catches one that's truly gone.
+ * Swept opportunistically at the start of `pull()` — no background job.
+ */
+const ABANDONED_CLAIM_SWEEP_MS = 10 * 60 * 1000;
+
 /** `pull()`'s answer when a duplicate request id's original attempt is still
  *  actively being completed (not stale yet) — nothing was spent or granted. */
 const STILL_IN_PROGRESS: PullStillInProgressOutcome = { outOfTokens: false, stillInProgress: true };
@@ -218,7 +229,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
         const pool = await catalog.listCards();
         if (pool.length === 0) throw new Error("empty pool");
         const choices = pickEasterEggChoices(pool, 5);
-        if (choices.length > 0) return finishEggOutcome(childId, requestId, lease, choices, spentBalance);
+        if (choices.length > 0) return await finishEggOutcome(childId, requestId, lease, choices, spentBalance);
         // No eligible epic+ choices (tiny pool) — fall through to a normal draw
         // using the full pool we already have, themed in memory if requested.
         const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
@@ -230,7 +241,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
         const pool = await catalog.listCards();
         if (pool.length === 0) throw new Error("empty pool");
         const choices = pickCommonRareChoices(pool, 5);
-        if (choices.length > 0) return finishEggOutcome(childId, requestId, lease, choices, spentBalance);
+        if (choices.length > 0) return await finishEggOutcome(childId, requestId, lease, choices, spentBalance);
         const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
         return await drawAndFinish(childId, requestId, lease, drawPool.length > 0 ? drawPool : pool, spentBalance);
       }
@@ -282,6 +293,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
+    await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS);
     const claimed = await claims.claimAndSpend(requestId, childId);
     if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
     if (claimed.kind === "fresh") {

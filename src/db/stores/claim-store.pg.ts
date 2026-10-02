@@ -10,6 +10,9 @@ type Lease = { fence: number };
  * has no interactive transactions — see collection-store.pg.ts `swapCards`):
  * each uses chained CTEs so the ownership check, the side effect (spend,
  * grant, refund) and the status/outcome write commit together or not at all.
+ * The `own` lease check locks the claim row (`FOR UPDATE`), so a concurrent
+ * takeover or sweep that bumps the fence makes this statement re-check
+ * against the new fence and touch nothing.
  */
 export const pgClaimStore: ClaimStore = {
   async claimAndSpend(requestId, childId) {
@@ -83,6 +86,7 @@ export const pgClaimStore: ClaimStore = {
     const result = await db.execute<{ outcome: unknown }>(sql`
       WITH own AS (
         SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
       ),
       grant_card AS (
         INSERT INTO collections (child_id, card_id, count)
@@ -98,7 +102,7 @@ export const pgClaimStore: ClaimStore = {
             'isDuplicate', (SELECT count FROM grant_card) > 1,
             'newBalance', ${newBalance}::integer
           )
-      WHERE request_id = ${requestId} AND EXISTS (SELECT 1 FROM grant_card)
+      WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM grant_card)
       RETURNING outcome
     `);
     return result.rows[0]?.outcome ?? null;
@@ -109,6 +113,7 @@ export const pgClaimStore: ClaimStore = {
     const result = await db.execute<{ done: boolean }>(sql`
       WITH own AS (
         SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
       ),
       refund AS (
         UPDATE children SET pull_tokens = pull_tokens + 1
@@ -117,7 +122,7 @@ export const pgClaimStore: ClaimStore = {
       ),
       mark AS (
         UPDATE pull_claims SET status = 'done', outcome = ${JSON.stringify(outcome)}::jsonb
-        WHERE request_id = ${requestId} AND EXISTS (SELECT 1 FROM refund)
+        WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM refund)
         RETURNING 1
       )
       SELECT (SELECT 1 FROM mark) IS NOT NULL AS done
@@ -130,6 +135,7 @@ export const pgClaimStore: ClaimStore = {
     await db.execute(sql`
       WITH own AS (
         SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
       ),
       refund AS (
         UPDATE children SET pull_tokens = pull_tokens + 1
@@ -137,7 +143,27 @@ export const pgClaimStore: ClaimStore = {
         RETURNING 1
       )
       DELETE FROM pull_claims
-      WHERE request_id = ${requestId} AND EXISTS (SELECT 1 FROM refund)
+      WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM refund)
     `);
+  },
+
+  async sweepAbandoned(childId, staleMs) {
+    const result = await db.execute<{ swept: number }>(sql`
+      WITH swept AS (
+        UPDATE pull_claims
+        SET status = 'done', fence = fence + 1, claimed_at = now(), outcome = '{"outOfTokens":true}'::jsonb
+        WHERE child_id = ${childId}
+          AND status = 'granting'
+          AND claimed_at < now() - (${staleMs}::double precision * interval '1 millisecond')
+        RETURNING 1
+      ),
+      refund AS (
+        UPDATE children SET pull_tokens = pull_tokens + (SELECT count(*) FROM swept)
+        WHERE id = ${childId} AND EXISTS (SELECT 1 FROM swept)
+        RETURNING 1
+      )
+      SELECT (SELECT count(*) FROM swept)::int AS swept
+    `);
+    return Number(result.rows[0]?.swept ?? 0);
   },
 };
