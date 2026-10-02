@@ -19,11 +19,15 @@ const journalArb = fc
     }),
     { minLength: 1, maxLength: 12 },
   )
+  // A real journal has unique tags and unique (strictly increasing) `when`s;
+  // the gate keys on `when`, so duplicates would be an impossible input.
   .map((entries) => {
-    const seen = new Set<string>();
+    const seenTags = new Set<string>();
+    const seenWhens = new Set<number>();
     return entries.filter((e) => {
-      if (seen.has(e.tag)) return false;
-      seen.add(e.tag);
+      if (seenTags.has(e.tag) || seenWhens.has(e.when)) return false;
+      seenTags.add(e.tag);
+      seenWhens.add(e.when);
       return true;
     });
   })
