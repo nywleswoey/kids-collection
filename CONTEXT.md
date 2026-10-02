@@ -179,8 +179,9 @@ free provider:
   JPEG delivered **9.6 KB**. Delivered weight tracks picture complexity, not source
   encoding — so a heavier lane is a *storage* question and not a child-facing
   performance one. Replicated on a second run, where the inversion held (924.7 KB →
-  32.2 KB against 108.7 KB → 44.2 KB). Reproduce with `pnpm prototype:79 --delivered`
-  (`scripts/prototypes/79-weight/`), which also carries `--steer`: Cloudflare SDXL has
+  32.2 KB against 108.7 KB → 44.2 KB). Reproduce with
+  `tsx --env-file-if-exists=.env.local archive/prototypes/79-weight/index.ts --delivered`
+  (archived, Pollinations-dependent — see its header), which also carries `--steer`: Cloudflare SDXL has
   **no output-format parameter** — `Accept: image/jpeg` and an invented
   `response_format` are both silently dropped — while
   `stable-diffusion-xl-lightning` answers **JPEG at 88–107 KB**, unregistered because

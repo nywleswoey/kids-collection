@@ -1,6 +1,12 @@
 /**
  * PROTOTYPE — #81. Throwaway. Do not import this from anything.
  *
+ * ARCHIVED (tech-debt review, B3): moved out of `scripts/prototypes/` because it fetches the
+ * retired `image.pollinations.ai` endpoint and is no longer runnable via a `pnpm prototype:*`
+ * script. Kept — not deleted — because it is cited as the reproducer for #81's measurements
+ * (`CONTEXT.md`, `src/shared/pool/prompt.ts`). Run directly with
+ * `tsx --env-file-if-exists=.env.local archive/prototypes/81-frames/index.ts`.
+ *
  * The question: `cloudflare-sdxl` bakes a decorative frame border into most
  * cards — a wooden picture frame, a tan mat with a gold rule, a rounded panel,
  * with the card's subject inset inside it. #81 listed three leads and asked

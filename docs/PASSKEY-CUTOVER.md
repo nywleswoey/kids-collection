@@ -2,7 +2,14 @@
 
 Concrete steps for moving the `/admin/*` gate from `ADMIN_PASSCODE` to a WebAuthn passkey.
 
-**Read §1 before deploying anything.** One check is genuinely blocking, and the two-deploy order is a
+**Decision (owner call, tech-debt review F5): deploy 2 is cancelled — keep the passcode.** This
+is the §6.3 "Keep the passcode" option, chosen as a standing decision rather than a per-incident
+fallback. `ADMIN_PASSCODE` and the code that reads it (`src/features/admin/gate.ts`,
+`unlock-action.ts`) stay in place; §4's removals are not going to happen. Deploy 1 (passkey
+alongside the passcode) already shipped and stands as the current, final state — there is no open
+tracker for deploy 2 and none should be opened.
+
+**Read §1 before deploying anything further.** One check is genuinely blocking, and the two-deploy order is a
 safety mechanism rather than tidiness — collapsing it into one deploy is how you end up locked out of
 your own admin area with no way back except a laptop you may not have.
 
@@ -174,7 +181,7 @@ one-click behaviour there, or reconsider removing the passcode (§6.3).
 
 ---
 
-## 4. Deploy 2 — remove the passcode
+## 4. Deploy 2 — remove the passcode (cancelled — see decision at the top of this doc)
 
 Only after §3 is fully green **and** §3.5 is complete — every device has its own platform passkey and
 the 1Password credential has been removed.
@@ -271,6 +278,9 @@ Before that, try the cheaper things:
 | Nothing works, but Google sign-in does | Enrol a fresh passkey via `/admin/enrol` — this is the designed recovery path and needs no passcode |
 
 ### 6.3 If §3.5 cannot be completed
+
+**This is the live decision, not a hypothetical** — see the top of this doc: deploy 2 is
+cancelled and the "Keep the passcode" option below is the one in effect.
 
 §3.5 is the chosen answer to the §1.1 result. If a device cannot do platform passkeys, or the per-device
 enrolment is not worth it to you, these are the alternatives that were weighed:
