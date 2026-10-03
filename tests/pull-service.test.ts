@@ -247,7 +247,7 @@ describe("makePullService.pull request-level idempotency (#kcpi)", () => {
 
     const next = await service.pull("kid", undefined, "req-next");
     if (!("card" in next)) throw new Error("expected a card outcome");
-    expect(next.newBalance).toBe(1); // 1 + 1 refunded - 1 spent
+    expect(await children.readColumn("kid", "pullTokens")).toBe(1); // 1 + 1 refunded - 1 spent
     expect(await claims.read("req-abandoned")).toMatchObject({ status: "done", outcome: { refunded: true } });
     expect(await claims.read("req-recent")).toMatchObject({ status: "granting" });
 

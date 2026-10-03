@@ -175,7 +175,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
 
     const next = await service.pull("kid", undefined, "req-next");
     if (!("card" in next)) throw new Error("expected a card outcome");
-    expect(next.newBalance).toBe(9); // 9 + 1 refunded - 1 spent
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9); // 9 + 1 refunded - 1 spent
     expect(await pgClaimStore.read("req-abandoned")).toEqual({
       childId: "kid",
       status: "done",

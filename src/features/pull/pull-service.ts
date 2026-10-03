@@ -324,8 +324,13 @@ export function makePullService({ children, collections, catalog, rewards, claim
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
-    await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId);
-    const claimed = await claims.claimAndSpend(requestId, childId);
+    // The sweep never touches `requestId`'s row, so it needn't sit ahead of
+    // the spend on the latency-critical path; a refund that lands after this
+    // pull's balance check simply shows up on the next one.
+    const [, claimed] = await Promise.all([
+      claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId),
+      claims.claimAndSpend(requestId, childId),
+    ]);
     if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
     if (claimed.kind === "fresh") {
       return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance);
