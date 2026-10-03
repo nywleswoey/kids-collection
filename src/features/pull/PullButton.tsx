@@ -58,6 +58,7 @@ export function PullButton({
   const router = useRouter();
   const prevBalance = useRef(initialBalance);
   const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pulledRef = useRef(false);
 
   function disarmStuckTimer() {
     if (stuckTimerRef.current !== null) {
@@ -68,6 +69,15 @@ export function PullButton({
 
   // Never leave a timer running past unmount.
   useEffect(() => disarmStuckTimer, []);
+
+  // Pulls skip revalidation (see `pullAction`), so purge the router cache once
+  // this page is left, not while the child may still tap Discover again.
+  useEffect(
+    () => () => {
+      if (pulledRef.current) router.refresh();
+    },
+    [router],
+  );
 
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
@@ -128,6 +138,7 @@ export function PullButton({
       let res: PullOutcome;
       try {
         res = await action();
+        pulledRef.current = true;
       } catch {
         disarmStuckTimer();
         setStuck(false);
@@ -309,10 +320,7 @@ export function PullButton({
             key={outcome.card.id + "-roulette"}
             finalCard={outcome.card}
             pool={flashPool}
-            onDone={() => {
-              setCycling(false);
-              router.refresh();
-            }}
+            onDone={() => setCycling(false)}
           />
         ) : (
           <div className="flex flex-col items-center gap-3" data-testid="pull-result">

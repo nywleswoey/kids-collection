@@ -49,7 +49,8 @@ function parentGrant(
  * (`setBalance`/`setOutcome` in `PullButton.tsx`). Skipping it also skips the
  * client router-cache purge a revalidation brings, which back/forward
  * navigation would otherwise restore stale pages from — so `PullButton` calls
- * `router.refresh()` once the reveal lands, outside the "Launching…" wait.
+ * `router.refresh()` when it unmounts after a pull, which never queues a later
+ * pull behind a page re-render.
  */
 export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
   if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
