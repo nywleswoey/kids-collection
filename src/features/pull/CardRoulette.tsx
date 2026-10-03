@@ -31,7 +31,6 @@ export function CardRoulette({
   };
   const flashPool = pool.length > 0 ? pool : [final];
   const [shown, setShown] = useState<FlashCard>(flashPool[0]);
-  const [landed, setLanded] = useState(false);
   const { play } = useSound();
   const idx = useRef(0);
 
@@ -53,7 +52,6 @@ export function CardRoulette({
         const isLast = i === delays.length - 1;
         if (isLast) {
           setShown(final);
-          setLanded(true);
           play("flip");
           onDone();
         } else {
@@ -79,7 +77,7 @@ export function CardRoulette({
       aria-hidden
     >
       <div className="card__holo" />
-      <CardImage src={shown.imageUrl} alt="" dim={landed ? 512 : FLASH_DIM} priority />
+      <CardImage src={shown.imageUrl} alt="" dim={FLASH_DIM} priority />
     </div>
   );
 }

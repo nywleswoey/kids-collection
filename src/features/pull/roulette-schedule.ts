@@ -9,7 +9,7 @@
 export const FLASH_DURATION_MS = 2500;
 
 /** Smaller square size used for spin flashes — next.config.ts's `imageSizes`
- *  allowlist (128/256/512); full 512 is reserved for the landed/reveal frame. */
+ *  allowlist (128/256/512); full 512 is reserved for the reveal card. */
 export const FLASH_DIM = 256;
 
 /**
@@ -29,9 +29,10 @@ export function buildFlashDelays(durationMs: number = FLASH_DURATION_MS): number
   return delays;
 }
 
-/** Number of pool frames a spin actually flashes before landing (all schedule
- *  entries except the last, which reveals the final card instead of the pool). */
-export const FLASH_FRAME_COUNT = Math.max(0, buildFlashDelays().length - 1);
+/** Number of pool frames a spin actually flashes before landing: the initial
+ *  frame plus one per schedule entry except the last, which reveals the final
+ *  card instead of the pool. */
+export const FLASH_FRAME_COUNT = buildFlashDelays().length;
 
 /**
  * Trim a flash pool down to only the entries a spin can ever show — the

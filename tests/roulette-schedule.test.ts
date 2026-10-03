@@ -22,9 +22,16 @@ describe("buildFlashDelays", () => {
 });
 
 describe("FLASH_FRAME_COUNT", () => {
-  it("is one less than the full delay schedule (the last entry lands on the final card)", () => {
-    expect(FLASH_FRAME_COUNT).toBe(buildFlashDelays().length - 1);
-    expect(FLASH_FRAME_COUNT).toBeGreaterThan(0);
+  it("covers the initial frame plus every advance before the landing entry", () => {
+    expect(FLASH_FRAME_COUNT).toBe(buildFlashDelays().length);
+  });
+
+  it("lets boundedFlashPool keep every pool index the spin shows", () => {
+    const delays = buildFlashDelays();
+    const shownIndices = [0, ...delays.slice(0, -1).map((_, i) => i + 1)];
+    const pool = Array.from({ length: FLASH_FRAME_COUNT + 50 }, (_, i) => i);
+    const bounded = boundedFlashPool(pool);
+    for (const idx of shownIndices) expect(bounded).toContain(pool[idx]);
   });
 });
 
