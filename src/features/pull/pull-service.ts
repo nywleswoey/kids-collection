@@ -104,22 +104,41 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
    * Grant one copy of a card and return the standard card outcome: upsert the
    * collection count, apply any (theme, rarity) set-completion bonus (Inc16 FR5),
    * and return with the duplicate flag plus the given balance. Shared tail of
-   * pull() and claimEasterEgg().
+   * pull() and claimEasterEgg(). `pool`, when the caller already has one on hand
+   * (pull()'s own draw pool), is forwarded so the reward cascade doesn't re-fetch
+   * the catalog it just read — see `grantCompletionRewards`'s doc.
    */
   async function grantCardOutcome(
     childId: string,
     card: Card,
     newBalance: number,
+    pool?: Card[],
   ): Promise<PullOutcome> {
     const { count } = await collections.grantCard(childId, card.id);
-    await rewards.grantCompletionRewards(childId, [card.id]);
+    await rewards.grantCompletionRewards(childId, [card.id], pool);
     return { outOfTokens: false, card, isDuplicate: count > 1, newBalance };
+  }
+
+  /** Draw one card from `pool` and grant it — the shared tail of every normal-draw
+   *  branch in `pull()` below, egg-fallback included. */
+  async function drawAndGrant(childId: string, pool: Card[], newBalance: number): Promise<PullOutcome> {
+    if (pool.length === 0) throw new Error("empty pool");
+    const card = drawCard(pool);
+    return grantCardOutcome(childId, card, newBalance, pool);
   }
 
   /**
    * Pull one card for a child. Atomic, no double-spend (U4-BR1/BR2).
    * 1) conditional spend, 2) draw, 3) upsert count, 4) refund on write failure.
    * `themeId` (Inc8 FR3) limits the normal draw to one category; eggs stay global.
+   *
+   * The two egg rolls are free (pure RNG), so they're checked BEFORE any catalog
+   * read — only when one actually hits do we pay for the FULL-pool fetch eggs
+   * need. The (vastly more common) normal draw below reads only what it needs:
+   * `catalog.listCards(themeId)` pushes the category filter into SQL instead of
+   * fetching every card and filtering in memory, so a themed pull only reads
+   * that theme's rows, and the result is reused as-is for the completion-reward
+   * check (which only ever looks at the drawn card's own theme).
    */
   async function pull(childId: string, themeId?: string): Promise<PullOutcome> {
     // 1) Atomic compare-and-swap spend.
@@ -127,27 +146,37 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
     if (newBalance === null) return { outOfTokens: true }; // no spend, no draw
 
     try {
-      const pool = await catalog.listCards();
-      if (pool.length === 0) throw new Error("empty pool");
-
       // Egg 1 (U6-FR2): rare roll → pick-1-of-5 epic+. Eggs draw from the FULL pool.
       if (rollEasterEgg()) {
+        const pool = await catalog.listCards();
+        if (pool.length === 0) throw new Error("empty pool");
         const choices = pickEasterEggChoices(pool, 5);
         if (choices.length > 0) return makeEggOutcome(childId, choices, newBalance);
+        // No eligible epic+ choices (tiny pool) — fall through to a normal draw
+        // using the full pool we already have, themed in memory if requested.
+        const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
+        return drawAndGrant(childId, drawPool.length > 0 ? drawPool : pool, newBalance);
       }
 
       // Egg 2 (Inc8 FR1): independent rare roll → pick-1-of-5 common/rare.
       if (rollEasterEgg()) {
+        const pool = await catalog.listCards();
+        if (pool.length === 0) throw new Error("empty pool");
         const choices = pickCommonRareChoices(pool, 5);
         if (choices.length > 0) return makeEggOutcome(childId, choices, newBalance);
+        const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
+        return drawAndGrant(childId, drawPool.length > 0 ? drawPool : pool, newBalance);
       }
 
-      // 2) Draw (rarity-weighted, pure). Category-scoped if a theme was chosen.
-      const drawPool = themeId ? pool.filter((c) => c.themeId === themeId) : pool;
-      const card = drawCard(drawPool.length > 0 ? drawPool : pool);
-
-      // 3) Upsert collection count + apply any set-completion bonus.
-      return await grantCardOutcome(childId, card, newBalance);
+      // 2) Draw (rarity-weighted, pure). Category-scoped if a theme was chosen,
+      // pushed into SQL — falls back to the full catalog if the themeId turns
+      // out to be stale/unknown rather than erroring on an empty draw pool.
+      const pool = await catalog.listCards(themeId);
+      if (pool.length === 0 && themeId) {
+        const fullPool = await catalog.listCards();
+        return drawAndGrant(childId, fullPool, newBalance);
+      }
+      return drawAndGrant(childId, pool, newBalance);
     } catch (err) {
       // 4) Best-effort refund (U4-BR6).
       try {
@@ -172,10 +201,15 @@ export function makePullService({ children, collections, catalog, rewards }: Pul
     if (held < 1) return { outOfTokens: true };
 
     const rarity = rollWeightedRarity();
-    const choices = pickRarityChoices(await catalog.listCards(), rarity, 5);
+    // The pool fetch and the normal-token balance read don't depend on each
+    // other — run them concurrently instead of one after the other.
+    const [pool, balance] = await Promise.all([
+      catalog.listCards(),
+      children.readColumn(childId, "pullTokens"),
+    ]);
+    const choices = pickRarityChoices(pool, rarity, 5);
     if (choices.length === 0) throw new Error("pullEasterEgg: no eligible cards");
 
-    const balance = await children.readColumn(childId, "pullTokens");
     return eggOutcome(childId, choices, balance, { easterEgg: true, rolledRarity: rarity }, rarity);
   }
 

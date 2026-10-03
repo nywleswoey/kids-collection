@@ -36,27 +36,45 @@ export function makeRewardService({ collections, rewards, catalog }: RewardDeps)
    * each (theme, rarity) set just completed, claim it atomically (single writer
    * wins) and grant one random card of that rarity; the bonus card can cascade
    * into further completions, bounded by the per-set UNIQUE claim.
+   *
+   * `pool` lets a caller that already fetched the catalog for its own purposes
+   * (pull-service's `pull()`) hand it over instead of this paying for a second
+   * identical `listCards()` round-trip — it may be theme-scoped, since the
+   * completeness check below only ever looks at `addedCardIds`' own theme(s).
+   * Omit it (trade/claim callers) and this fetches the full catalog itself, as
+   * before. Either way, the pool is upgraded to the FULL catalog the moment a
+   * set actually completes, since the bonus card can come from any theme.
    */
   async function grantCompletionRewards(
     childId: string,
     addedCardIds: string[],
+    pool?: Card[],
   ): Promise<GrantedReward[]> {
-    const pool = await catalog.listCards();
-    const owned = await collections.ownedCardIds(childId);
+    const [initialPool, owned] = await Promise.all([
+      pool ? Promise.resolve(pool) : catalog.listCards(),
+      collections.ownedCardIds(childId),
+    ]);
+    let currentPool = initialPool;
+    let fetchedFullPool = pool === undefined;
     const granted: GrantedReward[] = [];
     const processed = new Set<string>(); // `${themeId}|${rarity}` already evaluated
     let worklist = [...addedCardIds];
 
     while (worklist.length > 0) {
-      const sets = raritySetsFor(pool, worklist);
+      const sets = raritySetsFor(currentPool, worklist);
       worklist = [];
       for (const { themeId, rarity } of sets) {
         const key = `${themeId}|${rarity}`;
         if (processed.has(key)) continue;
         processed.add(key);
-        if (!isRaritySetComplete(pool, themeId, rarity, owned)) continue;
+        if (!isRaritySetComplete(currentPool, themeId, rarity, owned)) continue;
 
-        const rewardCard = pickUpgradeCard(pool, rarity, owned);
+        if (!fetchedFullPool) {
+          currentPool = await catalog.listCards();
+          fetchedFullPool = true;
+        }
+
+        const rewardCard = pickUpgradeCard(currentPool, rarity, owned);
         if (!rewardCard) continue;
 
         // Claim the set atomically — only the first writer wins.
