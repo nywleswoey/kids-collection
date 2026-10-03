@@ -6,13 +6,18 @@
  * Storage may be unavailable (private mode, blocked); a fresh id then just
  * means that one tap's idempotency won't survive a reload, not that the pull
  * itself is unsafe. See pull-service.ts `pull()` for the server contract.
+ *
+ * Ids carry a `pull_` prefix so they can't be confused with a bare UUID —
+ * which is what a theme id (or any other `gen_random_uuid()` row id) looks
+ * like, and what a pre-#kcpi bundle sends in this argument position.
  */
 
 import { storageGet, storageRemove, storageSet } from "@/lib/storage";
 
-const REQUEST_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const REQUEST_ID_RE = /^pull_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Whether `value` has the shape of an id minted by `getOrCreateRequestId`. */
+/** Whether `value` has the shape of an id minted by `getOrCreateRequestId`.
+ *  A bare UUID (e.g. a theme id from a stale client) must not pass. */
 export function isPullRequestId(value: unknown): value is string {
   return typeof value === "string" && REQUEST_ID_RE.test(value);
 }
@@ -26,7 +31,7 @@ export function pendingRequestKey(childId: string): string {
 export function getOrCreateRequestId(childId: string): string {
   const existing = storageGet("sessionStorage", pendingRequestKey(childId));
   if (isPullRequestId(existing)) return existing;
-  const fresh = crypto.randomUUID();
+  const fresh = `pull_${crypto.randomUUID()}`;
   storageSet("sessionStorage", pendingRequestKey(childId), fresh);
   return fresh;
 }

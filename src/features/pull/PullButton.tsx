@@ -53,11 +53,6 @@ export function PullButton({
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
-  // #kcpi: tags each launch so a reply from an abandoned attempt (the client
-  // timed out and the child retried) can be told apart from the CURRENT one
-  // and ignored — a hung request may still resolve long after we stopped
-  // waiting on it.
-  const attemptRef = useRef(0);
   const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function disarmStuckTimer() {
@@ -104,33 +99,26 @@ export function PullButton({
   //
   // #kcpi: arms a client-side stuck-loading timeout independent of `pending`
   // (a genuinely hung fetch never resolves on its own, so `pending` alone
-  // can't recover), and tags this call with `attemptRef` so a reply arriving
-  // after the child already retried is ignored rather than clobbering the
-  // newer attempt's state.
+  // can't recover).
   function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg") {
     play("click");
     play("packOpen");
     setOutcome(null);
     setStuck(false);
     setRefundedNotice(false);
-    const attemptId = ++attemptRef.current;
     disarmStuckTimer();
-    stuckTimerRef.current = setTimeout(() => {
-      if (attemptRef.current === attemptId) setStuck(true);
-    }, STUCK_TIMEOUT_MS);
+    stuckTimerRef.current = setTimeout(() => setStuck(true), STUCK_TIMEOUT_MS);
 
     startTransition(async () => {
       let res: PullOutcome;
       try {
         res = await action();
       } catch {
-        if (attemptRef.current !== attemptId) return; // superseded by a retry
         disarmStuckTimer();
         setStuck(false);
         play("denied");
         return;
       }
-      if (attemptRef.current !== attemptId) return; // superseded by a retry
       disarmStuckTimer();
 
       if (res.stillInProgress) {

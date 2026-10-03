@@ -53,8 +53,10 @@ describe("pending pull request id", () => {
 
 describe("isPullRequestId", () => {
   it("accepts minted ids and rejects what a pre-#kcpi client would send", () => {
-    expect(isPullRequestId(crypto.randomUUID())).toBe(true);
-    for (const v of [undefined, null, "", "dinosaurs", "t1", 42, {}]) {
+    expect(isPullRequestId(`pull_${crypto.randomUUID()}`)).toBe(true);
+    // A bare UUID is exactly what a theme id looks like — what an old bundle sends here.
+    const themeId = crypto.randomUUID();
+    for (const v of [undefined, null, "", "dinosaurs", "t1", themeId, 42, {}]) {
       expect(isPullRequestId(v)).toBe(false);
     }
   });
