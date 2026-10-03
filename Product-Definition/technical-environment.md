@@ -421,9 +421,8 @@ guard and a narrow test, while the general statement — *no service path touche
 outside its named scope* — was deferred. It now ships as four properties in
 `tests/delete-path.pbt.test.ts` plus the cascade cases in `tests-pg/delete-path.pg.test.ts`, because the
 two catch classes the other structurally cannot: the store's row-DELETE branch is unreachable from any
-service, and a fake has no cascades to get wrong. ⚠️ **The `seed --sync` pruners remain structurally
-unguarded** — an empty keep-list deletes every collection row, and only the CLI's `--allow-prune` plus a
-typed confirmation stands in the way. That is pinned as behaviour, not fixed.
+service, and a fake has no cascades to get wrong. The `seed --sync` pruners now refuse an empty keep-list
+(#96) — see `docs/RESTORE.md`.
 
 ### Tooling
 
