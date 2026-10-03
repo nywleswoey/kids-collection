@@ -34,10 +34,27 @@ function parentGrant(
  * `pull()` for the idempotency contract. A tab still running a pre-#kcpi
  * bundle calls this as `pullAction(themeId?)`; rejecting a non-id here keeps
  * that from crashing the insert or replaying one draw forever per theme.
+ *
+ * No `revalidatePath` here (unlike the other pull actions below): any
+ * `revalidatePath` call — even for a route other than the current one —
+ * makes Next.js render the CURRENT route's full RSC flight tree into THIS
+ * action's own response before it can resolve (`pathWasRevalidated` is a
+ * single store-wide flag, not scoped to which path was revalidated; see
+ * `node_modules/next/dist/server/web/spec-extension/revalidate.js` and
+ * `action-handler.js`'s `skipFlight: !workStore.pathWasRevalidated`). That
+ * re-render was `/play/pull`'s own full `listCards()` + balance + themes
+ * fetch happening a second time, synchronously inside the "Launching…" wait,
+ * for data `PullButton` never reads from the page anyway — the balance, egg
+ * count, and won card all come from this action's own return value
+ * (`setBalance`/`setOutcome` in `PullButton.tsx`). `/play/pull` and
+ * `/play/binder` both resolve the active child from a cookie
+ * (`requireActivePlayer`), which Next's default `staleTimes.dynamic: 0`
+ * already refetches on every real navigation regardless of revalidation, so
+ * skipping the revalidate here costs nothing on a later visit to either page.
  */
 export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
   if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
-  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId), PULL_PATHS, {
+  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId), undefined, {
     label: "pull",
   });
 }

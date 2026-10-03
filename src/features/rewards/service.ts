@@ -44,15 +44,22 @@ export function makeRewardService({ collections, rewards, catalog }: RewardDeps)
    * Omit it (trade/claim callers) and this fetches the full catalog itself, as
    * before. Either way, the pool is upgraded to the FULL catalog the moment a
    * set actually completes, since the bonus card can come from any theme.
+   *
+   * `owned` is the same kind of hand-over for `collections.ownedCardIds`: a
+   * caller that fetched it itself (concurrently with its own other round
+   * trips, before granting `addedCardIds`) passes the set WITH those ids
+   * already added, so this skips a third redundant read of the same table the
+   * caller's own grant just wrote to. Omit it and this fetches fresh, as before.
    */
   async function grantCompletionRewards(
     childId: string,
     addedCardIds: string[],
     pool?: Card[],
+    prefetchedOwned?: Set<string>,
   ): Promise<GrantedReward[]> {
     const [initialPool, owned] = await Promise.all([
       pool ? Promise.resolve(pool) : catalog.listCards(),
-      collections.ownedCardIds(childId),
+      prefetchedOwned ? Promise.resolve(prefetchedOwned) : collections.ownedCardIds(childId),
     ]);
     let currentPool = initialPool;
     let fetchedFullPool = pool === undefined;
