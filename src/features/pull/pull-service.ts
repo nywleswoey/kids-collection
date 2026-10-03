@@ -46,7 +46,7 @@ export interface PullStillInProgressOutcome {
   easterEgg?: false;
   stillInProgress: true;
   refunded?: false;
-  /** Live balance, so a refund swept in this same call still shows. */
+  /** Live balance, read when this answer is built. */
   newBalance: number;
 }
 
