@@ -5,6 +5,7 @@ import {
   countCollections,
   deleteCardsNotIn,
   deleteThemesNotIn,
+  PruneEmptyKeepListError,
 } from "@/shared/pool/writer";
 import { resetAll, seedChildren, seedCollections } from "./db";
 
@@ -21,13 +22,17 @@ import { resetAll, seedChildren, seedCollections } from "./db";
  *   `resetPool()`  — refuses outright while any collection row exists (Inc23
  *                    FR1), and is pinned in pool-writer.pg.test.ts.
  *   the PRUNERS    — `deleteThemesNotIn` / `deleteCardsNotIn`, the `seed --sync`
- *                    delta path. These have NO structural guard. Their only
- *                    protection is at the CLI (`--allow-prune` plus a typed
- *                    confirmation), which is a different layer and a different
- *                    failure mode. Nothing here proposes adding one — a prune
- *                    that could not remove a dropped card would not be a prune —
- *                    but the blast radius should be written down rather than
- *                    discovered, which is what these tests do.
+ *                    delta path. Their CLI-layer protection (`--allow-prune`
+ *                    plus a typed confirmation) is a different layer and a
+ *                    different failure mode from a structural guard, so #96
+ *                    added one at the writer: an empty keep-list is refused
+ *                    outright (`PruneEmptyKeepListError`), the same way
+ *                    `resetPool` refuses rather than running unrestricted.
+ *                    Nothing here makes a legitimate prune impossible — a
+ *                    non-empty keep-list that drops a card or a whole theme
+ *                    behaves exactly as before — but the one input that used
+ *                    to mean "no filter" now means "refuse", not "delete
+ *                    everything in scope".
  */
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -160,8 +165,9 @@ describe("the seed --sync pruners: scope, and the blast radius when scope is emp
   });
 
   it("deleteCardsNotIn is scoped to its theme — a name shared with another theme survives", async () => {
-    // 'Car' exists only in t2. Pruning t1 down to nothing must not reach it.
-    await deleteCardsNotIn("t1", []);
+    // 'Car' exists only in t2. Pruning t1 down to nothing — a non-empty
+    // keep-list that matches none of t1's cards — must not reach it.
+    await deleteCardsNotIn("t1", ["Nonexistent"]);
     expect(await rowsFor("v1")).toBe(1);
     expect(await rowsFor("v2")).toBe(1);
     expect(await rowsOwnedBy("kid1")).toBe(1); // only v1 left
@@ -176,27 +182,31 @@ describe("the seed --sync pruners: scope, and the blast radius when scope is emp
     expect(await rowsFor("v2")).toBe(0);
   });
 
-  it("⚠️ an EMPTY keep-list deletes every theme and every collection row, unguarded", async () => {
-    // Pinned as behaviour, deliberately, because it is the sharpest edge in this
-    // file. `pruneNotIn` treats an empty keep-list as "no filter", so the delete
-    // runs unrestricted — and unlike resetPool() there is no owned-rows check to
-    // stop it. A seed file that failed to parse into any themes would take every
-    // child's entire collection with it, and the only thing standing in the way
-    // is the CLI's --allow-prune plus a typed confirmation.
-    //
-    // If this ever becomes reachable without that confirmation, THIS is the test
-    // that should have been read first.
+  it("deleteThemesNotIn refuses an empty keep-list — #96's guard, not the hazard", async () => {
+    // This used to be the sharpest edge in the file: `pruneNotIn` treated an
+    // empty keep-list as "no filter", so the delete ran unrestricted and took
+    // every theme, every card, and every collection row with it. #96 makes an
+    // empty keep-list a distinct, always-refused case instead — "prune
+    // nothing" rather than "prune everything" — so this now asserts the
+    // refusal, and that nothing was touched, in place of the old hazard.
     expect(await countCollections()).toBe(5);
 
-    const deleted = await deleteThemesNotIn([]);
+    await expect(deleteThemesNotIn([])).rejects.toThrow(PruneEmptyKeepListError);
 
-    expect(deleted).toBe(2);
-    expect(await countCollections()).toBe(0);
+    expect(await countCollections()).toBe(5);
     const [{ n: cards }] = await sql`SELECT count(*)::int AS n FROM cards`;
-    expect(cards).toBe(0);
-    // The children themselves survive — they own nothing, which is the whole
-    // difference between "the pool was reset" and "the binders were emptied".
-    const [{ n: kids }] = await sql`SELECT count(*)::int AS n FROM children`;
-    expect(kids).toBe(2);
+    expect(cards).toBe(4);
+    const [{ n: themeRows }] = await sql`SELECT count(*)::int AS n FROM themes`;
+    expect(themeRows).toBe(2);
+  });
+
+  it("deleteCardsNotIn refuses an empty keep-list too — same guard, the per-theme pruner", async () => {
+    expect(await countCollections()).toBe(5);
+
+    await expect(deleteCardsNotIn("t1", [])).rejects.toThrow(PruneEmptyKeepListError);
+
+    expect(await countCollections()).toBe(5);
+    const [{ n: cards }] = await sql`SELECT count(*)::int AS n FROM cards`;
+    expect(cards).toBe(4);
   });
 });

@@ -264,6 +264,15 @@ dumps and the wayfinder map said seven. Nothing survives to count.)*
   There is no override flag.
 - `pnpm seed --sync` **aborts before writing anything** if it would prune themes or cards, unless
   `--allow-prune` is passed.
+- `deleteThemesNotIn` / `deleteCardsNotIn` (the pruners behind `--sync`) **refuse an empty keep-list**
+  outright (#96), rather than running it as an unrestricted delete. An empty list used to mean "no
+  filter" — every theme or card in scope gone, cascading into every collection row under it — which
+  made "keep nothing survives" and "keep everything survives" the same unbounded delete, with only the
+  CLI's `--allow-prune` plus the typed confirmation above standing in the way. It now throws
+  (`PruneEmptyKeepListError`) before touching the database, with no override. A genuine whole-pool wipe
+  is `resetPool`'s job, not the pruners': a seed file can never legitimately produce an empty keep-list
+  (`seedFileSchema` requires at least one theme and exactly 30 cards per theme), so refusing it costs no
+  real prune of a dropped card or theme.
 - Any destructive seed operation against production prints its blast radius — per child, by name —
   and requires the exact collection-row count typed in at an interactive terminal. It cannot be
   satisfied by an environment variable, a config file or a flag, and it always aborts when there is
