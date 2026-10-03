@@ -101,7 +101,7 @@ gpg --list-packets dump-YYYYMMDD.sql.gz.gpg | head -2   # should name keyid CCCD
 gunzip -c dump-YYYYMMDD.sql.gz | grep '^COPY ' | sed 's/ FROM stdin;//'
 ```
 
-You should see the eight `public` tables plus `drizzle.__drizzle_migrations`. Count the collection rows
+You should see one `public` table per `pgTable` in `src/db/schema.ts` plus `drizzle.__drizzle_migrations`. Count the collection rows
 you are about to restore:
 
 ```sh

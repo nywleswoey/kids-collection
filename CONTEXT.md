@@ -74,7 +74,8 @@ Terms introduced by the Store-seam design (the design doc,
 - **Store** — collective name for the ports. Named ports: **`ChildStore`**
   (token/ticket columns — `spendOne`, `incrementColumn`, `clampedGrant`, `readColumn`),
   **`CollectionStore`** (card copies — `grantCard`, `removeCard`, `swapCards`,
-  `ownedCounts`, `cardCount`, `tradableDuplicates`), **`RewardStore`**,
+  `ownedCounts`, `cardCount`, `tradableDuplicates`), **`ClaimStore`** (`pull()`'s
+  per-request `pull_claims` lease — see `src/db/stores/claim-store.ts`), **`RewardStore`**,
   **`QuizStore`**, **`ProfileStore`**, **`AdminCredentialStore`**.
 - **Catalog** — the read-only port for the static card/theme pool (`listCards` /
   `getCard` / `listThemes`), injected like a Store so services stay testable.
