@@ -51,9 +51,7 @@ export function inMemoryClaimStore(
       });
       const newBalance = await children.spendOne(childId, "pullTokens");
       if (newBalance === null) {
-        const row = claims.get(requestId)!;
-        row.status = "done";
-        row.outcome = { outOfTokens: true };
+        claims.delete(requestId);
         return { kind: "out_of_tokens" };
       }
       claims.get(requestId)!.spentBalance = newBalance;

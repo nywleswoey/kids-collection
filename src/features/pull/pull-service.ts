@@ -94,7 +94,9 @@ const CLAIM_STALE_MS = 15_000;
  * draw; this is the long cross-session one, for a claim no retry will ever
  * come back for (tab closed, another device, sessionStorage lost). Far longer
  * than any request can run, so it only ever catches one that's truly gone.
- * Swept opportunistically at the start of `pull()` — no background job.
+ * Swept lazily by `pull()` only when a spend finds no tickets left — no
+ * background job, and no extra round trip on a pull that can pay. So an
+ * abandoned claim stays unrefunded until the child next runs out.
  * The current tap's own request id is excluded: if a child reopens the SAME
  * tab/id after this long, the duplicate-id path takes over and completes the
  * draw for that spend, instead of the sweep refunding it moments before.
@@ -324,14 +326,15 @@ export function makePullService({ children, collections, catalog, rewards, claim
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
-    // The sweep never touches `requestId`'s row, so it needn't sit ahead of
-    // the spend on the latency-critical path; a refund that lands after this
-    // pull's balance check simply shows up on the next one.
-    const [, claimed] = await Promise.all([
-      claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId),
-      claims.claimAndSpend(requestId, childId),
-    ]);
-    if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
+    let claimed = await claims.claimAndSpend(requestId, childId);
+    if (claimed.kind === "out_of_tokens" && !(await claims.read(requestId))) {
+      // Only an empty balance pays for the sweep's round trip; if it frees a
+      // ticket held by an abandoned claim, spend that instead.
+      if ((await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId)) > 0) {
+        claimed = await claims.claimAndSpend(requestId, childId);
+      }
+      if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
+    }
     if (claimed.kind === "fresh") {
       return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance);
     }

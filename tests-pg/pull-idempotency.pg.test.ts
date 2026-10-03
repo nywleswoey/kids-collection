@@ -68,6 +68,35 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9); // ONE charge, not two
   });
 
+  it("a duplicate of the pull that spent the last ticket replays its card, not out-of-tokens", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 1 } });
+    const service = await makeService([card("c1")]);
+
+    const first = await service.pull("kid", undefined, "req-last");
+    const second = await service.pull("kid", undefined, "req-last");
+
+    expect("card" in first).toBe(true);
+    expect(second).toEqual(first);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0);
+  });
+
+  it("an out-of-tokens request id is not burned: it can spend once a ticket arrives", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 0 } });
+    const service = await makeService([card("c1")]);
+
+    expect(await service.pull("kid", undefined, "req-oot")).toEqual({ outOfTokens: true });
+    expect(await pgClaimStore.read("req-oot")).toBeNull();
+    await pgChildStore.incrementColumn("kid", "pullTokens", 1);
+
+    const retry = await service.pull("kid", undefined, "req-oot");
+    if (!("card" in retry)) throw new Error("expected a card outcome");
+    expect(retry.newBalance).toBe(0);
+  });
+
   it("distinct request ids are independent pulls", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     await resetAll();
@@ -163,10 +192,10 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(10); // refunded again, not double
   });
 
-  it("a later pull refunds a claim abandoned past the sweep threshold exactly once", async () => {
+  it("a pull that finds no tickets refunds a claim abandoned past the sweep threshold, exactly once", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     await resetAll();
-    await seedChildren({ kid: { pullTokens: 10 } });
+    await seedChildren({ kid: { pullTokens: 1 } });
     const service = await makeService([card("c1")]);
 
     const claimed = await pgClaimStore.claimAndSpend("req-abandoned", "kid");
@@ -175,52 +204,53 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
 
     const next = await service.pull("kid", undefined, "req-next");
     if (!("card" in next)) throw new Error("expected a card outcome");
-    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9); // 9 + 1 refunded - 1 spent
+    expect(next.newBalance).toBe(0); // 0 + 1 refunded - 1 spent
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0);
     expect(await pgClaimStore.read("req-abandoned")).toEqual({
       childId: "kid",
       status: "done",
       outcome: { refunded: true },
     });
 
-    await service.pull("kid", undefined, "req-after");
-    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(8); // not refunded twice
+    expect(await service.pull("kid", undefined, "req-after")).toEqual({ outOfTokens: true });
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0); // not refunded twice
   });
 
   it("the sweep leaves a recent granting claim untouched", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     await resetAll();
-    await seedChildren({ kid: { pullTokens: 10 } });
+    await seedChildren({ kid: { pullTokens: 1 } });
     const service = await makeService([card("c1")]);
 
     const claimed = await pgClaimStore.claimAndSpend("req-recent", "kid");
     if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
     await backdateClaim("req-recent", 20); // past CLAIM_STALE_MS, far from abandoned
 
-    await service.pull("kid", undefined, "req-next");
+    expect(await service.pull("kid", undefined, "req-next")).toEqual({ outOfTokens: true });
 
     expect(await pgClaimStore.read("req-recent")).toMatchObject({ status: "granting" });
-    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(8); // two spends, no refund
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0); // no refund
   });
 
   it("concurrent pulls racing the same abandoned claim refund it only once", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     await resetAll();
-    await seedChildren({ kid: { pullTokens: 10 } });
+    await seedChildren({ kid: { pullTokens: 1 } });
     const service = await makeService([card("c1")]);
 
     const claimed = await pgClaimStore.claimAndSpend("req-abandoned", "kid");
     if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
     await backdateClaim("req-abandoned", 11 * 60);
 
-    const swept = await Promise.all([
-      pgClaimStore.sweepAbandoned("kid", 10 * 60_000, "req-other"),
-      pgClaimStore.sweepAbandoned("kid", 10 * 60_000, "req-other"),
+    const outcomes = await Promise.all([
+      service.pull("kid", undefined, "req-a"),
+      service.pull("kid", undefined, "req-b"),
     ]);
-    await Promise.all([service.pull("kid", undefined, "req-a"), service.pull("kid", undefined, "req-b")]);
 
-    expect(swept.sort()).toEqual([0, 1]);
-    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(8); // 9 + 1 refund - 2 spends
-    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(2);
+    expect(outcomes.filter((o) => "card" in o)).toHaveLength(1);
+    expect(outcomes.filter((o) => o.outOfTokens)).toHaveLength(1);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0); // 0 + 1 refund - 1 spend
+    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(1);
   });
 
   it("a swept claim's old holder can no longer grant or refund", async () => {
@@ -262,7 +292,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
   it("another tab replaying a request id swept by a different pull sees the refund, not a denial", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     await resetAll();
-    await seedChildren({ kid: { pullTokens: 10 } });
+    await seedChildren({ kid: { pullTokens: 1 } });
     const service = await makeService([card("c1")]);
 
     const claimed = await pgClaimStore.claimAndSpend("req-x", "kid"); // tab A, killed after spend
@@ -273,7 +303,7 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     const replay = await service.pull("kid", undefined, "req-x"); // tab A taps again
 
     const live = await pgChildStore.readColumn("kid", "pullTokens");
-    expect(live).toBe(9); // 10 - 1 (x) + 1 (refund) - 1 (y)
+    expect(live).toBe(0); // 1 - 1 (x) + 1 (refund) - 1 (y)
     expect(replay).toEqual({ outOfTokens: false, refunded: true, newBalance: live });
   });
 });

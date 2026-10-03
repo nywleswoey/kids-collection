@@ -22,22 +22,20 @@ export const pgClaimStore: ClaimStore = {
     // `pull_claims` is written to exactly ONCE here. `bal` is a plain read,
     // `FOR UPDATE` to lock `children` for the whole statement so its value
     // can't drift before `spend`'s own guarded decrement, which is what makes
-    // the claim row's `spent_balance`/`outcome` (computed from `bal`) agree
+    // the claim row's `spent_balance` (computed from `bal`) agree
     // with `spend`'s actual result. See src/features/pull/pull-service.ts.
-    const result = await db.execute<{ claimed: boolean; new_balance: number | null }>(sql`
+    const result = await db.execute<{
+      claimed: boolean;
+      had_tokens: boolean | null;
+      new_balance: number | null;
+    }>(sql`
       WITH bal AS (
         SELECT pull_tokens FROM children WHERE id = ${childId} FOR UPDATE
       ),
       claim AS (
         INSERT INTO pull_claims (request_id, child_id, status, fence, spent_balance, outcome, claimed_at)
-        VALUES (
-          ${requestId}, ${childId},
-          CASE WHEN (SELECT pull_tokens FROM bal) >= 1 THEN 'granting' ELSE 'done' END,
-          1,
-          CASE WHEN (SELECT pull_tokens FROM bal) >= 1 THEN (SELECT pull_tokens FROM bal) - 1 ELSE NULL END,
-          CASE WHEN (SELECT pull_tokens FROM bal) >= 1 THEN NULL ELSE '{"outOfTokens":true}'::jsonb END,
-          now()
-        )
+        SELECT ${requestId}::text, ${childId}::text, 'granting', 1, pull_tokens - 1, NULL, now()
+        FROM bal WHERE pull_tokens >= 1
         ON CONFLICT (request_id) DO NOTHING
         RETURNING request_id
       ),
@@ -48,11 +46,12 @@ export const pgClaimStore: ClaimStore = {
       )
       SELECT
         (SELECT request_id FROM claim) IS NOT NULL AS claimed,
+        (SELECT pull_tokens FROM bal) >= 1 AS had_tokens,
         (SELECT new_balance FROM spend) AS new_balance
     `);
     const row = result.rows[0];
-    if (!row.claimed) return { kind: "duplicate" };
-    if (row.new_balance === null) return { kind: "out_of_tokens" };
+    if (!row.had_tokens) return { kind: "out_of_tokens" };
+    if (!row.claimed || row.new_balance === null) return { kind: "duplicate" };
     return { kind: "fresh", lease: { fence: 1 } satisfies Lease, newBalance: row.new_balance };
   },
 

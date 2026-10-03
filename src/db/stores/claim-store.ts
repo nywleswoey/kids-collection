@@ -20,12 +20,12 @@
 export interface ClaimStore {
   /**
    * Atomic claim + spend: insert a "granting" row for `requestId` iff one
-   * doesn't exist yet, and spend one `pullTokens` for `childId` in the SAME
-   * statement. Returns:
+   * doesn't exist yet and the child has a token, and spend one `pullTokens`
+   * for `childId` in the SAME statement. Returns:
    * - `{ kind: "fresh", lease, newBalance }` — newly claimed and spent.
-   * - `{ kind: "out_of_tokens" }` — newly claimed but the spend guard failed
-   *   (the claim is left terminal; a later call with this id replays the
-   *   same out-of-tokens result rather than re-spending).
+   * - `{ kind: "out_of_tokens" }` — the child had no `pullTokens`; nothing
+   *   was written, so the id stays free to retry. It may still name an
+   *   earlier claim (caller should `read` it before treating it as new).
    * - `{ kind: "duplicate" }` — this id was already claimed by an earlier
    *   call; nothing was touched. Caller should `read` it.
    */
