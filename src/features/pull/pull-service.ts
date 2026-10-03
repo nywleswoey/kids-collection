@@ -94,9 +94,11 @@ const CLAIM_STALE_MS = 15_000;
  * draw; this is the long cross-session one, for a claim no retry will ever
  * come back for (tab closed, another device, sessionStorage lost). Far longer
  * than any request can run, so it only ever catches one that's truly gone.
- * Swept lazily by `pull()` only when a spend finds no tickets left — no
- * background job, and no extra round trip on a pull that can pay. So an
- * abandoned claim stays unrefunded until the child next runs out.
+ * Swept lazily — by `pull()` only when a spend finds no tickets left, and by
+ * `pullBalance()` when the pull screen loads at 0 (where no Discover button is
+ * shown to trigger the former) — no background job, and no extra round trip
+ * on a pull that can pay. So an abandoned claim stays unrefunded until the
+ * child next runs out.
  * The current tap's own request id is excluded: if a child reopens the SAME
  * tab/id after this long, the duplicate-id path takes over and completes the
  * draw for that spend, instead of the sweep refunding it moments before.
@@ -354,6 +356,19 @@ export function makePullService({ children, collections, catalog, rewards, claim
   }
 
   /**
+   * The pull screen's ticket balance. At 0, first refunds any abandoned claims
+   * (`ABANDONED_CLAIM_SWEEP_MS`): the screen shows no Discover button then, so
+   * `pull()`'s own sweep could never run for a child whose last ticket is stuck.
+   * No request id is excluded — a pending tap that old replays as refunded.
+   */
+  async function pullBalance(childId: string): Promise<number> {
+    const balance = await children.readColumn(childId, "pullTokens");
+    if (balance > 0) return balance;
+    if ((await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, "")) === 0) return balance;
+    return children.readColumn(childId, "pullTokens");
+  }
+
+  /**
    * Redeem the unified Easter Egg ticket (Inc19 FR3/FR4): guard on the ticket
    * balance (>= 1 held), roll a rarity by the normal pull odds, then offer a
    * pick-1-of-5 of that exact rarity from the FULL pool. The ticket is NOT spent
@@ -437,7 +452,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
     return { newBalance };
   }
 
-  return { pull, pullEasterEgg, claimEasterEgg, sacrifice };
+  return { pull, pullBalance, pullEasterEgg, claimEasterEgg, sacrifice };
 }
 
 export type PullService = ReturnType<typeof makePullService>;

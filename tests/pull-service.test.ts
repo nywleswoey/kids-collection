@@ -255,6 +255,23 @@ describe("makePullService.pull request-level idempotency (#kcpi)", () => {
     expect(await children.readColumn("kid", "pullTokens")).toBe(0); // not refunded twice
   });
 
+  it("loading the pull screen at 0 tickets refunds an abandoned claim, so the child can pull again", async () => {
+    let nowMs = 1_000;
+    const { service, children, claims } = setup({ kid: { pullTokens: 1 } }, {}, [card("c1")], () => nowMs);
+
+    // The last ticket is stuck in a claim whose tab was closed.
+    const abandoned = await claims.claimAndSpend("req-abandoned", "kid");
+    if (abandoned.kind !== "fresh") throw new Error("expected a fresh claim");
+    expect(await service.pullBalance("kid")).toBe(0); // not abandoned yet: left alone
+    expect(await claims.read("req-abandoned")).toMatchObject({ status: "granting" });
+
+    nowMs += 11 * 60_000; // past the 10-minute sweep threshold
+    expect(await service.pullBalance("kid")).toBe(1);
+    expect(await claims.read("req-abandoned")).toMatchObject({ status: "done", outcome: { refunded: true } });
+    expect(await service.pullBalance("kid")).toBe(1); // not refunded twice
+    expect(await children.readColumn("kid", "pullTokens")).toBe(1);
+  });
+
   it("replaying a swept request id reports the refund with the live balance", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     let nowMs = 1_000;
