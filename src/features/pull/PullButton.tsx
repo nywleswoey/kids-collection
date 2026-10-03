@@ -1,6 +1,7 @@
 "use client";
 
 import posthog from "posthog-js";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
@@ -54,6 +55,7 @@ export function PullButton({
   const [refundedNotice, setRefundedNotice] = useState(false); // #kcpi: swept claim replayed
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
+  const router = useRouter();
   const prevBalance = useRef(initialBalance);
   const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -307,7 +309,10 @@ export function PullButton({
             key={outcome.card.id + "-roulette"}
             finalCard={outcome.card}
             pool={flashPool}
-            onDone={() => setCycling(false)}
+            onDone={() => {
+              setCycling(false);
+              router.refresh();
+            }}
           />
         ) : (
           <div className="flex flex-col items-center gap-3" data-testid="pull-result">

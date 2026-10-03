@@ -46,11 +46,10 @@ function parentGrant(
  * fetch happening a second time, synchronously inside the "Launching…" wait,
  * for data `PullButton` never reads from the page anyway — the balance, egg
  * count, and won card all come from this action's own return value
- * (`setBalance`/`setOutcome` in `PullButton.tsx`). `/play/pull` and
- * `/play/binder` both resolve the active child from a cookie
- * (`requireActivePlayer`), which Next's default `staleTimes.dynamic: 0`
- * already refetches on every real navigation regardless of revalidation, so
- * skipping the revalidate here costs nothing on a later visit to either page.
+ * (`setBalance`/`setOutcome` in `PullButton.tsx`). Skipping it also skips the
+ * client router-cache purge a revalidation brings, which back/forward
+ * navigation would otherwise restore stale pages from — so `PullButton` calls
+ * `router.refresh()` once the reveal lands, outside the "Launching…" wait.
  */
 export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
   if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
