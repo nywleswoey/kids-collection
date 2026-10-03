@@ -45,7 +45,7 @@ export function makeRewardService({ collections, rewards, catalog }: RewardDeps)
    * before. Either way, the pool is upgraded to the FULL catalog the moment a
    * set actually completes, since the bonus card can come from any theme.
    *
-   * `owned` is the same kind of hand-over for `collections.ownedCardIds`: a
+   * `prefetchedOwned` is the same kind of hand-over for `collections.ownedCardIds`: a
    * caller that fetched it itself (concurrently with its own other round
    * trips, before granting `addedCardIds`) passes the set WITH those ids
    * already added, so this skips a third redundant read of the same table the
