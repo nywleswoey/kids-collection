@@ -11,6 +11,8 @@ import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/shared/sound/useSound";
 import { CountUp } from "@/shared/anim/CountUp";
+import { preloadCardImage } from "@/shared/card/preload-image";
+import { FLASH_DIM, boundedFlashPool } from "./roulette-schedule";
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,
@@ -67,6 +69,17 @@ export function PullButton({
     }
   }, [balance, play]);
 
+  // Warm the browser cache for the roulette's spin flashes as soon as the
+  // Discover page opens, well before the kid taps (bounded to the frames the
+  // spin can actually show — see roulette-schedule.ts — and low-priority so
+  // it doesn't compete with the page's own critical loads).
+  useEffect(() => {
+    for (const card of boundedFlashPool(flashPool)) {
+      preloadCardImage(card.imageUrl, FLASH_DIM, "low");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Shared launch flow for both pull kinds (normal, Easter Egg ticket): sound
   // cues, reset the picker, then dispatch. On success a normal card pull kicks off
   // the slot-machine build-up (Inc7 FR1); an easter-egg outcome plays the
@@ -82,6 +95,10 @@ export function PullButton({
         play("denied");
         return;
       }
+      // Start loading the won card's full-size art immediately — during the
+      // roulette spin for a normal draw, or right away on the reduced-motion
+      // path where there's no spin to hide the fetch behind.
+      if (!res.easterEgg) preloadCardImage(res.card.imageUrl, 512, "high");
       setBalance(res.newBalance);
       posthog.capture("card_pulled", {
         ticket_type: kind,

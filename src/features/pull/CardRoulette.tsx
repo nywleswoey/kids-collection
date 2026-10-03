@@ -6,6 +6,7 @@ import type { Card, Rarity } from "@/lib/types";
 import { shouldAnimate } from "@/shared/card/rarity";
 import { rarityClass } from "@/shared/card/rarity";
 import { useSound } from "@/shared/sound/useSound";
+import { FLASH_DIM, buildFlashDelays } from "./roulette-schedule";
 
 export type FlashCard = { id: string; imageUrl: string; rarity: Rarity };
 
@@ -39,17 +40,7 @@ export function CardRoulette({
       return;
     }
 
-    // Ease-out schedule: many fast frames up front, decelerating to the finale.
-    const DURATION = 2500;
-    const delays: number[] = [];
-    let t = 0;
-    let d = 55;
-    while (t < DURATION) {
-      delays.push(d);
-      t += d;
-      d = Math.min(300, d * 1.14); // grow the gap → visual deceleration
-    }
-
+    const delays = buildFlashDelays();
     let cancelled = false;
     const timers: ReturnType<typeof setTimeout>[] = [];
     let elapsed = 0;
@@ -86,7 +77,7 @@ export function CardRoulette({
       aria-hidden
     >
       <div className="card__holo" />
-      <CardImage src={shown.imageUrl} alt="" dim={512} priority />
+      <CardImage src={shown.imageUrl} alt="" dim={FLASH_DIM} priority />
     </div>
   );
 }
