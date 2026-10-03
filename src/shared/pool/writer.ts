@@ -6,18 +6,55 @@ import type { Rarity } from "@/lib/types";
 import { notKept } from "./prune-predicate";
 
 /**
+ * Thrown when a pruner is given an empty keep-list (#96). `notKept` treats an
+ * empty list as "no filter" — every row in scope is doomed, cascading into
+ * every collection row under it. "Keep nothing survives" and "keep everything
+ * survives" must never collapse into the same unbounded delete, so this is
+ * refused before `notKept` ever runs, rather than left as the pruners' one
+ * unguarded input.
+ *
+ * This is a hard, unconditional refusal — there is no confirmable "yes I meant
+ * to delete everything in scope" path for the pruners, unlike `--allow-prune`
+ * at the CLI layer. A caller that genuinely wants to empty the whole pool
+ * calls `resetPool`, which has its own owned-rows refusal (`PoolResetBlockedError`);
+ * these pruners exist only to remove what the seed file actually dropped, and
+ * a dropped card or theme is never representable as an empty keep-list in a
+ * seed produced by `seedFileSchema` (`themes` has `.min(1)`, every theme has
+ * exactly `CARDS_PER_THEME` cards) — so refusing it costs no legitimate prune.
+ */
+export class PruneEmptyKeepListError extends Error {
+  constructor(readonly fn: string) {
+    super(
+      `${fn}: refused — empty keep-list. An empty list is not "prune nothing": ` +
+        `with no filter it would delete every row in scope, cascading into every ` +
+        `collection row beneath it. If the intent really is to empty the whole pool, ` +
+        `that is resetPool's job (and it refuses while any collection row is owned); ` +
+        `these pruners only remove what the seed file actually dropped, which is never ` +
+        `an empty keep-list for a seed that passed seedFileSchema.`,
+    );
+    this.name = "PruneEmptyKeepListError";
+  }
+}
+
+/**
  * Delete rows from `table` whose `nameCol` is not in `keepNames` (`notKept`,
  * shared with `blast-radius.ts`'s `previewPrune` — A1), optionally scoped by
  * `base`. Returns the number of rows deleted. Shared by the theme/card
  * delta-sync pruners.
+ *
+ * Refuses an empty `keepNames` outright (`PruneEmptyKeepListError`, #96) —
+ * see that class for why. Non-empty keep-lists are unaffected: everything
+ * below this check behaves exactly as before.
  */
 async function pruneNotIn(
   table: PgTable,
   nameCol: PgColumn,
   idCol: PgColumn,
   keepNames: string[],
+  fn: string,
   base?: SQL,
 ): Promise<number> {
+  if (keepNames.length === 0) throw new PruneEmptyKeepListError(fn);
   const keep = notKept(nameCol, keepNames);
   const where = base && keep ? and(base, keep) : (base ?? keep);
   const deleted = await db.delete(table).where(where).returning({ id: idCol });
@@ -145,7 +182,7 @@ export async function updateCardMeta(input: {
  * Returns the number of themes deleted.
  */
 export async function deleteThemesNotIn(keepNames: string[]): Promise<number> {
-  return pruneNotIn(themes, themes.name, themes.id, keepNames);
+  return pruneNotIn(themes, themes.name, themes.id, keepNames, "deleteThemesNotIn");
 }
 
 /**
@@ -156,5 +193,12 @@ export async function deleteCardsNotIn(
   themeId: string,
   keepNames: string[],
 ): Promise<number> {
-  return pruneNotIn(cards, cards.name, cards.id, keepNames, eq(cards.themeId, themeId));
+  return pruneNotIn(
+    cards,
+    cards.name,
+    cards.id,
+    keepNames,
+    "deleteCardsNotIn",
+    eq(cards.themeId, themeId),
+  );
 }
