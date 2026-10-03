@@ -2,8 +2,9 @@
 
 import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { PullOutcome } from "./pull-service";
+import type { PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { pullAction, pullEasterEggAction } from "./actions";
+import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./pending-request";
 import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
@@ -13,6 +14,13 @@ import { useSound } from "@/shared/sound/useSound";
 import { CountUp } from "@/shared/anim/CountUp";
 import { preloadCardImage } from "@/shared/card/preload-image";
 import { FLASH_DIM, boundedFlashPool } from "./roulette-schedule";
+
+/** How long a pull may sit "Launching…" before the UI admits something might
+ *  be wrong (#kcpi) — a genuinely stuck fetch/response never resolves on its
+ *  own, so only a client-side timeout can offer a way out. Shorter than the
+ *  server's CLAIM_STALE_MS (pull-service.ts) so the child/parent sees this
+ *  message before a retry could possibly recover the original attempt. */
+const STUCK_TIMEOUT_MS = 8000;
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,
@@ -34,13 +42,30 @@ export function PullButton({
 }) {
   const [balance, setBalance] = useState(initialBalance);
   const [eggs, setEggs] = useState(easterEggTickets);
-  const [outcome, setOutcome] = useState<PullOutcome | null>(null);
+  // `stillInProgress`/`refunded` are never actually stored here — `runPull`
+  // returns before calling `setOutcome` for those (#kcpi) — so excluding them up front keeps
+  // every downstream `outcome.card`/`.easterEgg` access narrowed without extra
+  // guards scattered through this component.
+  const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome | PullRefundedOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
+  const [stuck, setStuck] = useState(false); // #kcpi: stuck-loading timeout fired
+  const [refundedNotice, setRefundedNotice] = useState(false); // #kcpi: swept claim replayed
   const [pending, startTransition] = useTransition();
   const { play } = useSound();
   const prevBalance = useRef(initialBalance);
+  const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function disarmStuckTimer() {
+    if (stuckTimerRef.current !== null) {
+      clearTimeout(stuckTimerRef.current);
+      stuckTimerRef.current = null;
+    }
+  }
+
+  // Never leave a timer running past unmount.
+  useEffect(() => disarmStuckTimer, []);
 
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
@@ -84,12 +109,46 @@ export function PullButton({
   // cues, reset the picker, then dispatch. On success a normal card pull kicks off
   // the slot-machine build-up (Inc7 FR1); an easter-egg outcome plays the
   // picker-appear cue instead (Inc15 FR3).
+  //
+  // #kcpi: arms a client-side stuck-loading timeout independent of `pending`
+  // (a genuinely hung fetch never resolves on its own, so `pending` alone
+  // can't recover).
   function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg") {
     play("click");
     play("packOpen");
     setOutcome(null);
+    setStuck(false);
+    setRefundedNotice(false);
+    disarmStuckTimer();
+    stuckTimerRef.current = setTimeout(() => setStuck(true), STUCK_TIMEOUT_MS);
+
     startTransition(async () => {
-      const res = await action();
+      let res: PullOutcome;
+      try {
+        res = await action();
+      } catch {
+        disarmStuckTimer();
+        setStuck(false);
+        play("denied");
+        return;
+      }
+      disarmStuckTimer();
+
+      if (res.stillInProgress) {
+        // A previous attempt for this SAME request id is still being
+        // completed server-side (not stale yet) — nothing was spent or
+        // granted just now. Keep the stored id so the next tap retries it.
+        setBalance(res.newBalance);
+        setStuck(true);
+        return;
+      }
+      setStuck(false);
+      clearPendingRequestId(childId); // outcome is about to be shown
+      if (res.refunded) {
+        setBalance(res.newBalance);
+        setRefundedNotice(true);
+        return;
+      }
       setOutcome(res);
       if (res.outOfTokens) {
         play("denied");
@@ -118,7 +177,8 @@ export function PullButton({
   }
 
   function doPull() {
-    runPull(() => pullAction(themeId || undefined), "normal");
+    const requestId = getOrCreateRequestId(childId);
+    runPull(() => pullAction(requestId, themeId || undefined), "normal");
   }
 
   // Inc19: redeem the unified Easter Egg ticket → weighted-roll pick-1-of-5.
@@ -182,9 +242,31 @@ export function PullButton({
               outOfTokens ? "opacity-50" : ""
             }`}
           >
-            {pending ? "Launching…" : "🚀 Discover a card"}
+            {pending ? (stuck ? "⏳ Still working…" : "Launching…") : "🚀 Discover a card"}
           </button>
-          {outOfTokens && hasEggs ? (
+          {stuck ? (
+            <div
+              data-testid="pull-stuck-message"
+              className="panel max-w-xs px-4 py-3 text-center text-sm text-[color:var(--ink-soft)]"
+            >
+              <p>This is taking longer than usual. Check your tickets — nothing extra was charged.</p>
+              <button
+                type="button"
+                onClick={reloadStuckPull}
+                data-testid="pull-retry-button"
+                className="btn btn--primary mt-2 press font-bold"
+              >
+                Try again
+              </button>
+            </div>
+          ) : refundedNotice ? (
+            <p
+              data-testid="pull-refunded-message"
+              className="panel max-w-xs px-4 py-3 text-center text-sm text-[color:var(--ink-soft)]"
+            >
+              Your ticket was given back — tap Discover a card to try again. 🎟️
+            </p>
+          ) : outOfTokens && hasEggs ? (
             <span
               data-testid="use-special-hint"
               className="text-sm text-[color:var(--ink-soft)]"

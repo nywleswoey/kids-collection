@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { tokenService } from "@/features/pull/token-service.prod";
+import { pullService } from "@/features/pull/pull-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
 import { recentCategories } from "@/features/pull/categories";
 import { listCards, listThemes } from "@/shared/pool/service";
@@ -8,7 +9,7 @@ import { listCards, listThemes } from "@/shared/pool/service";
 export default async function PullPage() {
   const child = await requireActivePlayer();
 
-  const balance = await tokenService.getBalance(child.id);
+  const balance = await pullService.pullBalance(child.id);
   const [allCards, themes, easterEggTickets] = await Promise.all([
     listCards(),
     listThemes(),

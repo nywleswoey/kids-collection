@@ -1,0 +1,169 @@
+import "server-only";
+import { sql } from "drizzle-orm";
+import { db } from "@/db";
+import type { ClaimStore } from "./claim-store";
+
+type Lease = { fence: number };
+
+/**
+ * Postgres adapter for ClaimStore. Every method is ONE statement (neon-http
+ * has no interactive transactions — see collection-store.pg.ts `swapCards`):
+ * each uses chained CTEs so the ownership check, the side effect (spend,
+ * grant, refund) and the status/outcome write commit together or not at all.
+ * The `own` lease check locks the claim row (`FOR UPDATE`), so a concurrent
+ * takeover or sweep that bumps the fence makes this statement re-check
+ * against the new fence and touch nothing.
+ */
+export const pgClaimStore: ClaimStore = {
+  async claimAndSpend(requestId, childId) {
+    // Postgres CTEs cannot see a sibling CTE's write to the SAME table within
+    // one statement (confirmed directly: an UPDATE gated on `EXISTS(insert_cte)`
+    // matches zero rows even though the insert just committed its row) — so
+    // `pull_claims` is written to exactly ONCE here. `bal` is a plain read,
+    // `FOR UPDATE` to lock `children` for the whole statement so its value
+    // can't drift before `spend`'s own guarded decrement, which is what makes
+    // the claim row's `spent_balance` (computed from `bal`) agree
+    // with `spend`'s actual result. See src/features/pull/pull-service.ts.
+    const result = await db.execute<{
+      claimed: boolean;
+      had_tokens: boolean | null;
+      new_balance: number | null;
+    }>(sql`
+      WITH bal AS (
+        SELECT pull_tokens FROM children WHERE id = ${childId} FOR UPDATE
+      ),
+      claim AS (
+        INSERT INTO pull_claims (request_id, child_id, status, fence, spent_balance, outcome, claimed_at)
+        SELECT ${requestId}::text, ${childId}::text, 'granting', 1, pull_tokens - 1, NULL, now()
+        FROM bal WHERE pull_tokens >= 1
+        ON CONFLICT (request_id) DO NOTHING
+        RETURNING request_id
+      ),
+      spend AS (
+        UPDATE children SET pull_tokens = pull_tokens - 1
+        WHERE id = ${childId} AND EXISTS (SELECT 1 FROM claim) AND (SELECT pull_tokens FROM bal) >= 1
+        RETURNING pull_tokens AS new_balance
+      )
+      SELECT
+        (SELECT request_id FROM claim) IS NOT NULL AS claimed,
+        (SELECT pull_tokens FROM bal) >= 1 AS had_tokens,
+        (SELECT new_balance FROM spend) AS new_balance
+    `);
+    const row = result.rows[0];
+    if (!row.had_tokens) return { kind: "out_of_tokens" };
+    if (!row.claimed || row.new_balance === null) return { kind: "duplicate" };
+    return { kind: "fresh", lease: { fence: 1 } satisfies Lease, newBalance: row.new_balance };
+  },
+
+  async read(requestId) {
+    const result = await db.execute<{
+      child_id: string;
+      status: "granting" | "done";
+      outcome: unknown;
+    }>(sql`SELECT child_id, status, outcome FROM pull_claims WHERE request_id = ${requestId}`);
+    const row = result.rows[0];
+    if (!row) return null;
+    return { childId: row.child_id, status: row.status, outcome: row.outcome };
+  },
+
+  async takeOverIfStale(requestId, staleMs) {
+    const result = await db.execute<{ fence: number; spent_balance: number | null }>(sql`
+      UPDATE pull_claims
+      SET fence = fence + 1, claimed_at = now()
+      WHERE request_id = ${requestId}
+        AND status = 'granting'
+        AND claimed_at < now() - (${staleMs}::double precision * interval '1 millisecond')
+      RETURNING fence, spent_balance
+    `);
+    const row = result.rows[0];
+    if (!row || row.spent_balance === null) return null;
+    return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spent_balance };
+  },
+
+  async finishWithCardGrant(lease, requestId, childId, cardId, cardJson, newBalance) {
+    const { fence } = lease as Lease;
+    const result = await db.execute<{ outcome: unknown }>(sql`
+      WITH own AS (
+        SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
+      ),
+      grant_card AS (
+        INSERT INTO collections (child_id, card_id, count)
+        SELECT ${childId}, ${cardId}, 1 FROM own
+        ON CONFLICT (child_id, card_id) DO UPDATE SET count = collections.count + 1
+        RETURNING count
+      )
+      UPDATE pull_claims
+      SET status = 'done',
+          outcome = jsonb_build_object(
+            'outOfTokens', false,
+            'card', ${JSON.stringify(cardJson)}::jsonb,
+            'isDuplicate', (SELECT count FROM grant_card) > 1,
+            'newBalance', ${newBalance}::integer
+          )
+      WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM grant_card)
+      RETURNING outcome
+    `);
+    return result.rows[0]?.outcome ?? null;
+  },
+
+  async finishWithRefund(lease, requestId, childId, outcome) {
+    const { fence } = lease as Lease;
+    const result = await db.execute<{ done: boolean }>(sql`
+      WITH own AS (
+        SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
+      ),
+      refund AS (
+        UPDATE children SET pull_tokens = pull_tokens + 1
+        WHERE id = ${childId} AND EXISTS (SELECT 1 FROM own)
+        RETURNING 1
+      ),
+      mark AS (
+        UPDATE pull_claims SET status = 'done', outcome = ${JSON.stringify(outcome)}::jsonb
+        WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM refund)
+        RETURNING 1
+      )
+      SELECT (SELECT 1 FROM mark) IS NOT NULL AS done
+    `);
+    return result.rows[0]?.done ?? false;
+  },
+
+  async cleanupFailure(lease, requestId, childId) {
+    const { fence } = lease as Lease;
+    await db.execute(sql`
+      WITH own AS (
+        SELECT 1 FROM pull_claims WHERE request_id = ${requestId} AND status = 'granting' AND fence = ${fence}
+        FOR UPDATE
+      ),
+      refund AS (
+        UPDATE children SET pull_tokens = pull_tokens + 1
+        WHERE id = ${childId} AND EXISTS (SELECT 1 FROM own)
+        RETURNING 1
+      )
+      DELETE FROM pull_claims
+      WHERE request_id = ${requestId} AND fence = ${fence} AND EXISTS (SELECT 1 FROM refund)
+    `);
+  },
+
+  async sweepAbandoned(childId, staleMs, excludeRequestId) {
+    const result = await db.execute<{ swept: number }>(sql`
+      WITH swept AS (
+        UPDATE pull_claims
+        SET status = 'done', fence = fence + 1, claimed_at = now(), outcome = '{"refunded":true}'::jsonb
+        WHERE child_id = ${childId}
+          AND request_id != ${excludeRequestId}
+          AND status = 'granting'
+          AND claimed_at < now() - (${staleMs}::double precision * interval '1 millisecond')
+        RETURNING 1
+      ),
+      refund AS (
+        UPDATE children SET pull_tokens = pull_tokens + (SELECT count(*) FROM swept)
+        WHERE id = ${childId} AND EXISTS (SELECT 1 FROM swept)
+        RETURNING 1
+      )
+      SELECT (SELECT count(*) FROM swept)::int AS swept
+    `);
+    return Number(result.rows[0]?.swept ?? 0);
+  },
+};

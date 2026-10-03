@@ -5,6 +5,7 @@ import {
   integer,
   boolean,
   timestamp,
+  jsonb,
   primaryKey,
   uniqueIndex,
   index,
@@ -231,6 +232,38 @@ export const adminCredentials = pgTable(
   ],
 );
 
+/**
+ * One row per client-generated pull-request id (#kcpi) — the dedup/recovery
+ * record for `pull()`'s deduct-then-draw sequence (`pull-service.ts`). `status`
+ * tracks ownership of the in-flight draw+grant step ("granting" | "done");
+ * `fence` is a per-claim generation counter so a stale-recovery takeover can
+ * never race the original holder into a double grant/refund — both sides must
+ * present the exact `fence` they were handed to finish the claim, and only one
+ * `fence` value is ever live at a time. `claimedAt` is the staleness clock
+ * (bumped on every takeover). `outcome` is the exact PullOutcome (or an
+ * out-of-tokens marker) a duplicate request replays verbatim once `status` is
+ * "done".
+ */
+export const pullClaims = pgTable(
+  "pull_claims",
+  {
+    requestId: text("request_id").primaryKey(),
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    status: text("status").notNull(),
+    fence: integer("fence").notNull().default(1),
+    spentBalance: integer("spent_balance"),
+    outcome: jsonb("outcome"),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("pull_claims_child_idx").on(t.childId),
+    check("pull_claims_status_valid", sql`${t.status} IN ('granting', 'done')`),
+  ],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
@@ -239,3 +272,4 @@ export type QuizCompletionRow = typeof quizCompletions.$inferSelect;
 export type QuizSeenQuestionRow = typeof quizSeenQuestions.$inferSelect;
 export type CollectionRewardRow = typeof collectionRewards.$inferSelect;
 export type AdminCredentialRow = typeof adminCredentials.$inferSelect;
+export type PullClaimRow = typeof pullClaims.$inferSelect;
