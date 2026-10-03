@@ -225,6 +225,11 @@ export function makePullService({ children, collections, catalog, rewards, claim
    * reward cascade doesn't re-fetch the catalog just read — see
    * `grantCompletionRewards`'s doc. The shared tail of every normal-draw branch
    * in `completeGrant` below, egg-fallback included.
+   *
+   * `preOwned`, when given, is the child's owned-card-id set read BEFORE this
+   * grant (concurrently with `pull()`'s other round trips) — this adds the
+   * just-drawn card to it in memory instead of paying for a fourth round trip
+   * (`ownedCardIds` again) to re-read what we already know we just wrote.
    */
   async function drawAndFinish(
     childId: string,
@@ -232,12 +237,14 @@ export function makePullService({ children, collections, catalog, rewards, claim
     lease: unknown,
     pool: Card[],
     spentBalance: number,
+    preOwned?: Set<string>,
   ): Promise<PullOutcome> {
     if (pool.length === 0) throw new Error("empty pool");
     const card = drawCard(pool);
     const outcome = await claims.finishWithCardGrant(lease, requestId, childId, card.id, card, spentBalance);
     if (!outcome) return recoverLostLease(requestId, childId);
-    await rewards.grantCompletionRewards(childId, [card.id], pool);
+    const owned = preOwned ? new Set(preOwned).add(card.id) : undefined;
+    await rewards.grantCompletionRewards(childId, [card.id], pool, owned);
     return outcome as PullOutcome;
   }
 
@@ -250,6 +257,13 @@ export function makePullService({ children, collections, catalog, rewards, claim
    * can be retried from scratch — a failed attempt leaves nothing to replay.
    * Shared by a fresh spend and a stale-claim recovery; both call this with
    * the balance that was actually spent and the lease proving ownership.
+   *
+   * `prePool`/`preOwned`, when given, are promises `pull()` already started
+   * concurrently with its own `claimAndSpend` round trip — the common
+   * non-egg path below awaits them instead of starting its own, overlapping
+   * that latency with the spend's instead of paying for it afterward. Still
+   * only read ONCE either way: a stale-claim recovery (no prefetch on hand)
+   * falls back to fetching fresh here, same as before this existed.
    */
   async function completeGrant(
     childId: string,
@@ -257,7 +271,14 @@ export function makePullService({ children, collections, catalog, rewards, claim
     requestId: string,
     lease: unknown,
     spentBalance: number,
+    prePool?: Promise<Card[]>,
+    preOwned?: Promise<Set<string>>,
   ): Promise<PullOutcome> {
+    // Guard both against ever being "unhandled" no matter which branch below
+    // ends up using them (or neither does, e.g. an egg roll) — a no-op
+    // sibling handler, not the one that actually consumes the value.
+    prePool?.catch(() => {});
+    preOwned?.catch(() => {});
     try {
       // Egg 1 (U6-FR2): rare roll → pick-1-of-5 epic+. Eggs draw from the FULL pool.
       if (rollEasterEgg()) {
@@ -284,12 +305,15 @@ export function makePullService({ children, collections, catalog, rewards, claim
       // Draw (rarity-weighted, pure). Category-scoped if a theme was chosen,
       // pushed into SQL — falls back to the full catalog if the themeId turns
       // out to be stale/unknown rather than erroring on an empty draw pool.
-      const pool = await catalog.listCards(themeId);
+      const [pool, owned] = await Promise.all([
+        prePool ?? catalog.listCards(themeId),
+        preOwned ?? Promise.resolve(undefined),
+      ]);
       if (pool.length === 0 && themeId) {
         const fullPool = await catalog.listCards();
-        return await drawAndFinish(childId, requestId, lease, fullPool, spentBalance);
+        return await drawAndFinish(childId, requestId, lease, fullPool, spentBalance, owned);
       }
-      return await drawAndFinish(childId, requestId, lease, pool, spentBalance);
+      return await drawAndFinish(childId, requestId, lease, pool, spentBalance, owned);
     } catch (err) {
       // Best-effort refund + claim cleanup (U4-BR6 / #kcpi). A no-op if the
       // lease was already lost to a stale takeover — that caller owns the
@@ -322,12 +346,22 @@ export function makePullService({ children, collections, catalog, rewards, claim
    *    server action boundary, where Next.js can redact a thrown message).
    *
    * `themeId` (Inc8 FR3) limits the normal draw to one category; eggs stay global.
+   *
+   * The catalog read and the owned-ids read a successful draw will need are
+   * both independent of `claimAndSpend`'s own result (neither touches
+   * `pull_claims` or `children`), so they're started here, overlapping their
+   * round trip with the spend's instead of paying for them sequentially after
+   * it — see `completeGrant`'s doc. Discarded (never awaited further) on the
+   * out-of-tokens and duplicate-id paths, where nothing is drawn.
    */
   async function pull(
     childId: string,
     themeId: string | undefined,
     requestId: string,
   ): Promise<PullOutcome> {
+    const prePool = catalog.listCards(themeId);
+    const preOwned = collections.ownedCardIds(childId);
+
     let claimed = await claims.claimAndSpend(requestId, childId);
     if (claimed.kind === "out_of_tokens" && !(await claims.read(requestId))) {
       // Only an empty balance pays for the sweep's round trip; if it frees a
@@ -335,11 +369,18 @@ export function makePullService({ children, collections, catalog, rewards, claim
       if ((await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId)) > 0) {
         claimed = await claims.claimAndSpend(requestId, childId);
       }
-      if (claimed.kind === "out_of_tokens") return { outOfTokens: true }; // no spend, no draw
+      if (claimed.kind === "out_of_tokens") {
+        prePool.catch(() => {});
+        preOwned.catch(() => {});
+        return { outOfTokens: true }; // no spend, no draw
+      }
     }
     if (claimed.kind === "fresh") {
-      return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance);
+      return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance, prePool, preOwned);
     }
+
+    prePool.catch(() => {});
+    preOwned.catch(() => {});
 
     // Duplicate request id: replay the original's outcome once it's done, or
     // take over if the original looks abandoned.
