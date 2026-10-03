@@ -20,6 +20,12 @@ function cardImageVariant(dim: number) {
  * will later render (same width/height, default quality) by going through
  * next/image's own `getImageProps` — never a hand-built `/_next/image` URL
  * that could warm the wrong cache entry.
+ *
+ * vitest's `node` env sets NODE_ENV=test, which makes next/image's default
+ * loader skip the `images.remotePatterns` check and fall back to Next's
+ * default `imageConfigDefault` sizes/qualities (not next.config.ts's
+ * allowlist) — so compare two `getImageProps` calls against each other here,
+ * never literal `w=`/`q=` values.
  */
 describe("preloadCardImage", () => {
   beforeEach(() => preloadMock.mockClear());
