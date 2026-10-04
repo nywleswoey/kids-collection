@@ -3,7 +3,8 @@
 import posthog from "posthog-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
+import type { EasterEggOutcome, PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
+import { eggTicketsAfterClaim } from "./egg-tickets";
 import { pullAction, pullEasterEggAction } from "./actions";
 import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./pending-request";
 import { RevealCard } from "@/shared/card/RevealCard";
@@ -199,10 +200,10 @@ export function PullButton({
     runPull(() => pullEasterEggAction(), "easter_egg");
   }
 
-  // On a successful egg claim, decrement the Easter Egg ticket that was spent.
-  function onEggClaimed(newBalance: number) {
+  // On a successful egg claim, decrement the Easter Egg ticket if one was spent.
+  function onEggClaimed(newBalance: number, offer: EasterEggOutcome) {
     setBalance(newBalance);
-    setEggs((n) => Math.max(0, n - 1));
+    setEggs((n) => eggTicketsAfterClaim(n, offer));
   }
 
   return (
@@ -312,7 +313,7 @@ export function PullButton({
           ownedCounts={outcome.ownedCounts}
           revealRarity={outcome.revealRarity}
           offer={outcome.offer}
-          onDone={(r) => onEggClaimed(r.newBalance)}
+          onDone={(r) => onEggClaimed(r.newBalance, outcome)}
         />
       ) : outcome && !outcome.outOfTokens && !outcome.easterEgg ? (
         cycling ? (

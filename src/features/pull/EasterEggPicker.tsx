@@ -2,7 +2,7 @@
 
 import posthog from "posthog-js";
 import { CardImage } from "@/shared/card/CardImage";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Card as CardType, Rarity } from "@/lib/types";
 import { Card } from "@/shared/card/Card";
 import { RARITY_META } from "@/shared/card/rarity";
@@ -48,20 +48,33 @@ export function EasterEggPicker({
   const [fire, setFire] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const { play } = useSound();
+  // Guards a double tap BEFORE the first await settles (`phase` alone doesn't:
+  // it only flips to "revealed" after the server round trip, so two taps fired
+  // in quick succession would both pass that check). The server is the real
+  // backstop (claimEasterEgg's offer is single-use), but failing fast here
+  // means a double tap never even shows the WRONG choice highlighted.
+  const submittingRef = useRef(false);
 
   async function pick(index: number) {
-    if (phase !== "choosing") return;
+    if (phase !== "choosing" || submittingRef.current) return;
+    submittingRef.current = true;
 
     let result: PullOutcome;
     try {
       result = await claimEasterEggAction(offer, choices[index].id);
     } catch (e) {
+      submittingRef.current = false;
       // A page from before a deploy is reloading; say nothing about the prize.
       if (recoverIfStale(e)) return;
       setError("That prize expired — discover again for another chance!");
       return;
     }
+    if (result.refunded) {
+      setError("That prize got stuck, so your ticket was given back — discover again!");
+      return;
+    }
     if (result.outOfTokens || !("card" in result)) {
+      submittingRef.current = false;
       setError("Out of tickets to claim this prize.");
       return;
     }

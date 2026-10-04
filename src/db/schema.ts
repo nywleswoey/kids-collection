@@ -264,6 +264,45 @@ export const pullClaims = pgTable(
   ],
 );
 
+/**
+ * One row per signed easter-egg offer's `jti` (U6-FR2 overcharge fix) — the
+ * single-use redemption record for `claimEasterEgg` (`pull-service.ts`),
+ * mirroring `pull_claims`' request-id dedup but for the CLAIM step rather than
+ * the roll step: the offer's `jti` is the idempotency key, `outcome` is the
+ * exact PullOutcome a duplicate claim (double tap, retry, re-render, slow
+ * response) replays verbatim instead of spending or granting again.
+ *
+ * Two phases, like `pull_claims`: `status` is "granting" between the atomic
+ * claim+spend and the atomic grant+outcome write, then "done". Split into two
+ * statements (not one, unlike a first attempt at this) because neon-http has
+ * no interactive transactions AND Postgres CTEs can't see a sibling CTE's
+ * write to the SAME table within one statement — see `offer-claim-store.pg.ts`.
+ * No fence/takeover column: only the caller that WON the claim ever runs phase
+ * two, so there's no stale-holder race to guard against the way `pull_claims`
+ * must. A claim stranded in "granting" past the stale threshold is refunded
+ * (not finished) by a later duplicate call and marked "done" with a refunded
+ * outcome.
+ */
+export const easterEggClaims = pgTable(
+  "easter_egg_claims",
+  {
+    jti: text("jti").primaryKey(),
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    cardId: text("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    status: text("status").notNull(),
+    outcome: jsonb("outcome"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("easter_egg_claims_child_idx").on(t.childId),
+    check("easter_egg_claims_status_valid", sql`${t.status} IN ('granting', 'done')`),
+  ],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
@@ -273,3 +312,4 @@ export type QuizSeenQuestionRow = typeof quizSeenQuestions.$inferSelect;
 export type CollectionRewardRow = typeof collectionRewards.$inferSelect;
 export type AdminCredentialRow = typeof adminCredentials.$inferSelect;
 export type PullClaimRow = typeof pullClaims.$inferSelect;
+export type EasterEggClaimRow = typeof easterEggClaims.$inferSelect;

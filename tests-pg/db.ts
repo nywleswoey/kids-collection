@@ -59,6 +59,21 @@ export async function backdateClaim(requestId: string, secondsAgo: number): Prom
   await sql`UPDATE pull_claims SET claimed_at = now() - (${secondsAgo}::double precision * interval '1 second') WHERE request_id = ${requestId}`;
 }
 
+/** Recreate an offer claim whose caller died between its two phases: the
+ *  spend committed and the claim sits "granting", `secondsAgo` old. */
+export async function strandOfferClaim(
+  jti: string,
+  childId: string,
+  cardId: string,
+  column: "pull_tokens" | "easter_egg_tickets",
+  secondsAgo: number,
+): Promise<void> {
+  if (column === "pull_tokens") await sql`UPDATE children SET pull_tokens = pull_tokens - 1 WHERE id = ${childId}`;
+  else await sql`UPDATE children SET easter_egg_tickets = easter_egg_tickets - 1 WHERE id = ${childId}`;
+  await sql`INSERT INTO easter_egg_claims (jti, child_id, card_id, status, created_at)
+    VALUES (${jti}, ${childId}, ${cardId}, 'granting', now() - (${secondsAgo}::double precision * interval '1 second'))`;
+}
+
 export async function seedCollections(seed: CollectionSeed): Promise<void> {
   for (const [childId, cards] of Object.entries(seed)) {
     for (const [cardId, count] of Object.entries(cards)) {
