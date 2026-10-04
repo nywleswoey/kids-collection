@@ -279,7 +279,9 @@ export const pullClaims = pgTable(
  * write to the SAME table within one statement — see `offer-claim-store.pg.ts`.
  * No fence/takeover column: only the caller that WON the claim ever runs phase
  * two, so there's no stale-holder race to guard against the way `pull_claims`
- * must.
+ * must. A claim stranded in "granting" past the stale threshold is refunded
+ * (not finished) by a later duplicate call and marked "done" with a refunded
+ * outcome.
  */
 export const easterEggClaims = pgTable(
   "easter_egg_claims",

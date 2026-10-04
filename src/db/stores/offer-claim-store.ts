@@ -25,6 +25,9 @@ export interface OfferClaimStore {
    *   — nothing touched.
    * - Else, spends one `column`, grants one copy of `cardId`, stores the
    *   resulting outcome keyed by `jti`, and returns `{ replayed: false, outcome }`.
+   * - If `jti`'s claim was stranded mid-redemption (spent but never granted)
+   *   for longer than `staleMs`, refunds the spend and stores/returns a
+   *   refunded outcome (`{ replayed: true }`) instead of granting.
    *
    * `newBalance` inside the returned outcome always reports the child's
    * `pullTokens` balance (unchanged when `column` is `easterEggTickets`) —
