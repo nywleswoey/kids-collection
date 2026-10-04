@@ -14,6 +14,18 @@ import { SACRIFICE_COST, SACRIFICE_MIN } from "./sacrifice";
  * Sacrifice-to-upgrade panel (Inc8 FR2). Shown on the card detail page when the
  * child owns ≥SACRIFICE_MIN copies. Burns SACRIFICE_COST copies for 1 Easter
  * Egg ticket.
+ *
+ * Always mounted by the parent page — the ≥SACRIFICE_MIN gate lives HERE,
+ * not in the parent's JSX. `sacrificeAction` revalidates this exact
+ * card-detail route (`/play/binder/[cardId]`, see `actions.ts`), so the
+ * server re-renders it with the post-burn (lower) `count` the instant the
+ * action resolves. If the parent conditionally rendered `<SacrificePanel>`
+ * on `count >= SACRIFICE_MIN`, that revalidation would flip the condition to
+ * false and React would unmount this component — discarding the just-set
+ * `result` state — before the child could ever read the "you earned a
+ * ticket" message. Gating inside the component instead means `count`
+ * dropping is just a prop update: the component stays mounted, so `result`
+ * survives and the success message stays up until the child taps away.
  */
 export function SacrificePanel({
   cardId,
@@ -49,6 +61,10 @@ export function SacrificePanel({
       }
     });
   }
+
+  // Not eligible, and hasn't just succeeded — render nothing (not gated by
+  // the parent, so a post-sacrifice `count` drop can't unmount `result`).
+  if (!result && count < SACRIFICE_MIN) return null;
 
   if (result) {
     return (
