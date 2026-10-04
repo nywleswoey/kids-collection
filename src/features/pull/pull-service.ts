@@ -349,18 +349,30 @@ export function makePullService({ children, collections, catalog, rewards, claim
    *
    * The catalog read and the owned-ids read a successful draw will need are
    * both independent of `claimAndSpend`'s own result (neither touches
-   * `pull_claims` or `children`), so they're started here, overlapping their
-   * round trip with the spend's instead of paying for them sequentially after
-   * it — see `completeGrant`'s doc. Discarded (never awaited further) on the
-   * out-of-tokens and duplicate-id paths, where nothing is drawn.
+   * `pull_claims` or `children`), so they're started here (or reused from
+   * `prefetch`, see below), overlapping their round trip with the spend's
+   * instead of paying for them sequentially after it — see `completeGrant`'s
+   * doc. Discarded (never awaited further) on the out-of-tokens and
+   * duplicate-id paths, where nothing is drawn.
+   *
+   * `prefetch`, when given, is the same pair of reads already started by the
+   * CALLER — `pullAction` starts them against the active-child cookie's raw,
+   * unvalidated id concurrently with the gate check itself (`requireActiveChild`),
+   * so this function doesn't have to wait for the gate to resolve before
+   * starting them. Safe even though the id isn't validated yet: `pull()` is
+   * only ever invoked AFTER the gate confirms it, at which point it's the
+   * same id these promises used, and if the gate instead rejects it, these
+   * promises are simply never passed to anything (the caller discards them).
+   * Omit it and this starts its own, as before — every other caller/test.
    */
   async function pull(
     childId: string,
     themeId: string | undefined,
     requestId: string,
+    prefetch?: { pool: Promise<Card[]>; owned: Promise<Set<string>> },
   ): Promise<PullOutcome> {
-    const prePool = catalog.listCards(themeId);
-    const preOwned = collections.ownedCardIds(childId);
+    const prePool = prefetch?.pool ?? catalog.listCards(themeId);
+    const preOwned = prefetch?.owned ?? collections.ownedCardIds(childId);
 
     let claimed = await claims.claimAndSpend(requestId, childId);
     if (claimed.kind === "out_of_tokens" && !(await claims.read(requestId))) {

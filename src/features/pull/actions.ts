@@ -3,7 +3,8 @@
 import { withParent, withActiveChild } from "@/lib/actions";
 import { getParent } from "@/features/auth/guard";
 import { getPostHogClient } from "@/lib/posthog-server";
-import { pullService } from "./pull-service.prod";
+import { peekActiveChildId } from "@/features/profiles/active-profile";
+import { pullService, prefetchPullReads } from "./pull-service.prod";
 import { tokenService } from "./token-service.prod";
 import { isPullRequestId } from "./pending-request";
 import type { PullOutcome, SacrificeResult } from "./pull-service";
@@ -51,10 +52,24 @@ function parentGrant(
  * navigation would otherwise restore stale pages from — so `PullButton` calls
  * `router.refresh()` when it unmounts after a pull, which never queues a later
  * pull behind a page re-render.
+ *
+ * Starts the catalog/owned-ids reads `pull()` will need against the
+ * active-child cookie's raw id BEFORE (so: concurrently with, not after)
+ * `withActiveChild`'s own gate check re-validates that same id against the
+ * DB — see `peekActiveChildId`'s and `pull()`'s doc comments for why this is
+ * safe. `rawChildId` absent just means the gate is about to fail anyway (no
+ * cookie), so there's nothing to prefetch.
  */
 export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
   if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
-  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId), undefined, {
+  const rawChildId = await peekActiveChildId();
+  const prefetch = rawChildId ? prefetchPullReads(rawChildId, themeId) : undefined;
+  // If the gate below rejects (no active child after all), these are never
+  // passed to `pull()` or awaited further — don't let that surface as an
+  // unhandled rejection.
+  prefetch?.pool.catch(() => {});
+  prefetch?.owned.catch(() => {});
+  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId, prefetch), undefined, {
     label: "pull",
   });
 }
