@@ -23,11 +23,11 @@ const POLL_INTERVAL_MS = 20;
  * collection-store.pg.ts `swapCards`) AND, within one statement, a CTE can't
  * see a SIBLING CTE's write to the SAME table (confirmed directly against a
  * local Postgres: an UPDATE gated on `EXISTS(insert_cte)` into the SAME table
- * the insert just wrote to matches zero rows). `claimAndSpend` writes
+ * the insert just wrote to matches zero rows). Phase one writes
  * `easter_egg_claims` exactly once (the INSERT) and `children` exactly once
- * (the spend); `finishWithCardGrant` writes it exactly once more (the OUTER
- * UPDATE) and `collections` exactly once — mirroring claim-store.pg.ts's
- * already-proven two-phase shape, just without that store's fence/takeover
+ * (the spend); phase two writes it exactly once more (the OUTER UPDATE) and
+ * `collections` exactly once — mirroring claim-store.pg.ts's already-proven
+ * `claimAndSpend` + `finishWithCardGrant` two-phase shape, just without that store's fence/takeover
  * (nothing here ever needs to steal a stale claim — the ONLY caller who ever
  * runs phase two is the one phase one told "fresh").
  */

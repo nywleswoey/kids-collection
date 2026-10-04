@@ -7,8 +7,8 @@ import type { BalanceColumn } from "./child-store";
  * and grant one copy of `cardId`" happen AT MOST ONCE per `jti`, mirroring
  * `pull_claims`'/`ClaimStore`'s request-id dedup but for the claim step rather
  * than the roll step — there is no draw here (the card is already chosen), so
- * one atomic call covers claim+spend+grant instead of ClaimStore's two-phase
- * claim-then-finish.
+ * one `claimOffer` call covers claim+spend+grant (the pg adapter still runs it
+ * as two statements internally — see offer-claim-store.pg.ts).
  *
  * Two adapters: `pgOfferClaimStore` (prod) and `inMemoryOfferClaimStore`
  * (tests). Exercised through `pull-service.ts`'s own `claimEasterEgg` tests
