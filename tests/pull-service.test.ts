@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach, beforeAll, afterAll } from "vitest";
 import { makePullService } from "@/features/pull/pull-service";
 import { makeOffer } from "@/features/pull/offer";
+import { eggTicketsAfterClaim } from "@/features/pull/egg-tickets";
 import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
@@ -352,6 +353,28 @@ describe("makePullService.claimEasterEgg", () => {
       env.authSecret,
     );
   }
+
+  it("claiming a ticket-redeemed egg drops the shown Easter Egg count; claiming the random in-pull egg doesn't", async () => {
+    const { service, children } = setup(
+      { kid: { pullTokens: 5, easterEggTickets: 3 } },
+      {},
+      [card("c1"), card("epic1", "epic")],
+    );
+
+    vi.spyOn(Math, "random").mockReturnValue(0.001); // forces the random epic+ egg inside pull()
+    const randomEgg = await service.pull("kid", undefined, "req-random-egg");
+    if (!("easterEgg" in randomEgg) || !randomEgg.easterEgg) throw new Error("expected an easter-egg outcome");
+    await service.claimEasterEgg("kid", randomEgg.offer, randomEgg.choices[0].id);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(3);
+    expect(eggTicketsAfterClaim(3, randomEgg)).toBe(3);
+
+    vi.spyOn(Math, "random").mockReturnValue(0); // rollWeightedRarity → common
+    const ticketEgg = await service.pullEasterEgg("kid");
+    if (!("easterEgg" in ticketEgg) || !ticketEgg.easterEgg) throw new Error("expected an easter-egg outcome");
+    await service.claimEasterEgg("kid", ticketEgg.offer, ticketEgg.choices[0].id);
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(2);
+    expect(eggTicketsAfterClaim(3, ticketEgg)).toBe(2);
+  });
 
   it("spends a normal token and grants the picked card", async () => {
     const { service, children, collections } = setup({ kid: { pullTokens: 2 } }, {}, cards);

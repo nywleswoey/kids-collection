@@ -37,5 +37,6 @@ export interface OfferClaimStore {
     column: BalanceColumn,
     cardId: string,
     cardJson: unknown,
+    staleMs: number,
   ): Promise<{ replayed: boolean; outcome: unknown } | { outOfTokens: true }>;
 }

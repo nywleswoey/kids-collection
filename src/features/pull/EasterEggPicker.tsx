@@ -69,6 +69,10 @@ export function EasterEggPicker({
       setError("That prize expired — discover again for another chance!");
       return;
     }
+    if (result.refunded) {
+      setError("That prize got stuck, so your ticket was given back — discover again!");
+      return;
+    }
     if (result.outOfTokens || !("card" in result)) {
       submittingRef.current = false;
       setError("Out of tickets to claim this prize.");

@@ -449,7 +449,14 @@ export function makePullService({ children, collections, catalog, rewards, claim
     // The unified Easter Egg ticket when the offer pins `easterEgg`, otherwise
     // a normal token (the random ~1% eggs).
     const key: BalanceColumn = payload.easterEgg ? "easterEggTickets" : "pullTokens";
-    const result = await offerClaims.claimOffer(payload.jti, childId, key, chosenCardId, card);
+    const result = await offerClaims.claimOffer(
+      payload.jti,
+      childId,
+      key,
+      chosenCardId,
+      card,
+      CLAIM_STALE_MS,
+    );
     if ("outOfTokens" in result) return { outOfTokens: true };
     // Only a FRESH claim ever drew tokens/cards from the world — a replay must
     // not re-trigger the completion-reward fan-out a second time.

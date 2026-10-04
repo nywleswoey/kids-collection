@@ -27,12 +27,13 @@ const POLL_INTERVAL_MS = 20;
  * `easter_egg_claims` exactly once (the INSERT) and `children` exactly once
  * (the spend); phase two writes it exactly once more (the OUTER UPDATE) and
  * `collections` exactly once — mirroring claim-store.pg.ts's already-proven
- * `claimAndSpend` + `finishWithCardGrant` two-phase shape, just without that store's fence/takeover
- * (nothing here ever needs to steal a stale claim — the ONLY caller who ever
- * runs phase two is the one phase one told "fresh").
+ * `claimAndSpend` + `finishWithCardGrant` two-phase shape. A claim stranded
+ * between the two phases (phase one committed, phase two never ran) is never
+ * finished by anyone else: once it's older than `staleMs`, the next duplicate
+ * call refunds phase one's spend and marks it done as refunded (`refundStale`).
  */
 export const pgOfferClaimStore: OfferClaimStore = {
-  async claimOffer(jti, childId, column, cardId, cardJson) {
+  async claimOffer(jti, childId, column, cardId, cardJson, staleMs) {
     const col = sql.raw(COLUMN[column]);
     const claimed = await db.execute<{
       claimed: boolean;
@@ -89,21 +90,28 @@ export const pgOfferClaimStore: OfferClaimStore = {
     }
 
     // Not freshly claimed: either this jti was already claimed — by an
-    // earlier call (reload/retry: its outcome is already "done") or by a
+    // earlier call (reload/retry: its outcome is already "done"), by a
     // concurrent twin mid-flight on phase two (double tap: poll briefly for it
     // to finish rather than surface a brand-new "still in progress" outcome
-    // shape to the caller) — or there's no claim row and the balance was 0.
+    // shape to the caller), or by a caller that died between the phases
+    // (stale: refund it) — or there's no claim row and the balance was 0.
     // The balance alone can't tell these apart: the earlier claim may itself
     // have spent the last ticket.
     const deadline = Date.now() + POLL_BUDGET_MS;
     for (;;) {
-      const existing = await db.execute<{ status: string; outcome: unknown }>(
-        sql`SELECT status, outcome FROM easter_egg_claims WHERE jti = ${jti}`,
+      const existing = await db.execute<{ status: string; outcome: unknown; stale: boolean }>(
+        sql`SELECT status, outcome,
+              created_at < now() - (${staleMs}::double precision * interval '1 millisecond') AS stale
+            FROM easter_egg_claims WHERE jti = ${jti}`,
       );
       const existingRow = existing.rows[0];
       if (!existingRow) return { outOfTokens: true };
       if (existingRow.status === "done" && existingRow.outcome != null) {
         return { replayed: true, outcome: existingRow.outcome };
+      }
+      if (existingRow.stale) {
+        const refunded = await refundStale(jti, col, staleMs);
+        if (refunded != null) return { replayed: true, outcome: refunded };
       }
       if (Date.now() >= deadline) {
         throw new Error(`claimOffer: duplicate claim ${jti} never finished (original caller crashed?)`);
@@ -112,3 +120,37 @@ export const pgOfferClaimStore: OfferClaimStore = {
     }
   },
 };
+
+/**
+ * Refund a claim stranded in "granting" for longer than `staleMs`: give back
+ * the one `col` phase one spent and mark the claim done with a
+ * `PullRefundedOutcome`, so every later call replays the refund. Same
+ * one-write-per-table shape as phase two; the `FOR UPDATE` on the granting row
+ * serializes it against a late phase two, so exactly one of them wins. Returns
+ * null if the claim was no longer stale-and-granting.
+ */
+async function refundStale(jti: string, col: ReturnType<typeof sql.raw>, staleMs: number) {
+  const result = await db.execute<{ outcome: unknown }>(sql`
+    WITH stale AS (
+      SELECT child_id FROM easter_egg_claims
+      WHERE jti = ${jti} AND status = 'granting'
+        AND created_at < now() - (${staleMs}::double precision * interval '1 millisecond')
+      FOR UPDATE
+    ),
+    refund AS (
+      UPDATE children SET ${col} = ${col} + 1
+      WHERE id = (SELECT child_id FROM stale)
+      RETURNING pull_tokens AS new_balance
+    )
+    UPDATE easter_egg_claims
+    SET status = 'done',
+        outcome = jsonb_build_object(
+          'outOfTokens', false,
+          'refunded', true,
+          'newBalance', (SELECT new_balance FROM refund)
+        )
+    WHERE jti = ${jti} AND status = 'granting' AND EXISTS (SELECT 1 FROM refund)
+    RETURNING outcome
+  `);
+  return result.rows[0]?.outcome ?? null;
+}

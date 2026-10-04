@@ -7,7 +7,9 @@ import { makePullService } from "@/features/pull/pull-service";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import type { Card } from "@/lib/types";
-import { resetAll, seedChildren, seedCards, backdateClaim } from "./db";
+import { resetAll, seedChildren, seedCards, backdateClaim, strandOfferClaim } from "./db";
+import { verifyOffer } from "@/features/pull/offer";
+import { env } from "@/lib/env";
 
 /**
  * Request-level idempotency (#kcpi), run directly against the REAL pg
@@ -387,5 +389,32 @@ describe("claimEasterEgg single-use offer redemption, against real Postgres (ove
     expect(retry).toEqual(first);
     expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(0);
     expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(1);
+  });
+
+  it("a claim stranded between its spend and its grant is refunded by a later retry, not left charged forever", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0); // rollWeightedRarity → common (always in pool)
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 5, easterEggTickets: 1 } });
+    const service = await makeService([card("c1"), card("c2")]);
+
+    const offer = await service.pullEasterEgg("kid");
+    if (!("easterEgg" in offer) || !offer.easterEgg) throw new Error("expected an easter-egg outcome");
+    const chosenId = offer.choices[0].id;
+    const payload = await verifyOffer(offer.offer, env.authSecret, Date.now());
+    if (!payload) throw new Error("expected a valid offer");
+
+    // Phase one committed (ticket spent, claim "granting"), then the caller
+    // died before phase two, long enough ago to be stale.
+    await strandOfferClaim(payload.jti, "kid", chosenId, "easter_egg_tickets", 60);
+    expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(0);
+
+    const retry = await service.claimEasterEgg("kid", offer.offer, chosenId);
+    expect(retry).toEqual({ outOfTokens: false, refunded: true, newBalance: 5 });
+    expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(1); // given back
+    expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(0); // nothing granted
+
+    const again = await service.claimEasterEgg("kid", offer.offer, chosenId);
+    expect(again).toEqual(retry); // the refund replays; it never refunds twice
+    expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(1);
   });
 });
