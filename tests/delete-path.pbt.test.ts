@@ -6,6 +6,7 @@ import { SACRIFICE_COST } from "@/features/pull/sacrifice";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryChildStore } from "@/db/stores/child-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
+import { inMemoryOfferClaimStore } from "@/db/stores/offer-claim-store.fake";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
@@ -166,6 +167,7 @@ function makePull(collections: CollectionStore) {
     catalog: fakeCatalog(ALL_CARDS),
     rewards: noRewards,
     claims: inMemoryClaimStore(children, collections),
+    offerClaims: inMemoryOfferClaimStore(children, collections),
   });
 }
 

@@ -4,6 +4,7 @@ import { makeOffer } from "@/features/pull/offer";
 import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
+import { inMemoryOfferClaimStore } from "@/db/stores/offer-claim-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { env } from "@/lib/env";
@@ -59,14 +60,16 @@ function setup(
   const rewards = recordingRewards();
   const catalog = fakeCatalog(cards);
   const claims = inMemoryClaimStore(childrenStore, collections, now);
+  const offerClaims = inMemoryOfferClaimStore(childrenStore, collections);
   const service = makePullService({
     children: childrenStore,
     collections,
     catalog,
     rewards,
     claims,
+    offerClaims,
   });
-  return { service, children: childrenStore, collections, rewards, catalog, claims };
+  return { service, children: childrenStore, collections, rewards, catalog, claims, offerClaims };
 }
 
 afterEach(() => vi.restoreAllMocks());
@@ -344,7 +347,10 @@ describe("makePullService.claimEasterEgg", () => {
   });
 
   async function offerFor(childId: string, cardIds: string[], extra = {}) {
-    return makeOffer({ childId, cardIds, exp: Date.now() + 60_000, ...extra }, env.authSecret);
+    return makeOffer(
+      { childId, cardIds, exp: Date.now() + 60_000, jti: crypto.randomUUID(), ...extra },
+      env.authSecret,
+    );
   }
 
   it("spends a normal token and grants the picked card", async () => {
@@ -388,6 +394,55 @@ describe("makePullService.claimEasterEgg", () => {
     await expect(service.claimEasterEgg("kid", "not.a.valid.offer", "a")).rejects.toThrow(
       "invalid or expired offer",
     );
+  });
+
+  it("rejects a pre-fix offer signed without a jti", async () => {
+    const { service } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const offer = await makeOffer(
+      // No jti — simulates an offer signed by the pre-fix code, or one still
+      // in a kid's browser from before a deploy.
+      { childId: "kid", cardIds: ["a", "b"], exp: Date.now() + 60_000 } as never,
+      env.authSecret,
+    );
+    await expect(service.claimEasterEgg("kid", offer, "a")).rejects.toThrow("invalid or expired offer");
+  });
+
+  // Overcharge regression (the reported bug): a double tap / retry / re-render
+  // of the SAME offer must spend and grant exactly once, replaying the first
+  // claim's outcome rather than charging/granting again.
+  it("a double claim of the SAME offer spends once and grants one copy (replay, not a re-charge)", async () => {
+    const { service, children, collections } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const offer = await offerFor("kid", ["a", "b"]);
+
+    const first = await service.claimEasterEgg("kid", offer, "a");
+    const second = await service.claimEasterEgg("kid", offer, "a"); // double tap / retry / re-render
+
+    expect(second).toEqual(first);
+    expect(await children.readColumn("kid", "pullTokens")).toBe(1); // ONE charge
+    expect(await collections.cardCount("kid", "a")).toBe(1); // ONE copy
+  });
+
+  it("a double claim replays the FIRST pick even if the second tap landed on a different card", async () => {
+    const { service, children, collections } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const offer = await offerFor("kid", ["a", "b"]);
+
+    const first = await service.claimEasterEgg("kid", offer, "a");
+    const second = await service.claimEasterEgg("kid", offer, "b"); // stale re-render re-submits a different index
+
+    expect(second).toEqual(first); // still card "a" — the chosen card can't change after the fact
+    expect(await children.readColumn("kid", "pullTokens")).toBe(1);
+    expect(await collections.cardCount("kid", "a")).toBe(1);
+    expect(await collections.cardCount("kid", "b")).toBe(0); // never granted
+  });
+
+  it("a double claim does not fan out the completion-reward cascade twice", async () => {
+    const { service, rewards } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const offer = await offerFor("kid", ["a", "b"]);
+
+    await service.claimEasterEgg("kid", offer, "a");
+    await service.claimEasterEgg("kid", offer, "a");
+
+    expect(rewards.calls).toEqual([["kid", ["a"], undefined]]); // only the fresh claim fans out
   });
 });
 
