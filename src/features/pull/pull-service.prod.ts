@@ -14,3 +14,13 @@ export const pullService = makePullService({
   rewards: rewardService,
   claims: pgClaimStore,
 });
+
+/**
+ * Start `pull()`'s own catalog/owned-ids reads early, against the SAME pg
+ * adapters it's bound to above — see `pull()`'s doc for why a caller (just
+ * `pullAction`) does this concurrently with the active-child gate check
+ * instead of waiting for it first.
+ */
+export function prefetchPullReads(childId: string, themeId: string | undefined) {
+  return { pool: pgCatalog.listCards(themeId), owned: pgCollectionStore.ownedCardIds(childId) };
+}
