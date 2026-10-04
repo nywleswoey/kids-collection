@@ -369,4 +369,23 @@ describe("claimEasterEgg single-use offer redemption, against real Postgres (ove
     expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(0); // spent once
     expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(1); // granted once
   });
+
+  it("a retry of a claim that spent the LAST ticket replays it, not out-of-tickets", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0); // rollWeightedRarity → common (always in pool)
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 5, easterEggTickets: 1 } });
+    const service = await makeService([card("c1"), card("c2")]);
+
+    const offer = await service.pullEasterEgg("kid");
+    if (!("easterEgg" in offer) || !offer.easterEgg) throw new Error("expected an easter-egg outcome");
+    const chosenId = offer.choices[0].id;
+
+    const first = await service.claimEasterEgg("kid", offer.offer, chosenId);
+    const retry = await service.claimEasterEgg("kid", offer.offer, chosenId);
+
+    expect(first).toMatchObject({ outOfTokens: false });
+    expect(retry).toEqual(first);
+    expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(0);
+    expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(1);
+  });
 });
