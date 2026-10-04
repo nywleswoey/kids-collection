@@ -36,7 +36,6 @@ export const pgOfferClaimStore: OfferClaimStore = {
     const col = sql.raw(COLUMN[column]);
     const claimed = await db.execute<{
       claimed: boolean;
-      had_balance: boolean;
       new_balance: number | null;
     }>(sql`
       WITH bal AS (
@@ -56,7 +55,6 @@ export const pgOfferClaimStore: OfferClaimStore = {
       )
       SELECT
         (SELECT jti FROM claim) IS NOT NULL AS claimed,
-        (SELECT (spendable >= 1) FROM bal) AS had_balance,
         (SELECT new_balance FROM spend) AS new_balance
     `);
     const row = claimed.rows[0];
@@ -90,19 +88,23 @@ export const pgOfferClaimStore: OfferClaimStore = {
       return { replayed: false, outcome };
     }
 
-    if (!row.had_balance) return { outOfTokens: true };
-
-    // This jti was already claimed — by an earlier call (reload/retry: its
-    // outcome is already "done") or by a concurrent twin mid-flight on phase
-    // two (double tap: poll briefly for it to finish rather than surface a
-    // brand-new "still in progress" outcome shape to the caller).
+    // Not freshly claimed: either this jti was already claimed — by an
+    // earlier call (reload/retry: its outcome is already "done") or by a
+    // concurrent twin mid-flight on phase two (double tap: poll briefly for it
+    // to finish rather than surface a brand-new "still in progress" outcome
+    // shape to the caller) — or there's no claim row and the balance was 0.
+    // The balance alone can't tell these apart: the earlier claim may itself
+    // have spent the last ticket.
     const deadline = Date.now() + POLL_BUDGET_MS;
     for (;;) {
-      const existing = await db.execute<{ outcome: unknown }>(
-        sql`SELECT outcome FROM easter_egg_claims WHERE jti = ${jti} AND status = 'done'`,
+      const existing = await db.execute<{ status: string; outcome: unknown }>(
+        sql`SELECT status, outcome FROM easter_egg_claims WHERE jti = ${jti}`,
       );
-      const outcome = existing.rows[0]?.outcome;
-      if (outcome != null) return { replayed: true, outcome };
+      const existingRow = existing.rows[0];
+      if (!existingRow) return { outOfTokens: true };
+      if (existingRow.status === "done" && existingRow.outcome != null) {
+        return { replayed: true, outcome: existingRow.outcome };
+      }
       if (Date.now() >= deadline) {
         throw new Error(`claimOffer: duplicate claim ${jti} never finished (original caller crashed?)`);
       }
