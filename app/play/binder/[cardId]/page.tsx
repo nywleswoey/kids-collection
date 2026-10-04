@@ -4,7 +4,6 @@ import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { binderService } from "@/features/binder/service.prod";
 import { Card } from "@/shared/card/Card";
 import { SacrificePanel } from "@/features/pull/SacrificePanel";
-import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
 import { backHref } from "@/features/binder/binder-place";
 
 export default async function CardDetailPage({
@@ -33,9 +32,7 @@ export default async function CardDetailPage({
       {detail.count > 1 ? (
         <p className="pill pill--gold">📚 You own {detail.count} of these</p>
       ) : null}
-      {detail.count >= SACRIFICE_MIN ? (
-        <SacrificePanel cardId={detail.card.id} count={detail.count} />
-      ) : null}
+      <SacrificePanel cardId={detail.card.id} count={detail.count} />
       <Link href={back} className="btn btn--ghost text-sm">
         ← Back to My Galaxy
       </Link>
