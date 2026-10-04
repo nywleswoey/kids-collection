@@ -4,6 +4,7 @@ import type { Card, PullResult, Rarity } from "@/lib/types";
 import type { BalanceColumn, ChildStore } from "@/db/stores/child-store";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { ClaimStore } from "@/db/stores/claim-store";
+import type { OfferClaimStore } from "@/db/stores/offer-claim-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import {
@@ -111,6 +112,7 @@ export interface PullDeps {
   catalog: Catalog;
   rewards: RewardGranter;
   claims: ClaimStore;
+  offerClaims: OfferClaimStore;
 }
 
 /**
@@ -121,7 +123,7 @@ export interface PullDeps {
  * (`env.authSecret`, `makeOffer`/`verifyOffer`) stays a direct import; parent
  * gating now lives at the action layer. Prod wiring: `pull-service.prod.ts`.
  */
-export function makePullService({ children, collections, catalog, rewards, claims }: PullDeps) {
+export function makePullService({ children, collections, catalog, rewards, claims, offerClaims }: PullDeps) {
   /** `pull()`'s answer when a duplicate request id's original attempt is still
    *  actively being completed (not stale yet) — nothing was spent or granted. */
   async function stillInProgress(childId: string): Promise<PullStillInProgressOutcome> {
@@ -151,7 +153,7 @@ export function makePullService({ children, collections, catalog, rewards, claim
   ): Promise<EasterEggOutcome> {
     const cardIds = choices.map((c) => c.id);
     const offer = await makeOffer(
-      { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, ...offerExtra },
+      { childId, cardIds, exp: Date.now() + OFFER_TTL_MS, jti: crypto.randomUUID(), ...offerExtra },
       env.authSecret,
     );
     const ownedCounts = await collections.ownedCounts(childId, cardIds);
@@ -184,23 +186,6 @@ export function makePullService({ children, collections, catalog, rewards, claim
     const won = await claims.finishWithRefund(lease, requestId, childId, outcome);
     if (won) return outcome;
     return recoverLostLease(requestId, childId);
-  }
-
-  /**
-   * Grant one copy of a card and return the standard card outcome: upsert the
-   * collection count, apply any (theme, rarity) set-completion bonus (Inc16 FR5),
-   * and return with the duplicate flag plus the given balance. Used by
-   * claimEasterEgg's single-use offer claim, which has its own idempotency
-   * (the signed offer's atomic spend) and isn't part of #kcpi's scope.
-   */
-  async function grantCardOutcome(
-    childId: string,
-    card: Card,
-    newBalance: number,
-  ): Promise<PullOutcome> {
-    const { count } = await collections.grantCard(childId, card.id);
-    await rewards.grantCompletionRewards(childId, [card.id]);
-    return { outOfTokens: false, card, isDuplicate: count > 1, newBalance };
   }
 
   /**
@@ -437,8 +422,12 @@ export function makePullService({ children, collections, catalog, rewards, claim
   /**
    * Claim the card the child picked from an easter-egg offer (U6-FR2). Verifies
    * the signed offer (signature + expiry + child) and that the pick was among the
-   * offered cards, then spends exactly one column atomically and grants the card.
-   * The atomic spend makes the signed offer single-use.
+   * offered cards, then redeems it through OfferClaimStore keyed by the offer's
+   * `jti` — ONE atomic spend + grant per offer, no matter how many times this
+   * is called for the same offer (double tap, retry, re-render, slow response):
+   * a duplicate call replays the FIRST call's outcome verbatim instead of
+   * spending or granting again (the overcharge fix; `spendOne`'s per-call
+   * decrement alone never prevented re-claiming the same still-valid offer).
    */
   async function claimEasterEgg(
     childId: string,
@@ -457,14 +446,17 @@ export function makePullService({ children, collections, catalog, rewards, claim
     const card = await catalog.getCard(chosenCardId);
     if (!card) throw new Error("claimEasterEgg: card not found");
 
-    // Atomic spend — the unified Easter Egg ticket when the offer pins `easterEgg`,
-    // otherwise a normal token (the random ~1% eggs). Single-use: the guarded
-    // decrement makes the signed offer un-replayable.
+    // The unified Easter Egg ticket when the offer pins `easterEgg`, otherwise
+    // a normal token (the random ~1% eggs).
     const key: BalanceColumn = payload.easterEgg ? "easterEggTickets" : "pullTokens";
-    const newBalance = await children.spendOne(childId, key);
-    if (newBalance === null) return { outOfTokens: true };
-
-    return grantCardOutcome(childId, card, newBalance);
+    const result = await offerClaims.claimOffer(payload.jti, childId, key, chosenCardId, card);
+    if ("outOfTokens" in result) return { outOfTokens: true };
+    // Only a FRESH claim ever drew tokens/cards from the world — a replay must
+    // not re-trigger the completion-reward fan-out a second time.
+    if (!result.replayed) {
+      await rewards.grantCompletionRewards(childId, [chosenCardId]);
+    }
+    return result.outcome as PullOutcome;
   }
 
   /**

@@ -10,7 +10,7 @@ describe("easter-egg offer (U6-FR2, Security)", () => {
     await fc.assert(
       fc.asyncProperty(secretArb, fc.string({ minLength: 1 }), idsArb, async (secret, childId, cardIds) => {
         const now = 1_000_000;
-        const token = await makeOffer({ childId, cardIds, exp: now + 60_000 }, secret);
+        const token = await makeOffer({ childId, cardIds, exp: now + 60_000, jti: "j" }, secret);
         const p = await verifyOffer(token, secret, now);
         expect(p).not.toBeNull();
         expect(p!.childId).toBe(childId);
@@ -22,7 +22,7 @@ describe("easter-egg offer (U6-FR2, Security)", () => {
   it("an expired offer verifies null", async () => {
     await fc.assert(
       fc.asyncProperty(secretArb, async (secret) => {
-        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 1000 }, secret);
+        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 1000, jti: "j" }, secret);
         expect(await verifyOffer(token, secret, 2000)).toBeNull();
       }),
     );
@@ -32,7 +32,7 @@ describe("easter-egg offer (U6-FR2, Security)", () => {
     await fc.assert(
       fc.asyncProperty(secretArb, secretArb, async (s1, s2) => {
         fc.pre(s1 !== s2);
-        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 9_000_000 }, s1);
+        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 9_000_000, jti: "j" }, s1);
         expect(await verifyOffer(token, s2, 1_000_000)).toBeNull();
       }),
     );
@@ -41,10 +41,10 @@ describe("easter-egg offer (U6-FR2, Security)", () => {
   it("a forged payload (kept signature) verifies null", async () => {
     await fc.assert(
       fc.asyncProperty(secretArb, async (secret) => {
-        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 9_000_000 }, secret);
+        const token = await makeOffer({ childId: "k", cardIds: ["a"], exp: 9_000_000, jti: "j" }, secret);
         const [, sig] = token.split(".");
         // Swap in a different payload but keep the old signature.
-        const forgedPayload = btoa(JSON.stringify({ childId: "k", cardIds: ["HACK"], exp: 9_000_000 }))
+        const forgedPayload = btoa(JSON.stringify({ childId: "k", cardIds: ["HACK"], exp: 9_000_000, jti: "j" }))
           .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
         expect(await verifyOffer(`${forgedPayload}.${sig}`, secret, 1_000_000)).toBeNull();
       }),
@@ -55,5 +55,20 @@ describe("easter-egg offer (U6-FR2, Security)", () => {
     expect(await verifyOffer(undefined, "s", 1)).toBeNull();
     expect(await verifyOffer("", "s", 1)).toBeNull();
     expect(await verifyOffer("nodot", "s", 1)).toBeNull();
+  });
+
+  // Overcharge fix (#kcee): jti is the single-use redemption key claimEasterEgg
+  // dedups on, so a correctly-signed offer missing it must still be rejected —
+  // it predates the fix and offers no idempotency guarantee.
+  it("a correctly-signed offer without a jti verifies null", async () => {
+    await fc.assert(
+      fc.asyncProperty(secretArb, async (secret) => {
+        const token = await makeOffer(
+          { childId: "k", cardIds: ["a"], exp: 9_000_000 } as never,
+          secret,
+        );
+        expect(await verifyOffer(token, secret, 1_000_000)).toBeNull();
+      }),
+    );
   });
 });

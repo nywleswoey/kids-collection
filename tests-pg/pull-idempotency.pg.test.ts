@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { pgChildStore } from "@/db/stores/child-store.pg";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgClaimStore } from "@/db/stores/claim-store.pg";
+import { pgOfferClaimStore } from "@/db/stores/offer-claim-store.pg";
 import { makePullService } from "@/features/pull/pull-service";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
@@ -49,6 +50,7 @@ async function makeService(cards: Card[]) {
     catalog: fakeCatalog(cards),
     rewards: noRewards,
     claims: pgClaimStore,
+    offerClaims: pgOfferClaimStore,
   });
 }
 
@@ -305,5 +307,66 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
     const live = await pgChildStore.readColumn("kid", "pullTokens");
     expect(live).toBe(0); // 1 - 1 (x) + 1 (refund) - 1 (y)
     expect(replay).toEqual({ outOfTokens: false, refunded: true, newBalance: live });
+  });
+});
+
+describe("claimEasterEgg single-use offer redemption, against real Postgres (overcharge fix)", () => {
+  it("two concurrent claims of the SAME offer (double tap) spend once and grant one copy", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.001); // forces the epic+ egg roll
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1"), card("epic1", "epic")]);
+
+    const offer = await service.pull("kid", undefined, "req-egg");
+    if (!("easterEgg" in offer) || !offer.easterEgg) throw new Error("expected an easter-egg outcome");
+
+    const [first, second] = await Promise.all([
+      service.claimEasterEgg("kid", offer.offer, offer.choices[0].id),
+      service.claimEasterEgg("kid", offer.offer, offer.choices[0].id),
+    ]);
+
+    expect(second).toEqual(first); // the double tap REPLAYS, it never re-spends/re-grants
+    // Rolling the egg already re-spent the refunded token at claim time; a
+    // second concurrent claim call must not charge ANOTHER one on top of it.
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9);
+    expect(await pgCollectionStore.cardCount("kid", offer.choices[0].id)).toBe(1);
+  });
+
+  it("a sequential retry (reload after a slow claim) replays the first claim's card, not a second copy", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.001); // forces the epic+ egg roll
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1"), card("epic1", "epic")]);
+
+    const offer = await service.pull("kid", undefined, "req-egg2");
+    if (!("easterEgg" in offer) || !offer.easterEgg) throw new Error("expected an easter-egg outcome");
+    const chosenId = offer.choices[0].id;
+
+    const first = await service.claimEasterEgg("kid", offer.offer, chosenId);
+    const retry = await service.claimEasterEgg("kid", offer.offer, chosenId); // same offer, tapped again
+
+    expect(retry).toEqual(first);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(9); // ONE charge, not two
+    expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(1); // ONE copy, not two
+  });
+
+  it("an easter-egg-ticket offer's double claim spends the ticket once, not the ticket twice", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0); // rollWeightedRarity → common (always in pool)
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 5, easterEggTickets: 1 } });
+    const service = await makeService([card("c1"), card("c2")]);
+
+    const offer = await service.pullEasterEgg("kid");
+    if (!("easterEgg" in offer) || !offer.easterEgg) throw new Error("expected an easter-egg outcome");
+    const chosenId = offer.choices[0].id;
+
+    const [first, second] = await Promise.all([
+      service.claimEasterEgg("kid", offer.offer, chosenId),
+      service.claimEasterEgg("kid", offer.offer, chosenId),
+    ]);
+
+    expect(second).toEqual(first);
+    expect(await pgChildStore.readColumn("kid", "easterEggTickets")).toBe(0); // spent once
+    expect(await pgCollectionStore.cardCount("kid", chosenId)).toBe(1); // granted once
   });
 });
