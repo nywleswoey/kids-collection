@@ -144,6 +144,28 @@ describe("makePullService.pull", () => {
     expect(result.card.id).toBe("a1"); // fell back to the full pool
     expect(catalog.listCardsCalls).toEqual(["no-such-theme", undefined]);
   });
+
+  it("uses an already-started prefetch instead of starting its own catalog/owned reads", async () => {
+    // Regression test for the Launching-wait fix: `pullAction` now starts the
+    // catalog/owned-ids reads concurrently with the active-child gate check and
+    // hands them to `pull()` as `prefetch`, instead of `pull()` starting them
+    // itself only after the gate resolves. If that wiring ever regresses back
+    // to `pull()` quietly ignoring `prefetch` and starting its own reads, the
+    // win is gone even though every other test here (which never passes
+    // `prefetch`) would stay green.
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    const pool = [card("c1")];
+    const { service, catalog, collections } = setup({ kid: { pullTokens: 1 } }, {}, pool);
+    const ownedSpy = vi.spyOn(collections, "ownedCardIds");
+
+    const prefetch = { pool: Promise.resolve(pool), owned: Promise.resolve(new Set<string>()) };
+    const result = await service.pull("kid", undefined, "req-1", prefetch);
+
+    if (!("card" in result)) throw new Error("expected a card outcome");
+    expect(result.card.id).toBe("c1");
+    expect(catalog.listCardsCalls).toHaveLength(0); // didn't start its own catalog read
+    expect(ownedSpy).not.toHaveBeenCalled(); // didn't start its own owned-ids read
+  });
 });
 
 describe("makePullService.pull request-level idempotency (#kcpi)", () => {
