@@ -41,6 +41,9 @@ pnpm seed --review     # generate preview images for NEW cards to seed-content/r
                        #   one per card PER lane (the bake-off)
 pnpm seed --supergrok-export
                        # brief for pictures you generate by hand in Grok
+pnpm supergrok "<Theme Name>"
+                       # walk the cards: copy each prompt, file each saved picture into the
+                       #   drop folder, then run the two commands below
 pnpm seed --review --providers=supergrok-manual
                        # import that drop folder as one more bake-off column
 pnpm contact-sheet "<Theme Name>"
@@ -75,7 +78,7 @@ src/features/         domain features (binder, pull, trade, admin, quiz, profile
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
-scripts/              seed CLI, contact-sheet, reconcile, backup verify
+scripts/              seed CLI, contact-sheet, supergrok helper, reconcile, backup verify
 seed-content/         card/theme source data (cards.json, provenance.json, runbook)
 docs/                 operational runbooks (restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
