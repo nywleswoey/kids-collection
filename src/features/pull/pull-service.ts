@@ -157,10 +157,16 @@ export function makePullService({ children, collections, catalog, rewards, claim
       env.authSecret,
     );
     const ownedCounts = await collections.ownedCounts(childId, cardIds);
+    // Unowned choices first (new-card priority), owned after — stable within
+    // each group. Display-only: odds/eligibility/offer cardIds are untouched.
+    const ordered = [
+      ...choices.filter((c) => (ownedCounts[c.id] ?? 0) === 0),
+      ...choices.filter((c) => (ownedCounts[c.id] ?? 0) !== 0),
+    ];
     return {
       outOfTokens: false,
       easterEgg: true,
-      choices,
+      choices: ordered,
       ownedCounts,
       offer,
       newBalance,
