@@ -63,3 +63,17 @@ export async function getActiveChild(): Promise<Child | null> {
   if (!row) return null;
   return toChild(row);
 }
+
+/**
+ * The active-child cookie's raw value, UNVALIDATED — no DB round trip. Lets a
+ * caller start other reads keyed on this id concurrently with the real gate
+ * (`requireActiveChild`/`getActiveChild`, which still re-validates against the
+ * DB as always) instead of waiting for it first. Safe only for read-only,
+ * non-security-sensitive prefetches whose result is discarded if the gate
+ * later finds no active child — never use this id for anything written or
+ * returned to the client without going through the real gate too.
+ */
+export async function peekActiveChildId(): Promise<string | null> {
+  const store = await cookies();
+  return store.get(COOKIE)?.value ?? null;
+}
