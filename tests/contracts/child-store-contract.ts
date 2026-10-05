@@ -48,10 +48,11 @@ export function runChildStoreContract(
       expect(await store.readColumn("kid", "pullTokens")).toBe(0);
     });
 
-    it("clampedGrant floors at 0 and returns the new value; null for an absent child", async () => {
+    it("clampedGrant floors at 0 and returns the new value + applied delta; null for an absent child", async () => {
       const store = await makeStore({ kid: { pullTokens: 2 } });
-      expect(await store.clampedGrant("kid", "pullTokens", 3)).toBe(5);
-      expect(await store.clampedGrant("kid", "pullTokens", -100)).toBe(0); // floor
+      expect(await store.clampedGrant("kid", "pullTokens", 3)).toEqual({ balance: 5, applied: 3 });
+      expect(await store.clampedGrant("kid", "pullTokens", -100)).toEqual({ balance: 0, applied: -5 }); // floor
+      expect(await store.readColumn("kid", "pullTokens")).toBe(0);
       expect(await store.clampedGrant("ghost", "pullTokens", 1)).toBeNull();
     });
 
@@ -89,8 +90,9 @@ export function runChildStoreContract(
           async (start, delta) => {
             const store = await makeStore({ kid: { pullTokens: start } });
             const result = await store.clampedGrant("kid", "pullTokens", delta);
-            expect(result).toBeGreaterThanOrEqual(0);
-            if (delta >= 0) expect(result).toBe(start + delta);
+            expect(result!.balance).toBeGreaterThanOrEqual(0);
+            expect(result!.applied).toBe(result!.balance - start);
+            if (delta >= 0) expect(result!.balance).toBe(start + delta);
           },
         ),
       );

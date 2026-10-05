@@ -17,7 +17,7 @@ export interface TokenDeps {
  */
 export function makeTokenService({ children, grants }: TokenDeps) {
   /** Clamped grant/adjust of one column; validate the delta, delegate the
-   *  `GREATEST(0, …)` to the store, then log the ask. Shared body of the two
+   *  `GREATEST(0, …)` to the store, then log the delta actually applied. Shared body of the two
    *  grant entry points — both are admin-only (gated at the action layer). */
   async function grantColumn(
     childId: string,
@@ -27,15 +27,15 @@ export function makeTokenService({ children, grants }: TokenDeps) {
     grantedBy: string | null,
   ): Promise<number> {
     if (!Number.isInteger(delta)) throw new Error(`${label}: delta must be an integer`);
-    const balance = await children.clampedGrant(childId, key, delta);
-    if (balance === null) throw new Error(`${label}: child not found`);
+    const granted = await children.clampedGrant(childId, key, delta);
+    if (granted === null) throw new Error(`${label}: child not found`);
     try {
-      await grants.record(childId, key, delta, "admin", grantedBy);
+      await grants.record(childId, key, granted.applied, "admin", grantedBy);
     } catch {
       // best-effort — the grant already committed, so a log failure must not
       // surface as a failed grant (a retry would grant twice)
     }
-    return balance;
+    return granted.balance;
   }
 
   /** Current pull-token balance (F2). */

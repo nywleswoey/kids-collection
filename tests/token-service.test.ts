@@ -59,6 +59,13 @@ describe("makeTokenService", () => {
     expect(await svc.getBalance("kid")).toBe(5);
   });
 
+  it("records the delta actually applied when the 0-floor clamps a removal", async () => {
+    const { svc, grants } = setup({ kid: { pullTokens: 2 } });
+    expect(await svc.grant("kid", -5, "parent@example.com")).toBe(0);
+    const [row] = await grants.recentForChild("kid", 10);
+    expect(row).toMatchObject({ column: "pullTokens", amount: -2 });
+  });
+
   it("records an Easter Egg grant with no grantedBy as null", async () => {
     const { svc, grants } = setup({ kid: { pullTokens: 0 } });
     await svc.grantEasterEgg("kid", 2);

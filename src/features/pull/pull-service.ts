@@ -508,8 +508,9 @@ export function makePullService({
     if (burned === null) throw new Error("sacrifice: not enough copies");
 
     // Atomic +1 that returns the new balance (never negative).
-    const newBalance = await children.clampedGrant(childId, "easterEggTickets", 1);
-    if (newBalance === null) throw new Error("sacrifice: child not found");
+    const granted = await children.clampedGrant(childId, "easterEggTickets", 1);
+    if (granted === null) throw new Error("sacrifice: child not found");
+    const newBalance = granted.balance;
 
     // Parent-facing activity log (#kcact): the only record anywhere of this
     // grant — see ticket-grant-store.ts's doc comment. Best-effort: the burn

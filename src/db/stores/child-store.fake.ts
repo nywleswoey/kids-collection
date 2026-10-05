@@ -37,9 +37,10 @@ export function inMemoryChildStore(seed: ChildSeed = {}): ChildStore {
     async clampedGrant(childId, column, delta) {
       const row = state.get(childId);
       if (!row) return null;
-      const next = Math.max(0, (row[column] ?? 0) + delta);
+      const prev = row[column] ?? 0;
+      const next = Math.max(0, prev + delta);
       row[column] = next;
-      return next;
+      return { balance: next, applied: next - prev };
     },
 
     async readColumn(childId, column) {

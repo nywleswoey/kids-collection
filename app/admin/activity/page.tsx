@@ -8,7 +8,11 @@ import type { ActivityEvent } from "@/features/activity/types";
 export const dynamic = "force-dynamic";
 
 function formatAt(at: string): string {
-  return new Date(at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+  return new Date(at).toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Singapore",
+  });
 }
 
 /** One line of human text (+ icon) per event kind — the only place that turns
