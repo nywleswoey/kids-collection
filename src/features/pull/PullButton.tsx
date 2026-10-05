@@ -207,16 +207,28 @@ export function PullButton({
   }
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex w-full flex-col items-center gap-6">
       <p data-testid="token-balance" className="pill pill--gold text-base">
         🎟️ <CountUp value={balance} className="count-pulse" /> ticket{balance === 1 ? "" : "s"} left
       </p>
 
       {/* Category chips — prominent + persistent, stay visible on the result (FR2/FR3). */}
       {themes.length > 0 ? (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex w-full min-w-0 flex-col items-center gap-2">
           <span className="text-sm text-[color:var(--ink-soft)]">Pick a galaxy</span>
-          <div className="flex flex-wrap justify-center gap-2" data-testid="category-chips">
+          {/* Mobile: one swipeable row (snap-scrolled, no page-level overflow
+              since the row itself owns the horizontal scroll). Desktop (sm+):
+              unchanged wrapped, centered chip row.
+              `w-full min-w-0` here (and on this component's own root and this
+              row's wrapper above) is load-bearing: every ancestor up to <main>
+              is a flex column with `items-center`, which hugs content width by
+              default, so without it this auto-sized row never gets clipped to
+              the viewport — it just pushes the whole page wider instead of
+              scrolling internally. */}
+          <div
+            className="flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 sm:w-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:scroll-px-0 sm:px-0 sm:py-0"
+            data-testid="category-chips"
+          >
             <CategoryChip
               label="🎲 Random"
               active={themeId === ""}
@@ -364,7 +376,7 @@ function CategoryChip({
       disabled={disabled}
       aria-pressed={active}
       data-testid={testid}
-      className={`rounded-full px-4 py-2 text-sm font-semibold transition disabled:opacity-50 ${
+      className={`shrink-0 snap-start rounded-full px-4 py-2 text-sm font-semibold transition disabled:opacity-50 ${
         active
           ? "bg-[color:var(--brand-1)] text-black ring-2 ring-[color:var(--brand-1)]"
           : "bg-white/10 text-[color:var(--ink)] hover:bg-white/20"
