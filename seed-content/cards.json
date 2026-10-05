@@ -4973,6 +4973,221 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Asian_water_monitor"
         }
       ]
+    },
+    {
+      "name": "Amphibians",
+      "cards": [
+        {
+          "name": "Red-eyed Tree Frog",
+          "rarity": "legendary",
+          "eduText": "Red-eyed tree frogs sleep by day. If startled, they flash their bright red eyes to surprise predators.",
+          "imagePrompt": "a single bright green tree frog with huge red eyes, orange feet and blue-striped sides, clinging to a green leaf, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agalychnis_callidryas"
+        },
+        {
+          "name": "Chinese Giant Salamander",
+          "rarity": "legendary",
+          "eduText": "The Chinese giant salamander is the biggest amphibian alive, growing up to 1.8 metres long.",
+          "imagePrompt": "a single huge brown-grey salamander with a wide flat head and wrinkly loose skin, lying on wet rocks beside a stream, side view, friendly face",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Chinese_giant_salamander"
+        },
+        {
+          "name": "Goliath Frog",
+          "rarity": "epic",
+          "eduText": "The Goliath frog is the biggest frog in the world. It can weigh as much as a small cat.",
+          "imagePrompt": "a single enormous green-brown frog with bumpy skin, sitting on a wet rock beside a river, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goliath_frog"
+        },
+        {
+          "name": "Golden Poison Frog",
+          "rarity": "epic",
+          "eduText": "The golden poison frog is bright yellow to warn enemies away. Its skin makes one of the strongest poisons known.",
+          "imagePrompt": "a single small bright golden-yellow frog with smooth shiny skin, sitting on a green leaf in a rainforest, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Golden_poison_frog"
+        },
+        {
+          "name": "Surinam Toad",
+          "rarity": "epic",
+          "eduText": "The Surinam toad is flat like a leaf. Its babies grow in little pockets on the mother's back until they hop out.",
+          "imagePrompt": "a single flat leaf-shaped brown toad with a wide triangular head, resting on the muddy bottom of a pond, seen from above",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Surinam_toad"
+        },
+        {
+          "name": "Hellbender",
+          "rarity": "epic",
+          "eduText": "The hellbender is North America's biggest salamander. It breathes partly through its wrinkly, folded skin.",
+          "imagePrompt": "a single large brown salamander with loose wrinkly folds of skin along its sides, resting on smooth rocks under shallow stream water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hellbender"
+        },
+        {
+          "name": "Glass Frog",
+          "rarity": "epic",
+          "eduText": "A glass frog's belly skin is see-through. Some let you see its tiny beating heart and other organs.",
+          "imagePrompt": "seen from below: a single small pale green frog with a translucent pale belly, sitting on the underside of a green leaf, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Glass_frog"
+        },
+        {
+          "name": "Fire Salamander",
+          "rarity": "rare",
+          "eduText": "The fire salamander's bold black and yellow pattern warns other animals that its skin is poisonous to eat.",
+          "imagePrompt": "a single shiny black salamander covered in bright yellow blotches, walking slowly across a mossy forest floor, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_salamander"
+        },
+        {
+          "name": "Wood Frog",
+          "rarity": "rare",
+          "eduText": "Wood frogs can freeze almost solid in winter, then thaw out and hop away again in spring.",
+          "imagePrompt": "a single small brown frog with a dark mask-like patch around each eye, sitting on a bed of fallen autumn leaves, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wood_frog"
+        },
+        {
+          "name": "Tomato Frog",
+          "rarity": "rare",
+          "eduText": "The tomato frog puffs up and oozes sticky goo when scared, which can make a predator's mouth stick shut.",
+          "imagePrompt": "a single round bright red-orange frog, sitting on brown leaf litter in a forest, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tomato_frog"
+        },
+        {
+          "name": "Argentine Horned Frog",
+          "rarity": "rare",
+          "eduText": "The Argentine horned frog is nearly all mouth. It sits still and waits for prey to wander close.",
+          "imagePrompt": "a single round wide-mouthed frog with mottled green and brown skin and small horn-like points above its eyes, sitting on forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Argentine_horned_frog"
+        },
+        {
+          "name": "Olm",
+          "rarity": "rare",
+          "eduText": "The olm is a blind cave salamander with pale pink skin. It can live for a hundred years in the dark.",
+          "imagePrompt": "a single long pale pink salamander with a slender eel-like body and tiny legs, resting on wet cave rock, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Olm"
+        },
+        {
+          "name": "Hairy Frog",
+          "rarity": "rare",
+          "eduText": "The hairy frog gets its name from hair-like skin flaps on its sides that help it breathe underwater.",
+          "imagePrompt": "a single brown speckled frog with thin hair-like skin flaps along its sides, sitting on a wet rock by a stream, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hairy_frog"
+        },
+        {
+          "name": "Great Crested Newt",
+          "rarity": "rare",
+          "eduText": "In spring, male great crested newts grow a tall wavy crest along their back to attract a mate.",
+          "imagePrompt": "a single dark brown newt with a tall jagged crest along its back and an orange spotted belly, walking on a mossy log, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Great_crested_newt"
+        },
+        {
+          "name": "Cane Toad",
+          "rarity": "rare",
+          "eduText": "The cane toad is one of the biggest toads in the world, with lumpy brown skin and large poison glands.",
+          "imagePrompt": "a single large lumpy brown toad with big raised glands behind its eyes, sitting on dry grass, side view, friendly",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cane_toad"
+        },
+        {
+          "name": "American Bullfrog",
+          "rarity": "common",
+          "eduText": "The American bullfrog has a deep, booming call that sounds like a cow mooing across the pond.",
+          "imagePrompt": "a single large green bullfrog with big round eyes and a wide mouth, sitting at the edge of a pond on a lily pad, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/American_bullfrog"
+        },
+        {
+          "name": "American Toad",
+          "rarity": "common",
+          "eduText": "The American toad has bumpy, warty-looking skin, but its bumps are harmless and cannot give you warts.",
+          "imagePrompt": "a single brown warty-skinned toad with dark spots, sitting on a garden path, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/American_toad"
+        },
+        {
+          "name": "Common Toad",
+          "rarity": "common",
+          "eduText": "The common toad walks instead of hopping, and it comes out mostly at night to hunt for insects.",
+          "imagePrompt": "a single plump olive-brown toad with dry bumpy skin and golden eyes, walking slowly on damp soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Common_toad"
+        },
+        {
+          "name": "Spring Peeper",
+          "rarity": "common",
+          "eduText": "Spring peepers are tiny frogs whose loud peeping calls are one of the first signs of spring.",
+          "imagePrompt": "a single tiny tan frog with a dark X-shaped mark on its back, sitting on a green leaf, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spring_peeper"
+        },
+        {
+          "name": "Tiger Salamander",
+          "rarity": "common",
+          "eduText": "The tiger salamander has bold yellow stripes or spots, just like its big-cat namesake.",
+          "imagePrompt": "a single thick-bodied black salamander with bright yellow blotches, walking across damp leaf litter, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tiger_salamander"
+        },
+        {
+          "name": "Leopard Frog",
+          "rarity": "common",
+          "eduText": "The leopard frog is covered in round dark spots, just like the big cat it is named after.",
+          "imagePrompt": "a single bright green frog covered in round dark brown spots, sitting at the edge of a pond, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Northern_leopard_frog"
+        },
+        {
+          "name": "Gray Tree Frog",
+          "rarity": "common",
+          "eduText": "The gray tree frog can change color between gray and green to match the bark or leaves around it.",
+          "imagePrompt": "a single bumpy-skinned gray tree frog with large toe pads, clinging to tree bark, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gray_treefrog"
+        },
+        {
+          "name": "Mudpuppy",
+          "rarity": "common",
+          "eduText": "The mudpuppy keeps its feathery red gills its whole life and never leaves the water, even as an adult.",
+          "imagePrompt": "a single brown spotted salamander with fluffy red feathery gills behind its head, resting on a pond's muddy bottom, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mudpuppy"
+        },
+        {
+          "name": "Natterjack Toad",
+          "rarity": "common",
+          "eduText": "The natterjack toad has a yellow stripe down its back and runs instead of hopping, like a little mouse.",
+          "imagePrompt": "a single warty green-brown toad with a thin yellow stripe down its back, walking on sandy ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Natterjack_toad"
+        },
+        {
+          "name": "Fire-bellied Toad",
+          "rarity": "common",
+          "eduText": "If threatened, the fire-bellied toad arches its back to flash its bright red-and-black belly.",
+          "imagePrompt": "a single small green bumpy-backed toad, arching to show its bright orange-red and black spotted belly, on a lily pad, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Oriental_fire-bellied_toad"
+        },
+        {
+          "name": "European Tree Frog",
+          "rarity": "common",
+          "eduText": "The European tree frog has sticky toe pads that let it climb smoothly up leaves and branches.",
+          "imagePrompt": "a single smooth bright green tree frog with a dark stripe along its side, clinging to a green leaf, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/European_tree_frog"
+        },
+        {
+          "name": "Spotted Salamander",
+          "rarity": "common",
+          "eduText": "The spotted salamander has two rows of bright yellow spots running from its head to the tip of its tail.",
+          "imagePrompt": "a single black salamander with two neat rows of round yellow spots along its back, walking on wet forest leaves, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spotted_salamander"
+        },
+        {
+          "name": "Pickerel Frog",
+          "rarity": "common",
+          "eduText": "The pickerel frog has neat square spots in two rows down its back, like a checkerboard pattern.",
+          "imagePrompt": "a single tan frog with two tidy rows of square brown spots down its back, sitting at a pond's edge, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pickerel_frog"
+        },
+        {
+          "name": "Barking Tree Frog",
+          "rarity": "common",
+          "eduText": "The barking tree frog is named for its call, which sounds like a dog barking from up in the trees.",
+          "imagePrompt": "a single plump green tree frog with scattered dark spots, sitting on a wide leaf, side view, cheerful",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hyla_gratiosa"
+        },
+        {
+          "name": "Rough-skinned Newt",
+          "rarity": "common",
+          "eduText": "The rough-skinned newt has dry, bumpy brown skin on top and a bright orange belly underneath.",
+          "imagePrompt": "a single brown bumpy-skinned newt with a bright orange belly, walking on damp forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rough-skinned_newt"
+        }
+      ]
     }
   ]
 }
