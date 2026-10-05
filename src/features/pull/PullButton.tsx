@@ -226,7 +226,7 @@ export function PullButton({
               the viewport — it just pushes the whole page wider instead of
               scrolling internally. */}
           <div
-            className="flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain px-1 pb-1 sm:w-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0"
+            className="flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 sm:w-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:scroll-px-0 sm:px-0 sm:py-0"
             data-testid="category-chips"
           >
             <CategoryChip
