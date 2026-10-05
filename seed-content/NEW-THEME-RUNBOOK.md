@@ -298,6 +298,20 @@ pnpm seed --review --providers=supergrok-manual
 
 You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) or after the lanes have already run. Import reads the drop folder, fits each picture to 768×768 PNG (center crop, no letterbox — a letterbox is a border), and writes the usual content-addressed review file. `--sync` publishes **that** file, byte for byte, the same way it publishes any lane. It does not read the drop folder again.
 
+#### Scripting the manual lane
+
+Copying each card's prompt by hand, saving each picture, and renaming/moving it into the drop folder is manual and error-prone at 30 cards. `pnpm supergrok "<Theme Name>"` scripts that loop:
+
+```bash
+pnpm supergrok "Ocean Machines"
+```
+
+For each card, in order, it copies the exact prompt (`ART_STYLE` included — the same text every automatic lane gets) to the clipboard via `pbcopy`, then watches `~/Downloads` for a new `.png`/`.jpg`/`.jpeg`/`.webp` file. Once Grok's picture lands there, it moves it into `seed-content/supergrok-drop/` under the card's expected filename and advances to the next card. At the prompt you can type `skip` (come back to it later), `redo` (re-copy and wait again for this same card), or `quit` (stop early — nothing already dropped is lost). A card the drop folder already has a matching picture for (by prompt hash) is skipped automatically, so re-running the command after a `skip` or a `quit` resumes rather than re-asking for pictures you already saved.
+
+When the walk finishes (or you `quit`), it runs `pnpm seed --review --providers=supergrok-manual` to import what was dropped, then `pnpm contact-sheet` to build the comparison sheet — the same two commands you would otherwise run by hand next.
+
+It reads the card list and prompts straight from `seed-content/cards.json` — not `--supergrok-export`'s brief, and not the database. It never calls the xAI/Grok API, never automates a browser, makes no network calls of its own, and never opens `DATABASE_URL` or runs `--sync`/`--publish` — only the two hand-off commands above do, and only after the walk is done. It does not filter by what is already published, so it is for a theme mid-authoring (the normal case); a card that happens to already be published just gets a picture nobody imports.
+
 A card with no picture is reported as **not drawn**. The contact sheet says so in that cell. It is not a failed generation, and it does not abandon the lane. Re-running skips pictures already imported. To replace one, delete that card's `supergrok-manual` review file (and its `.json` sidecar) and run the import again.
 
 Review files land at `seed-content/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`
