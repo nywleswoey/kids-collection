@@ -66,6 +66,13 @@ describe("makeTokenService", () => {
     expect(row).toMatchObject({ column: "pullTokens", amount: -2 });
   });
 
+  it("logs nothing when a removal hits an already-empty balance", async () => {
+    const { svc, grants } = setup({ kid: { pullTokens: 0, easterEggTickets: 0 } });
+    expect(await svc.grant("kid", -3, "parent@example.com")).toBe(0);
+    expect(await svc.grantEasterEgg("kid", -3, "parent@example.com")).toBe(0);
+    expect(await grants.recentForChild("kid", 10)).toEqual([]);
+  });
+
   it("records an Easter Egg grant with no grantedBy as null", async () => {
     const { svc, grants } = setup({ kid: { pullTokens: 0 } });
     await svc.grantEasterEgg("kid", 2);

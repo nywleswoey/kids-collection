@@ -15,7 +15,7 @@ export type TicketGrantSource = "admin" | "sacrifice";
  */
 export interface TicketGrantStore {
   /** Append one grant row. `amount` is the signed delta actually applied
-   *  (clamping already happened in ChildStore; this just records the ask). */
+   *  (after ChildStore's clamp). */
   record(
     childId: string,
     column: BalanceColumn,
