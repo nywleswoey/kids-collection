@@ -108,8 +108,14 @@ export async function grantTokensAction(
   childId: string,
   amount: number,
 ): Promise<number> {
-  const newBalance = await parentGrant(amount, "/admin/profiles", (n) => tokenService.grant(childId, n), "grant_tokens");
   const parent = await getParent();
+  const grantedBy = parent?.name ?? parent?.email ?? null;
+  const newBalance = await parentGrant(
+    amount,
+    "/admin/profiles",
+    (n) => tokenService.grant(childId, n, grantedBy),
+    "grant_tokens",
+  );
   if (parent) {
     const posthog = getPostHogClient();
     if (posthog) {
@@ -125,8 +131,14 @@ export async function grantEasterEggTicketAction(
   childId: string,
   amount: number,
 ): Promise<number> {
-  const newBalance = await parentGrant(amount, "/admin", (n) => tokenService.grantEasterEgg(childId, n), "grant_easter_egg_ticket");
   const parent = await getParent();
+  const grantedBy = parent?.name ?? parent?.email ?? null;
+  const newBalance = await parentGrant(
+    amount,
+    "/admin",
+    (n) => tokenService.grantEasterEgg(childId, n, grantedBy),
+    "grant_easter_egg_ticket",
+  );
   if (parent) {
     const posthog = getPostHogClient();
     if (posthog) {

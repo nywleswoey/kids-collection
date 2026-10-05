@@ -166,4 +166,18 @@ export const pgClaimStore: ClaimStore = {
     `);
     return Number(result.rows[0]?.swept ?? 0);
   },
+
+  async completedForChild(childId, limit) {
+    const result = await db.execute<{ request_id: string; outcome: unknown; created_at: string }>(sql`
+      SELECT request_id, outcome, created_at FROM pull_claims
+      WHERE child_id = ${childId} AND status = 'done'
+      ORDER BY created_at DESC
+      LIMIT ${limit}
+    `);
+    return result.rows.map((r) => ({
+      requestId: r.request_id,
+      outcome: r.outcome,
+      createdAt: new Date(r.created_at),
+    }));
+  },
 };

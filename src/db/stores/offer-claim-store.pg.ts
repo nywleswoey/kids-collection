@@ -77,7 +77,8 @@ export const pgOfferClaimStore: OfferClaimStore = {
               'outOfTokens', false,
               'card', ${JSON.stringify(cardJson)}::jsonb,
               'isDuplicate', (SELECT count FROM grant_card) > 1,
-              'newBalance', ${row.new_balance}::integer
+              'newBalance', ${row.new_balance}::integer,
+              'spent', ${column}::text
             )
         WHERE jti = ${jti} AND status = 'granting' AND EXISTS (SELECT 1 FROM grant_card)
         RETURNING outcome
@@ -118,6 +119,20 @@ export const pgOfferClaimStore: OfferClaimStore = {
       }
       await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
     }
+  },
+
+  async completedForChild(childId, limit) {
+    const result = await db.execute<{ jti: string; outcome: unknown; created_at: string }>(sql`
+      SELECT jti, outcome, created_at FROM easter_egg_claims
+      WHERE child_id = ${childId} AND status = 'done'
+      ORDER BY created_at DESC
+      LIMIT ${limit}
+    `);
+    return result.rows.map((r) => ({
+      jti: r.jti,
+      outcome: r.outcome,
+      createdAt: new Date(r.created_at),
+    }));
   },
 };
 

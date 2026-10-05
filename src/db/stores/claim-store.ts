@@ -110,4 +110,17 @@ export interface ClaimStore {
    * gets back exactly one `pullTokens` per claim swept. Returns how many.
    */
   sweepAbandoned(childId: string, staleMs: number, excludeRequestId: string): Promise<number>;
+
+  /**
+   * Finished claims for `childId`, newest first (parent-facing activity log).
+   * Includes every "done" row regardless of outcome shape (a successful
+   * grant, a refund, or a swept abandonment) — the caller filters to the ones
+   * that actually carry a `card`. Never pruned: see `cleanupFailure`'s doc
+   * comment for the only DELETE against this table, which never reaches a
+   * "done" row.
+   */
+  completedForChild(
+    childId: string,
+    limit: number,
+  ): Promise<Array<{ requestId: string; outcome: unknown; createdAt: Date }>>;
 }

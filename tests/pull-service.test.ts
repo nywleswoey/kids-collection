@@ -6,6 +6,7 @@ import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
 import { inMemoryOfferClaimStore } from "@/db/stores/offer-claim-store.fake";
+import { inMemoryTicketGrantStore } from "@/db/stores/ticket-grant-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { env } from "@/lib/env";
@@ -62,6 +63,7 @@ function setup(
   const catalog = fakeCatalog(cards);
   const claims = inMemoryClaimStore(childrenStore, collections, now);
   const offerClaims = inMemoryOfferClaimStore(childrenStore, collections);
+  const grants = inMemoryTicketGrantStore();
   const service = makePullService({
     children: childrenStore,
     collections,
@@ -69,8 +71,9 @@ function setup(
     rewards,
     claims,
     offerClaims,
+    grants,
   });
-  return { service, children: childrenStore, collections, rewards, catalog, claims, offerClaims };
+  return { service, children: childrenStore, collections, rewards, catalog, claims, offerClaims, grants };
 }
 
 afterEach(() => vi.restoreAllMocks());
@@ -419,10 +422,12 @@ describe("makePullService.claimEasterEgg", () => {
   });
 
   it("spends a normal token and grants the picked card", async () => {
-    const { service, children, collections } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const { service, children, collections, offerClaims } = setup({ kid: { pullTokens: 2 } }, {}, cards);
     const offer = await offerFor("kid", ["a", "b"]);
 
     const result = await service.claimEasterEgg("kid", offer, "a");
+    const [claim] = await offerClaims.completedForChild("kid", 10);
+    expect(claim.outcome).toMatchObject({ spent: "pullTokens" }); // activity log shows the right ticket
 
     if (!("card" in result)) throw new Error("expected a card outcome");
     expect(result.card.id).toBe("a");
@@ -432,10 +437,12 @@ describe("makePullService.claimEasterEgg", () => {
   });
 
   it("an easter-egg-pinned offer spends an Easter Egg ticket, not a token", async () => {
-    const { service, children } = setup({ kid: { pullTokens: 5, easterEggTickets: 1 } }, {}, cards);
+    const { service, children, offerClaims } = setup({ kid: { pullTokens: 5, easterEggTickets: 1 } }, {}, cards);
     const offer = await offerFor("kid", ["a", "b"], { easterEgg: true, rolledRarity: "common" });
 
     const result = await service.claimEasterEgg("kid", offer, "b");
+    const [claim] = await offerClaims.completedForChild("kid", 10);
+    expect(claim.outcome).toMatchObject({ spent: "easterEggTickets" });
 
     if (!("card" in result)) throw new Error("expected a card outcome");
     expect(result.newBalance).toBe(5); // pullTokens untouched
@@ -519,6 +526,29 @@ describe("makePullService.sacrifice", () => {
 
     expect(result).toEqual({ newBalance: 1 });
     expect(await collections.cardCount("kid", "c")).toBe(1); // 4 − 3
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
+  });
+
+  it("records the grant in the activity log (#kcact)", async () => {
+    const { service, grants } = setup({ kid: {} }, { kid: { c: 4 } }, [card("c", "rare")]);
+
+    await service.sacrifice("kid", "c");
+
+    const [row] = await grants.recentForChild("kid", 10);
+    expect(row).toMatchObject({
+      childId: "kid",
+      column: "easterEggTickets",
+      amount: 1,
+      source: "sacrifice",
+      grantedBy: null,
+    });
+  });
+
+  it("still succeeds when the activity-log write fails — the burn and grant already committed", async () => {
+    const { service, children, grants } = setup({ kid: {} }, { kid: { c: 4 } }, [card("c", "rare")]);
+    vi.spyOn(grants, "record").mockRejectedValue(new Error("log down"));
+
+    expect(await service.sacrifice("kid", "c")).toEqual({ newBalance: 1 });
     expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
   });
 

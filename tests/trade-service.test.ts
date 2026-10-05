@@ -4,6 +4,7 @@ import { makeProfileService } from "@/features/profiles/service";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";
+import { inMemoryTradeEventStore } from "@/db/stores/trade-event-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { Card, Child, Rarity } from "@/lib/types";
 
@@ -58,13 +59,15 @@ function setup(
 ) {
   const collections = inMemoryCollectionStore(seed);
   const rewards = recordingRewards();
+  const trades = inMemoryTradeEventStore();
   const service = makeTradeService({
     collections,
     catalog: fakeCatalog(cards),
     rewards,
     profiles: { async listChildren() { return children; } },
+    trades,
   });
-  return { service, collections, rewards };
+  return { service, collections, rewards, trades };
 }
 
 describe("makeTradeService.executeTrade", () => {
@@ -83,6 +86,17 @@ describe("makeTradeService.executeTrade", () => {
       ["A", ["y"]],
       ["B", ["x"]],
     ]);
+  });
+
+  it("records the trade in the activity log (#kcact)", async () => {
+    const { service, trades } = setup({ A: { x: 2 }, B: { y: 2 } }, cards);
+
+    await service.executeTrade(swap);
+
+    const [rowA] = await trades.recentForChild("A", 10);
+    expect(rowA).toMatchObject({ aChildId: "A", aCardId: "x", bChildId: "B", bCardId: "y" });
+    const [rowB] = await trades.recentForChild("B", 10);
+    expect(rowB).toEqual(rowA); // same row, visible from either side
   });
 
   it("rejects a non-duplicate without touching the store or rewards", async () => {
@@ -186,6 +200,7 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
       catalog: fakeCatalog(cards),
       rewards: recordingRewards(),
       profiles: { async listChildren() { return [kid("A"), kid("B"), kid("C")]; } },
+      trades: inMemoryTradeEventStore(),
     });
 
     await service.listFriendSummaries("A");
@@ -211,6 +226,7 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
       catalog: fakeCatalog([card("x", "rare"), card("y", "rare"), card("z", "rare")]),
       rewards: recordingRewards(),
       profiles: makeProfileService({ profiles }),
+      trades: inMemoryTradeEventStore(),
     });
 
     const friends = await service.listFriendSummaries("A");
@@ -232,6 +248,7 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
       catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
       rewards: recordingRewards(),
       profiles: makeProfileService({ profiles }),
+      trades: inMemoryTradeEventStore(),
     });
 
     await profiles.archive("B");
@@ -284,6 +301,7 @@ describe("makeTradeService.listFriendSummaries (Inc22 FR7)", () => {
       catalog: fakeCatalog([card("x", "rare"), card("y", "rare")]),
       rewards: recordingRewards(),
       profiles: profileService,
+      trades: inMemoryTradeEventStore(),
     });
 
     const result = await service.executeTrade({

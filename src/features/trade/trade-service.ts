@@ -2,6 +2,7 @@ import type { Card, Child } from "@/lib/types";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
+import type { TradeEventStore } from "@/db/stores/trade-event-store";
 import { isTradable, validateTrade, type TradableCard, type TradeSide } from "./trade-logic";
 import { goodSwapCount } from "./board";
 
@@ -19,15 +20,17 @@ export interface TradeDeps {
   catalog: Catalog;
   rewards: RewardGranter;
   profiles: ChildDirectory;
+  trades: TradeEventStore;
 }
 
 /**
  * Kid-to-kid trade orchestration (Inc14), parameterized by its ports. Prod wires
  * the pg adapters in `trade-service.prod.ts`; tests construct it with fakes. The
  * atomicity lives entirely behind `CollectionStore.swapCards`; this module only
- * validates, delegates, and fans out completion rewards.
+ * validates, delegates, fans out completion rewards, and logs the trade
+ * (parent-facing activity log — #kcact).
  */
-export function makeTradeService({ collections, catalog, rewards, profiles }: TradeDeps) {
+export function makeTradeService({ collections, catalog, rewards, profiles, trades }: TradeDeps) {
   /** Cards a child can offer: owned duplicates (count >= 2), with card + rarity. */
   async function listTradableCards(childId: string): Promise<TradableCard[]> {
     const [cards, rows] = await Promise.all([
@@ -174,6 +177,15 @@ export function makeTradeService({ collections, catalog, rewards, profiles }: Tr
     try {
       await rewards.grantCompletionRewards(aChildId, [bCardId]);
       await rewards.grantCompletionRewards(bChildId, [aCardId]);
+    } catch {
+      // best-effort — the trade stands regardless
+    }
+
+    // Parent-facing activity log (#kcact): the only record anywhere of who
+    // traded what with whom — same best-effort reasoning as the rewards
+    // cascade above, since the swap already committed.
+    try {
+      await trades.record({ aChildId, aCardId, bChildId, bCardId });
     } catch {
       // best-effort — the trade stands regardless
     }

@@ -30,13 +30,20 @@ export const pgChildStore: ChildStore = {
   },
 
   async clampedGrant(childId, column, delta) {
-    const col = children[column];
-    const [row] = await db
-      .update(children)
-      .set({ [column]: sql`GREATEST(0, ${col} + ${delta})` })
-      .where(eq(children.id, childId))
-      .returning({ balance: col });
-    return row ? row.balance : null;
+    const col = sql.identifier(children[column].name);
+    const result = await db.execute<{ balance: number; previous: number }>(sql`
+      WITH prev AS (
+        SELECT ${col} AS v FROM children WHERE id = ${childId} FOR UPDATE
+      )
+      UPDATE children SET ${col} = GREATEST(0, prev.v + ${delta}::integer)
+      FROM prev
+      WHERE children.id = ${childId}
+      RETURNING children.${col} AS balance, prev.v AS previous
+    `);
+    const row = result.rows[0];
+    if (!row) return null;
+    const balance = Number(row.balance);
+    return { balance, applied: balance - Number(row.previous) };
   },
 
   async readColumn(childId, column) {

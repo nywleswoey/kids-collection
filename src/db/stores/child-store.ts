@@ -31,14 +31,15 @@ export interface ChildStore {
 
   /**
    * Parent-facing clamped grant/adjust: apply `GREATEST(0, column + delta)`
-   * atomically and return the new value, or `null` if the child is absent.
-   * (Caller validates that `delta` is an integer.)
+   * atomically and return the new `balance` plus the delta actually `applied`
+   * (differs from `delta` when the floor kicked in), or `null` if the child is
+   * absent. (Caller validates that `delta` is an integer.)
    */
   clampedGrant(
     childId: string,
     column: BalanceColumn,
     delta: number,
-  ): Promise<number | null>;
+  ): Promise<{ balance: number; applied: number } | null>;
 
   /** Current value of one spendable column, 0 if the child is absent. */
   readColumn(childId: string, column: BalanceColumn): Promise<number>;

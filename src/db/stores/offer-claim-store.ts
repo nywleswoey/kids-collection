@@ -32,7 +32,8 @@ export interface OfferClaimStore {
    * `newBalance` inside the returned outcome always reports the child's
    * `pullTokens` balance (unchanged when `column` is `easterEggTickets`) —
    * matching `ChildStore.spendOne`'s existing contract, so the figure shown to
-   * the child doesn't change shape depending on which ticket was spent.
+   * the child doesn't change shape depending on which ticket was spent. The
+   * granted outcome also records `spent: column` (parent-facing activity log).
    */
   claimOffer(
     jti: string,
@@ -42,4 +43,15 @@ export interface OfferClaimStore {
     cardJson: unknown,
     staleMs: number,
   ): Promise<{ replayed: boolean; outcome: unknown } | { outOfTokens: true }>;
+
+  /**
+   * Finished claims for `childId`, newest first (parent-facing activity log).
+   * Includes every "done" row (a successful grant or a stale refund) — the
+   * caller filters to the ones that actually carry a `card`. Never pruned —
+   * `refundStale` only updates status/outcome, it never deletes.
+   */
+  completedForChild(
+    childId: string,
+    limit: number,
+  ): Promise<Array<{ jti: string; outcome: unknown; createdAt: Date }>>;
 }
