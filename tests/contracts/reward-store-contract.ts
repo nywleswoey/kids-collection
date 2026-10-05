@@ -51,5 +51,26 @@ export function runRewardStoreContract(
       await store.markShown("kid", []);
       expect(await store.listPending("kid")).toHaveLength(1);
     });
+
+    it("historyForChild returns every reward, shown or not, newest first (#kcact)", async () => {
+      const store = await makeStore();
+      await store.claimReward("kid", "th", "rare", "c1");
+      await store.claimReward("kid", "th", "epic", "c2");
+      await store.claimReward("other", "th", "rare", "c3");
+      const [first] = await store.listPending("kid");
+      await store.markShown("kid", [first.id]); // shown rows still count as history
+
+      const history = await store.historyForChild("kid", 10);
+      expect(history.map((r) => r.cardId).sort()).toEqual(["c1", "c2"]);
+      expect(history.every((r) => r.createdAt instanceof Date)).toBe(true);
+      expect(await store.historyForChild("other", 10)).toHaveLength(1);
+    });
+
+    it("historyForChild respects the limit", async () => {
+      const store = await makeStore();
+      await store.claimReward("kid", "th", "rare", "c1");
+      await store.claimReward("kid", "th2", "rare", "c2");
+      expect(await store.historyForChild("kid", 1)).toHaveLength(1);
+    });
   });
 }

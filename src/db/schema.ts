@@ -303,6 +303,74 @@ export const easterEggClaims = pgTable(
   ],
 );
 
+/**
+ * Append-only log of ticket/token grants NOT otherwise reconstructable from an
+ * existing table (parent-facing activity log). Admin manual grants
+ * (`token-service.ts`) and sacrifice's ticket payout (`pull-service.ts`
+ * `sacrifice()`) write one row each; quiz-awarded tickets are NOT duplicated
+ * here — they stay derived from `quiz_completions.awarded` (that table is
+ * already a complete, unpruned per-attempt log). `amount` carries the signed
+ * delta (an admin correction can be negative); `grantedBy` is the parent's
+ * display name/email from the session (there is no separate parents table —
+ * see `admin_credentials`'s doc comment) and is null for sacrifice, which the
+ * child triggers on themselves.
+ */
+export const ticketGrants = pgTable(
+  "ticket_grants",
+  {
+    id: text("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    childId: text("child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    column: text("column").notNull(),
+    amount: integer("amount").notNull(),
+    source: text("source").notNull(),
+    grantedBy: text("granted_by"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("ticket_grants_child_created_idx").on(t.childId, t.createdAt),
+    check("ticket_grants_column_valid", sql`${t.column} IN ('pullTokens', 'easterEggTickets')`),
+    check("ticket_grants_source_valid", sql`${t.source} IN ('admin', 'sacrifice')`),
+  ],
+);
+
+/**
+ * Append-only log of trades (`trade-service.ts` `executeTrade`) — the one
+ * event kind with NO existing record anywhere (`swapCards` only mutates
+ * `collections`; see AGENTS.md on `collection-store.pg.ts`). One row per
+ * completed swap: `aChildId` gave `aCardId` and received `bCardId`, and vice
+ * versa for `bChildId` — reversible by swapping the two sides when reading for
+ * `bChildId`'s own activity log.
+ */
+export const tradeEvents = pgTable(
+  "trade_events",
+  {
+    id: text("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    aChildId: text("a_child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    aCardId: text("a_card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    bChildId: text("b_child_id")
+      .notNull()
+      .references(() => children.id, { onDelete: "cascade" }),
+    bCardId: text("b_card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("trade_events_a_child_idx").on(t.aChildId, t.createdAt),
+    index("trade_events_b_child_idx").on(t.bChildId, t.createdAt),
+  ],
+);
+
 export type ThemeRow = typeof themes.$inferSelect;
 export type CardRow = typeof cards.$inferSelect;
 export type ChildRow = typeof children.$inferSelect;
@@ -313,3 +381,5 @@ export type CollectionRewardRow = typeof collectionRewards.$inferSelect;
 export type AdminCredentialRow = typeof adminCredentials.$inferSelect;
 export type PullClaimRow = typeof pullClaims.$inferSelect;
 export type EasterEggClaimRow = typeof easterEggClaims.$inferSelect;
+export type TicketGrantRow = typeof ticketGrants.$inferSelect;
+export type TradeEventRow = typeof tradeEvents.$inferSelect;

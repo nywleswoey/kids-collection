@@ -3,6 +3,7 @@ import { pgChildStore } from "@/db/stores/child-store.pg";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgClaimStore } from "@/db/stores/claim-store.pg";
 import { pgOfferClaimStore } from "@/db/stores/offer-claim-store.pg";
+import { pgTicketGrantStore } from "@/db/stores/ticket-grant-store.pg";
 import { pgCatalog } from "@/shared/pool/catalog.pg";
 import { rewardService } from "@/features/rewards/service.prod";
 import { makePullService } from "./pull-service";
@@ -15,6 +16,7 @@ export const pullService = makePullService({
   rewards: rewardService,
   claims: pgClaimStore,
   offerClaims: pgOfferClaimStore,
+  grants: pgTicketGrantStore,
 });
 
 /**

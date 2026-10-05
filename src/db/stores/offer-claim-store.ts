@@ -42,4 +42,15 @@ export interface OfferClaimStore {
     cardJson: unknown,
     staleMs: number,
   ): Promise<{ replayed: boolean; outcome: unknown } | { outOfTokens: true }>;
+
+  /**
+   * Finished claims for `childId`, newest first (parent-facing activity log).
+   * Includes every "done" row (a successful grant or a stale refund) — the
+   * caller filters to the ones that actually carry a `card`. Never pruned —
+   * `refundStale` only updates status/outcome, it never deletes.
+   */
+  completedForChild(
+    childId: string,
+    limit: number,
+  ): Promise<Array<{ jti: string; outcome: unknown; createdAt: Date }>>;
 }

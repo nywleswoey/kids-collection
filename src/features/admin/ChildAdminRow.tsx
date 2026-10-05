@@ -44,6 +44,13 @@ export function ChildAdminRow({ row, quiz }: { row: Row; quiz?: QuizActivity }) 
           >
             Binder
           </Link>
+          <Link
+            href={`/admin/activity?childId=${child.id}`}
+            data-testid={`admin-activity-${child.id}`}
+            className="btn btn--ghost text-sm"
+          >
+            Activity
+          </Link>
         </div>
       </div>
 

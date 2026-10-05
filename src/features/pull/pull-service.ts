@@ -5,6 +5,7 @@ import type { BalanceColumn, ChildStore } from "@/db/stores/child-store";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { ClaimStore } from "@/db/stores/claim-store";
 import type { OfferClaimStore } from "@/db/stores/offer-claim-store";
+import type { TicketGrantStore } from "@/db/stores/ticket-grant-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import {
@@ -113,6 +114,7 @@ export interface PullDeps {
   rewards: RewardGranter;
   claims: ClaimStore;
   offerClaims: OfferClaimStore;
+  grants: TicketGrantStore;
 }
 
 /**
@@ -123,7 +125,15 @@ export interface PullDeps {
  * (`env.authSecret`, `makeOffer`/`verifyOffer`) stays a direct import; parent
  * gating now lives at the action layer. Prod wiring: `pull-service.prod.ts`.
  */
-export function makePullService({ children, collections, catalog, rewards, claims, offerClaims }: PullDeps) {
+export function makePullService({
+  children,
+  collections,
+  catalog,
+  rewards,
+  claims,
+  offerClaims,
+  grants,
+}: PullDeps) {
   /** `pull()`'s answer when a duplicate request id's original attempt is still
    *  actively being completed (not stale yet) — nothing was spent or granted. */
   async function stillInProgress(childId: string): Promise<PullStillInProgressOutcome> {
@@ -500,6 +510,10 @@ export function makePullService({ children, collections, catalog, rewards, claim
     // Atomic +1 that returns the new balance (never negative).
     const newBalance = await children.clampedGrant(childId, "easterEggTickets", 1);
     if (newBalance === null) throw new Error("sacrifice: child not found");
+
+    // Parent-facing activity log (#kcact): the only record anywhere of this
+    // grant — see ticket-grant-store.ts's doc comment.
+    await grants.record(childId, "easterEggTickets", 1, "sacrifice", null);
 
     return { newBalance };
   }

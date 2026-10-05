@@ -3,6 +3,7 @@ import { pgChildStore } from "@/db/stores/child-store.pg";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgClaimStore } from "@/db/stores/claim-store.pg";
 import { pgOfferClaimStore } from "@/db/stores/offer-claim-store.pg";
+import { pgTicketGrantStore } from "@/db/stores/ticket-grant-store.pg";
 import { makePullService } from "@/features/pull/pull-service";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
@@ -53,6 +54,7 @@ async function makeService(cards: Card[]) {
     rewards: noRewards,
     claims: pgClaimStore,
     offerClaims: pgOfferClaimStore,
+    grants: pgTicketGrantStore,
   });
 }
 

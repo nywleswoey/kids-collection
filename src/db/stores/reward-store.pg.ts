@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { collectionRewards } from "@/db/schema";
 import type { RewardStore } from "./reward-store";
@@ -50,5 +50,21 @@ export const pgRewardStore: RewardStore = {
           inArray(collectionRewards.id, ids),
         ),
       );
+  },
+
+  async historyForChild(childId, limit) {
+    const rows = await db
+      .select()
+      .from(collectionRewards)
+      .where(eq(collectionRewards.childId, childId))
+      .orderBy(desc(collectionRewards.createdAt))
+      .limit(limit);
+    return rows.map((r) => ({
+      id: r.id,
+      themeId: r.themeId,
+      rarity: r.rarity,
+      cardId: r.cardId,
+      createdAt: r.createdAt,
+    }));
   },
 };

@@ -6,6 +6,7 @@ import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
 import { inMemoryOfferClaimStore } from "@/db/stores/offer-claim-store.fake";
+import { inMemoryTicketGrantStore } from "@/db/stores/ticket-grant-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { env } from "@/lib/env";
@@ -62,6 +63,7 @@ function setup(
   const catalog = fakeCatalog(cards);
   const claims = inMemoryClaimStore(childrenStore, collections, now);
   const offerClaims = inMemoryOfferClaimStore(childrenStore, collections);
+  const grants = inMemoryTicketGrantStore();
   const service = makePullService({
     children: childrenStore,
     collections,
@@ -69,8 +71,9 @@ function setup(
     rewards,
     claims,
     offerClaims,
+    grants,
   });
-  return { service, children: childrenStore, collections, rewards, catalog, claims, offerClaims };
+  return { service, children: childrenStore, collections, rewards, catalog, claims, offerClaims, grants };
 }
 
 afterEach(() => vi.restoreAllMocks());
@@ -500,6 +503,21 @@ describe("makePullService.sacrifice", () => {
     expect(result).toEqual({ newBalance: 1 });
     expect(await collections.cardCount("kid", "c")).toBe(1); // 4 − 3
     expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
+  });
+
+  it("records the grant in the activity log (#kcact)", async () => {
+    const { service, grants } = setup({ kid: {} }, { kid: { c: 4 } }, [card("c", "rare")]);
+
+    await service.sacrifice("kid", "c");
+
+    const [row] = await grants.recentForChild("kid", 10);
+    expect(row).toMatchObject({
+      childId: "kid",
+      column: "easterEggTickets",
+      amount: 1,
+      source: "sacrifice",
+      grantedBy: null,
+    });
   });
 
   it("always leaves at least one copy — a holding of exactly SACRIFICE_COST is not enough", async () => {

@@ -11,6 +11,9 @@ interface ClaimRow {
   spentBalance: number | null;
   outcome: unknown;
   claimedAtMs: number;
+  /** Set once, at claim time — unlike `claimedAtMs`, never bumped by a
+   *  takeover/sweep, so it stays the right field to order the activity log by. */
+  createdAtMs: number;
 }
 
 /**
@@ -48,6 +51,7 @@ export function inMemoryClaimStore(
         spentBalance: null,
         outcome: null,
         claimedAtMs: now(),
+        createdAtMs: now(),
       });
       const newBalance = await children.spendOne(childId, "pullTokens");
       if (newBalance === null) {
@@ -113,6 +117,18 @@ export function inMemoryClaimStore(
       }
       if (swept > 0) await children.incrementColumn(childId, "pullTokens", swept);
       return swept;
+    },
+
+    async completedForChild(childId, limit) {
+      return [...claims.entries()]
+        .filter(([, row]) => row.childId === childId && row.status === "done")
+        .sort((a, b) => b[1].createdAtMs - a[1].createdAtMs)
+        .slice(0, limit)
+        .map(([requestId, row]) => ({
+          requestId,
+          outcome: row.outcome,
+          createdAt: new Date(row.createdAtMs),
+        }));
     },
   };
 }

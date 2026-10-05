@@ -8,6 +8,7 @@ interface Row {
   rarity: Rarity;
   cardId: string;
   shownAt: Date | null;
+  createdAtMs: number;
 }
 
 /**
@@ -25,7 +26,15 @@ export function inMemoryRewardStore(): RewardStore {
         (r) => r.childId === childId && r.themeId === themeId && r.rarity === rarity,
       );
       if (exists) return false; // UNIQUE (child, theme, rarity) → single grant
-      rows.push({ id: `r${++seq}`, childId, themeId, rarity, cardId, shownAt: null });
+      rows.push({
+        id: `r${++seq}`,
+        childId,
+        themeId,
+        rarity,
+        cardId,
+        shownAt: null,
+        createdAtMs: Date.now() + seq,
+      });
       return true;
     },
 
@@ -43,6 +52,20 @@ export function inMemoryRewardStore(): RewardStore {
           r.shownAt = new Date();
         }
       }
+    },
+
+    async historyForChild(childId, limit) {
+      return rows
+        .filter((r) => r.childId === childId)
+        .sort((a, b) => b.createdAtMs - a.createdAtMs)
+        .slice(0, limit)
+        .map((r) => ({
+          id: r.id,
+          themeId: r.themeId,
+          rarity: r.rarity,
+          cardId: r.cardId,
+          createdAt: new Date(r.createdAtMs),
+        }));
     },
   };
 }

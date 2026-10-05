@@ -8,6 +8,11 @@ export interface RewardRow {
   cardId: string;
 }
 
+/** A reward row plus its grant time (parent-facing activity log). */
+export interface RewardHistoryRow extends RewardRow {
+  createdAt: Date;
+}
+
 /**
  * RewardStore — the persistence port for collection-completion rewards
  * (`collection_rewards` table). Deep by design: `claimReward` hides the
@@ -36,4 +41,8 @@ export interface RewardStore {
   /** Mark the given still-pending reward ids as shown (guarded: only rows still
    *  `shownAt` null for this child). */
   markShown(childId: string, ids: string[]): Promise<void>;
+
+  /** Every reward ever granted to `childId` (shown or not), newest first.
+   *  Never pruned — `collection_rewards` has no DELETE anywhere. */
+  historyForChild(childId: string, limit: number): Promise<RewardHistoryRow[]>;
 }

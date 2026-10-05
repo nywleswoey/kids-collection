@@ -1,5 +1,6 @@
 import "server-only";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
+import { pgTradeEventStore } from "@/db/stores/trade-event-store.pg";
 import { pgCatalog } from "@/shared/pool/catalog.pg";
 import { rewardService } from "@/features/rewards/service.prod";
 import { profileService } from "@/features/profiles/service.prod";
@@ -11,4 +12,5 @@ export const tradeService = makeTradeService({
   catalog: pgCatalog,
   rewards: rewardService,
   profiles: profileService,
+  trades: pgTradeEventStore,
 });

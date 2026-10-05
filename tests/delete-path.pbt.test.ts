@@ -7,6 +7,8 @@ import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collec
 import { inMemoryChildStore } from "@/db/stores/child-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";
 import { inMemoryOfferClaimStore } from "@/db/stores/offer-claim-store.fake";
+import { inMemoryTicketGrantStore } from "@/db/stores/ticket-grant-store.fake";
+import { inMemoryTradeEventStore } from "@/db/stores/trade-event-store.fake";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { Catalog } from "@/shared/pool/catalog";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
@@ -154,6 +156,7 @@ function makeTrade(collections: CollectionStore) {
     catalog: fakeCatalog(ALL_CARDS),
     rewards: noRewards,
     profiles: { async listChildren() { return ALL_ACTIVE; } },
+    trades: inMemoryTradeEventStore(),
   });
 }
 
@@ -168,6 +171,7 @@ function makePull(collections: CollectionStore) {
     rewards: noRewards,
     claims: inMemoryClaimStore(children, collections),
     offerClaims: inMemoryOfferClaimStore(children, collections),
+    grants: inMemoryTicketGrantStore(),
   });
 }
 

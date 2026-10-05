@@ -44,6 +44,13 @@ export default async function AdminDashboardPage() {
           >
             Profiles
           </Link>
+          <Link
+            href="/admin/activity"
+            data-testid="admin-activity-link"
+            className="btn btn--ghost"
+          >
+            Activity
+          </Link>
           <Link href="/play" className="btn btn--ghost">
             Play
           </Link>
