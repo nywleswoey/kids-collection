@@ -162,6 +162,7 @@ async function main(): Promise<number> {
 
       console.log(`\n[${i + 1}/${entries.length}] ${entry.card}`);
       cardLoop: while (true) {
+        const since = Date.now() - 5000; // slack for clock/poll granularity
         copyToClipboard(entry.prompt);
         console.log(`Prompt copied. Paste it into Grok and save the picture to ${DOWNLOADS_DIR}.`);
         const answer = await ask(rl, `Press Enter once saved, or type "skip" / "redo" / "quit": `);
@@ -176,7 +177,6 @@ async function main(): Promise<number> {
         if (answer === "redo") {
           continue cardLoop;
         }
-        const since = Date.now() - 5000; // slack for clock/poll granularity
         console.log(`Watching for a new image…`);
         const fileName = await waitForNewImage(since, WAIT_TIMEOUT_MS);
         if (!fileName) {
