@@ -353,6 +353,26 @@ describe("makePullService.pullEasterEgg", () => {
     const { service } = setup({ kid: { pullTokens: 3, easterEggTickets: 0 } }, {}, [card("c1")]);
     expect(await service.pullEasterEgg("kid")).toEqual({ outOfTokens: true });
   });
+
+  it("orders choices with not-yet-owned cards first, owned cards after, each group keeping its original order", async () => {
+    // rng=0 ⇒ rollWeightedRarity picks the first tier (common) and sample()'s
+    // partial Fisher–Yates leaves the pool in its original order untouched,
+    // so the pre-sort choice order is deterministically [c1, c2, c3, c4].
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const pool = [card("c1"), card("c2"), card("c3"), card("c4")];
+    const { service } = setup(
+      { kid: { pullTokens: 3, easterEggTickets: 2 } },
+      { kid: { c1: 1, c3: 2 } }, // c1 and c3 already owned; c2 and c4 are new
+      pool,
+    );
+
+    const res = await service.pullEasterEgg("kid");
+
+    if (!("easterEgg" in res) || !res.easterEgg) throw new Error("expected an easter-egg outcome");
+    expect(res.choices.map((c) => c.id)).toEqual(["c2", "c4", "c1", "c3"]);
+    // Ordering is display-only — the offered card set itself is unchanged.
+    expect(new Set(res.choices.map((c) => c.id))).toEqual(new Set(pool.map((c) => c.id)));
+  });
 });
 
 describe("makePullService.claimEasterEgg", () => {
