@@ -512,8 +512,14 @@ export function makePullService({
     if (newBalance === null) throw new Error("sacrifice: child not found");
 
     // Parent-facing activity log (#kcact): the only record anywhere of this
-    // grant — see ticket-grant-store.ts's doc comment.
-    await grants.record(childId, "easterEggTickets", 1, "sacrifice", null);
+    // grant — see ticket-grant-store.ts's doc comment. Best-effort: the burn
+    // and the grant already committed, so a log failure must not surface as a
+    // failed sacrifice.
+    try {
+      await grants.record(childId, "easterEggTickets", 1, "sacrifice", null);
+    } catch {
+      // best-effort — the sacrifice stands regardless
+    }
 
     return { newBalance };
   }

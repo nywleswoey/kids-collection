@@ -31,7 +31,7 @@ export function inMemoryOfferClaimStore(
       if (newBalance === null) return { outOfTokens: true };
 
       const { count } = await collections.grantCard(childId, cardId);
-      const outcome = { outOfTokens: false, card: cardJson, isDuplicate: count > 1, newBalance };
+      const outcome = { outOfTokens: false, card: cardJson, isDuplicate: count > 1, newBalance, spent: column };
       claims.set(jti, { childId, outcome, createdAtMs: Date.now() + ++seq });
       return { replayed: false, outcome };
     },

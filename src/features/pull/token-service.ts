@@ -29,7 +29,12 @@ export function makeTokenService({ children, grants }: TokenDeps) {
     if (!Number.isInteger(delta)) throw new Error(`${label}: delta must be an integer`);
     const balance = await children.clampedGrant(childId, key, delta);
     if (balance === null) throw new Error(`${label}: child not found`);
-    await grants.record(childId, key, delta, "admin", grantedBy);
+    try {
+      await grants.record(childId, key, delta, "admin", grantedBy);
+    } catch {
+      // best-effort — the grant already committed, so a log failure must not
+      // surface as a failed grant (a retry would grant twice)
+    }
     return balance;
   }
 

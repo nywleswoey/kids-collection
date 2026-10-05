@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { makeTokenService } from "@/features/pull/token-service";
 import { inMemoryChildStore, type ChildSeed } from "@/db/stores/child-store.fake";
 import { inMemoryTicketGrantStore } from "@/db/stores/ticket-grant-store.fake";
@@ -50,6 +50,13 @@ describe("makeTokenService", () => {
       source: "admin",
       grantedBy: "parent@example.com",
     });
+  });
+
+  it("still returns the new balance when the activity-log write fails (no retry double-grant)", async () => {
+    const { svc, grants } = setup({ kid: { pullTokens: 1 } });
+    vi.spyOn(grants, "record").mockRejectedValue(new Error("log down"));
+    expect(await svc.grant("kid", 4)).toBe(5);
+    expect(await svc.getBalance("kid")).toBe(5);
   });
 
   it("records an Easter Egg grant with no grantedBy as null", async () => {

@@ -402,10 +402,12 @@ describe("makePullService.claimEasterEgg", () => {
   });
 
   it("spends a normal token and grants the picked card", async () => {
-    const { service, children, collections } = setup({ kid: { pullTokens: 2 } }, {}, cards);
+    const { service, children, collections, offerClaims } = setup({ kid: { pullTokens: 2 } }, {}, cards);
     const offer = await offerFor("kid", ["a", "b"]);
 
     const result = await service.claimEasterEgg("kid", offer, "a");
+    const [claim] = await offerClaims.completedForChild("kid", 10);
+    expect(claim.outcome).toMatchObject({ spent: "pullTokens" }); // activity log shows the right ticket
 
     if (!("card" in result)) throw new Error("expected a card outcome");
     expect(result.card.id).toBe("a");
@@ -415,10 +417,12 @@ describe("makePullService.claimEasterEgg", () => {
   });
 
   it("an easter-egg-pinned offer spends an Easter Egg ticket, not a token", async () => {
-    const { service, children } = setup({ kid: { pullTokens: 5, easterEggTickets: 1 } }, {}, cards);
+    const { service, children, offerClaims } = setup({ kid: { pullTokens: 5, easterEggTickets: 1 } }, {}, cards);
     const offer = await offerFor("kid", ["a", "b"], { easterEgg: true, rolledRarity: "common" });
 
     const result = await service.claimEasterEgg("kid", offer, "b");
+    const [claim] = await offerClaims.completedForChild("kid", 10);
+    expect(claim.outcome).toMatchObject({ spent: "easterEggTickets" });
 
     if (!("card" in result)) throw new Error("expected a card outcome");
     expect(result.newBalance).toBe(5); // pullTokens untouched
@@ -518,6 +522,14 @@ describe("makePullService.sacrifice", () => {
       source: "sacrifice",
       grantedBy: null,
     });
+  });
+
+  it("still succeeds when the activity-log write fails — the burn and grant already committed", async () => {
+    const { service, children, grants } = setup({ kid: {} }, { kid: { c: 4 } }, [card("c", "rare")]);
+    vi.spyOn(grants, "record").mockRejectedValue(new Error("log down"));
+
+    expect(await service.sacrifice("kid", "c")).toEqual({ newBalance: 1 });
+    expect(await children.readColumn("kid", "easterEggTickets")).toBe(1);
   });
 
   it("always leaves at least one copy — a holding of exactly SACRIFICE_COST is not enough", async () => {

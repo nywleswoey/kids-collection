@@ -77,7 +77,8 @@ export const pgOfferClaimStore: OfferClaimStore = {
               'outOfTokens', false,
               'card', ${JSON.stringify(cardJson)}::jsonb,
               'isDuplicate', (SELECT count FROM grant_card) > 1,
-              'newBalance', ${row.new_balance}::integer
+              'newBalance', ${row.new_balance}::integer,
+              'spent', ${column}::text
             )
         WHERE jti = ${jti} AND status = 'granting' AND EXISTS (SELECT 1 FROM grant_card)
         RETURNING outcome

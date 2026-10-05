@@ -39,6 +39,14 @@ function outcomeCard(outcome: unknown): { id: string; rarity?: Rarity } | null {
   return card as { id: string; rarity?: Rarity };
 }
 
+/** Which balance an easter-egg claim spent (`spent`, written by
+ *  OfferClaimStore.claimOffer); null for a row written before it was recorded. */
+function outcomeSpent(outcome: unknown): BalanceColumn | null {
+  if (!outcome || typeof outcome !== "object") return null;
+  const spent = (outcome as Record<string, unknown>).spent;
+  return spent === "pullTokens" || spent === "easterEggTickets" ? spent : null;
+}
+
 function outcomeIsDuplicate(outcome: unknown): boolean {
   return (
     !!outcome && typeof outcome === "object" && (outcome as Record<string, unknown>).isDuplicate === true
@@ -103,9 +111,7 @@ export function makeActivityService({
       }
     }
     const cardName = new Map(
-      await Promise.all(
-        [...cardIds].map(async (id) => [id, (await catalog.getCard(id))?.name ?? id] as const),
-      ),
+      cardIds.size === 0 ? [] : (await catalog.listCards()).map((c) => [c.id, c.name] as const),
     );
 
     const events: ActivityEvent[] = [];
@@ -121,6 +127,7 @@ export function makeActivityService({
           childName: name,
           at: p.createdAt.toISOString(),
           via: "pull",
+          spent: "pullTokens",
           cardId: card.id,
           cardName: cardName.get(card.id) ?? card.id,
           rarity: card.rarity ?? "common",
@@ -137,6 +144,7 @@ export function makeActivityService({
           childName: name,
           at: e.createdAt.toISOString(),
           via: "easter_egg",
+          spent: outcomeSpent(e.outcome),
           cardId: card.id,
           cardName: cardName.get(card.id) ?? card.id,
           rarity: card.rarity ?? "common",

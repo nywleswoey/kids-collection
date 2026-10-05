@@ -31,11 +31,20 @@ function describe(event: ActivityEvent): { icon: string; text: string } {
       if (event.source === "sacrifice") return { icon: "🔥", text: `Earned ${plural} by sacrificing cards` };
       return { icon: "🧠", text: `Earned ${plural} passing ${event.detail ?? "a quiz"}` };
     }
-    case "card_received":
+    case "card_received": {
+      const action =
+        event.via === "pull"
+          ? "Used a pull token"
+          : event.spent === "pullTokens"
+            ? "Used a pull token on an Easter egg"
+            : event.spent === "easterEggTickets"
+              ? "Used a 🥚 ticket"
+              : "Opened an Easter egg";
       return {
         icon: event.via === "pull" ? "🎟️" : "🥚",
-        text: `${event.via === "pull" ? "Used a pull token" : "Used a 🥚 ticket"} → got ${event.cardName}${event.isDuplicate ? " (duplicate)" : ""}`,
+        text: `${action} → got ${event.cardName}${event.isDuplicate ? " (duplicate)" : ""}`,
       };
+    }
     case "bonus_card":
       return { icon: "🏆", text: `Bonus card for completing a set: ${event.cardName}` };
     case "trade":

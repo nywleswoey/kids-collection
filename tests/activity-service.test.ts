@@ -18,13 +18,12 @@ function card(id: string, name = id, rarity: Rarity = "common"): Card {
 }
 
 function fakeCatalog(cards: Card[]): Catalog {
-  const byId = new Map(cards.map((c) => [c.id, c]));
   return {
     async listCards() {
       return cards;
     },
-    async getCard(id) {
-      return byId.get(id) ?? null;
+    async getCard() {
+      throw new Error("activity log must resolve names with one listCards, not per-card getCard");
     },
     async listThemes() {
       return [];
@@ -171,6 +170,28 @@ describe("makeActivityService.getActivityLog", () => {
 
     const [event] = await service.getActivityLog("kid", 50);
     expect(event).toMatchObject({ type: "card_received", cardId: "c1", cardName: "Fox", rarity: "epic" });
+  });
+
+  it("records which balance an easter egg spent, null for a legacy row without it", async () => {
+    const t = (secondsAgo: number) => new Date(Date.now() - secondsAgo * 1000);
+    const { service } = setup({
+      children: [kid("kid")],
+      pulls: [{ requestId: "r1", outcome: { card: card("c1") }, createdAt: t(30) }],
+      eggClaims: [
+        { jti: "j1", outcome: { card: card("c1"), spent: "pullTokens" }, createdAt: t(20) },
+        { jti: "j2", outcome: { card: card("c1"), spent: "easterEggTickets" }, createdAt: t(10) },
+        { jti: "j3", outcome: { card: card("c1") }, createdAt: t(0) },
+      ],
+      cards: [card("c1")],
+    });
+
+    const events = await service.getActivityLog("kid", 50);
+    expect(events.map((e) => (e.type === "card_received" ? [e.via, e.spent] : null))).toEqual([
+      ["easter_egg", null],
+      ["easter_egg", "easterEggTickets"],
+      ["easter_egg", "pullTokens"],
+      ["pull", "pullTokens"],
+    ]);
   });
 
   it("drops a claim row with no card (refund/sweep) from the log", async () => {

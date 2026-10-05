@@ -32,7 +32,8 @@ export interface OfferClaimStore {
    * `newBalance` inside the returned outcome always reports the child's
    * `pullTokens` balance (unchanged when `column` is `easterEggTickets`) —
    * matching `ChildStore.spendOne`'s existing contract, so the figure shown to
-   * the child doesn't change shape depending on which ticket was spent.
+   * the child doesn't change shape depending on which ticket was spent. The
+   * granted outcome also records `spent: column` (parent-facing activity log).
    */
   claimOffer(
     jti: string,

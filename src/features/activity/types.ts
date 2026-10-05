@@ -26,6 +26,10 @@ export interface TicketGivenEvent extends ActivityEventBase {
 export interface CardReceivedEvent extends ActivityEventBase {
   type: "card_received";
   via: "pull" | "easter_egg";
+  /** Which balance was spent — an easter egg can cost either (a random egg
+   *  from a normal pull spends a pull token); null for a legacy egg row that
+   *  didn't record it. */
+  spent: "pullTokens" | "easterEggTickets" | null;
   cardId: string;
   cardName: string;
   rarity: Rarity;
