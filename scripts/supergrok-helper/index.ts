@@ -8,8 +8,9 @@
  *
  * For each card in the theme (in seed order): copy its exact prompt (the same
  * text every other provider gets, `ART_STYLE` included) to the clipboard via
- * `pbcopy`, then watch `~/Downloads` for a new `.png`/`.jpg`/`.jpeg`/`.webp`
- * file. When one appears, move it into the drop folder under the card's
+ * `pbcopy`; once the captain presses Enter, watch `~/Downloads` for a
+ * `.png`/`.jpg`/`.jpeg`/`.webp` file saved since the copy. When one appears,
+ * move it into the drop folder under the card's
  * expected filename (stem from `manualDropStem`, extension from whatever was
  * actually saved) and move on to the next card.
  *
