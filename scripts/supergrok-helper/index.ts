@@ -20,8 +20,8 @@
  * run; `redo` re-copies the prompt and waits again; `quit` stops the walk
  * early without losing what was already dropped.
  *
- * Hard rule for this tool specifically: no xAI/Grok API calls, no browser
- * automation, no network calls, no credentials, and it never opens
+ * Hard rule for the default (manual) mode: no Grok calls of any kind, no
+ * browser automation, no network calls, no credentials. Both modes never open
  * `DATABASE_URL` — `loadSeed` only reads `seed-content/cards.json`. Once the
  * walk finishes (or is stopped early), it hands off to the two existing,
  * already-documented commands that DO need the database — `pnpm seed
@@ -109,14 +109,32 @@ function runGrokHeadless(prompt: string, cwd: string, timeoutMs: number): GrokRu
     ["-p", prompt, "--output-format", "json", "--always-approve", "--cwd", cwd],
     { cwd, timeout: timeoutMs, encoding: "utf8" },
   );
+  if ((result.error as NodeJS.ErrnoException | undefined)?.code === "ETIMEDOUT") return { ok: false, timedOut: true };
   if (result.error) return { ok: false, timedOut: false, error: result.error.message };
-  if (result.signal) return { ok: false, timedOut: true };
-  if (result.status !== 0) return { ok: false, timedOut: false, error: `grok exited with status ${result.status}` };
+  if (result.signal) return { ok: false, timedOut: false, error: `grok killed by ${result.signal}` };
+  if (result.status !== 0) {
+    const output = (result.stderr || result.stdout || "").trim();
+    return {
+      ok: false,
+      timedOut: false,
+      error: `grok exited with status ${result.status}${output ? `: ${output}` : ""}`,
+    };
+  }
   return { ok: true, timedOut: false };
+}
+
+/** True when a `grok` executable can be spawned at all (not ENOENT). */
+function grokCliAvailable(): boolean {
+  const probe = spawnSync("grok", ["--version"], { encoding: "utf8" });
+  return (probe.error as NodeJS.ErrnoException | undefined)?.code !== "ENOENT";
 }
 
 /** `--auto`: same plan/naming/resume logic as the clipboard walk, but drives `grok` headless per card. */
 async function runAutoWalk(themeName: string, entries: readonly ManualBriefEntry[]): Promise<number> {
+  if (!grokCliAvailable()) {
+    console.error(`⛔ The grok CLI is not on PATH. Install and sign in to Grok Build, or run without --auto.`);
+    return 1;
+  }
   mkdirSync(DROP_DIR, { recursive: true });
   console.log(
     `${entries.length} card(s) in "${themeName}". Auto mode — driving the grok CLI, one card at a time.\n` +

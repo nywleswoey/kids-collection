@@ -9,7 +9,7 @@
  * of its own — only the `grok` CLI, and only a prompt built from the card's
  * exact prompt text plus square-output/save-path instructions.
  */
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, renameSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ManualBriefEntry } from "@/shared/pool/manual-brief";
@@ -45,16 +45,14 @@ export interface GrokRunResult {
 export type GrokRunner = (prompt: string, cwd: string, timeoutMs: number) => GrokRunResult;
 
 /**
- * Picks the produced image out of a (post-run) directory listing: the exact
- * requested name if present, else the sole image file found (in case Grok
- * ignored the requested extension but still saved only one picture).
- * Ambiguous (more than one stray image, none matching) or empty is reported
- * as "not found" rather than guessed at.
+ * Picks the produced image out of a (post-run) directory listing: a file with
+ * the expected stem and any image extension (Grok may pick its own format),
+ * preferring the exact requested name. Anything else is "not found".
  */
 export function pickProducedImage(fileNames: readonly string[], expectedName: string): string | undefined {
   if (fileNames.includes(expectedName)) return expectedName;
-  const images = fileNames.filter(isImageFile);
-  return images.length === 1 ? images[0] : undefined;
+  const stem = expectedName.replace(/\.[^./]+$/, "");
+  return fileNames.find((name) => isImageFile(name) && name.replace(/\.[^./]+$/, "") === stem);
 }
 
 export interface AutoCardFailure {
@@ -79,13 +77,14 @@ export interface RunAutoCardOptions {
   timeoutMs?: number;
 }
 
-/** Runs one card end to end: invoke `grok`, locate the picture, move it into the drop folder. */
+/** Runs one card end to end: invoke `grok`, locate the picture, copy it into the drop folder. Never throws. */
 export function runAutoCard(
   entry: ManualBriefEntry,
   opts: RunAutoCardOptions,
 ): AutoCardSuccess | AutoCardFailure {
-  const workDir = mkdtempSync(join(tmpdir(), "supergrok-auto-"));
+  let workDir: string | undefined;
   try {
+    workDir = mkdtempSync(join(tmpdir(), "supergrok-auto-"));
     const savePath = join(workDir, entry.fileName);
     const prompt = buildAutoPrompt(entry.prompt, savePath);
     const result = opts.runner(prompt, workDir, opts.timeoutMs ?? DEFAULT_AUTO_TIMEOUT_MS);
@@ -104,9 +103,11 @@ export function runAutoCard(
 
     mkdirSync(opts.dropDir, { recursive: true });
     const dest = destFileName(entry, picked);
-    renameSync(join(workDir, picked), join(opts.dropDir, dest));
+    copyFileSync(join(workDir, picked), join(opts.dropDir, dest));
     return { card: entry.card, fileName: dest };
+  } catch (err) {
+    return { card: entry.card, reason: err instanceof Error ? err.message : String(err) };
   } finally {
-    rmSync(workDir, { recursive: true, force: true });
+    if (workDir) rmSync(workDir, { recursive: true, force: true });
   }
 }

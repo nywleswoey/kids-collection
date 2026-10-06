@@ -26,16 +26,20 @@ describe("pickProducedImage", () => {
     expect(pickProducedImage(["card.png", "card.jpg"], "card.png")).toBe("card.png");
   });
 
-  it("falls back to the sole image file when the expected name is missing", () => {
+  it("accepts the expected stem with a different image extension", () => {
     expect(pickProducedImage(["card.jpg"], "card.png")).toBe("card.jpg");
+  });
+
+  it("ignores a stray image with a different stem", () => {
+    expect(pickProducedImage(["whatever.jpg"], "card.png")).toBeUndefined();
   });
 
   it("is undefined with no image files", () => {
     expect(pickProducedImage(["notes.txt"], "card.png")).toBeUndefined();
   });
 
-  it("is undefined when ambiguous (multiple stray images, none matching)", () => {
-    expect(pickProducedImage(["a.jpg", "b.webp"], "card.png")).toBeUndefined();
+  it("ignores a non-image file with the expected stem", () => {
+    expect(pickProducedImage(["card.txt"], "card.png")).toBeUndefined();
   });
 });
 
@@ -70,7 +74,7 @@ describe("runAutoCard", () => {
   it("keeps the downloaded extension when it differs from the suggested one", () => {
     dropDir = mkdtempSync(join(tmpdir(), "supergrok-auto-drop-"));
     const runner: GrokRunner = (_prompt, cwd): GrokRunResult => {
-      writeFileSync(join(cwd, "whatever.jpg"), "fake-jpg-bytes");
+      writeFileSync(join(cwd, "warriors-longbowman-abcd1234.jpg"), "fake-jpg-bytes");
       return { ok: true, timedOut: false };
     };
 
@@ -116,6 +120,20 @@ describe("runAutoCard", () => {
     expect(isAutoCardFailure(result)).toBe(true);
     if (isAutoCardFailure(result)) {
       expect(result.reason).toMatch(/did not save/);
+    }
+  });
+
+  it("reports a failure instead of throwing when the runner throws", () => {
+    dropDir = mkdtempSync(join(tmpdir(), "supergrok-auto-drop-"));
+    const runner: GrokRunner = (): GrokRunResult => {
+      throw new Error("EXDEV: cross-device link not permitted");
+    };
+
+    const result = runAutoCard(entry, { dropDir, runner });
+    expect(isAutoCardFailure(result)).toBe(true);
+    if (isAutoCardFailure(result)) {
+      expect(result.card).toBe("Longbowman");
+      expect(result.reason).toMatch(/EXDEV/);
     }
   });
 });

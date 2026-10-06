@@ -324,8 +324,9 @@ pnpm supergrok "Ocean Machines" --auto
 Same plan, naming, and resume logic as the walk above — a card the drop folder already has a
 matching picture for is skipped. For each remaining card, in order, it runs `grok -p` headless with
 that card's exact prompt (`ART_STYLE` included) plus instructions to draw it square (1:1 — cards
-render square at 768×768) and save it to an exact path; it then moves whatever Grok produced into
-`seed-content/supergrok-drop/` under the card's expected filename. It drives one card at a time, not
+render square at 768×768) and save it to an exact path; it then moves the picture Grok saved there
+(same stem; `.png`/`.jpg`/`.jpeg`/`.webp`) into `seed-content/supergrok-drop/` under the card's
+expected filename. If `grok` is not on your PATH it stops before the first card. It drives one card at a time, not
 in parallel; a card that fails or times out is reported at the end rather than stopping the run, and
 you can re-run afterward to pick up only what is still missing. Like the walk above, it never calls
 the xAI/Grok API directly, never automates a browser, and never runs `--sync` or opens
