@@ -5023,7 +5023,7 @@
           "name": "Glass Frog",
           "rarity": "epic",
           "eduText": "A glass frog's belly skin is see-through. Some let you see its tiny beating heart and other organs.",
-          "imagePrompt": "seen from below: a single small pale green frog with a translucent pale belly, sitting on the underside of a green leaf, cheerful",
+          "imagePrompt": "seen from directly below through a glass leaf: a single small pale green frog's belly filling the frame, the belly skin clearly see-through so a hint of its tiny shadowy organs shows inside, cheerful",
           "sourceUrl": "https://en.wikipedia.org/wiki/Glass_frog"
         },
         {
@@ -5058,7 +5058,7 @@
           "name": "Olm",
           "rarity": "rare",
           "eduText": "The olm is a blind cave salamander with pale pink skin. It can live for a hundred years in the dark.",
-          "imagePrompt": "a single long pale pink salamander with a slender eel-like body and tiny legs, resting on wet cave rock, side view",
+          "imagePrompt": "a single long pale pink salamander with a slender eel-like body and tiny legs, resting on wet cave rock, side view, close up on its head showing smooth skin with no eyes at all and three small feathery pink-red gills sticking out on each side of the head",
           "sourceUrl": "https://en.wikipedia.org/wiki/Olm"
         },
         {
