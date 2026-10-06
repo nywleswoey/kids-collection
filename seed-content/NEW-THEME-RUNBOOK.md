@@ -160,7 +160,7 @@ ran them through the (since-retired) escape hatch. What survives is narrower tha
 | Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **failed differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` | the picture you saved, or **not drawn** |
 | **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounted (one horse where the prompt said two) | the picture you saved, or **not drawn** |
 
-**`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
+**`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X — or via your signed-in `grok` CLI with `pnpm supergrok --auto`) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
 
 **What that means for Step 3.** Niche uniforms and multi-object scenes are **no longer disqualifying** —
 a theme that needs them is viable, on the Cloudflare lane. **Small held objects still are**: the lane fails
@@ -282,7 +282,7 @@ pnpm seed --review --providers=cloudflare-sdxl
 
 ### The manual lane — pictures you generate in Grok
 
-Use this when you want a SuperGrok picture beside the automatic lanes. You generate it yourself, under your subscription. This repo never calls Grok.
+Use this when you want a SuperGrok picture beside the automatic lanes. You generate it yourself, under your subscription. This repo never calls the xAI/Grok API; the only Grok it drives is your own signed-in `grok` CLI, and only under `pnpm supergrok --auto` (below).
 
 ```bash
 pnpm seed --supergrok-export
