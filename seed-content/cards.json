@@ -4976,13 +4976,15 @@
     },
     {
       "name": "Amphibians",
+      "provider": "supergrok-manual",
       "cards": [
         {
           "name": "Red-eyed Tree Frog",
           "rarity": "legendary",
           "eduText": "Red-eyed tree frogs sleep by day. If startled, they flash their bright red eyes to surprise predators.",
           "imagePrompt": "a single bright green tree frog with huge red eyes, orange feet and blue-striped sides, clinging to a green leaf, side view, cheerful",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Agalychnis_callidryas"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agalychnis_callidryas",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Chinese Giant Salamander",
@@ -4996,14 +4998,16 @@
           "rarity": "epic",
           "eduText": "The Goliath frog is the biggest frog in the world. It can weigh as much as a small cat.",
           "imagePrompt": "a single enormous green-brown frog with bumpy skin, sitting on a wet rock beside a river, side view, cheerful",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Goliath_frog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Goliath_frog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Golden Poison Frog",
           "rarity": "epic",
           "eduText": "The golden poison frog is bright yellow to warn enemies away. Its skin makes one of the strongest poisons known.",
           "imagePrompt": "a single small bright golden-yellow frog with smooth shiny skin, sitting on a green leaf in a rainforest, side view, cheerful",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Golden_poison_frog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Golden_poison_frog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Surinam Toad",
@@ -5031,14 +5035,16 @@
           "rarity": "rare",
           "eduText": "The fire salamander's bold black and yellow pattern warns other animals that its skin is poisonous to eat.",
           "imagePrompt": "a single shiny black salamander covered in bright yellow blotches, walking slowly across a mossy forest floor, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_salamander"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fire_salamander",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Wood Frog",
           "rarity": "rare",
           "eduText": "Wood frogs can freeze almost solid in winter, then thaw out and hop away again in spring.",
           "imagePrompt": "a single small brown frog with a dark mask-like patch around each eye, sitting on a bed of fallen autumn leaves, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Wood_frog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wood_frog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Tomato Frog",
@@ -5080,21 +5086,24 @@
           "rarity": "rare",
           "eduText": "The cane toad is one of the biggest toads in the world, with lumpy brown skin and large poison glands.",
           "imagePrompt": "a single large lumpy brown toad with big raised glands behind its eyes, sitting on dry grass, side view, friendly",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Cane_toad"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cane_toad",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "American Bullfrog",
           "rarity": "common",
           "eduText": "The American bullfrog has a deep, booming call that sounds like a cow mooing across the pond.",
           "imagePrompt": "a single large green bullfrog with big round eyes and a wide mouth, sitting at the edge of a pond on a lily pad, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/American_bullfrog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/American_bullfrog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "American Toad",
           "rarity": "common",
           "eduText": "The American toad has bumpy, warty-looking skin, but its bumps are harmless and cannot give you warts.",
           "imagePrompt": "a single brown warty-skinned toad with dark spots, sitting on a garden path, side view, cheerful",
-          "sourceUrl": "https://en.wikipedia.org/wiki/American_toad"
+          "sourceUrl": "https://en.wikipedia.org/wiki/American_toad",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Common Toad",
@@ -5122,7 +5131,8 @@
           "rarity": "common",
           "eduText": "The leopard frog is covered in round dark spots, just like the big cat it is named after.",
           "imagePrompt": "a single bright green frog covered in round dark brown spots, sitting at the edge of a pond, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Northern_leopard_frog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Northern_leopard_frog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Gray Tree Frog",
@@ -5150,7 +5160,8 @@
           "rarity": "common",
           "eduText": "If threatened, the fire-bellied toad arches its back to flash its bright red-and-black belly.",
           "imagePrompt": "a single small green bumpy-backed toad, arching to show its bright orange-red and black spotted belly, on a lily pad, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Oriental_fire-bellied_toad"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Oriental_fire-bellied_toad",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "European Tree Frog",
@@ -5164,14 +5175,16 @@
           "rarity": "common",
           "eduText": "The spotted salamander has two rows of bright yellow spots running from its head to the tip of its tail.",
           "imagePrompt": "a single black salamander with two neat rows of round yellow spots along its back, walking on wet forest leaves, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Spotted_salamander"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spotted_salamander",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Pickerel Frog",
           "rarity": "common",
           "eduText": "The pickerel frog has neat square spots in two rows down its back, like a checkerboard pattern.",
           "imagePrompt": "a single tan frog with two tidy rows of square brown spots down its back, sitting at a pond's edge, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Pickerel_frog"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pickerel_frog",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Barking Tree Frog",
