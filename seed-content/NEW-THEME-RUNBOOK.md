@@ -312,6 +312,25 @@ When the walk finishes (or you `quit`), it runs `pnpm seed --review --providers=
 
 It reads the card list and prompts straight from `seed-content/cards.json` — not `--supergrok-export`'s brief, and not the database. It never calls the xAI/Grok API, never automates a browser, makes no network calls of its own, and never runs `--sync` or opens `DATABASE_URL` itself — only the two hand-off commands above open the database, and only after the walk is done. It does not filter by what is already published, so it is for a theme mid-authoring (the normal case); a card that happens to already be published just gets a picture nobody imports.
 
+#### `--auto` — let the Grok Build CLI draw them
+
+If you have the Grok Build CLI (`grok`) installed and signed in to grok.com with your SuperGrok
+subscription, `--auto` skips the clipboard/Downloads dance and drives it for you:
+
+```bash
+pnpm supergrok "Ocean Machines" --auto
+```
+
+Same plan, naming, and resume logic as the walk above — a card the drop folder already has a
+matching picture for is skipped. For each remaining card, in order, it runs `grok -p` headless with
+that card's exact prompt (`ART_STYLE` included) plus instructions to draw it square (1:1 — cards
+render square at 768×768) and save it to an exact path; it then moves whatever Grok produced into
+`seed-content/supergrok-drop/` under the card's expected filename. It drives one card at a time, not
+in parallel; a card that fails or times out is reported at the end rather than stopping the run, and
+you can re-run afterward to pick up only what is still missing. Like the walk above, it never calls
+the xAI/Grok API directly, never automates a browser, and never runs `--sync` or opens
+`DATABASE_URL` itself — only the same two hand-off commands at the end, once generation is done.
+
 A card with no picture is reported as **not drawn**. The contact sheet says so in that cell. It is not a failed generation, and it does not abandon the lane. Re-running skips pictures already imported. To replace one, delete that card's `supergrok-manual` review file (and its `.json` sidecar) and run the import again.
 
 Review files land at `seed-content/review/<theme-slug>-<card-slug>-<hash8>-<provider>-<params4>.<ext>`. `<hash8>`

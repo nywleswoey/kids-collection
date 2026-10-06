@@ -28,14 +28,26 @@
  * --review --providers=supergrok-manual` to import what was dropped, then
  * `pnpm contact-sheet` to build the comparison sheet — rather than
  * reimplementing either.
+ *
+ * `--auto` (`pnpm supergrok "<Theme Name>" --auto`) reuses the same plan,
+ * naming, and resume logic but skips the clipboard/Downloads dance: it
+ * drives the locally installed Grok Build CLI (`grok -p`, signed in with the
+ * owner's SuperGrok subscription, built-in image generation, no xAI API key)
+ * headless, one card at a time, with each card's exact prompt plus
+ * instructions for square output and an exact save path (see `auto.ts`).
+ * Still no API keys, no browser automation, no network calls of its own
+ * beyond the `grok` CLI, and the same two hand-off commands at the end. The
+ * clipboard walk above stays the default.
  */
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, renameSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
-import { findDropFile, SUPERGROK_DROP_DIR } from "@/shared/pool/manual-brief";
+import { findDropFile, SUPERGROK_DROP_DIR, type ManualBriefEntry } from "@/shared/pool/manual-brief";
 import { loadSeed } from "@/shared/pool/loader";
+import { parseSupergrokArgs, SupergrokArgsError } from "./args";
+import { type AutoCardFailure, type GrokRunResult, isAutoCardFailure, runAutoCard } from "./auto";
 import { pickNewestImageSince, type DirEntrySnapshot } from "./downloads";
 import { destFileName } from "./naming";
 import { planThemeEntries, ThemeNotFoundError } from "./plan";
@@ -90,6 +102,67 @@ function ask(rl: ReturnType<typeof createInterface>, question: string): Promise<
   return new Promise((resolve) => rl.question(question, (answer) => resolve(answer.trim().toLowerCase())));
 }
 
+/** Real `grok -p` invocation, wrapped so `auto.ts` stays spawn-free and testable. */
+function runGrokHeadless(prompt: string, cwd: string, timeoutMs: number): GrokRunResult {
+  const result = spawnSync(
+    "grok",
+    ["-p", prompt, "--output-format", "json", "--always-approve", "--cwd", cwd],
+    { cwd, timeout: timeoutMs, encoding: "utf8" },
+  );
+  if (result.error) return { ok: false, timedOut: false, error: result.error.message };
+  if (result.signal) return { ok: false, timedOut: true };
+  if (result.status !== 0) return { ok: false, timedOut: false, error: `grok exited with status ${result.status}` };
+  return { ok: true, timedOut: false };
+}
+
+/** `--auto`: same plan/naming/resume logic as the clipboard walk, but drives `grok` headless per card. */
+async function runAutoWalk(themeName: string, entries: readonly ManualBriefEntry[]): Promise<number> {
+  mkdirSync(DROP_DIR, { recursive: true });
+  console.log(
+    `${entries.length} card(s) in "${themeName}". Auto mode — driving the grok CLI, one card at a time.\n` +
+      `Drop folder: ${DROP_DIR}\n`,
+  );
+
+  let generated = 0;
+  let skipped = 0;
+  const failures: AutoCardFailure[] = [];
+
+  for (const [i, entry] of entries.entries()) {
+    const already = findDropFile(entry.prompt, listDropFileNames());
+    if (already.kind === "one") {
+      console.log(`[${i + 1}/${entries.length}] ${entry.card} — already dropped (${already.fileName}), skipping.`);
+      skipped++;
+      continue;
+    }
+    if (already.kind === "many") {
+      console.log(
+        `[${i + 1}/${entries.length}] ${entry.card} — ${already.fileNames.length} drop files already match this prompt (${already.fileNames.join(", ")}). Leave exactly one; skipping for now.`,
+      );
+      skipped++;
+      continue;
+    }
+
+    console.log(`[${i + 1}/${entries.length}] ${entry.card} — generating…`);
+    const result = runAutoCard(entry, { dropDir: DROP_DIR, runner: runGrokHeadless });
+    if (isAutoCardFailure(result)) {
+      console.log(`  ⛔ ${entry.card} — ${result.reason}`);
+      failures.push(result);
+    } else {
+      console.log(`  Saved → ${join(DROP_DIR, result.fileName)}`);
+      generated++;
+    }
+  }
+
+  console.log(
+    `\n${generated} generated this run, ${skipped} already dropped, ${failures.length} failed, ${entries.length} card(s) total.`,
+  );
+  if (failures.length > 0) {
+    console.log(`Failed cards:`);
+    for (const f of failures) console.log(`  - ${f.card}: ${f.reason}`);
+  }
+  return runNextSteps(themeName);
+}
+
 function runNextSteps(themeName: string): number {
   console.log(`\nImporting into the bake-off…`);
   const review = spawnSync("pnpm", ["seed", "--review", "--providers=supergrok-manual"], {
@@ -107,14 +180,17 @@ function runNextSteps(themeName: string): number {
 }
 
 async function main(): Promise<number> {
-  const themeName = process.argv[2];
-  if (!themeName) {
-    console.error(
-      `Usage: pnpm supergrok "<Theme Name>"\n` +
-        `   The name must match seed-content/cards.json exactly.`,
-    );
-    return 1;
+  let args;
+  try {
+    args = parseSupergrokArgs(process.argv.slice(2));
+  } catch (err) {
+    if (err instanceof SupergrokArgsError) {
+      console.error(`⛔ ${err.message}`);
+      return 1;
+    }
+    throw err;
   }
+  const themeName = args.themeName;
 
   const seed = loadSeed(SEED_PATH);
   let entries;
@@ -131,6 +207,10 @@ async function main(): Promise<number> {
   if (entries.length === 0) {
     console.log(`"${themeName}" has no cards. Nothing to do.`);
     return 0;
+  }
+
+  if (args.auto) {
+    return runAutoWalk(themeName, entries);
   }
 
   mkdirSync(DROP_DIR, { recursive: true });
