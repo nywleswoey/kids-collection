@@ -160,7 +160,7 @@ ran them through the (since-retired) escape hatch. What survives is narrower tha
 | Identity rests on **niche uniform accuracy** | **fails** — a plausible costume from the wrong century or country, or a photoreal toddler in fancy dress | **usually passes** — #66 drew the Swiss Guard's blue/yellow stripes and ruff correctly; #74 saw a generic modern uniform on a different sample, so treat it as *much better, not reliable* | **failed differently** — costume correct, but rendered photo-real, which loses `ART_STYLE` | the picture you saved, or **not drawn** |
 | **Multi-object scene** — a rider and a vehicle, a crowd | **fails** — the parts recombine into something else (a Victorian pony-trap for an Egyptian chariot; one figurine for the Terracotta Army) | **passes** — two horses, gold chariot, nemes headdress; rows of clay soldiers in a trench | **best seen for the class**, but miscounted (one horse where the prompt said two) | the picture you saved, or **not drawn** |
 
-**`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
+**`supergrok-manual` does not draw.** You generate the pictures yourself in Grok (the app, grok.com, or X — or via your signed-in `grok` CLI with `pnpm supergrok --auto`) under your subscription, and the bake-off places those files beside the automatic lanes so you can pick. There is no xAI API call and no key — calling Grok from code is a billed API, which the $0 rule forbids. How a picture fails is whatever you see on the sheet. A card you did not save a picture for is **not drawn**, which is a missing file, not a bad drawing. Steps are in Step 6.
 
 **What that means for Step 3.** Niche uniforms and multi-object scenes are **no longer disqualifying** —
 a theme that needs them is viable, on the Cloudflare lane. **Small held objects still are**: the lane fails
@@ -282,7 +282,7 @@ pnpm seed --review --providers=cloudflare-sdxl
 
 ### The manual lane — pictures you generate in Grok
 
-Use this when you want a SuperGrok picture beside the automatic lanes. You generate it yourself, under your subscription. This repo never calls Grok.
+Use this when you want a SuperGrok picture beside the automatic lanes. You generate it yourself, under your subscription. This repo never calls the xAI/Grok API; the only Grok it drives is your own signed-in `grok` CLI, and only under `pnpm supergrok --auto` (below).
 
 ```bash
 pnpm seed --supergrok-export
@@ -311,6 +311,26 @@ For each card, in order, it copies the exact prompt (`ART_STYLE` included — th
 When the walk finishes (or you `quit`), it runs `pnpm seed --review --providers=supergrok-manual` to import what was dropped, then `pnpm contact-sheet` to build the comparison sheet — the same two commands you would otherwise run by hand next.
 
 It reads the card list and prompts straight from `seed-content/cards.json` — not `--supergrok-export`'s brief, and not the database. It never calls the xAI/Grok API, never automates a browser, makes no network calls of its own, and never runs `--sync` or opens `DATABASE_URL` itself — only the two hand-off commands above open the database, and only after the walk is done. It does not filter by what is already published, so it is for a theme mid-authoring (the normal case); a card that happens to already be published just gets a picture nobody imports.
+
+#### `--auto` — let the Grok Build CLI draw them
+
+If you have the Grok Build CLI (`grok`) installed and signed in to grok.com with your SuperGrok
+subscription, `--auto` skips the clipboard/Downloads dance and drives it for you:
+
+```bash
+pnpm supergrok "Ocean Machines" --auto
+```
+
+Same plan, naming, and resume logic as the walk above — a card the drop folder already has a
+matching picture for is skipped. For each remaining card, in order, it runs `grok -p` headless with
+that card's exact prompt (`ART_STYLE` included) plus instructions to draw it square (1:1 — cards
+render square at 768×768) and save it to an exact path; it then moves the picture Grok saved there
+(same stem; `.png`/`.jpg`/`.jpeg`/`.webp`) into `seed-content/supergrok-drop/` under the card's
+expected filename. If `grok` is not on your PATH it stops before the first card. It drives one card at a time, not
+in parallel; a card that fails or times out is reported at the end rather than stopping the run, and
+you can re-run afterward to pick up only what is still missing. Like the walk above, it never calls
+the xAI/Grok API directly, never automates a browser, and never runs `--sync` or opens
+`DATABASE_URL` itself — only the same two hand-off commands at the end, once generation is done.
 
 A card with no picture is reported as **not drawn**. The contact sheet says so in that cell. It is not a failed generation, and it does not abandon the lane. Re-running skips pictures already imported. To replace one, delete that card's `supergrok-manual` review file (and its `.json` sidecar) and run the import again.
 
