@@ -40,7 +40,7 @@
 .card--legendary {
   --frame: #fbbf24;
   --holo-strength: 0.7;
-  box-shadow: 0 0 28px rgba(251, 191, 36, 0.6);
+  animation: legendary-glow 2.6s ease-in-out infinite;
 }
 .card--legendary .card__holo {
   background:
@@ -50,9 +50,61 @@
   animation: holo-shimmer 3s linear infinite;
 }
 
+/* Ambient tilt only when nothing else already drives transform on .card — an
+   interactive card (pull reveal/modal) keeps its real pointer-tracked tilt
+   from useCardTilt instead, so the two never fight over the same property. */
+.card--legendary:not(.card--interactive) {
+  animation: legendary-glow 2.6s ease-in-out infinite, legendary-tilt 6s ease-in-out infinite;
+}
+
+/* Sparkle twinkle — two pseudo-elements so dots can drift out of phase
+   without extra DOM nodes. Opacity/transform only, no new images. */
+.card--legendary::before,
+.card--legendary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: legendary-sparkle 2.4s ease-in-out infinite;
+}
+.card--legendary::before {
+  background-image:
+    radial-gradient(circle, #fff 0, transparent 2.5px),
+    radial-gradient(circle, #fff 0, transparent 2px),
+    radial-gradient(circle, #fff 0, transparent 2px);
+  background-position: 15% 22%, 78% 18%, 62% 68%;
+  background-size: 5px 5px, 4px 4px, 4px 4px;
+}
+.card--legendary::after {
+  background-image:
+    radial-gradient(circle, #ffe9a8 0, transparent 2px),
+    radial-gradient(circle, #ffe9a8 0, transparent 2.5px);
+  background-position: 30% 80%, 85% 55%;
+  background-size: 4px 4px, 5px 5px;
+  animation-delay: 1.2s;
+}
+
 @keyframes holo-shimmer {
   0% { background-position: 0 0, 0% 50%; }
   100% { background-position: 0 0, 200% 50%; }
+}
+
+@keyframes legendary-glow {
+  0%, 100% { box-shadow: 0 0 22px rgba(251, 191, 36, 0.55); }
+  50% { box-shadow: 0 0 36px rgba(251, 191, 36, 0.9); }
+}
+
+@keyframes legendary-sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes legendary-tilt {
+  0%, 100% { transform: perspective(800px) rotateX(0deg) rotateY(-3deg); }
+  50% { transform: perspective(800px) rotateX(1.5deg) rotateY(3deg); }
 }
 
 /* Pull reveal — pack-open flip. */
@@ -79,5 +131,11 @@
   .card--interactive { transform: none; transition: none; }
   .card__holo { animation: none; }
   .reveal__inner { transition: none; }
+  .card--legendary {
+    animation: none;
+    box-shadow: 0 0 28px rgba(251, 191, 36, 0.6);
+  }
   .card--legendary .card__holo { animation: none; }
+  .card--legendary::before,
+  .card--legendary::after { animation: none; opacity: 0; }
 }
