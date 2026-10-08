@@ -20,7 +20,11 @@ import { providerById } from "@/shared/pool/providers";
 import { buildSidecar, reviewFileName, sidecarFileName } from "@/shared/pool/review-files";
 import { parseProvenance } from "@/shared/pool/provenance";
 import { cardKey } from "@/shared/pool/publish-plan";
-import { animatedReviewFileName } from "@/shared/pool/animated-brief";
+import {
+  animatedReviewFileName,
+  animatedStem,
+  findAnimatedDropFile,
+} from "@/shared/pool/animated-brief";
 import { buildPrompt } from "@/shared/pool/prompt";
 import type { BlastRadius } from "@/shared/pool/blast-radius";
 import type { PublishedCount } from "@/shared/pool/completeness";
@@ -113,6 +117,7 @@ function harness(
     confirm?: () => Promise<void>;
     shape?: PublishedCount[];
     seed?: SeedFile;
+    drop?: Map<string, Uint8Array>;
   } = {},
 ): Harness {
   const calls: string[] = [];
@@ -167,6 +172,11 @@ function harness(
     uploadAnimation: async (key) => {
       calls.push("uploadAnimation");
       return `https://blob.example/${key}-anim.webp`;
+    },
+    readApprovedAnimation: (prompt, providerId) => {
+      const drop = opts.drop ?? new Map<string, Uint8Array>();
+      const found = findAnimatedDropFile(prompt, providerId, [...drop.keys()]);
+      return found.kind === "one" ? drop.get(found.fileName) : undefined;
     },
     fs: {
       exists: (path) => files.has(basename(path)),
@@ -362,5 +372,55 @@ describe("runSeed --sync: a legendary card publishes its reviewed animation", ()
 
     expect(h.calls).not.toContain("uploadAnimation");
     expect(h.insertedAnimatedUrls.has("Phoenix")).toBe(false);
+  });
+});
+
+describe("runSeed --review: a legendary card's dropped animation is imported for its pick", () => {
+  const legendary: SeedCard = { ...card("Phoenix"), rarity: "legendary" };
+  const seedFor = (provider: string): SeedFile => ({
+    themes: [{ name: THEME, provider, cards: [card("Robin"), legendary] }],
+  });
+  const dropFor = (providerId: string) =>
+    new Map([
+      [
+        `${animatedStem(THEME, legendary.name, buildPrompt(legendary), providerId)}.webp`,
+        new Uint8Array([7]),
+      ],
+    ]);
+  const reviewKey = (providerId: string) =>
+    animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary), providerId);
+  const MANUAL = providerById("supergrok-manual")!;
+  const reviewedBoth = () => {
+    const files = reviewed("Robin", "Phoenix");
+    for (const c of [card("Robin"), legendary]) {
+      files.set(reviewFileName(THEME, c, MANUAL), new Uint8Array([1]));
+    }
+    return files;
+  };
+
+  it("writes the animation into the review folder under the key --sync reads", async () => {
+    const h = harness({
+      seed: seedFor(PROVIDER.id),
+      files: reviewedBoth(),
+      drop: dropFor(PROVIDER.id),
+    });
+
+    const code = await runSeed({ kind: "review", providers: [MANUAL.id] }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.written.get(reviewKey(PROVIDER.id))).toEqual(new Uint8Array([7]));
+  });
+
+  it("imports nothing once the pick changes away from the animated still's provider", async () => {
+    const h = harness({
+      seed: seedFor("supergrok-manual"),
+      files: reviewedBoth(),
+      drop: dropFor(PROVIDER.id),
+    });
+
+    const code = await runSeed({ kind: "review", providers: [MANUAL.id] }, h.deps);
+
+    expect(code).toBe(0);
+    expect([...h.written.keys()].some((k) => k.endsWith(".anim.webp"))).toBe(false);
   });
 });

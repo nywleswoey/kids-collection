@@ -213,6 +213,7 @@ export interface SeedDeps {
   confirmDestructive: typeof confirmDestructive;
   uploadImage: typeof uploadImage;
   uploadAnimation: typeof uploadAnimation;
+  readApprovedAnimation: (prompt: string, providerId: string) => Uint8Array | undefined;
   fs: {
     exists: (path: string) => boolean;
     read: (path: string) => Uint8Array;
@@ -243,6 +244,7 @@ export function realSeedDeps(): SeedDeps {
     confirmDestructive,
     uploadImage,
     uploadAnimation,
+    readApprovedAnimation: (prompt, providerId) => readApprovedAnimation(prompt, providerId),
     fs: {
       exists: existsSync,
       read: (path) => new Uint8Array(readFileSync(path)),
@@ -855,7 +857,7 @@ async function review(
       const prompt = buildPrompt(card);
       let bytes: Uint8Array | undefined;
       try {
-        bytes = readApprovedAnimation(prompt, providerId);
+        bytes = deps.readApprovedAnimation(prompt, providerId);
       } catch (err) {
         deps.warn(`⚠️  ${theme.name} / ${card.name}: ${String(err)}`);
         continue;
