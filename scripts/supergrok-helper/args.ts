@@ -1,5 +1,5 @@
 /**
- * Strict argument parsing for `pnpm supergrok "<Theme Name>" [--auto]`.
+ * Strict argument parsing for `pnpm supergrok "<Theme Name>" [--auto | --auto-video]`.
  *
  * Follows the same `node:util parseArgs({ strict: true })` approach as
  * `scripts/seed/args.ts` rather than ad hoc `process.argv` checks.
@@ -17,9 +17,12 @@ export interface SupergrokArgs {
   themeName: string;
   /** Drive the `grok` CLI instead of the clipboard/Downloads walk. */
   auto: boolean;
+  /** Animate legendary cards' already-approved stills via `grok`'s `image_to_video` (see AGENTS.md). */
+  autoVideo: boolean;
 }
 
-const USAGE = 'Usage: pnpm supergrok "<Theme Name>" [--auto]\n   The name must match seed-content/cards.json exactly.';
+const USAGE =
+  'Usage: pnpm supergrok "<Theme Name>" [--auto | --auto-video]\n   The name must match seed-content/cards.json exactly.';
 
 export function parseSupergrokArgs(argv: readonly string[]): SupergrokArgs {
   let values: Record<string, string | boolean | undefined>;
@@ -29,6 +32,7 @@ export function parseSupergrokArgs(argv: readonly string[]): SupergrokArgs {
       args: [...argv],
       options: {
         auto: { type: "boolean" },
+        "auto-video": { type: "boolean" },
       },
       strict: true,
       allowPositionals: true,
@@ -46,6 +50,9 @@ export function parseSupergrokArgs(argv: readonly string[]): SupergrokArgs {
   if (positionals.length > 1) {
     throw new SupergrokArgsError(`unexpected extra argument(s): ${positionals.slice(1).join(", ")}\n${USAGE}`);
   }
+  if (values.auto === true && values["auto-video"] === true) {
+    throw new SupergrokArgsError(`--auto and --auto-video are mutually exclusive.\n${USAGE}`);
+  }
 
-  return { themeName, auto: values.auto === true };
+  return { themeName, auto: values.auto === true, autoVideo: values["auto-video"] === true };
 }

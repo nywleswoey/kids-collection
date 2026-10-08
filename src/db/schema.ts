@@ -48,6 +48,11 @@ export const cards = pgTable(
     eduText: text("edu_text").notNull(),
     // Admin-verifiable source for the card's fun fact / legend origin (U4-FR5).
     sourceUrl: text("source_url").notNull().default(""),
+    // Short looping animated WebP for a legendary card, from the manual
+    // image-to-video lane (see AGENTS.md). NULL for every card published
+    // before this column and for every card whose owner never approved one —
+    // an absence, not a missing-data error; the UI falls back to imageUrl.
+    animatedUrl: text("animated_url"),
   },
   (t) => [index("cards_theme_idx").on(t.themeId)],
 );

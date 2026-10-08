@@ -55,6 +55,8 @@ import {
 } from "./review-files";
 import type { ProviderRole } from "./providers/provider";
 import { RARITIES } from "@/lib/types";
+import { animatedReviewFileName } from "./animated-brief";
+import { buildPrompt } from "./prompt";
 
 /**
  * What the grid needs to know about a provider: how to name its file, and
@@ -110,6 +112,14 @@ export interface SheetRow {
   eduText: string;
   resolvedProvider?: string;
   candidates: SheetCandidate[];
+  /**
+   * The manual animation lane's cell for this card (see AGENTS.md):
+   * legendary-only, and not a bake-off column — there is one candidate at
+   * most, keyed to whichever still the card resolved to, not to a provider.
+   * `undefined` for a non-legendary or unpicked card, which renders no cell at
+   * all rather than an always-empty one.
+   */
+  animation?: { fileName: string; present: boolean };
 }
 
 export interface ContactSheet {
@@ -185,12 +195,21 @@ export function planContactSheet(
         };
       });
 
+      const animationFileName =
+        card.rarity === "legendary" && resolved !== undefined
+          ? animatedReviewFileName(theme.name, card.name, buildPrompt(card), resolved)
+          : undefined;
+      if (animationFileName) expected.add(animationFileName);
+
       return {
         name: card.name,
         rarity: card.rarity,
         eduText: card.eduText,
         resolvedProvider: resolved,
         candidates,
+        animation: animationFileName
+          ? { fileName: animationFileName, present: deps.exists(animationFileName) }
+          : undefined,
       };
     });
 
@@ -247,6 +266,8 @@ export function renderContactSheet(sheet: ContactSheet): string {
       : "",
   ].join("");
 
+  const hasAnimationColumn = sheet.rows.some((r) => r.animation !== undefined);
+
   const rows = sheet.rows
     .map(
       (row) => `<tr>
@@ -264,6 +285,17 @@ ${row.candidates
     }<div class="m">${esc(c.model ?? (c.present ? "model not reported" : ""))}</div></td>`,
   )
   .join("")}
+${
+  hasAnimationColumn
+    ? `<td>${
+        row.animation
+          ? row.animation.present
+            ? `<img src="${esc(row.animation.fileName)}" loading="lazy" alt="${esc(row.name)} animation">`
+            : `<div class="undrawn">not drawn</div>`
+          : `<span class="sub">—</span>`
+      }</td>`
+    : ""
+}
 </tr>`,
     )
     .join("\n");
@@ -305,7 +337,7 @@ ${banner}
               : ""
         }</th>`,
     )
-    .join("")}</tr></thead>
+    .join("")}${hasAnimationColumn ? `<th>Animation<div class="hatch">legendary-only, manual</div></th>` : ""}</tr></thead>
 <tbody>
 ${rows}
 </tbody>

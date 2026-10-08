@@ -105,6 +105,8 @@ export async function insertCardIfNew(input: {
   imageUrl: string;
   eduText: string;
   sourceUrl: string;
+  /** Legendary-only manual animation lane; absent/undefined for every other card. */
+  animatedUrl?: string | null;
 }): Promise<"inserted" | "skipped"> {
   if (!input.imageUrl) throw new Error("insertCardIfNew: missing imageUrl");
   if (await cardExists(input.themeId, input.name)) return "skipped";

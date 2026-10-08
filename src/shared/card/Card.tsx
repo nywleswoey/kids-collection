@@ -4,6 +4,7 @@ import type { Card as CardType } from "@/lib/types";
 import { CardImage } from "./CardImage";
 import { rarityClass, RARITY_LABEL } from "./rarity";
 import { useCardTilt } from "./useCardTilt";
+import { useReducedMotion } from "@/shared/anim/useReducedMotion";
 import "./card.css";
 
 /**
@@ -24,6 +25,14 @@ export function Card({
 }) {
   const { ref, onPointerMove, onPointerLeave } = useCardTilt(interactive);
   const dim = size === "lg" ? 320 : 160;
+  const reducedMotion = useReducedMotion();
+  // Legendary-only manual animation lane (see AGENTS.md). `Card` itself
+  // only ever renders the pull reveal, the card detail modal, and the easter
+  // egg / reward reveals — never the collection grid (that renders
+  // `RarityThumb` instead, in `CardSlot.tsx`) — so no extra "which surface"
+  // gate is needed here. `next/image` flattens an animated WebP to its first
+  // frame, so the animated element bypasses it entirely with a plain `<img>`.
+  const showAnimated = Boolean(card.animatedUrl) && !reducedMotion;
 
   return (
     <div
@@ -39,7 +48,16 @@ export function Card({
         <span className="badge-count absolute right-2 top-2">x{count}</span>
       ) : null}
 
-      <CardImage src={card.imageUrl} alt={card.name} dim={512} priority={interactive} />
+      {showAnimated ? (
+        // eslint-disable-next-line @next/next/no-img-element -- next/image flattens animated WebP to its first frame
+        <img
+          src={card.animatedUrl!}
+          alt={card.name}
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <CardImage src={card.imageUrl} alt={card.name} dim={512} priority={interactive} />
+      )}
 
       <div className="flex flex-col gap-1.5 bg-black/35 p-3.5 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-2">

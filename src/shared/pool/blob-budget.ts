@@ -160,7 +160,7 @@ export interface WeighedLane {
 
 export interface BlobBudgetInput {
   objects: readonly StoredObject[];
-  /** `imageUrl` of every published card — what makes an object non-orphaned. */
+  /** `imageUrl` and `animatedUrl` of every published card — what makes an object non-orphaned. */
   liveUrls: ReadonlySet<string>;
   lanes: readonly WeighedLane[];
   cardsPerTheme?: number;

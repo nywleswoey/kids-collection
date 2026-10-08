@@ -101,8 +101,9 @@ import {
   SUPERGROK_BRIEF_NAME,
   SUPERGROK_DROP_DIR,
 } from "@/shared/pool/manual-brief";
-import { uploadImage } from "@/shared/pool/image";
+import { uploadImage, uploadAnimation } from "@/shared/pool/image";
 import { blobKey } from "@/shared/pool/keys";
+import { animatedReviewFileName, readApprovedAnimation } from "@/shared/pool/animated-brief";
 import { runBakeOff, type BakeOffJob } from "@/shared/pool/bake-off";
 import {
   buildSidecar,
@@ -211,6 +212,8 @@ export interface SeedDeps {
   previewPrune: typeof previewPrune;
   confirmDestructive: typeof confirmDestructive;
   uploadImage: typeof uploadImage;
+  uploadAnimation: typeof uploadAnimation;
+  readApprovedAnimation: (prompt: string, providerId: string) => Uint8Array | undefined;
   fs: {
     exists: (path: string) => boolean;
     read: (path: string) => Uint8Array;
@@ -240,6 +243,8 @@ export function realSeedDeps(): SeedDeps {
     previewPrune,
     confirmDestructive,
     uploadImage,
+    uploadAnimation,
+    readApprovedAnimation: (prompt, providerId) => readApprovedAnimation(prompt, providerId),
     fs: {
       exists: existsSync,
       read: (path) => new Uint8Array(readFileSync(path)),
@@ -427,7 +432,9 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
     ]);
     const budget = buildBlobBudget({
       objects,
-      liveUrls: new Set(published.map((p) => p.url)),
+      liveUrls: new Set(
+        published.flatMap((p) => (p.animatedUrl ? [p.url, p.animatedUrl] : [p.url])),
+      ),
       lanes: PROVIDERS,
     });
     return reportBlobBudget(budget, published.length) ? 1 : 0;
@@ -667,6 +674,23 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
         report.reused++;
 
         const imageUrl = await deps.uploadImage(blobKey(theme.name, card.name), bytes);
+
+        // Animation lane (manual, legendary-only, additive — see AGENTS.md's
+        // animation entry). Published only from the REVIEWED copy `--review`
+        // already imported; a card with none gets `animatedUrl: undefined` and
+        // behaves exactly as it did before this lane existed.
+        let animatedUrl: string | undefined;
+        if (card.rarity === "legendary") {
+          const animFile = join(
+            REVIEW_DIR,
+            animatedReviewFileName(theme.name, card.name, buildPrompt(card), provider.id),
+          );
+          if (deps.fs.exists(animFile)) {
+            const animBytes = deps.fs.read(animFile);
+            animatedUrl = await deps.uploadAnimation(blobKey(theme.name, card.name), animBytes);
+          }
+        }
+
         const res = await deps.insertCardIfNew({
           themeId,
           name: card.name,
@@ -674,6 +698,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
           imageUrl,
           eduText: card.eduText,
           sourceUrl: card.sourceUrl,
+          animatedUrl,
         });
         if (res === "inserted") {
           report.inserted++;
@@ -818,6 +843,36 @@ async function review(
     deps.log(`   ${o.providerId}: ${parts.join(", ")} (of ${jobs.length})`);
   }
   deps.log(`Review images in: ${REVIEW_DIR}`);
+
+  // Animation lane (manual, legendary-only, additive — see AGENTS.md's animation entry).
+  // Not part of the bake-off above: `image_to_video` animates whichever still
+  // review already picked, so this has no prompt and no provider of its own.
+  // A missing drop file is simply "no animation yet" for that card.
+  let animatedImported = 0;
+  for (const theme of themes) {
+    for (const card of theme.cards) {
+      if (card.rarity !== "legendary" || !planned.has(cardKey(theme.name, card.name))) continue;
+      const providerId = resolveProviderId(theme, card);
+      if (!providerId) continue;
+      const prompt = buildPrompt(card);
+      let bytes: Uint8Array | undefined;
+      try {
+        bytes = deps.readApprovedAnimation(prompt, providerId);
+      } catch (err) {
+        deps.warn(`⚠️  ${theme.name} / ${card.name}: ${String(err)}`);
+        continue;
+      }
+      if (!bytes) continue;
+      deps.fs.write(
+        join(REVIEW_DIR, animatedReviewFileName(theme.name, card.name, prompt, providerId)),
+        bytes,
+      );
+      animatedImported++;
+    }
+  }
+  if (animatedImported > 0) {
+    deps.log(`Imported ${animatedImported} approved animation(s) into ${REVIEW_DIR}.`);
+  }
 
   const undrawn = outcomes.filter((o) => o.notDrawn > 0);
   if (undrawn.length > 0) {
