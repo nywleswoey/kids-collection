@@ -537,6 +537,19 @@ treated as a missing review.
 git add seed-content/cards.json && git commit -m "feat(seed): record the <Theme> bake-off picks"
 ```
 
+### Optional — animate the legendary cards
+
+Once the picks are recorded, a legendary card may also get a short looping animation of its picked still:
+
+```bash
+pnpm supergrok "<Theme Name>" --auto-video   # needs grok signed in, plus `brew install ffmpeg webp`
+```
+
+It animates only legendary cards whose picked still is already in `seed-content/review/`; one with no pick yet is
+reported, not generated. It then runs the same `--review` import and contact sheet as the other lanes, and
+`--sync` publishes the animation with the card. Existing published cards are never given one. Details:
+`scripts/supergrok-helper/index.ts`'s header and `AGENTS.md`.
+
 ## Step 9 — Publish
 
 Only after approval:

@@ -41,10 +41,11 @@ pnpm seed --review     # generate preview images for NEW cards to seed-content/r
                        #   one per card PER lane (the bake-off)
 pnpm seed --supergrok-export
                        # brief for pictures you generate by hand in Grok
-pnpm supergrok "<Theme Name>" [--auto]
+pnpm supergrok "<Theme Name>" [--auto | --auto-video]
                        # walk the cards: copy each prompt, file each saved picture into the
                        #   drop folder, then run the two commands below (--auto: the
-                       #   signed-in grok CLI draws each card instead)
+                       #   signed-in grok CLI draws each card instead; --auto-video:
+                       #   animate legendary cards' picked stills, see the runbook)
 pnpm seed --review --providers=supergrok-manual
                        # import that drop folder as one more bake-off column
 pnpm contact-sheet "<Theme Name>"
