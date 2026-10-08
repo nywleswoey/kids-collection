@@ -36,20 +36,31 @@ export async function listPublishedCardKeys(): Promise<Set<string>> {
 }
 
 /**
- * Every published card's art, as `(theme, card, imageUrl)` in display order.
+ * Every published card's art, as `(theme, card, imageUrl, animatedUrl)` in
+ * display order.
  *
- * Read-only, and the only consumer is `--check-images` (#78): a published card's
- * bytes are never looked at again by any other seed path.
+ * Read-only. `--check-images` (#78) weighs `url`; `--blob-budget` counts both
+ * `url` and `animatedUrl` as live so a legendary animation is not an orphan.
  */
 export async function readPublishedImages(): Promise<
-  Array<{ theme: string; card: string; url: string }>
+  Array<{ theme: string; card: string; url: string; animatedUrl: string | null }>
 > {
   const rows = await db
-    .select({ theme: themes.name, card: cards.name, url: cards.imageUrl })
+    .select({
+      theme: themes.name,
+      card: cards.name,
+      url: cards.imageUrl,
+      animatedUrl: cards.animatedUrl,
+    })
     .from(cards)
     .innerJoin(themes, eq(themes.id, cards.themeId))
     .orderBy(themes.sortOrder, cards.name);
-  return rows.map((r) => ({ theme: r.theme, card: r.card, url: r.url }));
+  return rows.map((r) => ({
+    theme: r.theme,
+    card: r.card,
+    url: r.url,
+    animatedUrl: r.animatedUrl,
+  }));
 }
 
 /** Per-theme, per-rarity published counts. One grouped query. */

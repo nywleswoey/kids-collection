@@ -430,7 +430,9 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
     ]);
     const budget = buildBlobBudget({
       objects,
-      liveUrls: new Set(published.map((p) => p.url)),
+      liveUrls: new Set(
+        published.flatMap((p) => (p.animatedUrl ? [p.url, p.animatedUrl] : [p.url])),
+      ),
       lanes: PROVIDERS,
     });
     return reportBlobBudget(budget, published.length) ? 1 : 0;
@@ -671,10 +673,10 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
 
         const imageUrl = await deps.uploadImage(blobKey(theme.name, card.name), bytes);
 
-        // Animation lane (manual, legendary-only, additive — see data/kcanim
-        // report). Published only from the REVIEWED copy `--review` already
-        // imported; a card with none gets `animatedUrl: undefined` and behaves
-        // exactly as it did before this lane existed.
+        // Animation lane (manual, legendary-only, additive — see AGENTS.md's
+        // animation entry). Published only from the REVIEWED copy `--review`
+        // already imported; a card with none gets `animatedUrl: undefined` and
+        // behaves exactly as it did before this lane existed.
         let animatedUrl: string | undefined;
         if (card.rarity === "legendary") {
           const animFile = join(
@@ -840,7 +842,7 @@ async function review(
   }
   deps.log(`Review images in: ${REVIEW_DIR}`);
 
-  // Animation lane (manual, legendary-only, additive — see data/kcanim report).
+  // Animation lane (manual, legendary-only, additive — see AGENTS.md's animation entry).
   // Not part of the bake-off above: `image_to_video` animates whichever still
   // review already picked, so this has no prompt and no provider of its own.
   // A missing drop file is simply "no animation yet" for that card.

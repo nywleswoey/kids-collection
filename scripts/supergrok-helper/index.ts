@@ -40,7 +40,7 @@
  * clipboard walk above stays the default.
  *
  * `--auto-video` (`pnpm supergrok "<Theme Name>" --auto-video`) is the
- * separate manual ANIMATION lane (`data/kcanim/report.md`): for every
+ * separate manual ANIMATION lane (see AGENTS.md): for every
  * legendary card in the theme that already has an approved still in
  * `seed-content/review/`, it drives `grok`'s `image_to_video` tool on that
  * still (not a prompt — `image_to_video` animates existing art) and converts
@@ -171,7 +171,7 @@ const GROK_SESSIONS_DIR = join(homedir(), ".grok", "sessions");
  * Newest `.mp4` under `~/.grok/sessions/**\/videos/`, modified at or after
  * `sinceMs` — Grok saves a clip under its own session directory keyed by the
  * URL-encoded cwd and a session id, never the cwd itself (proven in the
- * captain's real test, `data/kcanim/report.md`), so finding it means scanning
+ * captain's real `image_to_video` test run), so finding it means scanning
  * rather than knowing the path up front.
  */
 function findNewestSessionVideo(sinceMs: number): string | undefined {
@@ -221,7 +221,7 @@ function runGrokVideoHeadless(prompt: string, timeoutMs: number): GrokVideoRunRe
 
 /**
  * Real ffmpeg + img2webp conversion — the proven recipe from the captain's
- * real test (`data/kcanim/report.md`): a seamless bounce loop (forward, then
+ * real `image_to_video` test run: a seamless bounce loop (forward, then
  * reversed with the first reversed frame dropped) at 2x speed, 384x384,
  * 10fps, lossy WebP q50, infinite loop. Homebrew ffmpeg has no libwebp
  * encoder, so ffmpeg only extracts frames and `img2webp` (`brew install
@@ -333,7 +333,7 @@ async function runAutoWalk(themeName: string, entries: readonly ManualBriefEntry
 
 /**
  * `--auto-video`: animates every legendary card's already-approved still —
- * the manual animation lane (`data/kcanim/report.md`). A card the drop
+ * the manual animation lane (see AGENTS.md). A card the drop
  * folder already has a matching animation for (by prompt hash, same rule
  * `findAnimatedDropFile` uses for import) is skipped — reruns resume. A
  * legendary card with no resolved provider yet — the still's own bake-off

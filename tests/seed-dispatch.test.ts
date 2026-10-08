@@ -20,6 +20,8 @@ import { providerById } from "@/shared/pool/providers";
 import { buildSidecar, reviewFileName, sidecarFileName } from "@/shared/pool/review-files";
 import { parseProvenance } from "@/shared/pool/provenance";
 import { cardKey } from "@/shared/pool/publish-plan";
+import { animatedReviewFileName } from "@/shared/pool/animated-brief";
+import { buildPrompt } from "@/shared/pool/prompt";
 import type { BlastRadius } from "@/shared/pool/blast-radius";
 import type { PublishedCount } from "@/shared/pool/completeness";
 import type { SeedCard, SeedFile } from "@/shared/pool/seed-schema";
@@ -74,6 +76,7 @@ const WRITES = new Set([
   "deleteCardsNotIn",
   "deleteThemesNotIn",
   "uploadImage",
+  "uploadAnimation",
   "fs.write",
   "fs.mkdir",
 ]);
@@ -83,6 +86,7 @@ interface Harness {
   calls: string[];
   written: Map<string, string | Uint8Array>;
   published: Set<string>;
+  insertedAnimatedUrls: Map<string, string | null | undefined>;
 }
 
 /** A review candidate plus its sidecar, as `--review` would leave them. */
@@ -108,6 +112,7 @@ function harness(
     inserted?: (name: string) => "inserted" | "skipped";
     confirm?: () => Promise<void>;
     shape?: PublishedCount[];
+    seed?: SeedFile;
   } = {},
 ): Harness {
   const calls: string[] = [];
@@ -115,10 +120,11 @@ function harness(
   const published = new Set((opts.published ?? []).map((n) => cardKey(THEME, n)));
   const files = opts.files ?? new Map<string, Uint8Array>();
   const noop = () => {};
+  const insertedAnimatedUrls = new Map<string, string | null | undefined>();
 
   const deps: SeedDeps = {
     env: { databaseUrl: "postgres://postgres@localhost:5499/fake", blobToken: "fake" },
-    loadSeed: () => SEED,
+    loadSeed: () => opts.seed ?? SEED,
     listPublishedCardKeys: async () => {
       calls.push("listPublishedCardKeys");
       return new Set(published);
@@ -131,6 +137,7 @@ function harness(
     },
     insertCardIfNew: async (input) => {
       calls.push("insertCardIfNew");
+      insertedAnimatedUrls.set(input.name, input.animatedUrl);
       return opts.inserted?.(input.name) ?? "inserted";
     },
     updateCardMeta: async () => {
@@ -180,7 +187,7 @@ function harness(
     warn: noop,
     error: noop,
   };
-  return { deps, calls, written, published };
+  return { deps, calls, written, published, insertedAnimatedUrls };
 }
 
 function writes(calls: string[]): string[] {
@@ -274,5 +281,68 @@ describe("runSeed: provenance is recorded only for cards this run inserted", () 
     await runSeed({ kind: "sync", allowPrune: false }, h.deps);
 
     expect(h.written.has("provenance.json")).toBe(false);
+  });
+});
+
+describe("runSeed --sync: a legendary card publishes its reviewed animation", () => {
+  const legendary: SeedCard = { ...card("Phoenix"), rarity: "legendary" };
+  const seed: SeedFile = {
+    themes: [{ name: THEME, provider: PROVIDER.id, cards: [card("Robin"), legendary] }],
+  };
+  const shape: PublishedCount[] = [
+    { theme: THEME, rarity: "common", n: 1 },
+    { theme: THEME, rarity: "legendary", n: 1 },
+  ];
+
+  it("uploads the legendary card's animation and passes its URL to the insert", async () => {
+    const files = reviewed("Robin", "Phoenix");
+    files.set(
+      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary)),
+      new Uint8Array([9]),
+    );
+    const h = harness({ seed, files, shape });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.calls.filter((c) => c === "uploadAnimation")).toHaveLength(1);
+    expect(h.insertedAnimatedUrls.get("Phoenix")).toMatch(/-anim\.webp$/);
+    expect(h.insertedAnimatedUrls.get("Robin")).toBeUndefined();
+  });
+
+  it("ignores an animation file for a non-legendary card", async () => {
+    const robin = card("Robin");
+    const files = reviewed("Robin", "Phoenix");
+    files.set(animatedReviewFileName(THEME, robin.name, buildPrompt(robin)), new Uint8Array([9]));
+    const h = harness({ seed, files, shape });
+
+    await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(h.calls).not.toContain("uploadAnimation");
+    expect(h.insertedAnimatedUrls.get("Robin")).toBeUndefined();
+  });
+
+  it("publishes a legendary card with no reviewed animation as a still only", async () => {
+    const h = harness({ seed, files: reviewed("Robin", "Phoenix"), shape });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.calls).not.toContain("uploadAnimation");
+    expect(h.insertedAnimatedUrls.get("Phoenix")).toBeUndefined();
+  });
+
+  it("does not upload an animation for a card that is already published", async () => {
+    const files = reviewed("Robin", "Phoenix");
+    files.set(
+      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary)),
+      new Uint8Array([9]),
+    );
+    const h = harness({ seed, files, shape, published: ["Phoenix"] });
+
+    await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(h.calls).not.toContain("uploadAnimation");
+    expect(h.insertedAnimatedUrls.has("Phoenix")).toBe(false);
   });
 });

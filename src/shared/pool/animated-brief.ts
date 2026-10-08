@@ -2,7 +2,7 @@
  * Manual animation lane — a short looping WebP the owner generates by hand
  * from an already-APPROVED legendary still (`pnpm supergrok --auto-video`,
  * driving the signed-in Grok Build CLI's `image_to_video` tool), not from a
- * text prompt. See `data/kcanim/report.md` for the full pipeline mapping.
+ * text prompt. See AGENTS.md for the full pipeline mapping.
  *
  * There is no bake-off here: `image_to_video` animates whichever still
  * `--review` already picked, so this lane has no prompt of its own and no

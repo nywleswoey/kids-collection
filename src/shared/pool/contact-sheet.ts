@@ -113,7 +113,7 @@ export interface SheetRow {
   resolvedProvider?: string;
   candidates: SheetCandidate[];
   /**
-   * The manual animation lane's cell for this card (data/kcanim report):
+   * The manual animation lane's cell for this card (see AGENTS.md):
    * legendary-only, and not a bake-off column — there is one candidate at
    * most, keyed to whichever still the card resolved to, not to a provider.
    * `undefined` for a non-legendary card, which renders no cell at all rather

@@ -26,7 +26,7 @@ export function Card({
   const { ref, onPointerMove, onPointerLeave } = useCardTilt(interactive);
   const dim = size === "lg" ? 320 : 160;
   const reducedMotion = useReducedMotion();
-  // Legendary-only manual animation lane (data/kcanim report). `Card` itself
+  // Legendary-only manual animation lane (see AGENTS.md). `Card` itself
   // only ever renders the pull reveal, the card detail modal, and the easter
   // egg / reward reveals — never the collection grid (that renders
   // `RarityThumb` instead, in `CardSlot.tsx`) — so no extra "which surface"

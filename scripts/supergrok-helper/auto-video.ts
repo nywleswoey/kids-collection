@@ -9,7 +9,7 @@
  * `auto.ts`: no xAI API key, no HTTP calls of its own — only the `grok` CLI
  * (plus local `ffmpeg`/`img2webp` for the conversion, which call no network).
  *
- * See `data/kcanim/report.md` for the proven recipe this encodes: Grok saves
+ * The recipe this encodes lives in `index.ts`'s `runFfmpegConvert`: Grok saves
  * the clip under its own session directory, not the cwd, so locating it is
  * the real runner's job (`findNewestSessionVideo` in `index.ts`), not this
  * module's. The conversion is a bounce loop (forward, then reversed with the
@@ -22,8 +22,8 @@ import type { VideoEntry } from "./video-plan";
 export const DEFAULT_AUTO_VIDEO_TIMEOUT_MS = 4 * 60 * 1000;
 
 /**
- * The prompt sent to `grok -p`: proven wording from the captain's real test
- * (`data/kcanim/report.md`'s "Test generation runbook"). Deliberately asks
+ * The prompt sent to `grok -p`: proven wording from the captain's real
+ * `image_to_video` test run. Deliberately asks
  * for defaults (6s, 480p) — resolution/duration are tuned at the conversion
  * step instead, so a prompt edit never invalidates the rest of the recipe.
  */
