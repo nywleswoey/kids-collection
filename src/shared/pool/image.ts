@@ -72,3 +72,26 @@ export async function uploadImage(
   });
   return url;
 }
+
+/**
+ * Upload an animated-WebP card loop to a SEPARATE blob object from the still
+ * (`cards/<key>-anim.webp`, never `cards/<key>.jpg`), so publishing the
+ * animation can never touch the still's URL and the still keeps existing as
+ * the reduced-motion fallback. WebP only — the generation recipe
+ * (`scripts/supergrok-helper/`) always encodes WebP, so anything else is a
+ * broken upstream step, not a format this lane accepts.
+ */
+export async function uploadAnimation(
+  key: string,
+  bytes: Uint8Array,
+): Promise<string> {
+  const measured = readImageSize(bytes);
+  if (!measured || measured.format !== "webp") {
+    throw new Error(`uploadAnimation(${key}): bytes are not a recognisable WebP`);
+  }
+  const { url } = await put(`cards/${key}-anim.webp`, Buffer.from(bytes), {
+    access: "public",
+    contentType: contentTypeFor(measured.format),
+  });
+  return url;
+}

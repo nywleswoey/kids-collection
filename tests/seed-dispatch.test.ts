@@ -157,6 +157,10 @@ function harness(
       calls.push("uploadImage");
       return `https://blob.example/${key}`;
     },
+    uploadAnimation: async (key) => {
+      calls.push("uploadAnimation");
+      return `https://blob.example/${key}-anim.webp`;
+    },
     fs: {
       exists: (path) => files.has(basename(path)),
       read: (path) => {

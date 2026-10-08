@@ -13,6 +13,7 @@ function toCard(row: typeof cards.$inferSelect): Card {
     imageUrl: row.imageUrl,
     eduText: row.eduText,
     sourceUrl: row.sourceUrl,
+    animatedUrl: row.animatedUrl,
   };
 }
 
