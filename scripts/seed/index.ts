@@ -681,7 +681,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
         if (card.rarity === "legendary") {
           const animFile = join(
             REVIEW_DIR,
-            animatedReviewFileName(theme.name, card.name, buildPrompt(card)),
+            animatedReviewFileName(theme.name, card.name, buildPrompt(card), provider.id),
           );
           if (deps.fs.exists(animFile)) {
             const animBytes = deps.fs.read(animFile);
@@ -847,19 +847,26 @@ async function review(
   // review already picked, so this has no prompt and no provider of its own.
   // A missing drop file is simply "no animation yet" for that card.
   let animatedImported = 0;
-  for (const job of jobs) {
-    if (job.card.rarity !== "legendary") continue;
-    const prompt = buildPrompt(job.card);
-    let bytes: Uint8Array | undefined;
-    try {
-      bytes = readApprovedAnimation(prompt);
-    } catch (err) {
-      deps.warn(`⚠️  ${job.theme} / ${job.card.name}: ${String(err)}`);
-      continue;
+  for (const theme of themes) {
+    for (const card of theme.cards) {
+      if (card.rarity !== "legendary" || !planned.has(cardKey(theme.name, card.name))) continue;
+      const providerId = resolveProviderId(theme, card);
+      if (!providerId) continue;
+      const prompt = buildPrompt(card);
+      let bytes: Uint8Array | undefined;
+      try {
+        bytes = readApprovedAnimation(prompt, providerId);
+      } catch (err) {
+        deps.warn(`⚠️  ${theme.name} / ${card.name}: ${String(err)}`);
+        continue;
+      }
+      if (!bytes) continue;
+      deps.fs.write(
+        join(REVIEW_DIR, animatedReviewFileName(theme.name, card.name, prompt, providerId)),
+        bytes,
+      );
+      animatedImported++;
     }
-    if (!bytes) continue;
-    deps.fs.write(join(REVIEW_DIR, animatedReviewFileName(job.theme, job.card.name, prompt)), bytes);
-    animatedImported++;
   }
   if (animatedImported > 0) {
     deps.log(`Imported ${animatedImported} approved animation(s) into ${REVIEW_DIR}.`);

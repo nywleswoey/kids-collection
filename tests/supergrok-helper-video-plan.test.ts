@@ -41,7 +41,9 @@ describe("planLegendaryVideoEntries", () => {
     expect(paladin.stillReviewFileName).toBe(
       reviewFileName("Warriors", card, CLOUDFLARE),
     );
-    expect(paladin.fileName).toBe(`${animatedStem("Warriors", "Paladin", paladin.prompt)}.webp`);
+    expect(paladin.fileName).toBe(
+      `${animatedStem("Warriors", "Paladin", paladin.prompt, CLOUDFLARE.id)}.webp`,
+    );
   });
 
   it("reports a legendary card with no resolved provider as unresolved, not planned", () => {

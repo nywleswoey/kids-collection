@@ -334,8 +334,8 @@ async function runAutoWalk(themeName: string, entries: readonly ManualBriefEntry
 /**
  * `--auto-video`: animates every legendary card's already-approved still —
  * the manual animation lane (see AGENTS.md). A card the drop
- * folder already has a matching animation for (by prompt hash, same rule
- * `findAnimatedDropFile` uses for import) is skipped — reruns resume. A
+ * folder already has a matching animation for (by prompt hash and still
+ * provider, same rule `findAnimatedDropFile` uses for import) is skipped — reruns resume. A
  * legendary card with no resolved provider yet — the still's own bake-off
  * was never judged — is reported, never guessed at.
  */

@@ -58,7 +58,7 @@ export function planLegendaryVideoEntries(
       card: card.name,
       prompt,
       stillReviewFileName: reviewFileName(theme.name, card, provider),
-      fileName: `${animatedStem(theme.name, card.name, prompt)}.webp`,
+      fileName: `${animatedStem(theme.name, card.name, prompt, provider.id)}.webp`,
     });
   }
   return { entries, unresolved };

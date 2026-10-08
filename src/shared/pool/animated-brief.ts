@@ -8,8 +8,9 @@
  * `--review` already picked, so this lane has no prompt of its own and no
  * provider of its own. It is keyed to the SAME prompt hash as the still it
  * animates (`manualDropStem`/`promptDigest`, reused rather than duplicated)
- * so `--review`/`--sync` can find "does this card have an approved animation"
- * without inventing a second identity space.
+ * plus the id of the provider that drew that still, so `--review`/`--sync` can
+ * find "does this card have an approved animation" without inventing a second
+ * identity space, and an animation of a since-replaced pick never matches.
  *
  * A missing file is "no animation yet" for that card, not a failure — the
  * same `ProviderNotDrawn`-shaped absence `supergrok-manual.ts` already treats
@@ -22,14 +23,24 @@ import { manualDropStem, promptDigest } from "./manual-brief";
 /** Where the owner saves approved animations. Gitignored, parallel to `supergrok-drop/`. */
 export const ANIMATED_DROP_DIR = "seed-content/supergrok-drop-anim";
 
-/** The approved animation's filename stem — same identity as the still it animates. */
-export function animatedStem(themeName: string, cardName: string, prompt: string): string {
-  return manualDropStem(themeName, cardName, prompt);
+/** The approved animation's filename stem — the still's identity plus its provider. */
+export function animatedStem(
+  themeName: string,
+  cardName: string,
+  prompt: string,
+  providerId: string,
+): string {
+  return `${manualDropStem(themeName, cardName, prompt)}-${providerId}`;
 }
 
 /** The name an approved animation takes once imported into `seed-content/review/`. */
-export function animatedReviewFileName(themeName: string, cardName: string, prompt: string): string {
-  return `${animatedStem(themeName, cardName, prompt)}.anim.webp`;
+export function animatedReviewFileName(
+  themeName: string,
+  cardName: string,
+  prompt: string,
+  providerId: string,
+): string {
+  return `${animatedStem(themeName, cardName, prompt, providerId)}.anim.webp`;
 }
 
 export type AnimatedDropMatch =
@@ -38,16 +49,18 @@ export type AnimatedDropMatch =
   | { kind: "many"; fileNames: string[] };
 
 /**
- * Find the owner's approved animation for this exact still prompt among drop-
- * folder names. WebP only — the conversion recipe (ffmpeg + `img2webp`) always
+ * Find the owner's approved animation for this exact still prompt and still
+ * provider among drop-folder names. WebP only — the conversion recipe (ffmpeg + `img2webp`) always
  * encodes WebP, so an unrelated file extension is never a candidate here.
  */
 export function findAnimatedDropFile(
   prompt: string,
+  providerId: string,
   fileNames: readonly string[],
 ): AnimatedDropMatch {
   const hash = promptDigest(prompt);
-  const hits = fileNames.filter((name) => name.toLowerCase().endsWith(`-${hash}.webp`));
+  const suffix = `-${hash}-${providerId}.webp`.toLowerCase();
+  const hits = fileNames.filter((name) => name.toLowerCase().endsWith(suffix));
   if (hits.length === 0) return { kind: "none", hash };
   if (hits.length === 1) return { kind: "one", fileName: hits[0]! };
   return { kind: "many", fileNames: [...hits].sort() };
@@ -55,11 +68,12 @@ export function findAnimatedDropFile(
 
 /**
  * Read bytes for the owner's approved animation, or `undefined` if none
- * exists. Throws if more than one drop file matches this prompt — ambiguous,
+ * exists. Throws if more than one drop file matches — ambiguous,
  * never silently picked, same rule `supergrok-manual.ts` applies to stills.
  */
 export function readApprovedAnimation(
   prompt: string,
+  providerId: string,
   dropDir: string = join(process.cwd(), ANIMATED_DROP_DIR),
 ): Uint8Array | undefined {
   const names = existsSync(dropDir)
@@ -67,7 +81,7 @@ export function readApprovedAnimation(
         .filter((entry) => entry.isFile())
         .map((entry) => entry.name)
     : [];
-  const found = findAnimatedDropFile(prompt, names);
+  const found = findAnimatedDropFile(prompt, providerId, names);
   if (found.kind === "none") return undefined;
   if (found.kind === "many") {
     throw new Error(

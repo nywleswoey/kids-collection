@@ -116,8 +116,8 @@ export interface SheetRow {
    * The manual animation lane's cell for this card (see AGENTS.md):
    * legendary-only, and not a bake-off column — there is one candidate at
    * most, keyed to whichever still the card resolved to, not to a provider.
-   * `undefined` for a non-legendary card, which renders no cell at all rather
-   * than an always-empty one.
+   * `undefined` for a non-legendary or unpicked card, which renders no cell at
+   * all rather than an always-empty one.
    */
   animation?: { fileName: string; present: boolean };
 }
@@ -196,8 +196,8 @@ export function planContactSheet(
       });
 
       const animationFileName =
-        card.rarity === "legendary"
-          ? animatedReviewFileName(theme.name, card.name, buildPrompt(card))
+        card.rarity === "legendary" && resolved !== undefined
+          ? animatedReviewFileName(theme.name, card.name, buildPrompt(card), resolved)
           : undefined;
       if (animationFileName) expected.add(animationFileName);
 

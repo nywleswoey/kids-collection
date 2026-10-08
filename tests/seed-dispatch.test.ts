@@ -297,7 +297,7 @@ describe("runSeed --sync: a legendary card publishes its reviewed animation", ()
   it("uploads the legendary card's animation and passes its URL to the insert", async () => {
     const files = reviewed("Robin", "Phoenix");
     files.set(
-      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary)),
+      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary), PROVIDER.id),
       new Uint8Array([9]),
     );
     const h = harness({ seed, files, shape });
@@ -313,7 +313,10 @@ describe("runSeed --sync: a legendary card publishes its reviewed animation", ()
   it("ignores an animation file for a non-legendary card", async () => {
     const robin = card("Robin");
     const files = reviewed("Robin", "Phoenix");
-    files.set(animatedReviewFileName(THEME, robin.name, buildPrompt(robin)), new Uint8Array([9]));
+    files.set(
+      animatedReviewFileName(THEME, robin.name, buildPrompt(robin), PROVIDER.id),
+      new Uint8Array([9]),
+    );
     const h = harness({ seed, files, shape });
 
     await runSeed({ kind: "sync", allowPrune: false }, h.deps);
@@ -332,10 +335,25 @@ describe("runSeed --sync: a legendary card publishes its reviewed animation", ()
     expect(h.insertedAnimatedUrls.get("Phoenix")).toBeUndefined();
   });
 
+  it("does not publish an animation imported for a different still provider", async () => {
+    const files = reviewed("Robin", "Phoenix");
+    files.set(
+      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary), "supergrok-manual"),
+      new Uint8Array([9]),
+    );
+    const h = harness({ seed, files, shape });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.calls).not.toContain("uploadAnimation");
+    expect(h.insertedAnimatedUrls.get("Phoenix")).toBeUndefined();
+  });
+
   it("does not upload an animation for a card that is already published", async () => {
     const files = reviewed("Robin", "Phoenix");
     files.set(
-      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary)),
+      animatedReviewFileName(THEME, legendary.name, buildPrompt(legendary), PROVIDER.id),
       new Uint8Array([9]),
     );
     const h = harness({ seed, files, shape, published: ["Phoenix"] });
