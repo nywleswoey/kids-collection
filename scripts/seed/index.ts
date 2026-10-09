@@ -34,10 +34,10 @@
  *                                 not published, not pruned, and not counted against
  *                                 FR9/FR12. This is how a batch of new themes can be
  *                                 authored together but published two at a time, while
- *                                 the rest sit in cards.json unjudged. --allow-prune's
- *                                 blast radius and the completeness check (FR12) are
- *                                 scoped the same way. No flag means every theme, as
- *                                 before.
+ *                                 the rest sit in cards.json unjudged. Pruning is NOT
+ *                                 scoped: --allow-prune's blast radius still covers
+ *                                 everything dropped from the full cards.json. No flag
+ *                                 means every theme, as before.
  *
  * No command flag means `--review`. Unknown flags, two command flags, or a
  * modifier on the wrong command are rejected before anything runs (`./args.ts`).
