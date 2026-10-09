@@ -16,7 +16,7 @@ This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authorin
 | **Output** | 30 published cards, images reviewed, the winning provider recorded in `seed-content/cards.json`, committed on a branch, a PR open. |
 | **Human checkpoints** | Exactly **two**: the 30-name list (Step 3), and the image contact sheet (Step 7). Still two — the bake-off did **not** add a third; it changed what the second one *is*, from approve/reject to **choose among N candidates**. Stop dead at both — do not proceed on silence, and never answer them yourself. |
 | **Blast radius** | `pnpm seed --sync` writes to the **production** Neon DB and Blob store that the children play against. `--check-urls`, `--check-images` and `--review` do not write to it. `--blob-budget` reads the DB and Blob but writes nothing; `--supergrok-export` reads the DB and writes only the export brief. |
-| **Session** | One theme per run. Do not batch two themes. |
+| **Session** | One theme per run. Do not batch two themes — unless a human explicitly asks for several themes authored together and published later in smaller batches; see "Authoring several themes, publishing fewer at a time" below. |
 
 ## Rules the schema enforces
 
@@ -595,6 +595,30 @@ unreviewed bytes, so no entry can read otherwise. If you ever see `"reviewed": f
 provenance file was hand-edited or predates this; stop and report rather than committing it.
 
 Report to the human: cards inserted, images published, the PR URL.
+
+### Authoring several themes, publishing fewer at a time
+
+Only when a human explicitly asks for it: several themes can be appended to `seed-content/cards.json` in
+one PR (Step 4, repeated per theme — never reorder or touch existing themes), with Steps 2–5 covering all
+of them, while art generation and publishing (Steps 6–9) proceed theme-by-theme, or two at a time,
+afterwards — e.g. to let the human prep every theme's card list in advance and judge/publish the bake-offs
+later, in smaller batches.
+
+`--review` and `--sync` both take `--themes=<Name 1>,<Name 2>` to scope a run to exactly the named
+theme(s), by exact theme name as written in `cards.json`:
+
+```bash
+pnpm seed --review --themes="Ice Age Beasts,Robots"   # bake-off only these two
+pnpm seed --sync    --themes="Ice Age Beasts,Robots"  # publish only these two
+```
+
+An unscoped theme is left completely alone — not reviewed, not published, not pruned, and not counted
+against FR9's "no unreviewed image" refusal or FR12's completeness check. It stays in `cards.json`,
+unjudged, until a later run names it. With no `--themes`, behaviour is exactly as every step above
+describes: every theme in the file.
+
+Each batch still gets its own CHECKPOINT 2 (Step 7) and Step 8 pick, its own `--sync`, and its own
+provenance entries and commit — run Steps 6–9 once per batch, naming only that batch's themes.
 
 ---
 
