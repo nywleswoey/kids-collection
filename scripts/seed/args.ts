@@ -26,8 +26,8 @@ export type Command =
   | { kind: "blob-budget" }
   | { kind: "check-urls" }
   | { kind: "supergrok-export" }
-  | { kind: "review"; providers?: string[] }
-  | { kind: "sync"; allowPrune: boolean };
+  | { kind: "review"; providers?: string[]; themes?: string[] }
+  | { kind: "sync"; allowPrune: boolean; themes?: string[] };
 
 /** Thrown by `parseSeedArgs` for an unknown, malformed, or conflicting flag. Never thrown after any write. */
 export class SeedArgsError extends Error {
@@ -61,6 +61,7 @@ export function parseSeedArgs(argv: readonly string[]): Command {
         sync: { type: "boolean" },
         "allow-prune": { type: "boolean" },
         providers: { type: "string" },
+        themes: { type: "string" },
       },
       strict: true,
       allowPositionals: false,
@@ -87,6 +88,16 @@ export function parseSeedArgs(argv: readonly string[]): Command {
       "--providers is only valid with --review (or no command flag, which defaults to review).",
     );
   }
+  if (values.themes !== undefined && kind !== "review" && kind !== "sync") {
+    throw new SeedArgsError(
+      "--themes is only valid with --review or --sync (or no command flag, which defaults to review).",
+    );
+  }
+
+  const themes = parseListFlag(values.themes);
+  if (values.themes !== undefined && themes?.length === 0) {
+    throw new SeedArgsError("--themes must name at least one theme.");
+  }
 
   switch (kind) {
     case "check-images":
@@ -97,18 +108,23 @@ export function parseSeedArgs(argv: readonly string[]): Command {
     case "review":
       return {
         kind: "review",
-        providers:
-          values.providers === undefined
-            ? undefined
-            : String(values.providers)
-                .split(",")
-                .map((s) => s.trim())
-                .filter((s) => s.length > 0),
+        providers: parseListFlag(values.providers),
+        themes,
       };
     case "sync":
       return {
         kind: "sync",
         allowPrune: values["allow-prune"] === true,
+        themes,
       };
   }
+}
+
+/** Parse a comma-separated flag value into a trimmed, non-empty-entry list. */
+function parseListFlag(raw: string | boolean | undefined): string[] | undefined {
+  if (raw === undefined) return undefined;
+  return String(raw)
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
 }
