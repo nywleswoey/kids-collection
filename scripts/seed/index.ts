@@ -26,6 +26,18 @@
  *   pnpm seed --sync --allow-prune
  *                                 as above, permitting the prune. Without this flag a
  *                                 sync with pending prunes aborts before ANY write.
+ *   pnpm seed --review --themes="Ice Age Beasts,Robots"
+ *   pnpm seed --sync --themes="Ice Age Beasts,Robots"
+ *                                 narrow --review or --sync to the named theme(s) —
+ *                                 by exact theme name, comma-separated. Every other
+ *                                 theme in cards.json is left untouched: not reviewed,
+ *                                 not published, not pruned, and not counted against
+ *                                 FR9/FR12. This is how a batch of new themes can be
+ *                                 authored together but published two at a time, while
+ *                                 the rest sit in cards.json unjudged. Pruning is NOT
+ *                                 scoped: --allow-prune's blast radius still covers
+ *                                 everything dropped from the full cards.json. No flag
+ *                                 means every theme, as before.
  *
  * No command flag means `--review`. Unknown flags, two command flags, or a
  * modifier on the wrong command are rejected before anything runs (`./args.ts`).
@@ -558,7 +570,28 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   const published = await deps.listPublishedCardKeys();
   const plan = planInserts(seed, published);
   const planned = new Set(plan.map((p) => cardKey(p.theme, p.card)));
-  const themes: readonly ThemeSeed[] = seed.themes;
+
+  // --themes narrows this run to the named theme(s) — see the header comment.
+  // Resolved against the FULL seed so an unscoped theme is never mistaken for a
+  // typo in a scoped one; everything below (the bake-off, FR9's gates, the
+  // publish loop, and FR12's completeness check) then sees only this subset.
+  // Pruning is deliberately NOT scoped: `previewPrune`/`deleteThemesNotIn` compare
+  // against the full seed, so an unscoped theme — still present in cards.json,
+  // just not part of this run — is never pruned for being out of scope.
+  let themes: readonly ThemeSeed[] = seed.themes;
+  if (command.themes !== undefined) {
+    const wanted = new Set(command.themes);
+    const known = new Set(seed.themes.map((t) => t.name));
+    const unknown = [...wanted].filter((name) => !known.has(name));
+    if (unknown.length > 0) {
+      deps.error(
+        `\n⛔ --themes names theme(s) not found in seed-content/cards.json: ${unknown.join(", ")}\n`,
+      );
+      return 1;
+    }
+    themes = seed.themes.filter((t) => wanted.has(t.name));
+    deps.log(`Scoped to ${themes.length} theme(s): ${themes.map((t) => t.name).join(", ")}`);
+  }
 
   // ── --review: the eager bake-off. Lane-major, so it does not share the
   // publish path's per-theme loop — nothing here writes to the database, and a
@@ -637,8 +670,8 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
 
   // Array position is the theme's display order — appending a theme to
   // seed-content/cards.json makes it the most recent (Inc21 FR2).
-  for (const [sortOrder, theme] of themes.entries()) {
-    const themeId = await deps.upsertTheme(theme.name, sortOrder);
+  for (const theme of themes) {
+    const themeId = await deps.upsertTheme(theme.name, seed.themes.indexOf(theme));
 
     await runPool(theme.cards, PUBLISH_CONCURRENCY, async (card) => {
       try {
@@ -738,7 +771,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
 
   // Sync: prune whole themes dropped from the seed (name no longer in cards.json).
   if (mode === "sync") {
-    report.prunedThemes = await deps.deleteThemesNotIn(themes.map((t) => t.name));
+    report.prunedThemes = await deps.deleteThemesNotIn(seed.themes.map((t) => t.name));
     if (report.prunedThemes > 0) {
       deps.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
     }
@@ -767,9 +800,12 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
   // insert (a card that 429'd out), never an authoring error — which is why the
   // remedy is always "re-run --sync", never prune and never reset.
   if (mode === "sync") {
-    const shortfalls = comparePoolShape(seed, await deps.readPublishedShape());
+    // Scoped to `themes`, not the full seed: an out-of-scope theme has zero
+    // published cards by design and would otherwise read as a shortfall on
+    // every run that didn't select it.
+    const shortfalls = comparePoolShape({ themes: [...themes] }, await deps.readPublishedShape());
     if (shortfalls.length === 0) {
-      deps.log(`✓ completeness: all ${seed.themes.length} theme(s) published in full.`);
+      deps.log(`✓ completeness: all ${themes.length} theme(s) published in full.`);
       return 0;
     }
     deps.error(`\n⛔ completeness: ${shortfalls.length} (theme, rarity) short:\n`);

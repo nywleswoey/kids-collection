@@ -5201,6 +5201,866 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Rough-skinned_newt"
         }
       ]
+    },
+    {
+      "name": "Ice Age Beasts",
+      "cards": [
+        {
+          "name": "Woolly Mammoth",
+          "rarity": "legendary",
+          "eduText": "Woolly mammoths had shaggy fur up to a metre long and curved tusks to sweep snow off frozen grass.",
+          "imagePrompt": "a single large shaggy brown-furred mammoth with long curved tusks, standing on a snowy tundra, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Woolly_mammoth"
+        },
+        {
+          "name": "Smilodon",
+          "rarity": "legendary",
+          "eduText": "Smilodon's curved canine teeth grew up to 28 centimetres long, nearly the length of a dinner plate.",
+          "imagePrompt": "a single muscular tan big cat with two long curved sabre teeth, standing on frosty ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Smilodon"
+        },
+        {
+          "name": "Woolly Rhinoceros",
+          "rarity": "epic",
+          "eduText": "The woolly rhinoceros used its long front horn like a snow plough to clear grass for grazing.",
+          "imagePrompt": "a single shaggy brown rhinoceros with a long curved front horn, standing on snowy tundra grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Woolly_rhinoceros"
+        },
+        {
+          "name": "Giant Ground Sloth",
+          "rarity": "epic",
+          "eduText": "The giant ground sloth stood as tall as an elephant and could rear up to reach leaves high in trees.",
+          "imagePrompt": "a single huge shaggy brown ground sloth standing on its hind legs reaching toward a tree branch, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Megatherium"
+        },
+        {
+          "name": "Short-faced Bear",
+          "rarity": "epic",
+          "eduText": "The short-faced bear had such long legs that scientists think it could run faster than a horse.",
+          "imagePrompt": "a single enormous tan-brown bear with a short face and long legs, standing on grassy plains, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Short-faced_bear"
+        },
+        {
+          "name": "Glyptodon",
+          "rarity": "epic",
+          "eduText": "Glyptodon wore a dome-shaped shell of bony plates, like a car-sized armadillo on four stumpy legs.",
+          "imagePrompt": "a single large rounded animal covered in a thick domed shell of hexagonal plates, standing on dry grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Glyptodon"
+        },
+        {
+          "name": "Irish Elk",
+          "rarity": "epic",
+          "eduText": "The Irish elk carried the biggest antlers of any deer ever known, spanning up to 3.6 metres across.",
+          "imagePrompt": "a single large brown deer with enormous wide palmed antlers, standing in an open meadow, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Irish_elk"
+        },
+        {
+          "name": "Dire Wolf",
+          "rarity": "rare",
+          "eduText": "Dire wolves hunted in packs across ice age America and had stronger jaws than any wolf alive today.",
+          "imagePrompt": "a single sturdy grey wolf with a broad powerful jaw, standing on a frosty plain, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dire_wolf"
+        },
+        {
+          "name": "Cave Lion",
+          "rarity": "rare",
+          "eduText": "Cave lions are known from ice age cave paintings, drawn by early humans thousands of years ago.",
+          "imagePrompt": "a single large tan maneless big cat standing at a rocky cave entrance, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_lion"
+        },
+        {
+          "name": "Cave Bear",
+          "rarity": "rare",
+          "eduText": "Cave bears are named for the hundreds of their skeletons found resting deep inside European caves.",
+          "imagePrompt": "a single large brown bear with a sloped forehead, standing at a cave mouth, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_bear"
+        },
+        {
+          "name": "American Mastodon",
+          "rarity": "rare",
+          "eduText": "Unlike its mammoth cousin, the mastodon had cone-shaped teeth built for crunching twigs and leaves.",
+          "imagePrompt": "a single large brown tusked mastodon with a low sloping back, standing in a pine forest clearing, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/American_mastodon"
+        },
+        {
+          "name": "Steppe Bison",
+          "rarity": "rare",
+          "eduText": "The steppe bison roamed vast ice age grasslands and had horns far longer than any bison today.",
+          "imagePrompt": "a single large shaggy brown bison with long wide-curving horns, standing on open grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Steppe_bison"
+        },
+        {
+          "name": "Giant Beaver",
+          "rarity": "rare",
+          "eduText": "The giant beaver grew as big as a black bear, with front teeth as long as a human finger.",
+          "imagePrompt": "a single large brown beaver with big front teeth, sitting beside a frozen pond, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Castoroides"
+        },
+        {
+          "name": "Elasmotherium",
+          "rarity": "rare",
+          "eduText": "Elasmotherium is nicknamed the Siberian unicorn for the single giant horn on its forehead.",
+          "imagePrompt": "a single large grey rhinoceros-like animal with one tall pointed horn on its forehead, standing on a steppe, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Elasmotherium"
+        },
+        {
+          "name": "Megalania",
+          "rarity": "rare",
+          "eduText": "Megalania was the biggest lizard ever known to walk the Earth, longer than a small car.",
+          "imagePrompt": "a single enormous dark scaly monitor lizard, walking across dry Australian scrubland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Megalania"
+        },
+        {
+          "name": "Reindeer",
+          "rarity": "common",
+          "eduText": "Reindeer are the only deer where both males and females grow antlers every single year.",
+          "imagePrompt": "a single brown reindeer with branching antlers, standing on snowy ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Reindeer"
+        },
+        {
+          "name": "Musk Ox",
+          "rarity": "common",
+          "eduText": "The musk ox grows a dense woolly undercoat called qiviut that keeps it warm in freezing winters.",
+          "imagePrompt": "a single shaggy dark brown musk ox with curved horns, standing on snowy tundra, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Muskox"
+        },
+        {
+          "name": "Arctic Hare",
+          "rarity": "common",
+          "eduText": "The Arctic hare turns pure white in winter so it blends in perfectly with the snow around it.",
+          "imagePrompt": "a single white furry hare with long ears, sitting on a snowy slope, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Arctic_hare"
+        },
+        {
+          "name": "Wolverine",
+          "rarity": "common",
+          "eduText": "The wolverine has huge paws that work like snowshoes, helping it travel over deep snow.",
+          "imagePrompt": "a single dark brown wolverine with a bushy tail, walking across a snowy forest floor, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wolverine"
+        },
+        {
+          "name": "Saiga Antelope",
+          "rarity": "common",
+          "eduText": "The saiga antelope has a large rounded nose that warms up the cold, dry air before it breathes it in.",
+          "imagePrompt": "a single pale tan antelope with a large rounded nose and short horns, standing on a dusty steppe, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Saiga_antelope"
+        },
+        {
+          "name": "Cave Hyena",
+          "rarity": "common",
+          "eduText": "The cave hyena had jaws strong enough to crack open the bones of mammoths for their marrow.",
+          "imagePrompt": "a single spotted tan hyena with a sloped back, standing on rocky ground near a cave, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_hyena"
+        },
+        {
+          "name": "Wild Horse",
+          "rarity": "common",
+          "eduText": "Ice age wild horses roamed in herds across the steppe and are painted on ancient cave walls.",
+          "imagePrompt": "a single stocky tan wild horse with a short upright mane, standing on open grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Wild_horse"
+        },
+        {
+          "name": "American Camel",
+          "rarity": "common",
+          "eduText": "Camels first evolved in North America, where this ice age camel roamed long before any lived in deserts.",
+          "imagePrompt": "a single tall tan humpless camel with long legs, standing on dry grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Camelops"
+        },
+        {
+          "name": "Diprotodon",
+          "rarity": "common",
+          "eduText": "Diprotodon was the biggest marsupial that ever lived, about the size of a small car.",
+          "imagePrompt": "a single large furry wombat-like marsupial, standing on dry Australian outback ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Diprotodon"
+        },
+        {
+          "name": "Procoptodon",
+          "rarity": "common",
+          "eduText": "Procoptodon was a giant short-faced kangaroo that stood as tall as a grown adult.",
+          "imagePrompt": "a single large kangaroo with a short flat face, standing upright on red outback earth, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Procoptodon"
+        },
+        {
+          "name": "Macrauchenia",
+          "rarity": "common",
+          "eduText": "Macrauchenia had a long neck and nose like a small camel, but was actually its own unique kind of mammal.",
+          "imagePrompt": "a single long-necked tan mammal with a short trunk-like nose, standing on South American grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Macrauchenia"
+        },
+        {
+          "name": "Toxodon",
+          "rarity": "common",
+          "eduText": "Toxodon was a thick-set, hippo-sized grazer that once roamed the grasslands of South America.",
+          "imagePrompt": "a single stocky barrel-shaped grey-brown mammal with short legs, standing on grassland, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Toxodon"
+        },
+        {
+          "name": "Steppe Pika",
+          "rarity": "common",
+          "eduText": "The steppe pika gathers piles of dried grass in summer to store as food for the long winter.",
+          "imagePrompt": "a single small round-eared pika sitting beside a pile of dried grass on rocky tundra, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pika"
+        },
+        {
+          "name": "Teratornis",
+          "rarity": "common",
+          "eduText": "Teratornis was a giant ice age bird with wings that could stretch nearly 4 metres from tip to tip.",
+          "imagePrompt": "a single large dark condor-like bird with a hooked beak, standing on a rocky outcrop, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Teratornis"
+        },
+        {
+          "name": "Arctic Lemming",
+          "rarity": "common",
+          "eduText": "Arctic lemmings tunnel busily under the snow all winter, staying warm in a hidden maze of burrows.",
+          "imagePrompt": "a single small round brown lemming poking out of a snow burrow, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lemming"
+        }
+      ]
+    },
+    {
+      "name": "Robots",
+      "cards": [
+        {
+          "name": "Giant Mech",
+          "rarity": "legendary",
+          "eduText": "A giant mech is a towering piloted robot imagined in science fiction, often as tall as a building.",
+          "imagePrompt": "a single giant cheerful cartoon robot shaped like a towering piloted machine, standing on grass, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mecha"
+        },
+        {
+          "name": "Robot King",
+          "rarity": "legendary",
+          "eduText": "A robot king is an imagined ruler-robot, built from the same ideas engineers use for real walking robots.",
+          "imagePrompt": "a single tall shiny cartoon robot wearing a simple crown, standing on grass, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robot"
+        },
+        {
+          "name": "Mech Suit",
+          "rarity": "epic",
+          "eduText": "A mech suit is a powered exoskeleton that straps onto a person, helping them lift far heavier loads.",
+          "imagePrompt": "a single bulky cartoon powered exosuit standing empty on grass, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Powered_exoskeleton"
+        },
+        {
+          "name": "Humanoid Robot",
+          "rarity": "epic",
+          "eduText": "Humanoid robots are built with two arms and two legs so they can use tools and stairs made for people.",
+          "imagePrompt": "a single smooth white cartoon humanoid robot standing on grass, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Humanoid_robot"
+        },
+        {
+          "name": "Space Probe",
+          "rarity": "epic",
+          "eduText": "A space probe carries cameras and sensors on a one-way journey, sending pictures home for years.",
+          "imagePrompt": "a single small boxy cartoon spacecraft with two solar panel wings, floating against a starry sky",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Space_probe"
+        },
+        {
+          "name": "Robot Dog",
+          "rarity": "epic",
+          "eduText": "A robot dog balances on four legs using motors and sensors that react many times every second.",
+          "imagePrompt": "a single sleek grey cartoon four-legged robot shaped like a dog, standing on grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robot_dog"
+        },
+        {
+          "name": "Underwater Robot",
+          "rarity": "epic",
+          "eduText": "Underwater robots explore depths too crushing for divers, sending video back through a long cable.",
+          "imagePrompt": "a single yellow boxy cartoon underwater robot with small propellers and a light, floating near the sea floor",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Remotely_operated_underwater_vehicle"
+        },
+        {
+          "name": "Factory Arm",
+          "rarity": "rare",
+          "eduText": "A factory arm repeats the exact same precise motion thousands of times a day on an assembly line.",
+          "imagePrompt": "a single yellow cartoon robotic arm with jointed segments, standing on a factory floor, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Industrial_robot"
+        },
+        {
+          "name": "Butler Bot",
+          "rarity": "rare",
+          "eduText": "A butler bot uses wheels and a camera to carry items around a home or hotel without bumping into things.",
+          "imagePrompt": "a single friendly round cartoon robot carrying a small tray, standing on a wooden floor, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Service_robot"
+        },
+        {
+          "name": "Warehouse Robot",
+          "rarity": "rare",
+          "eduText": "Warehouse robots glide under tall shelves and lift whole racks of goods to carry them to workers.",
+          "imagePrompt": "a single low flat orange cartoon robot carrying a shelving rack, on a warehouse floor, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Warehouse_robot"
+        },
+        {
+          "name": "Surgical Robot",
+          "rarity": "rare",
+          "eduText": "A surgical robot lets a doctor control tiny precise tools from a console across the room.",
+          "imagePrompt": "a single white cartoon robot with several thin jointed arms, standing beside a hospital table, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robot-assisted_surgery"
+        },
+        {
+          "name": "Search and Rescue Robot",
+          "rarity": "rare",
+          "eduText": "Search and rescue robots crawl into collapsed buildings, using cameras to look for survivors.",
+          "imagePrompt": "a single sturdy red cartoon robot on tracks with a camera arm, crawling over rubble, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Search_and_rescue_robot"
+        },
+        {
+          "name": "Bomb Disposal Robot",
+          "rarity": "rare",
+          "eduText": "A bomb disposal robot uses a long arm and camera so a technician can stay safely far away.",
+          "imagePrompt": "a single boxy olive-green cartoon robot on tank-like tracks with a long arm, standing on pavement, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bomb_disposal_robot"
+        },
+        {
+          "name": "Robot Boat",
+          "rarity": "rare",
+          "eduText": "A robot boat drives itself across the ocean for months, collecting weather data with no crew aboard.",
+          "imagePrompt": "a single small sleek orange cartoon robotic boat with a sail-like sensor mast, floating on calm water",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Autonomous_surface_vehicle"
+        },
+        {
+          "name": "Exoskeleton Suit",
+          "rarity": "rare",
+          "eduText": "A lightweight exoskeleton suit supports tired muscles, helping workers lift boxes all day without strain.",
+          "imagePrompt": "a single slim grey cartoon exoskeleton frame standing empty on a factory floor, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Powered_exoskeleton"
+        },
+        {
+          "name": "Robot Vacuum",
+          "rarity": "common",
+          "eduText": "A robot vacuum uses sensors to map a room and remembers where it has already cleaned.",
+          "imagePrompt": "a single round flat grey cartoon robot vacuum, rolling across a wooden floor, top-angled view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_vacuum_cleaner"
+        },
+        {
+          "name": "Lawn-Mowing Robot",
+          "rarity": "common",
+          "eduText": "A lawn-mowing robot follows a buried wire to know exactly where the edge of the garden is.",
+          "imagePrompt": "a single small green cartoon robot mower, rolling across a grassy lawn, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_lawn_mower"
+        },
+        {
+          "name": "Toy Robot",
+          "rarity": "common",
+          "eduText": "Early wind-up toy robots from the 1950s could walk and flash lights using just gears and a spring.",
+          "imagePrompt": "a single shiny silver cartoon toy robot with a boxy body and antenna, standing on a table, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Toy_robot"
+        },
+        {
+          "name": "Nanobot",
+          "rarity": "common",
+          "eduText": "A nanobot is imagined to be so small that thousands could fit across the width of a human hair.",
+          "imagePrompt": "a single tiny silver cartoon robot shown greatly enlarged, floating above a strand of hair, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nanorobotics"
+        },
+        {
+          "name": "Security Robot",
+          "rarity": "common",
+          "eduText": "Some security robots, like Knightscope's, roll along a set path at night using cameras to check everything looks normal.",
+          "imagePrompt": "a single tall white cartoon robot with a rounded sensor head, rolling through a lobby at night, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Knightscope"
+        },
+        {
+          "name": "Pool-Cleaning Robot",
+          "rarity": "common",
+          "eduText": "A pool-cleaning robot crawls along the bottom and walls of a swimming pool, scrubbing up algae.",
+          "imagePrompt": "a single blue boxy cartoon robot with brushes, resting on the floor of an empty swimming pool, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Automatic_pool_cleaner"
+        },
+        {
+          "name": "Window-Cleaning Robot",
+          "rarity": "common",
+          "eduText": "A window-cleaning robot uses suction to stick to tall glass and slide itself up and down safely.",
+          "imagePrompt": "a single flat square cartoon robot with suction pads, clinging to a glass window, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Window_cleaning_robots"
+        },
+        {
+          "name": "Robot Waiter",
+          "rarity": "common",
+          "eduText": "A robot waiter follows a planned route through a restaurant, carrying trays of food to each table.",
+          "imagePrompt": "a single friendly cartoon robot with a flat tray on top, rolling between restaurant tables, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Service_robot"
+        },
+        {
+          "name": "Companion Robot",
+          "rarity": "common",
+          "eduText": "A companion robot can recognise faces and voices, chatting and keeping someone company at home.",
+          "imagePrompt": "a single small round friendly cartoon robot with big round eyes, sitting on a table, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Social_robot"
+        },
+        {
+          "name": "Delivery Robot",
+          "rarity": "common",
+          "eduText": "A delivery robot rolls along the sidewalk, using a map and cameras to find its way to the right door.",
+          "imagePrompt": "a single boxy cartoon six-wheeled delivery robot with a flag, rolling along a sidewalk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Delivery_robot"
+        },
+        {
+          "name": "Robot Arm",
+          "rarity": "common",
+          "eduText": "A small desktop robot arm is often used by students to learn how real factory robots are programmed.",
+          "imagePrompt": "a single small orange cartoon robotic arm with a gripper claw, standing on a desk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_arm"
+        },
+        {
+          "name": "Flying Camera Robot",
+          "rarity": "common",
+          "eduText": "A flying camera robot uses four spinning rotors to hover steadily while it films from high above.",
+          "imagePrompt": "a single small white cartoon four-rotor flying robot with a camera, hovering above a grassy field",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Unmanned_aerial_vehicle"
+        },
+        {
+          "name": "Robot Receptionist",
+          "rarity": "common",
+          "eduText": "A robot receptionist greets visitors on a screen face and points them toward the right office.",
+          "imagePrompt": "a single friendly cartoon robot with a round screen face, standing behind a front desk, front view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Social_robot"
+        },
+        {
+          "name": "Sorting Robot",
+          "rarity": "common",
+          "eduText": "A sorting robot reads a barcode on each package and swings it onto the correct delivery chute.",
+          "imagePrompt": "a single yellow cartoon robotic arm sorting boxes on a conveyor belt, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Industrial_robot"
+        },
+        {
+          "name": "Robot Fish",
+          "rarity": "common",
+          "eduText": "A robot fish flicks its tail side to side just like a real fish, so it can swim quietly among them.",
+          "imagePrompt": "a single shiny silver-blue cartoon robot shaped like a fish, swimming among green water plants",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_fish"
+        }
+      ]
+    },
+    {
+      "name": "Tiny World",
+      "cards": [
+        {
+          "name": "Tardigrade",
+          "rarity": "legendary",
+          "eduText": "Tardigrades can survive being frozen, dried out, and even the vacuum of outer space.",
+          "imagePrompt": "a single plump eight-legged tardigrade shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tardigrade"
+        },
+        {
+          "name": "Amoeba",
+          "rarity": "legendary",
+          "eduText": "An amoeba is a single cell that has no fixed shape, oozing along by stretching out blobby arms.",
+          "imagePrompt": "a single soft blobby amoeba shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amoeba"
+        },
+        {
+          "name": "Diatom",
+          "rarity": "epic",
+          "eduText": "A diatom is a tiny alga that builds itself a glassy shell in beautiful, star-like patterns.",
+          "imagePrompt": "a single star-shaped glassy diatom shell shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Diatom"
+        },
+        {
+          "name": "Paramecium",
+          "rarity": "epic",
+          "eduText": "A paramecium is covered in thousands of tiny hairs that beat together to row it through water.",
+          "imagePrompt": "a single slipper-shaped paramecium covered in fine hair-like strands, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Paramecium"
+        },
+        {
+          "name": "Dust Mite",
+          "rarity": "epic",
+          "eduText": "A dust mite is so small that a million of them could live on one square metre of carpet.",
+          "imagePrompt": "a single round pale eight-legged dust mite shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dust_mite"
+        },
+        {
+          "name": "Red Blood Cell",
+          "rarity": "epic",
+          "eduText": "A single drop of blood holds about five million red blood cells, each carrying oxygen around the body.",
+          "imagePrompt": "a single round donut-shaped red blood cell shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Red_blood_cell"
+        },
+        {
+          "name": "Pollen Grain",
+          "rarity": "epic",
+          "eduText": "Under a microscope, every type of flower's pollen grain has its own unique bumpy or spiky shape.",
+          "imagePrompt": "a single round spiky yellow pollen grain shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pollen"
+        },
+        {
+          "name": "Bacteria",
+          "rarity": "rare",
+          "eduText": "Bacteria are among the simplest living things, and some can divide into two new cells in minutes.",
+          "imagePrompt": "a single rounded rod-shaped bacterium shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bacteria"
+        },
+        {
+          "name": "Virus",
+          "rarity": "rare",
+          "eduText": "A virus is so tiny that millions could fit on the head of a pin, far smaller than a single cell.",
+          "imagePrompt": "a single round spiky virus particle shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Virus"
+        },
+        {
+          "name": "Rotifer",
+          "rarity": "rare",
+          "eduText": "A rotifer spins a ring of tiny hairs around its mouth that looks like a spinning wheel up close.",
+          "imagePrompt": "a single transparent rotifer with a ring of fine hairs around its head, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Rotifer"
+        },
+        {
+          "name": "Euglena",
+          "rarity": "rare",
+          "eduText": "Euglena can both swim with a tiny whip-like tail and make its own food from sunlight, like a plant.",
+          "imagePrompt": "a single green oval euglena with a long thin whip-like tail, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Euglena"
+        },
+        {
+          "name": "Yeast Cell",
+          "rarity": "rare",
+          "eduText": "A yeast cell grows a tiny bud on its side, which swells up and pinches off to become a new cell.",
+          "imagePrompt": "a single round yeast cell with a smaller bud growing from its side, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Yeast"
+        },
+        {
+          "name": "White Blood Cell",
+          "rarity": "rare",
+          "eduText": "A white blood cell can squeeze its whole body through the tiny gaps between other cells to find germs.",
+          "imagePrompt": "a single lumpy round white blood cell shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/White_blood_cell"
+        },
+        {
+          "name": "Spider Silk Strand",
+          "rarity": "rare",
+          "eduText": "A strand of spider silk is so fine that a single thread is thinner than a human hair.",
+          "imagePrompt": "a single glistening thin silk strand shown greatly enlarged with tiny dewdrops along it, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spider_silk"
+        },
+        {
+          "name": "Snow Crystal",
+          "rarity": "rare",
+          "eduText": "Zoomed in close, an ice crystal always grows six sides, each one branching into its own tiny pattern.",
+          "imagePrompt": "a single six-sided ice crystal shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Snow_crystal"
+        },
+        {
+          "name": "Grain of Sand",
+          "rarity": "common",
+          "eduText": "Zoomed in close, a single grain of sand can look like a tiny sparkling gem or a smooth pebble.",
+          "imagePrompt": "a single rounded sparkly grain of sand shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sand"
+        },
+        {
+          "name": "Human Hair Strand",
+          "rarity": "common",
+          "eduText": "Zoomed in close, a strand of hair looks like overlapping scales, stacked like roof tiles.",
+          "imagePrompt": "a single long hair strand with overlapping scale-like ridges, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hair"
+        },
+        {
+          "name": "Salt Crystal",
+          "rarity": "common",
+          "eduText": "A grain of table salt is actually a tiny perfect cube, built from atoms stacked in neat rows.",
+          "imagePrompt": "a single clear cube-shaped salt crystal shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sodium_chloride"
+        },
+        {
+          "name": "Sugar Crystal",
+          "rarity": "common",
+          "eduText": "A grain of sugar forms sharp, glassy facets, which is why sugar sparkles in bright light.",
+          "imagePrompt": "a single glassy angular sugar crystal shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sugar"
+        },
+        {
+          "name": "Flea",
+          "rarity": "common",
+          "eduText": "A flea can jump more than a hundred times its own body length in a single leap.",
+          "imagePrompt": "a single small dark flea with long back legs, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Flea"
+        },
+        {
+          "name": "Springtail",
+          "rarity": "common",
+          "eduText": "A springtail flicks a tiny tail-like fork underneath its body to catapult itself into the air.",
+          "imagePrompt": "a single tiny round springtail shown greatly enlarged on a patch of soil, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Springtail"
+        },
+        {
+          "name": "Water Flea",
+          "rarity": "common",
+          "eduText": "A water flea has a see-through body, so you can watch its heart beating through its shell.",
+          "imagePrompt": "a single tiny see-through water flea shown greatly enlarged, floating in a droplet of pond water, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Daphnia"
+        },
+        {
+          "name": "Mold Spore",
+          "rarity": "common",
+          "eduText": "A single mold spore is so light it can float on the air for days before landing somewhere new.",
+          "imagePrompt": "a single round fuzzy mold spore shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spore"
+        },
+        {
+          "name": "Skin Cell",
+          "rarity": "common",
+          "eduText": "The outer layer of skin is made of flat cells that are always flaking off and being replaced.",
+          "imagePrompt": "a single flat polygon-shaped skin cell shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Skin"
+        },
+        {
+          "name": "Plant Cell",
+          "rarity": "common",
+          "eduText": "A plant cell has a stiff green wall around it, which is why plants can stand up without bones.",
+          "imagePrompt": "a single boxy green plant cell with a visible wall, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Plant_cell"
+        },
+        {
+          "name": "Onion Cell",
+          "rarity": "common",
+          "eduText": "Peel a thin layer of onion skin and a microscope reveals neat rows of brick-like cells.",
+          "imagePrompt": "a single neat brick-shaped onion cell shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Onion"
+        },
+        {
+          "name": "Nerve Cell",
+          "rarity": "common",
+          "eduText": "A nerve cell has long thin branches that carry messages to and from the brain in a split second.",
+          "imagePrompt": "a single nerve cell with long branching thread-like arms, shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Neuron"
+        },
+        {
+          "name": "Fingerprint Ridge",
+          "rarity": "common",
+          "eduText": "Zoomed in close, a fingerprint is a pattern of tiny ridges and valleys, unique to every single person.",
+          "imagePrompt": "a single swirling fingerprint ridge pattern shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fingerprint"
+        },
+        {
+          "name": "Butterfly Wing Scale",
+          "rarity": "common",
+          "eduText": "A butterfly's wing is covered in thousands of tiny overlapping scales, like miniature roof tiles.",
+          "imagePrompt": "a single colourful overlapping butterfly wing scale shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Scale_(anatomy)"
+        },
+        {
+          "name": "Spider Mite",
+          "rarity": "common",
+          "eduText": "A spider mite is so tiny it can barely be seen without a magnifying glass, yet it spins fine silk webs.",
+          "imagePrompt": "a single tiny red eight-legged spider mite shown greatly enlarged, close view, cheerful cartoon style",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Spider_mite"
+        }
+      ]
+    },
+    {
+      "name": "Mushrooms & Fungi",
+      "cards": [
+        {
+          "name": "Fly Agaric",
+          "rarity": "legendary",
+          "eduText": "The fly agaric's bright red cap with white spots is the most recognised mushroom shape in the world.",
+          "imagePrompt": "a single bright red mushroom with white spots on its cap and a white stem, standing on mossy forest ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amanita_muscaria"
+        },
+        {
+          "name": "Humongous Fungus",
+          "rarity": "legendary",
+          "eduText": "One single humongous fungus spreads underground across nearly 10 square kilometres, the largest living thing known.",
+          "imagePrompt": "a single pale honey-coloured mushroom cluster growing from forest soil among fallen logs, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Armillaria_ostoyae"
+        },
+        {
+          "name": "Giant Puffball",
+          "rarity": "epic",
+          "eduText": "A giant puffball can grow as big as a basketball and release trillions of spores in a single cloud.",
+          "imagePrompt": "a single huge round white puffball mushroom resting on grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Calvatia_gigantea"
+        },
+        {
+          "name": "Destroying Angel",
+          "rarity": "epic",
+          "eduText": "The destroying angel is pure white all over and is among the deadliest mushrooms known, never to be touched or eaten.",
+          "imagePrompt": "a single smooth pure white mushroom with a tall slender stem, standing on dark forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Destroying_angel"
+        },
+        {
+          "name": "Bioluminescent Fungus",
+          "rarity": "epic",
+          "eduText": "This ghost fungus glows a soft green in the dark, a light made by a chemical reaction inside it.",
+          "imagePrompt": "a single cluster of pale cream mushrooms glowing soft green, growing on a log at night",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Omphalotus_nidiformis"
+        },
+        {
+          "name": "Lion's Mane Mushroom",
+          "rarity": "epic",
+          "eduText": "The lion's mane mushroom grows long shaggy white spines instead of the usual cap and gills.",
+          "imagePrompt": "a single round white mushroom covered in long shaggy spine-like strands, growing on a tree trunk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hericium_erinaceus"
+        },
+        {
+          "name": "Stinkhorn",
+          "rarity": "epic",
+          "eduText": "The stinkhorn mushroom smells like rotting meat on purpose, which attracts flies to spread its spores.",
+          "imagePrompt": "a single tall slender orange-tipped mushroom standing upright on woodland leaf litter, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Phallus_impudicus"
+        },
+        {
+          "name": "Chanterelle",
+          "rarity": "rare",
+          "eduText": "The chanterelle mushroom is a deep golden-yellow and smells faintly like ripe apricots.",
+          "imagePrompt": "a single golden-yellow trumpet-shaped mushroom growing from mossy forest ground, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cantharellus"
+        },
+        {
+          "name": "Morel",
+          "rarity": "rare",
+          "eduText": "A morel's cap is covered in a honeycomb pattern of ridges and pits, unlike any other mushroom.",
+          "imagePrompt": "a single tan honeycomb-textured mushroom standing on leafy forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Morchella"
+        },
+        {
+          "name": "Death Cap",
+          "rarity": "rare",
+          "eduText": "The death cap looks similar to edible mushrooms but is one of the deadliest in the world, never to be touched or eaten.",
+          "imagePrompt": "a single pale greenish-white mushroom with a smooth rounded cap, standing on dark forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Amanita_phalloides"
+        },
+        {
+          "name": "Shiitake",
+          "rarity": "rare",
+          "eduText": "Shiitake mushrooms have grown on oak logs in East Asia for over a thousand years as a popular food.",
+          "imagePrompt": "a single brown umbrella-shaped mushroom with a cream underside, growing on a wooden log, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Shiitake"
+        },
+        {
+          "name": "Porcini",
+          "rarity": "rare",
+          "eduText": "Porcini mushrooms have a thick bulging stem and are prized by cooks for their rich, nutty flavour.",
+          "imagePrompt": "a single thick-stemmed brown-capped mushroom standing in forest leaf litter, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Boletus_edulis"
+        },
+        {
+          "name": "Turkey Tail",
+          "rarity": "rare",
+          "eduText": "Turkey tail fungus grows in colourful fan-shaped bands on dead logs, like the tail of its namesake bird.",
+          "imagePrompt": "a single fan-shaped bracket fungus with colourful banded rings, growing on the side of a log",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Trametes_versicolor"
+        },
+        {
+          "name": "Beefsteak Fungus",
+          "rarity": "rare",
+          "eduText": "Beefsteak fungus grows in a thick red slab on tree trunks and even oozes a juice like real meat.",
+          "imagePrompt": "a single thick reddish tongue-shaped bracket fungus growing on the side of a tree trunk",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Fistulina_hepatica"
+        },
+        {
+          "name": "Bird's Nest Fungus",
+          "rarity": "rare",
+          "eduText": "Bird's nest fungus grows as a tiny cup holding egg-shaped spore packets, splashed out by raindrops.",
+          "imagePrompt": "a single tiny brown cup-shaped fungus holding small round spore packets, growing on wood mulch, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nidulariaceae"
+        },
+        {
+          "name": "Button Mushroom",
+          "rarity": "common",
+          "eduText": "The button mushroom is the world's most widely grown mushroom, picked young with a small closed cap.",
+          "imagePrompt": "a single small round white mushroom with a smooth cap, standing on soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agaricus_bisporus"
+        },
+        {
+          "name": "Toadstool",
+          "rarity": "common",
+          "eduText": "Toadstool is the old folk name for a wild mushroom, especially one thought too dangerous to eat.",
+          "imagePrompt": "a single red-capped mushroom with white spots, standing in a grassy woodland clearing, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Toadstool"
+        },
+        {
+          "name": "Puffball",
+          "rarity": "common",
+          "eduText": "A ripe puffball mushroom releases a visible puff of dusty spores if you tap or step near it.",
+          "imagePrompt": "a single round pale cream puffball mushroom resting on grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Puffball"
+        },
+        {
+          "name": "Bracket Fungus",
+          "rarity": "common",
+          "eduText": "Bracket fungus grows flat shelf shapes straight out of tree bark, lasting for several years.",
+          "imagePrompt": "a single flat shelf-shaped brown fungus growing out of a tree trunk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Bracket_fungus"
+        },
+        {
+          "name": "Lichen",
+          "rarity": "common",
+          "eduText": "Lichen is actually two living things in one: a fungus and an alga growing together as partners.",
+          "imagePrompt": "a single patch of pale green-grey crusty lichen growing on a rock, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lichen"
+        },
+        {
+          "name": "Cup Fungus",
+          "rarity": "common",
+          "eduText": "Cup fungus grows in small bright bowl shapes on damp wood, catching raindrops like tiny cups.",
+          "imagePrompt": "a single small bright orange-red cup-shaped fungus growing on damp wood, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pezizales"
+        },
+        {
+          "name": "Earthstar",
+          "rarity": "common",
+          "eduText": "An earthstar's outer skin splits into pointed arms that fold back like a star around its spore ball.",
+          "imagePrompt": "a single brown star-shaped fungus with pointed arms folded around a round centre, on soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Earthstar"
+        },
+        {
+          "name": "Slime Mold",
+          "rarity": "common",
+          "eduText": "Despite living among mushrooms, slime mold isn't a true fungus at all, and it can even creep slowly across surfaces.",
+          "imagePrompt": "a single bright yellow blobby slime mold spreading across a rotting log, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Slime_mold"
+        },
+        {
+          "name": "Inkcap Mushroom",
+          "rarity": "common",
+          "eduText": "An inkcap mushroom's gills dissolve into a black inky drip within hours of being picked.",
+          "imagePrompt": "a single tall grey-brown bell-shaped mushroom with a shaggy cap, standing on grass, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coprinus_comatus"
+        },
+        {
+          "name": "Parasol Mushroom",
+          "rarity": "common",
+          "eduText": "The parasol mushroom opens its cap wide and flat, just like a little parasol standing in the grass.",
+          "imagePrompt": "a single large flat-capped tan mushroom with a tall ringed stem, standing in a meadow, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Macrolepiota_procera"
+        },
+        {
+          "name": "Field Mushroom",
+          "rarity": "common",
+          "eduText": "Field mushrooms pop up in grassy meadows overnight, especially after warm rain in autumn.",
+          "imagePrompt": "a single pale tan mushroom with a rounded cap, standing in a grassy field, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Agaricus_campestris"
+        },
+        {
+          "name": "Jelly Fungus",
+          "rarity": "common",
+          "eduText": "Jelly fungus feels soft and wobbly to the touch, swelling up like a sponge whenever it rains.",
+          "imagePrompt": "a single wobbly orange jelly-like fungus growing on a damp branch, close view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Jelly_fungus"
+        },
+        {
+          "name": "Coral Fungus",
+          "rarity": "common",
+          "eduText": "Coral fungus branches upward into thin pointed arms, looking just like ocean coral growing on the forest floor.",
+          "imagePrompt": "a single branching pale yellow coral-shaped fungus growing on forest soil, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Coral_fungus"
+        },
+        {
+          "name": "Oyster Mushroom",
+          "rarity": "common",
+          "eduText": "Oyster mushrooms grow in overlapping fan-shaped clusters, often straight out of the side of a tree.",
+          "imagePrompt": "a single cluster of pale grey fan-shaped mushrooms growing on the side of a tree trunk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pleurotus_ostreatus"
+        },
+        {
+          "name": "Chicken of the Woods",
+          "rarity": "common",
+          "eduText": "Chicken of the woods grows in bright orange and yellow shelves on tree trunks, stacked like ruffled fans.",
+          "imagePrompt": "a single stack of bright orange-yellow shelf-shaped fungus growing on a tree trunk, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Laetiporus"
+        }
+      ]
     }
   ]
 }
