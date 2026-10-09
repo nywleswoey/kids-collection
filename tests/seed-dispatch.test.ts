@@ -91,6 +91,7 @@ interface Harness {
   written: Map<string, string | Uint8Array>;
   published: Set<string>;
   insertedAnimatedUrls: Map<string, string | null | undefined>;
+  themesTouched: string[];
 }
 
 /** A review candidate plus its sidecar, as `--review` would leave them. */
@@ -126,6 +127,7 @@ function harness(
   const files = opts.files ?? new Map<string, Uint8Array>();
   const noop = () => {};
   const insertedAnimatedUrls = new Map<string, string | null | undefined>();
+  const themesTouched: string[] = [];
 
   const deps: SeedDeps = {
     env: { databaseUrl: "postgres://postgres@localhost:5499/fake", blobToken: "fake" },
@@ -138,6 +140,7 @@ function harness(
     readPublishedShape: async () => opts.shape ?? [],
     upsertTheme: async (name) => {
       calls.push("upsertTheme");
+      themesTouched.push(name);
       return `id-${name}`;
     },
     insertCardIfNew: async (input) => {
@@ -197,7 +200,7 @@ function harness(
     warn: noop,
     error: noop,
   };
-  return { deps, calls, written, published, insertedAnimatedUrls };
+  return { deps, calls, written, published, insertedAnimatedUrls, themesTouched };
 }
 
 function writes(calls: string[]): string[] {
@@ -422,5 +425,65 @@ describe("runSeed --review: a legendary card's dropped animation is imported for
 
     expect(code).toBe(0);
     expect([...h.written.keys()].some((k) => k.endsWith(".anim.webp"))).toBe(false);
+  });
+});
+
+describe("runSeed --sync: --themes scopes the run to named theme(s)", () => {
+  const MAMMALS = "Mammals";
+  // Mammals carries no `provider` on the theme or either card — an unjudged
+  // bake-off, same as a theme freshly appended to cards.json before its
+  // contact sheet has been picked over.
+  const twoThemes: SeedFile = {
+    themes: [
+      { name: THEME, provider: PROVIDER.id, cards: [card("Robin"), card("Wren")] },
+      { name: MAMMALS, cards: [card("Otter"), card("Badger")] },
+    ],
+  };
+
+  it("ignores an unjudged out-of-scope theme and still publishes the in-scope one", async () => {
+    const h = harness({
+      seed: twoThemes,
+      files: reviewed("Robin", "Wren"),
+      shape: [{ theme: THEME, rarity: "common", n: 2 }],
+    });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false, themes: [THEME] }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.themesTouched).toEqual([THEME]);
+    expect(h.calls.filter((c) => c === "insertCardIfNew")).toHaveLength(2);
+  });
+
+  it("still refuses an unjudged theme that IS in scope, writing nothing", async () => {
+    const h = harness({ seed: twoThemes, files: reviewed("Robin", "Wren") });
+
+    const code = await runSeed(
+      { kind: "sync", allowPrune: false, themes: [MAMMALS] },
+      h.deps,
+    );
+
+    expect(code).toBe(1);
+    expect(writes(h.calls)).toEqual([]);
+  });
+
+  it("with no --themes, an unjudged theme anywhere in the seed still aborts the whole run", async () => {
+    const h = harness({ seed: twoThemes, files: reviewed("Robin", "Wren") });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(code).toBe(1);
+    expect(writes(h.calls)).toEqual([]);
+  });
+
+  it("rejects a theme name that is not in the seed file, writing nothing", async () => {
+    const h = harness({ seed: twoThemes, files: reviewed("Robin", "Wren") });
+
+    const code = await runSeed(
+      { kind: "sync", allowPrune: false, themes: ["Not A Theme"] },
+      h.deps,
+    );
+
+    expect(code).toBe(1);
+    expect(writes(h.calls)).toEqual([]);
   });
 });

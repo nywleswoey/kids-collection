@@ -39,6 +39,30 @@ describe("parseSeedArgs (A2)", () => {
       });
     });
 
+    it("parses --review --themes=a,b", () => {
+      expect(parse(["--review", "--themes=Ice Age Beasts,Robots"])).toEqual({
+        kind: "review",
+        providers: undefined,
+        themes: ["Ice Age Beasts", "Robots"],
+      });
+    });
+
+    it("parses --sync --themes=a,b", () => {
+      expect(parse(["--sync", "--themes=Ice Age Beasts,Robots"])).toEqual({
+        kind: "sync",
+        allowPrune: false,
+        themes: ["Ice Age Beasts", "Robots"],
+      });
+    });
+
+    it("trims and drops empty entries in --themes", () => {
+      expect(parse(["--sync", "--themes= a , ,b "])).toEqual({
+        kind: "sync",
+        allowPrune: false,
+        themes: ["a", "b"],
+      });
+    });
+
     it("parses bare --sync", () => {
       expect(parse(["--sync"])).toEqual({
         kind: "sync",
@@ -99,6 +123,14 @@ describe("parseSeedArgs (A2)", () => {
 
     it("rejects --providers outside --review (previously silently ignored)", () => {
       rejects(["--sync", "--providers=a"]);
+    });
+
+    it("rejects --themes outside --review/--sync", () => {
+      rejects(["--check-urls", "--themes=a"]);
+    });
+
+    it("rejects an empty --themes", () => {
+      rejects(["--sync", "--themes="]);
     });
   });
 
