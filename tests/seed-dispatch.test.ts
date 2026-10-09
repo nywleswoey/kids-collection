@@ -92,6 +92,8 @@ interface Harness {
   published: Set<string>;
   insertedAnimatedUrls: Map<string, string | null | undefined>;
   themesTouched: string[];
+  themeSortOrders: Map<string, number>;
+  themesKept: string[][];
 }
 
 /** A review candidate plus its sidecar, as `--review` would leave them. */
@@ -128,6 +130,8 @@ function harness(
   const noop = () => {};
   const insertedAnimatedUrls = new Map<string, string | null | undefined>();
   const themesTouched: string[] = [];
+  const themeSortOrders = new Map<string, number>();
+  const themesKept: string[][] = [];
 
   const deps: SeedDeps = {
     env: { databaseUrl: "postgres://postgres@localhost:5499/fake", blobToken: "fake" },
@@ -138,9 +142,10 @@ function harness(
     },
     readPublishedImages: async () => [],
     readPublishedShape: async () => opts.shape ?? [],
-    upsertTheme: async (name) => {
+    upsertTheme: async (name, sortOrder) => {
       calls.push("upsertTheme");
       themesTouched.push(name);
+      themeSortOrders.set(name, sortOrder);
       return `id-${name}`;
     },
     insertCardIfNew: async (input) => {
@@ -156,8 +161,9 @@ function harness(
       calls.push("deleteCardsNotIn");
       return 0;
     },
-    deleteThemesNotIn: async () => {
+    deleteThemesNotIn: async (keep) => {
       calls.push("deleteThemesNotIn");
+      themesKept.push([...keep]);
       return 0;
     },
     previewPrune: async () => {
@@ -200,7 +206,7 @@ function harness(
     warn: noop,
     error: noop,
   };
-  return { deps, calls, written, published, insertedAnimatedUrls, themesTouched };
+  return { deps, calls, written, published, insertedAnimatedUrls, themesTouched, themeSortOrders, themesKept };
 }
 
 function writes(calls: string[]): string[] {
@@ -452,6 +458,20 @@ describe("runSeed --sync: --themes scopes the run to named theme(s)", () => {
     expect(code).toBe(0);
     expect(h.themesTouched).toEqual([THEME]);
     expect(h.calls.filter((c) => c === "insertCardIfNew")).toHaveLength(2);
+  });
+
+  it("keeps every seed theme from pruning and upserts at its cards.json position", async () => {
+    const h = harness({
+      seed: { themes: [...twoThemes.themes].reverse() },
+      files: reviewed("Robin", "Wren"),
+      shape: [{ theme: THEME, rarity: "common", n: 2 }],
+    });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false, themes: [THEME] }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.themeSortOrders).toEqual(new Map([[THEME, 1]]));
+    expect(h.themesKept).toEqual([[MAMMALS, THEME]]);
   });
 
   it("still refuses an unjudged theme that IS in scope, writing nothing", async () => {

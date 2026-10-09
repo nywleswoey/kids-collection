@@ -670,8 +670,8 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
 
   // Array position is the theme's display order — appending a theme to
   // seed-content/cards.json makes it the most recent (Inc21 FR2).
-  for (const [sortOrder, theme] of themes.entries()) {
-    const themeId = await deps.upsertTheme(theme.name, sortOrder);
+  for (const theme of themes) {
+    const themeId = await deps.upsertTheme(theme.name, seed.themes.indexOf(theme));
 
     await runPool(theme.cards, PUBLISH_CONCURRENCY, async (card) => {
       try {
@@ -771,7 +771,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
 
   // Sync: prune whole themes dropped from the seed (name no longer in cards.json).
   if (mode === "sync") {
-    report.prunedThemes = await deps.deleteThemesNotIn(themes.map((t) => t.name));
+    report.prunedThemes = await deps.deleteThemesNotIn(seed.themes.map((t) => t.name));
     if (report.prunedThemes > 0) {
       deps.log(`🗑️  pruned ${report.prunedThemes} dropped theme(s)`);
     }
