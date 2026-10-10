@@ -6119,7 +6119,7 @@
         {
           "name": "Elasmosaurus",
           "rarity": "epic",
-          "eduText": "Elasmosaurus had the longest neck of any sea reptile, with more neck bones than any known animal.",
+          "eduText": "Elasmosaurus had one of the longest necks of any sea reptile, with over 70 neck bones.",
           "imagePrompt": "a single sea reptile with an extremely long neck trailing behind a small body, swimming, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Elasmosaurus"
         },
@@ -6147,7 +6147,7 @@
         {
           "name": "Helicoprion",
           "rarity": "rare",
-          "eduText": "Helicoprion was a shark with a strange spiral of teeth curled inside its lower jaw.",
+          "eduText": "Helicoprion was a shark-like fish with a strange spiral of teeth curled inside its lower jaw.",
           "imagePrompt": "a single grey shark-like fish with a visible spiral tooth whorl in its lower jaw, swimming, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Helicoprion"
         },
@@ -6238,7 +6238,7 @@
         {
           "name": "Hybodus",
           "rarity": "common",
-          "eduText": "Hybodus was an ancient shark with a spine in front of each fin, common in old seas.",
+          "eduText": "Hybodus was an ancient shark with a spine in front of each back fin, common in old seas.",
           "imagePrompt": "a single grey shark with a spine in front of its dorsal fin, swimming, side view",
           "sourceUrl": "https://en.wikipedia.org/wiki/Hybodus"
         },
@@ -6369,7 +6369,7 @@
         {
           "name": "Andromeda the Princess",
           "rarity": "rare",
-          "eduText": "Andromeda the princess is named after a famous galaxy that sits right beside her stars.",
+          "eduText": "The famous Andromeda Galaxy is named after this constellation and sits among her stars.",
           "imagePrompt": "a single cheerful glowing star-covered princess figure standing with arms outstretched, on a dark night sky background",
           "sourceUrl": "https://en.wikipedia.org/wiki/Andromeda_(constellation)"
         },
