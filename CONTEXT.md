@@ -193,7 +193,7 @@ free provider:
   a model swap is a roster decision (#69), not a file-size one.
 - **Contact sheet** — the subject × provider grid built by `pnpm contact-sheet`
   (`src/shared/pool/contact-sheet.ts`), **CHECKPOINT 2** of
-  `seed-content/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
+  `docs/NEW-THEME-RUNBOOK.md`, where a human picks the winner per card.
 - **`params`** — an adapter's declared, **total** request-parameter bag, hashed into
   the candidate filename so a parameter change invalidates exactly the reviews it
   would change. Pacing (`minIntervalMs`, `concurrency`) is deliberately excluded,

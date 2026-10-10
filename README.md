@@ -32,7 +32,7 @@ oversight, …); see the git log and issue tracker for what's landed since U7.
 
 ## Seeding the card pool
 
-To add a whole new theme, hand `seed-content/NEW-THEME-RUNBOOK.md` and a theme name to an agent — it authors the
+To add a whole new theme, hand `docs/NEW-THEME-RUNBOOK.md` and a theme name to an agent — it authors the
 30 cards, generates the art, and stops for your approval before publishing.
 
 ```bash
