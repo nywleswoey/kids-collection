@@ -101,7 +101,7 @@ describe("renderJudgeTable", () => {
     expect(html).toContain(`pnpm theme-picks "Warriors"</code>`);
   });
 
-  it("renders a --use for the row(s) that differ from the majority", () => {
+  it("renders a bare command when every row is preselected to its own differing recommendation", () => {
     const html = renderJudgeTable({
       theme: "Warriors",
       rows: [
@@ -110,7 +110,18 @@ describe("renderJudgeTable", () => {
         row({ name: "C", outcome: { status: "judged", winner: "supergrok-manual", reason: "x" } }),
       ],
     });
-    expect(html).toContain(`--use \"C=supergrok-manual\"`);
+    expect(html).toContain(`pnpm theme-picks "Warriors"</code>`);
+  });
+
+  it("renders a --use for an unjudged row's preselected first candidate", () => {
+    const html = renderJudgeTable({
+      theme: "Warriors",
+      rows: [
+        row({ name: "A", outcome: { status: "judged", winner: "cloudflare-sdxl", reason: "x" } }),
+        row({ name: "B", outcome: { status: "unjudged", reason: "no claude" } }),
+      ],
+    });
+    expect(html).toContain(`pnpm theme-picks "Warriors" --use "B=cloudflare-sdxl"</code>`);
   });
 
   it("leaves a card with no candidate at all out of the generated command", () => {
@@ -133,46 +144,54 @@ describe("renderJudgeTable", () => {
 });
 
 describe("buildPickCommand", () => {
-  function sel(name: string, providerId?: string): PickSelection {
-    return { name, providerId };
+  function sel(name: string, providerId?: string, recommended?: string): PickSelection {
+    return { name, providerId, recommended };
   }
 
-  it("produces a bare theme command when every selection agrees", () => {
-    expect(buildPickCommand("Warriors", [sel("A", "cloudflare-sdxl"), sel("B", "cloudflare-sdxl")])).toBe(
-      'pnpm theme-picks "Warriors"',
-    );
-  });
-
-  it("adds --use only for selections that differ from the majority", () => {
+  it("produces a bare theme command when every selection matches its own recommendation", () => {
     expect(
       buildPickCommand("Warriors", [
-        sel("A", "cloudflare-sdxl"),
-        sel("B", "cloudflare-sdxl"),
-        sel("C", "supergrok-manual"),
+        sel("A", "cloudflare-sdxl", "cloudflare-sdxl"),
+        sel("B", "supergrok-manual", "supergrok-manual"),
+      ]),
+    ).toBe('pnpm theme-picks "Warriors"');
+  });
+
+  it("adds --use only for selections that differ from their own recommendation", () => {
+    expect(
+      buildPickCommand("Warriors", [
+        sel("A", "cloudflare-sdxl", "cloudflare-sdxl"),
+        sel("B", "cloudflare-sdxl", "cloudflare-sdxl"),
+        sel("C", "supergrok-manual", "cloudflare-sdxl"),
       ]),
     ).toBe('pnpm theme-picks "Warriors" --use "C=supergrok-manual"');
   });
 
+  it("keeps a switched pick that happens to match the other rows' majority", () => {
+    expect(
+      buildPickCommand("Warriors", [
+        sel("A", "cloudflare-sdxl", "cloudflare-sdxl"),
+        sel("B", "cloudflare-sdxl", "cloudflare-sdxl"),
+        sel("C", "cloudflare-sdxl", "supergrok-manual"),
+      ]),
+    ).toBe('pnpm theme-picks "Warriors" --use "C=cloudflare-sdxl"');
+  });
+
+  it("always adds --use for a selection whose row has no recommendation", () => {
+    expect(
+      buildPickCommand("Warriors", [sel("A", "cloudflare-sdxl", "cloudflare-sdxl"), sel("B", "cloudflare-sdxl")]),
+    ).toBe('pnpm theme-picks "Warriors" --use "B=cloudflare-sdxl"');
+  });
+
   it("skips a selection with no providerId (no candidate to pick)", () => {
-    expect(buildPickCommand("Warriors", [sel("A", "cloudflare-sdxl"), sel("B", undefined)])).toBe(
+    expect(buildPickCommand("Warriors", [sel("A", "cloudflare-sdxl", "cloudflare-sdxl"), sel("B", undefined)])).toBe(
       'pnpm theme-picks "Warriors"',
     );
   });
 
-  it("breaks a tie toward whichever provider reaches the max count first", () => {
-    expect(
-      buildPickCommand("Warriors", [
-        sel("A", "supergrok-manual"),
-        sel("B", "cloudflare-sdxl"),
-        sel("C", "supergrok-manual"),
-        sel("D", "cloudflare-sdxl"),
-      ]),
-    ).toBe('pnpm theme-picks "Warriors" --use "B=cloudflare-sdxl" --use "D=cloudflare-sdxl"');
-  });
-
   it("shell-quotes a theme or card name containing a double quote", () => {
-    expect(buildPickCommand('Odd "Theme"', [sel("A", "cloudflare-sdxl"), sel("B", "supergrok-manual")])).toBe(
-      'pnpm theme-picks "Odd \\"Theme\\"" --use "B=supergrok-manual"',
-    );
+    expect(
+      buildPickCommand('Odd "Theme"', [sel("A", "cloudflare-sdxl", "cloudflare-sdxl"), sel("B", "supergrok-manual")]),
+    ).toBe('pnpm theme-picks "Odd \\"Theme\\"" --use "B=supergrok-manual"');
   });
 });

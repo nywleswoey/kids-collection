@@ -14,11 +14,12 @@
  * The page is also interactive, entirely client-side (no server, no build
  * step): each row with at least one candidate gets a `<select>` of the
  * providers that actually have one, preselected to the judge's
- * recommendation when there is one. A script re-derives the majority
- * provider from the current selections — same tie-break as
- * `src/shared/pool/theme-picks.ts`'s `deriveThemePicks` (first provider to
- * reach the max count, in row order) — and renders a ready-to-copy `pnpm
- * theme-picks "<Theme>" --use "<Card>=<id>" ...` command reflecting them. A
+ * recommendation when there is one. A script renders a ready-to-copy `pnpm
+ * theme-picks "<Theme>" --use "<Card>=<id>" ...` command reflecting the
+ * current selections: a `--use` for every row whose selection is not that
+ * row's own recommendation (or that has no recommendation at all), since
+ * `theme-picks` defaults every other card to its recommendation and derives
+ * the theme's majority itself. A
  * row with no candidate at all has no `<select>` and is never included in
  * that command; running it still leaves that card refused by `theme-picks`,
  * same as it would be unresolved from the CLI alone.
@@ -67,6 +68,8 @@ export interface PickSelection {
   name: string;
   /** The provider currently selected for this row; undefined for a row with no candidate to pick. */
   providerId?: string;
+  /** This row's judge recommendation; undefined when the row is unjudged or has no candidate. */
+  recommended?: string;
 }
 
 /** Double-quoted, shell-escaped — matches the inline script's `kcShellQuote` byte for byte. */
@@ -75,12 +78,13 @@ function shellQuote(s: string): string {
 }
 
 /**
- * Build the `pnpm theme-picks` command for the current per-row selections —
- * same derivation `deriveThemePicks` (`src/shared/pool/theme-picks.ts`) uses:
- * the majority provider among resolved selections, in row order, with ties
- * broken toward whichever reaches the max count first; every other
- * selection becomes a `--use "<name>=<id>"`. A row with no selection
- * (`providerId` undefined — no candidate at all) is left out entirely.
+ * Build the `pnpm theme-picks` command for the current per-row selections:
+ * every selection that differs from its own row's recommendation (or whose
+ * row has none) becomes a `--use "<name>=<id>"`. `deriveThemePicks`
+ * (`src/shared/pool/theme-picks.ts`) gives every other card its
+ * recommendation, so the command reproduces exactly these selections. A row
+ * with no selection (`providerId` undefined — no candidate at all) is left
+ * out entirely.
  *
  * Pure, so this is what both the server-rendered initial command and the
  * test suite exercise directly; the page's inline script re-implements the
@@ -88,26 +92,10 @@ function shellQuote(s: string): string {
  * recompute it as the human changes a dropdown — keep the two in sync.
  */
 export function buildPickCommand(theme: string, selections: readonly PickSelection[]): string {
-  const resolved = selections.filter(
-    (s): s is { name: string; providerId: string } => s.providerId !== undefined,
-  );
-
-  const counts = new Map<string, number>();
-  let majority: string | undefined;
-  let best = 0;
-  for (const s of resolved) {
-    const n = (counts.get(s.providerId) ?? 0) + 1;
-    counts.set(s.providerId, n);
-    if (n > best) {
-      best = n;
-      majority = s.providerId;
-    }
-  }
-
   let cmd = `pnpm theme-picks ${shellQuote(theme)}`;
-  if (majority !== undefined) {
-    for (const s of resolved) {
-      if (s.providerId !== majority) cmd += ` --use ${shellQuote(`${s.name}=${s.providerId}`)}`;
+  for (const s of selections) {
+    if (s.providerId !== undefined && s.providerId !== s.recommended) {
+      cmd += ` --use ${shellQuote(`${s.name}=${s.providerId}`)}`;
     }
   }
   return cmd;
@@ -158,7 +146,7 @@ ${cells}
   const initialSelections: PickSelection[] = table.rows.map((row) => {
     const available = row.candidates.filter((c) => c.fileName !== undefined);
     const winner = winnerId(row.outcome);
-    return { name: row.name, providerId: winner ?? available[0]?.providerId };
+    return { name: row.name, providerId: winner ?? available[0]?.providerId, recommended: winner };
   });
   const initialCommand = buildPickCommand(table.theme, initialSelections);
 
@@ -197,7 +185,7 @@ Switch any row's pick with its dropdown; the command below updates to match. Run
 diff, commit, then Step 9 as usual.</p>
 ${
   unjudged + missing > 0
-    ? `<p class="warn">⚠ ${missing} card(s) have no candidate at all, ${unjudged} card(s) could not be judged (see each row's note). Neither can be included in the generated command — resolve them (re-run the image lanes, or pass their own --use by hand) before running it.</p>`
+    ? `<p class="warn">⚠ ${missing} card(s) have no candidate at all, ${unjudged} card(s) could not be judged (see each row's note). A card with no candidate cannot be included in the generated command — re-run the image lanes first. An unjudged card's dropdown pick is always included as its own --use, so check it before running.</p>`
     : ""
 }
 <div id="cmd-box">
@@ -213,7 +201,7 @@ ${rows}
 </table>
 <script>
 var KC_THEME = ${jsonForScript(table.theme)};
-var KC_ROWS = ${jsonForScript(table.rows.map((r) => r.name))};
+var KC_ROWS = ${jsonForScript(table.rows.map((r) => ({ name: r.name, recommended: winnerId(r.outcome) ?? null })))};
 
 function kcShellQuote(s) {
   return '"' + String(s).replace(/\\\\/g, "\\\\\\\\").replace(/"/g, '\\\\"') + '"';
@@ -226,33 +214,13 @@ function kcRecompute() {
     picks[sel.getAttribute("data-card")] = sel.value;
   });
 
-  var counts = {};
-  var order = [];
-  KC_ROWS.forEach(function (name) {
-    var id = picks[name];
-    if (id === undefined) return;
-    order.push(id);
-    counts[id] = (counts[id] || 0) + 1;
-  });
-
-  var majority;
-  var best = 0;
-  order.forEach(function (id) {
-    if (counts[id] > best) {
-      best = counts[id];
-      majority = id;
+  var cmd = "pnpm theme-picks " + kcShellQuote(KC_THEME);
+  KC_ROWS.forEach(function (row) {
+    var id = picks[row.name];
+    if (id !== undefined && id !== row.recommended) {
+      cmd += " --use " + kcShellQuote(row.name + "=" + id);
     }
   });
-
-  var cmd = "pnpm theme-picks " + kcShellQuote(KC_THEME);
-  if (majority !== undefined) {
-    KC_ROWS.forEach(function (name) {
-      var id = picks[name];
-      if (id !== undefined && id !== majority) {
-        cmd += " --use " + kcShellQuote(name + "=" + id);
-      }
-    });
-  }
   document.getElementById("cmd-text").textContent = cmd;
 }
 
