@@ -12,7 +12,7 @@ import type { SeedCard } from "./seed-schema";
  * to an unframed one and a theme drawn from mixed lanes stops looking uniform.
  *
  * THE NUMBERS BELOW ARE THE CANONICAL ONES. Everywhere else that mentions this —
- * the Cloudflare adapter, `NEW-THEME-RUNBOOK.md`, the guard in `pool.test.ts` —
+ * the Cloudflare adapter, `docs/NEW-THEME-RUNBOOK.md`, the guard in `pool.test.ts` —
  * points here rather than restating them, so re-measuring is one edit.
  * `tsx --env-file-if-exists=.env.local archive/prototypes/81-frames/index.ts` regenerates the
  * images and the contact sheet they were judged from (archived, Pollinations-dependent — see

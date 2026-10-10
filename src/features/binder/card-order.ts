@@ -18,7 +18,7 @@ import type { BinderCard } from "@/lib/types";
  * now a screen the child arrives at deliberately, and the layout of a screen
  * should not be an accident of storage.
  *
- * Reordering destroys nothing the runbook built. `NEW-THEME-RUNBOOK.md` guards
+ * Reordering destroys nothing the runbook built. `docs/NEW-THEME-RUNBOOK.md` guards
  * the *themes* array explicitly — "array position **is** the theme's display
  * order… never reorder existing entries — that reshuffles what the children
  * already know" — and says nothing at all about the `cards` array inside a

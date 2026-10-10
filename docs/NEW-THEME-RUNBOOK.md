@@ -6,7 +6,7 @@ human approval, publish, and open a PR.
 
 This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authoring document.
 
-**Invocation:** _"Add the theme **Ocean Machines** using `seed-content/NEW-THEME-RUNBOOK.md`."_
+**Invocation:** _"Add the theme **Ocean Machines** using `docs/NEW-THEME-RUNBOOK.md`."_
 
 ## Contract
 
@@ -344,6 +344,39 @@ so a blank `model` means unwitnessed, never "the model I asked for".
 
 If a provider stops responding, its lane is abandoned after 3 consecutive failures and the run reports it.
 Re-run to resume: images already on disk are never regenerated.
+
+### Running the Grok and Cloudflare lanes concurrently, for a batch
+
+When "Authoring several themes, publishing fewer at a time" (below) has you generating art for more than
+one theme in a session, the automatic Cloudflare lane and the manual Grok lane can run side by side in two
+terminals rather than one after another:
+
+```bash
+# terminal 1 — the manual lane, theme by theme
+pnpm supergrok "<Theme A>" --auto && pnpm supergrok "<Theme B>" --auto
+
+# terminal 2 — the automatic lane, scoped to the same batch
+pnpm seed --review --themes="<Theme A>,<Theme B>" --providers=cloudflare-sdxl
+```
+
+This is safe to run concurrently: `--review` only ever reads the database (it never writes to it) and
+every review file is content-addressed by `<hash8>-<provider>-<params4>`, so the two terminals write
+disjoint files — the Cloudflare lane never touches a `supergrok-manual` file or vice versa. Each
+`pnpm supergrok … --auto` already ends by running `pnpm seed --review --providers=supergrok-manual` and
+`pnpm contact-sheet "<Theme Name>"` itself (that import call is **not** scoped with `--themes`, so it
+checks the whole unpublished pool for drop-folder matches by hash — harmless, since a theme you are not
+currently dropping pictures for simply has no matching file to import). Those automatic contact-sheet
+runs can land *before* terminal 2's Cloudflare pass has finished, so the sheet they build is a stale,
+Cloudflare-incomplete snapshot — expected, not a bug.
+
+`pnpm contact-sheet` takes exactly one theme name and writes one file,
+`seed-content/review/<theme-slug>-review.html` — there is no single combined sheet across themes. Once
+both terminals have finished, rebuild the sheet for **each** theme in the batch so it reflects every lane:
+
+```bash
+pnpm contact-sheet "<Theme A>"
+pnpm contact-sheet "<Theme B>"
+```
 
 ### Screen the grid yourself, first — and form a *recommendation*, not a verdict
 

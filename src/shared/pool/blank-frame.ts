@@ -56,7 +56,7 @@
  * ── What it deliberately does not catch ──────────────────────────────────────
  * A picture of the wrong subject, a badly drawn one, a framed one, a photoreal
  * one. Those are judgements about content, they are CHECKPOINT 2's job
- * (`seed-content/NEW-THEME-RUNBOOK.md`) and a human's, and the provider contract says so
+ * (`docs/NEW-THEME-RUNBOOK.md`) and a human's, and the provider contract says so
  * explicitly: "deliberately NOT here: anything about content, style or subject
  * fidelity."
  *
