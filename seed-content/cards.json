@@ -5204,6 +5204,7 @@
     },
     {
       "name": "Ice Age Beasts",
+      "provider": "supergrok-manual",
       "cards": [
         {
           "name": "Woolly Mammoth",
@@ -5273,7 +5274,8 @@
           "rarity": "rare",
           "eduText": "Cave bears are named for the hundreds of their skeletons found resting deep inside European caves.",
           "imagePrompt": "a single large brown bear with a sloped forehead, standing at a cave mouth, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_bear"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cave_bear",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "American Mastodon",
@@ -5419,13 +5421,15 @@
     },
     {
       "name": "Robots",
+      "provider": "supergrok-manual",
       "cards": [
         {
           "name": "Giant Mech",
           "rarity": "legendary",
           "eduText": "A giant mech is a towering piloted robot imagined in science fiction, often as tall as a building.",
           "imagePrompt": "a single giant cheerful cartoon robot shaped like a towering piloted machine, standing on grass, front view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Mecha"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mecha",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Robot King",
@@ -5453,7 +5457,8 @@
           "rarity": "epic",
           "eduText": "A space probe carries cameras and sensors on a one-way journey, sending pictures home for years.",
           "imagePrompt": "a single small boxy cartoon spacecraft with two solar panel wings, floating against a starry sky",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Space_probe"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Space_probe",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Robot Dog",
@@ -5502,7 +5507,8 @@
           "rarity": "rare",
           "eduText": "Search and rescue robots crawl into collapsed buildings, using cameras to look for survivors.",
           "imagePrompt": "a single sturdy red cartoon robot on tracks with a camera arm, crawling over rubble, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Search_and_rescue_robot"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Search_and_rescue_robot",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Bomb Disposal Robot",
@@ -5537,7 +5543,8 @@
           "rarity": "common",
           "eduText": "A lawn-mowing robot follows a buried wire to know exactly where the edge of the garden is.",
           "imagePrompt": "a single small green cartoon robot mower, rolling across a grassy lawn, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_lawn_mower"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Robotic_lawn_mower",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Toy Robot",
@@ -5593,7 +5600,8 @@
           "rarity": "common",
           "eduText": "A delivery robot rolls along the sidewalk, using a map and cameras to find its way to the right door.",
           "imagePrompt": "a single boxy cartoon six-wheeled delivery robot with a flag, rolling along a sidewalk, side view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Delivery_robot"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Delivery_robot",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Robot Arm",
@@ -5614,7 +5622,8 @@
           "rarity": "common",
           "eduText": "A robot receptionist greets visitors on a screen face and points them toward the right office.",
           "imagePrompt": "a single friendly cartoon robot with a round screen face, standing behind a front desk, front view",
-          "sourceUrl": "https://en.wikipedia.org/wiki/Social_robot"
+          "sourceUrl": "https://en.wikipedia.org/wiki/Social_robot",
+          "provider": "cloudflare-sdxl"
         },
         {
           "name": "Sorting Robot",
