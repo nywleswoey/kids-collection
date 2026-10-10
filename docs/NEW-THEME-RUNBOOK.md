@@ -575,29 +575,47 @@ commit it.
 The human has chosen; write it down. This is the one step with no counterpart in the old single-provider
 pipeline, and it is what stands between a reviewed image and a published one.
 
-In `seed-content/cards.json`, set **`provider` on the theme** to whichever provider won most rows, and add
-`provider` to **individual cards only where a different one won** — a sparse override list, not 30 repeats.
-A theme carrying several lanes is normal (#77):
-
-Add one key to the theme object, and one key to each overridden card. Everything else in the file is left
-exactly as it is — no other field is touched by this step:
-
-```jsonc
-// on the theme object, alongside "name" and "cards":
-"provider": "cloudflare-sdxl",
-
-// on a card object that a different provider won, alongside its five fields:
-"provider": "supergrok-manual",
+```bash
+pnpm theme-picks "<Theme Name>"
 ```
 
-`--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes. The id
-must match a registered provider exactly — see the registry at `src/shared/pool/providers/index.ts`, or run
-`--sync` on an unknown id to have it print every registered id; a typo is refused by name rather than
-treated as a missing review.
+Writes the pick into `seed-content/cards.json` for you — no hand-editing. By default every card's pick is
+`pnpm theme-images`'s judge recommendation (its cache, `seed-content/review/<theme-slug>-judge-
+cache.json`, read directly — no `claude` CLI call here), reusing the exact same table you just read at
+Checkpoint 2. It sets **`provider` on the theme** to whichever provider wins the most cards and adds
+`provider` to **individual cards only where a different one won** — the same sparse-override shape as
+before — and touches no other field, so the diff is just those `provider` lines. Re-running it is
+idempotent and replaces this theme's previous picks, so changing your mind costs nothing.
+
+Override any card from the command line instead of trusting the judge, by name, as many times as you
+like:
+
+```bash
+pnpm theme-picks "<Theme Name>" --use "Mons Meg=supergrok-manual" --use "Catapult=cloudflare"
+```
+
+`<provider>` is a registered id (`src/shared/pool/providers/index.ts`) or a short alias (`grok`,
+`cloudflare`) when that's unambiguous; an unknown card name or provider id is refused by name, nothing is
+written. The images-review HTML page (Step 6) is interactive for exactly this: each row has a dropdown to
+switch its pick (the judge's recommendation preselected), and the page shows the matching `pnpm
+theme-picks ...` command, ready to copy, as you change them.
+
+A card with no judged recommendation (unjudged or no candidate at all) and no `--use` for it stops the
+whole run — the command lists every such card, by name, and writes nothing. Run `pnpm theme-images` again
+to judge it, or pass its own `--use`.
+
+`--sync` resolves `card.provider ?? theme.provider` and publishes **that** provider's reviewed bytes — the
+command above is what sets that resolution up.
 
 ```bash
 git add seed-content/cards.json && git commit -m "feat(seed): record the <Theme> bake-off picks"
 ```
+
+**Fallback — hand-editing.** If you need to set a `provider` `pnpm theme-picks` can't reach (an escape
+hatch with no judge coverage, a one-off data fix), edit `seed-content/cards.json` directly: the theme
+object's `provider`, alongside `name` and `cards`, and a card's own `provider`, alongside its five fields,
+sparse — a different one only where it won. The id must match the registry exactly, or run `--sync` on an
+unknown id to have it print every registered one.
 
 ### Optional — animate the legendary cards
 

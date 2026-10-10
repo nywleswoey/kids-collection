@@ -53,6 +53,8 @@ pnpm contact-sheet "<Theme Name>"
 pnpm theme-images "<Theme Name>"
                        # Grok (--auto) + Cloudflare lanes concurrently, then an advisory
                        #   claude-CLI pick per card in a side-by-side review table
+pnpm theme-picks "<Theme Name>" [--use "<Card Name>=<provider>"]...
+                       # write the judge's picks (plus any overrides) into cards.json
 pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent),
                        #   recording what drew them in seed-content/provenance.json
 ```
@@ -83,7 +85,7 @@ src/features/         domain features (binder, pull, trade, admin, quiz, profile
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
-scripts/              seed CLI, contact-sheet, supergrok helper, theme-images, reconcile, backup verify
+scripts/              seed CLI, contact-sheet, supergrok helper, theme-images, theme-picks, reconcile, backup verify
 seed-content/         card/theme source data (cards.json, provenance.json)
 docs/                 operational runbooks (new theme, restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
