@@ -1,6 +1,6 @@
 /**
  * Pure judging logic for `pnpm theme-images`'s review step (see AGENTS.md and
- * `seed-content/NEW-THEME-RUNBOOK.md`'s "both lanes at once" subsection).
+ * `docs/NEW-THEME-RUNBOOK.md`'s "both lanes at once" subsection).
  *
  * For a card with more than one candidate image, the local `claude` CLI
  * (headless, `claude -p`) is asked to pick between them against the card's
@@ -152,23 +152,24 @@ export function parseJudgeOutput(
   };
 
   // `claude -p --output-format json` wraps the model's final reply in an
-  // envelope under `.result`. Try that first, then the raw text (in case the
-  // runner already unwrapped it), then a best-effort scrape for a lone JSON
-  // object anywhere in the output.
+  // envelope under `.result`; unwrap that first, falling back to the raw text
+  // (in case the runner already unwrapped it). Either way, try the text as a
+  // bare JSON object, then a best-effort scrape for a lone JSON object anywhere
+  // in it (the model may preface its answer or wrap it in a code fence).
+  let text = raw;
   try {
     const envelope = JSON.parse(raw);
     if (envelope && typeof envelope === "object" && typeof envelope.result === "string") {
-      const nested = tryParse(envelope.result);
-      if (nested) return nested;
+      text = envelope.result;
     }
   } catch {
     // not an envelope; fall through
   }
 
-  const direct = tryParse(raw);
+  const direct = tryParse(text);
   if (direct) return direct;
 
-  const match = raw.match(/\{[^{}]*"winner"[^{}]*\}/s);
+  const match = text.match(/\{[^{}]*"winner"[^{}]*\}/s);
   return match ? tryParse(match[0]) : undefined;
 }
 

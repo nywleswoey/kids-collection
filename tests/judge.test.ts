@@ -90,6 +90,16 @@ describe("parseJudgeOutput", () => {
     expect(out).toEqual({ winner: "cloudflare-sdxl", reason: "no border" });
   });
 
+  it("scrapes a prefaced, code-fenced reply out of a claude --output-format json envelope", () => {
+    const envelope = JSON.stringify({
+      result: 'Here is my verdict:\n```json\n{"winner": "supergrok-manual", "reason": "no border"}\n```',
+    });
+    expect(parseJudgeOutput(envelope, validIds)).toEqual({
+      winner: "supergrok-manual",
+      reason: "no border",
+    });
+  });
+
   it("rejects a winner that names an unknown provider", () => {
     expect(parseJudgeOutput(`{"winner": "made-up", "reason": "x"}`, validIds)).toBeUndefined();
   });

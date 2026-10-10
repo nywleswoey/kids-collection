@@ -1,7 +1,7 @@
 /**
  * Generate a theme's art through both providers, then render an advisory
  * judge table — runbook Step 6/7's "both lanes at once" shortcut (see
- * `seed-content/NEW-THEME-RUNBOOK.md` and AGENTS.md).
+ * `docs/NEW-THEME-RUNBOOK.md` and AGENTS.md).
  *
  *   pnpm theme-images "<Theme Name>"
  *
