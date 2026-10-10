@@ -50,6 +50,9 @@ pnpm seed --review --providers=supergrok-manual
                        # import that drop folder as one more bake-off column
 pnpm contact-sheet "<Theme Name>"
                        # subject x provider grid to review, into seed-content/review/
+pnpm theme-images "<Theme Name>"
+                       # Grok (--auto) + Cloudflare lanes concurrently, then an advisory
+                       #   claude-CLI pick per card in a side-by-side review table
 pnpm seed --sync       # publish the picked provider's reviewed bytes (idempotent),
                        #   recording what drew them in seed-content/provenance.json
 ```
@@ -80,9 +83,9 @@ src/features/         domain features (binder, pull, trade, admin, quiz, profile
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
-scripts/              seed CLI, contact-sheet, supergrok helper, reconcile, backup verify
-seed-content/         card/theme source data (cards.json, provenance.json, runbook)
-docs/                 operational runbooks (restore, passkey cutover, migration notes)
+scripts/              seed CLI, contact-sheet, supergrok helper, theme-images, reconcile, backup verify
+seed-content/         card/theme source data (cards.json, provenance.json)
+docs/                 operational runbooks (new theme, restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
 tests/                property-based + unit tests, plus tests/contracts/ shared specs
 tests-pg/             integration tests against a real dockerized Postgres

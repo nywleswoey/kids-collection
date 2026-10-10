@@ -378,6 +378,35 @@ pnpm contact-sheet "<Theme A>"
 pnpm contact-sheet "<Theme B>"
 ```
 
+### `pnpm theme-images` — both lanes at once, with an advisory judge pick
+
+A shortcut over running the Grok and Cloudflare lanes separately and screening the grid by eye:
+
+```bash
+pnpm theme-images "Ocean Machines"
+```
+
+It runs `pnpm supergrok "<Theme Name>" --auto` and
+`pnpm seed --review --themes="<Theme Name>" --providers=cloudflare-sdxl` **concurrently**, reusing both
+commands unchanged — same resume/skip behaviour, same per-card failure reporting. One lane failing is
+reported and does not stop or abandon the other; whatever landed in `seed-content/review/` from either lane
+by the time both finish is what gets judged.
+
+For every card with more than one candidate on disk, it asks the local, signed-in `claude` CLI, headless
+(`claude -p`, no API key, no SDK, no network call of its own — the same pattern `--auto` uses for the signed-in
+`grok` CLI), to pick between them against that card's exact prompt and this section's rejection criteria (text
+baked in, a frame or border, a blank/black frame, the wrong subject, anything not kid-friendly), with a one-line
+reason. A card with only one usable candidate gets that one with no judge call. Verdicts are cached by the
+candidates' content hashes in `seed-content/review/<theme-slug>-judge-cache.json`, so a re-run never re-judges a
+pair it has already seen. If `claude` is not on your PATH, or a call fails or times out, that card is reported
+and left unjudged rather than guessed at.
+
+It then writes `seed-content/review/<theme-slug>-images-review.html`: one row per card, both providers'
+candidates side by side, the judge's pick badged "Recommended" with its reason. **This is advisory only** —
+nothing is written to `seed-content/cards.json` and nothing is published. It does not replace Step 7's contact
+sheet or Step 8's human pick; it is a faster way to get both lanes' pixels on disk and a second opinion on each
+row before you screen it yourself.
+
 ### Screen the grid yourself, first — and form a *recommendation*, not a verdict
 
 Build the contact sheet (Step 7) and screen from it — it is a grid, so you are comparing a row rather than
