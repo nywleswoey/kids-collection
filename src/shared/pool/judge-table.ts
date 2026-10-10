@@ -10,6 +10,18 @@
  * the badge is a recommendation, not a pick.
  *
  * Pure — no I/O — so the CLI stays a thin shell around `renderJudgeTable`.
+ *
+ * The page is also interactive, entirely client-side (no server, no build
+ * step): each row with at least one candidate gets a `<select>` of the
+ * providers that actually have one, preselected to the judge's
+ * recommendation when there is one. A script re-derives the majority
+ * provider from the current selections — same tie-break as
+ * `src/shared/pool/theme-picks.ts`'s `deriveThemePicks` (first provider to
+ * reach the max count, in row order) — and renders a ready-to-copy `pnpm
+ * theme-picks "<Theme>" --use "<Card>=<id>" ...` command reflecting them. A
+ * row with no candidate at all has no `<select>` and is never included in
+ * that command; running it still leaves that card refused by `theme-picks`,
+ * same as it would be unresolved from the CLI alone.
  */
 import type { JudgeOutcome } from "./judge";
 
@@ -51,13 +63,64 @@ function winnerId(outcome: JudgeOutcome): string | undefined {
   return outcome.status === "missing" || outcome.status === "unjudged" ? undefined : outcome.winner;
 }
 
+export interface PickSelection {
+  name: string;
+  /** The provider currently selected for this row; undefined for a row with no candidate to pick. */
+  providerId?: string;
+}
+
+/** Double-quoted, shell-escaped — matches the inline script's `kcShellQuote` byte for byte. */
+function shellQuote(s: string): string {
+  return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+/**
+ * Build the `pnpm theme-picks` command for the current per-row selections —
+ * same derivation `deriveThemePicks` (`src/shared/pool/theme-picks.ts`) uses:
+ * the majority provider among resolved selections, in row order, with ties
+ * broken toward whichever reaches the max count first; every other
+ * selection becomes a `--use "<name>=<id>"`. A row with no selection
+ * (`providerId` undefined — no candidate at all) is left out entirely.
+ *
+ * Pure, so this is what both the server-rendered initial command and the
+ * test suite exercise directly; the page's inline script re-implements the
+ * same algorithm in plain JS (no bundler to share this with the browser) to
+ * recompute it as the human changes a dropdown — keep the two in sync.
+ */
+export function buildPickCommand(theme: string, selections: readonly PickSelection[]): string {
+  const resolved = selections.filter(
+    (s): s is { name: string; providerId: string } => s.providerId !== undefined,
+  );
+
+  const counts = new Map<string, number>();
+  let majority: string | undefined;
+  let best = 0;
+  for (const s of resolved) {
+    const n = (counts.get(s.providerId) ?? 0) + 1;
+    counts.set(s.providerId, n);
+    if (n > best) {
+      best = n;
+      majority = s.providerId;
+    }
+  }
+
+  let cmd = `pnpm theme-picks ${shellQuote(theme)}`;
+  if (majority !== undefined) {
+    for (const s of resolved) {
+      if (s.providerId !== majority) cmd += ` --use ${shellQuote(`${s.name}=${s.providerId}`)}`;
+    }
+  }
+  return cmd;
+}
+
 export function renderJudgeTable(table: JudgeTable): string {
   const unjudged = table.rows.filter((r) => r.outcome.status === "unjudged").length;
   const missing = table.rows.filter((r) => r.outcome.status === "missing").length;
 
   const rows = table.rows
-    .map((row) => {
+    .map((row, rowIndex) => {
       const winner = winnerId(row.outcome);
+      const available = row.candidates.filter((c) => c.fileName !== undefined);
       const cells = row.candidates
         .map((c) => {
           const isWinner = winner !== undefined && c.providerId === winner;
@@ -71,15 +134,33 @@ ${body}
 </td>`;
         })
         .join("");
+      const picker =
+        available.length > 0
+          ? `<select class="pick-select" data-card="${esc(row.name)}" data-row="${rowIndex}" onchange="kcRecompute()">
+${available
+  .map(
+    (c) =>
+      `<option value="${esc(c.providerId)}" ${c.providerId === winner ? "selected" : ""}>${esc(c.providerId)}</option>`,
+  )
+  .join("")}
+</select>`
+          : `<span class="sub">no candidate — not pickable</span>`;
       return `<tr>
 <th scope="row"><b>${esc(row.name)}</b><div class="r">${esc(row.rarity)}</div></th>
 ${cells}
-<td class="note">${outcomeNote(row.outcome)}</td>
+<td class="note">${outcomeNote(row.outcome)}<div class="picker">${picker}</div></td>
 </tr>`;
     })
     .join("\n");
 
   const providerIds = [...new Set(table.rows.flatMap((r) => r.candidates.map((c) => c.providerId)))];
+
+  const initialSelections: PickSelection[] = table.rows.map((row) => {
+    const available = row.candidates.filter((c) => c.fileName !== undefined);
+    const winner = winnerId(row.outcome);
+    return { name: row.name, providerId: winner ?? available[0]?.providerId };
+  });
+  const initialCommand = buildPickCommand(table.theme, initialSelections);
 
   return `<!doctype html><meta charset=utf-8><title>${esc(table.theme)} — image judge</title>
 <style>
@@ -101,23 +182,92 @@ img{width:100%;border-radius:8px;display:block;background:#222}
 td.pick{outline:2px solid #6c9;outline-offset:-2px;border-radius:8px}
 .badge{background:#6c9;color:#113;font-size:11px;font-weight:600;letter-spacing:.04em;
   text-transform:uppercase;border-radius:4px;padding:2px 6px;display:inline-block;margin-bottom:4px}
+.picker{margin-top:6px}
+select.pick-select{background:#1b1b1b;color:#eee;border:1px solid #333;border-radius:4px;padding:2px 4px;font-size:12px}
+#cmd-box{position:sticky;top:0;background:#182018;border:1px solid #2a3a2a;border-radius:8px;padding:10px 12px;margin:8px 0 16px;z-index:1}
+#cmd-text{display:block;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;font-size:12px;margin:6px 0}
+#cmd-copy{background:#2a3a2a;color:#9c6;border:1px solid #3a4a3a;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer}
+#cmd-copy:hover{background:#344434}
 </style>
 <h1>${esc(table.theme)} — image judge (advisory)</h1>
 <p class="sub">One row per card, one column per provider this run generated through. "Recommended" is the
 local <code>claude</code> CLI's advisory pick against the card's prompt and the runbook's rejection
 criteria — it is not written to <code>seed-content/cards.json</code> and <code>--sync</code> never reads it.
-Record the human pick at Step 8 as usual.</p>
+Switch any row's pick with its dropdown; the command below updates to match. Run it (Step 8), review the
+diff, commit, then Step 9 as usual.</p>
 ${
   unjudged + missing > 0
-    ? `<p class="warn">⚠ ${missing} card(s) have no candidate at all, ${unjudged} card(s) could not be judged (see each row's note).</p>`
+    ? `<p class="warn">⚠ ${missing} card(s) have no candidate at all, ${unjudged} card(s) could not be judged (see each row's note). Neither can be included in the generated command — resolve them (re-run the image lanes, or pass their own --use by hand) before running it.</p>`
     : ""
 }
+<div id="cmd-box">
+<b>Copy-ready command</b>
+<code id="cmd-text">${escText(initialCommand)}</code>
+<button id="cmd-copy" type="button" onclick="kcCopyCommand()">Copy</button>
+</div>
 <table>
 <thead><tr><th>Card</th>${providerIds.map((p) => `<th>${esc(p)}</th>`).join("")}<th>Judge</th></tr></thead>
 <tbody>
 ${rows}
 </tbody>
-</table>`;
+</table>
+<script>
+var KC_THEME = ${jsonForScript(table.theme)};
+var KC_ROWS = ${jsonForScript(table.rows.map((r) => r.name))};
+
+function kcShellQuote(s) {
+  return '"' + String(s).replace(/\\\\/g, "\\\\\\\\").replace(/"/g, '\\\\"') + '"';
+}
+
+function kcRecompute() {
+  var selects = document.querySelectorAll(".pick-select");
+  var picks = {};
+  selects.forEach(function (sel) {
+    picks[sel.getAttribute("data-card")] = sel.value;
+  });
+
+  var counts = {};
+  var order = [];
+  KC_ROWS.forEach(function (name) {
+    var id = picks[name];
+    if (id === undefined) return;
+    order.push(id);
+    counts[id] = (counts[id] || 0) + 1;
+  });
+
+  var majority;
+  var best = 0;
+  order.forEach(function (id) {
+    if (counts[id] > best) {
+      best = counts[id];
+      majority = id;
+    }
+  });
+
+  var cmd = "pnpm theme-picks " + kcShellQuote(KC_THEME);
+  if (majority !== undefined) {
+    KC_ROWS.forEach(function (name) {
+      var id = picks[name];
+      if (id !== undefined && id !== majority) {
+        cmd += " --use " + kcShellQuote(name + "=" + id);
+      }
+    });
+  }
+  document.getElementById("cmd-text").textContent = cmd;
+}
+
+function kcCopyCommand() {
+  var text = document.getElementById("cmd-text").textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(text);
+}
+
+kcRecompute();
+</script>`;
+}
+
+/** JSON-encode a value for embedding inside an inline `<script>` block — escapes `</` so no card name or theme name can close the tag early. */
+function jsonForScript(value: unknown): string {
+  return JSON.stringify(value).replace(/<\//g, "<\\/");
 }
 
 function esc(s: string): string {
@@ -125,4 +275,9 @@ function esc(s: string): string {
     /[&<>"']/g,
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
   );
+}
+
+/** Escapes a string for an HTML text node (no attribute, so quotes need no escaping). */
+function escText(s: string): string {
+  return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
 }
