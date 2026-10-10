@@ -6070,6 +6070,436 @@
           "sourceUrl": "https://en.wikipedia.org/wiki/Laetiporus"
         }
       ]
+    },
+    {
+      "name": "Prehistoric Sea Monsters",
+      "cards": [
+        {
+          "name": "Megalodon",
+          "rarity": "legendary",
+          "eduText": "Megalodon was the biggest shark ever, as long as a bus, with teeth the size of a human hand.",
+          "imagePrompt": "a single enormous grey shark with a huge mouth full of triangular teeth, swimming in open blue water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Megalodon"
+        },
+        {
+          "name": "Mosasaurus",
+          "rarity": "legendary",
+          "eduText": "Mosasaurus was a giant ocean reptile with paddle-like flippers and a crocodile-shaped head.",
+          "imagePrompt": "a single large streamlined sea reptile with flippers and a long toothy snout, swimming near the surface, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Mosasaurus"
+        },
+        {
+          "name": "Plesiosaurus",
+          "rarity": "epic",
+          "eduText": "Plesiosaurus swam with a very long neck and small head, hunting fish in ancient seas.",
+          "imagePrompt": "a single sea reptile with a very long slender neck, small head, and four flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Plesiosaurus"
+        },
+        {
+          "name": "Ichthyosaurus",
+          "rarity": "epic",
+          "eduText": "Ichthyosaurus looked like a dolphin but was really a reptile with big eyes for hunting in deep water.",
+          "imagePrompt": "a single dolphin-shaped grey sea reptile with a pointed snout and large eye, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ichthyosaurus"
+        },
+        {
+          "name": "Dunkleosteus",
+          "rarity": "epic",
+          "eduText": "Dunkleosteus was an armoured fish with bony plates instead of teeth that could crush almost anything.",
+          "imagePrompt": "a single large armour-plated grey fish with a bony-plated jaw, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dunkleosteus"
+        },
+        {
+          "name": "Liopleurodon",
+          "rarity": "epic",
+          "eduText": "Liopleurodon had a short neck and a huge jaw packed with cone-shaped teeth for grabbing prey.",
+          "imagePrompt": "a single large short-necked sea reptile with a wide jaw and four flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Liopleurodon"
+        },
+        {
+          "name": "Elasmosaurus",
+          "rarity": "epic",
+          "eduText": "Elasmosaurus had one of the longest necks of any sea reptile, with over 70 neck bones.",
+          "imagePrompt": "a single sea reptile with an extremely long neck trailing behind a small body, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Elasmosaurus"
+        },
+        {
+          "name": "Kronosaurus",
+          "rarity": "rare",
+          "eduText": "Kronosaurus had a skull longer than a grown man is tall, packed with cone-shaped teeth.",
+          "imagePrompt": "a single large sea reptile with a huge toothy skull and short neck, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Kronosaurus"
+        },
+        {
+          "name": "Tylosaurus",
+          "rarity": "rare",
+          "eduText": "Tylosaurus was a fast-swimming giant mosasaur that patrolled ancient coastlines for prey.",
+          "imagePrompt": "a single long slender sea reptile with flippers and a pointed snout, swimming near the coast, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Tylosaurus"
+        },
+        {
+          "name": "Xiphactinus",
+          "rarity": "rare",
+          "eduText": "Xiphactinus was a giant bony fish with fang-like teeth that swallowed prey almost whole.",
+          "imagePrompt": "a single large silvery fish with fang-like teeth and an upturned mouth, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Xiphactinus"
+        },
+        {
+          "name": "Helicoprion",
+          "rarity": "rare",
+          "eduText": "Helicoprion was a shark-like fish with a strange spiral of teeth curled inside its lower jaw.",
+          "imagePrompt": "a single grey shark-like fish with a visible spiral tooth whorl in its lower jaw, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Helicoprion"
+        },
+        {
+          "name": "Archelon",
+          "rarity": "rare",
+          "eduText": "Archelon was the biggest sea turtle ever found, as long as a small car.",
+          "imagePrompt": "a single enormous sea turtle with a large flat shell and flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Archelon"
+        },
+        {
+          "name": "Shonisaurus",
+          "rarity": "rare",
+          "eduText": "Shonisaurus was a giant ichthyosaur with a long narrow snout, bigger than a bus.",
+          "imagePrompt": "a single very large dolphin-shaped sea reptile with a long narrow snout, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Shonisaurus"
+        },
+        {
+          "name": "Pliosaurus",
+          "rarity": "rare",
+          "eduText": "Pliosaurus had a short neck and a bite thought to be one of the strongest of any animal.",
+          "imagePrompt": "a single sea reptile with a short thick neck, wide jaw, and four flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pliosaurus"
+        },
+        {
+          "name": "Leedsichthys",
+          "rarity": "rare",
+          "eduText": "Leedsichthys was an enormous gentle fish that strained tiny food from the water, like a whale shark.",
+          "imagePrompt": "a single huge wide-mouthed fish with a large tail, swimming calmly, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leedsichthys"
+        },
+        {
+          "name": "Metriorhynchus",
+          "rarity": "common",
+          "eduText": "Metriorhynchus was a crocodile relative that lived fully in the ocean and had smooth, finned limbs.",
+          "imagePrompt": "a single slender crocodile-shaped sea reptile with smooth flipper-like limbs, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Metriorhynchus"
+        },
+        {
+          "name": "Temnodontosaurus",
+          "rarity": "common",
+          "eduText": "Temnodontosaurus had some of the largest eyes of any animal, perfect for hunting in dim water.",
+          "imagePrompt": "a single dolphin-shaped sea reptile with very large round eyes, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Temnodontosaurus"
+        },
+        {
+          "name": "Cryptoclidus",
+          "rarity": "common",
+          "eduText": "Cryptoclidus was a smaller long-necked sea reptile that paddled slowly after fish and shrimp.",
+          "imagePrompt": "a single small long-necked sea reptile with four paddle-like flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cryptoclidus"
+        },
+        {
+          "name": "Platecarpus",
+          "rarity": "common",
+          "eduText": "Platecarpus was a common mosasaur with a streamlined body built for fast swimming.",
+          "imagePrompt": "a single sleek sea reptile with flippers and a shark-like tail, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Platecarpus"
+        },
+        {
+          "name": "Globidens",
+          "rarity": "common",
+          "eduText": "Globidens had round, ball-shaped teeth made for crushing shellfish instead of slicing meat.",
+          "imagePrompt": "a single sea reptile with flippers and a rounded snout, swimming near the seabed, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Globidens"
+        },
+        {
+          "name": "Henodus",
+          "rarity": "common",
+          "eduText": "Henodus was a flat, armoured reptile shaped almost like a turtle that lived in shallow lagoons.",
+          "imagePrompt": "a single flat, armour-plated reptile with a turtle-like body, resting on a sandy seabed, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Henodus"
+        },
+        {
+          "name": "Placodus",
+          "rarity": "common",
+          "eduText": "Placodus had flat, peg-like teeth for crunching shellfish along the ancient coast.",
+          "imagePrompt": "a single stout, armoured reptile with a short tail, standing on a rocky seabed, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Placodus"
+        },
+        {
+          "name": "Nothosaurus",
+          "rarity": "common",
+          "eduText": "Nothosaurus was an early marine reptile with webbed feet that hunted fish in shallow seas.",
+          "imagePrompt": "a single long, slender reptile with webbed feet and a toothy snout, swimming near the surface, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Nothosaurus"
+        },
+        {
+          "name": "Hybodus",
+          "rarity": "common",
+          "eduText": "Hybodus was an ancient shark with a spine in front of each back fin, common in old seas.",
+          "imagePrompt": "a single grey shark with a spine in front of its dorsal fin, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hybodus"
+        },
+        {
+          "name": "Dakosaurus",
+          "rarity": "common",
+          "eduText": "Dakosaurus was a crocodile relative with a short, deep skull built for powerful bites.",
+          "imagePrompt": "a single sea reptile with a short deep skull and finned tail, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Dakosaurus"
+        },
+        {
+          "name": "Styxosaurus",
+          "rarity": "common",
+          "eduText": "Styxosaurus was a classic long-necked sea reptile that cruised slowly through ancient oceans.",
+          "imagePrompt": "a single long-necked sea reptile with a small head and four flippers, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Styxosaurus"
+        },
+        {
+          "name": "Simosaurus",
+          "rarity": "common",
+          "eduText": "Simosaurus was a small early marine reptile with a sturdy body suited to shallow coastal water.",
+          "imagePrompt": "a single small sturdy reptile with short legs, resting near shallow coastal water, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Simosaurus"
+        },
+        {
+          "name": "Eurhinosaurus",
+          "rarity": "common",
+          "eduText": "Eurhinosaurus had an extra-long upper jaw that stuck out far past its lower jaw.",
+          "imagePrompt": "a single dolphin-shaped sea reptile with an unusually long upper snout, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Eurhinosaurus"
+        },
+        {
+          "name": "Thalassomedon",
+          "rarity": "common",
+          "eduText": "Thalassomedon was a large long-necked sea reptile named for being a ruler of the sea.",
+          "imagePrompt": "a single large long-necked sea reptile with a small head, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Thalassomedon"
+        },
+        {
+          "name": "Cymbospondylus",
+          "rarity": "common",
+          "eduText": "Cymbospondylus was an early, eel-like ichthyosaur, one of the first reptiles to live fully at sea.",
+          "imagePrompt": "a single long, eel-shaped sea reptile with a slender snout, swimming, side view",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cymbospondylus"
+        }
+      ]
+    },
+    {
+      "name": "Constellations",
+      "cards": [
+        {
+          "name": "Orion the Hunter",
+          "rarity": "legendary",
+          "eduText": "Orion is the easiest constellation to find, with three bright stars glowing in a row for his belt.",
+          "imagePrompt": "a single cheerful glowing star-covered hunter figure with a belt of three bright stars, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Orion_(constellation)"
+        },
+        {
+          "name": "Ursa Major the Great Bear",
+          "rarity": "legendary",
+          "eduText": "Ursa Major has been used by sailors for thousands of years to find true north in the sky.",
+          "imagePrompt": "a single cheerful glowing star-covered bear figure standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ursa_Major"
+        },
+        {
+          "name": "Scorpius the Scorpion",
+          "rarity": "epic",
+          "eduText": "Scorpius curls a long glowing tail of stars across the summer night sky.",
+          "imagePrompt": "a single friendly glowing star-covered scorpion figure with a curled tail, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Scorpius"
+        },
+        {
+          "name": "Leo the Lion",
+          "rarity": "epic",
+          "eduText": "Leo's stars trace the shape of a lion resting with its head held high and proud.",
+          "imagePrompt": "a single cheerful glowing star-covered lion figure sitting proudly, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Leo_(constellation)"
+        },
+        {
+          "name": "Pegasus the Winged Horse",
+          "rarity": "epic",
+          "eduText": "Pegasus gallops across the autumn sky with four bright stars marking his body.",
+          "imagePrompt": "a single cheerful glowing star-covered winged horse figure leaping, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pegasus_(constellation)"
+        },
+        {
+          "name": "Hercules the Strongman",
+          "rarity": "epic",
+          "eduText": "Hercules is one of the largest constellations, named for the mightiest hero in Greek myth.",
+          "imagePrompt": "a single cheerful glowing star-covered strongman figure flexing his arms, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hercules_(constellation)"
+        },
+        {
+          "name": "Draco the Dragon",
+          "rarity": "epic",
+          "eduText": "Draco winds and coils around the North Star, one of the longest constellations in the sky.",
+          "imagePrompt": "a single friendly glowing star-covered coiled dragon figure, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Draco_(constellation)"
+        },
+        {
+          "name": "Taurus the Bull",
+          "rarity": "rare",
+          "eduText": "Taurus is marked by a bright orange star glowing like a fiery eye on the bull's face.",
+          "imagePrompt": "a single cheerful glowing star-covered bull figure with lowered horns, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Taurus_(constellation)"
+        },
+        {
+          "name": "Sagittarius the Archer",
+          "rarity": "rare",
+          "eduText": "Sagittarius the archer aims toward the brightest, busiest part of the Milky Way.",
+          "imagePrompt": "a single cheerful glowing star-covered centaur archer figure drawing a bow, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Sagittarius_(constellation)"
+        },
+        {
+          "name": "Cygnus the Swan",
+          "rarity": "rare",
+          "eduText": "Cygnus the swan glides through the sky along a path of stars called the Northern Cross.",
+          "imagePrompt": "a single graceful glowing star-covered swan figure with spread wings, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cygnus_(constellation)"
+        },
+        {
+          "name": "Perseus the Hero",
+          "rarity": "rare",
+          "eduText": "Perseus the hero stands in the sky holding the shape of his curved sword.",
+          "imagePrompt": "a single cheerful glowing star-covered hero figure holding a curved sword, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Perseus_(constellation)"
+        },
+        {
+          "name": "Andromeda the Princess",
+          "rarity": "rare",
+          "eduText": "The famous Andromeda Galaxy is named after this constellation and sits among her stars.",
+          "imagePrompt": "a single cheerful glowing star-covered princess figure standing with arms outstretched, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Andromeda_(constellation)"
+        },
+        {
+          "name": "Cassiopeia the Queen",
+          "rarity": "rare",
+          "eduText": "Cassiopeia's stars form a bright, zig-zag W shape sitting on her throne.",
+          "imagePrompt": "a single cheerful glowing star-covered queen figure seated on a throne, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cassiopeia_(constellation)"
+        },
+        {
+          "name": "Centaurus the Centaur",
+          "rarity": "rare",
+          "eduText": "Centaurus is home to Alpha Centauri, one of the closest star systems to our Sun.",
+          "imagePrompt": "a single cheerful glowing star-covered centaur figure standing tall, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Centaurus"
+        },
+        {
+          "name": "Hydra the Water Serpent",
+          "rarity": "rare",
+          "eduText": "Hydra is the longest constellation in the sky, stretching like a winding serpent of stars.",
+          "imagePrompt": "a single friendly glowing star-covered long serpent figure winding across the sky, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Hydra_(constellation)"
+        },
+        {
+          "name": "Gemini the Twins",
+          "rarity": "common",
+          "eduText": "Gemini shows two glowing star-figures standing side by side like twin brothers.",
+          "imagePrompt": "a single pair of cheerful glowing star-covered twin figures standing side by side, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Gemini_(constellation)"
+        },
+        {
+          "name": "Cancer the Crab",
+          "rarity": "common",
+          "eduText": "Cancer is a faint zodiac constellation shaped like a small glowing crab.",
+          "imagePrompt": "a single cheerful glowing star-covered crab figure, standing on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cancer_(constellation)"
+        },
+        {
+          "name": "Virgo the Maiden",
+          "rarity": "common",
+          "eduText": "Virgo's brightest star marks a stalk of wheat held by the maiden of the harvest.",
+          "imagePrompt": "a single cheerful glowing star-covered maiden figure holding a stalk of wheat, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Virgo_(constellation)"
+        },
+        {
+          "name": "Libra the Scale-Bearer",
+          "rarity": "common",
+          "eduText": "Libra is the only zodiac constellation shaped like an object instead of an animal or person.",
+          "imagePrompt": "a single cheerful glowing star-covered robed figure holding a pair of balanced scales, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Libra_(constellation)"
+        },
+        {
+          "name": "Capricornus the Sea-Goat",
+          "rarity": "common",
+          "eduText": "Capricornus shows a mythical creature with the head of a goat and the tail of a fish.",
+          "imagePrompt": "a single cheerful glowing star-covered goat figure with a fish tail, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Capricornus"
+        },
+        {
+          "name": "Aquarius the Water-Bearer",
+          "rarity": "common",
+          "eduText": "Aquarius shows a figure pouring a glowing stream of stars from a jar.",
+          "imagePrompt": "a single cheerful glowing star-covered figure pouring water from a jar, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Aquarius_(constellation)"
+        },
+        {
+          "name": "Pisces the Fish",
+          "rarity": "common",
+          "eduText": "Pisces shows two fish linked by a glowing cord of stars, swimming in opposite directions.",
+          "imagePrompt": "a single pair of cheerful glowing star-covered fish linked by a cord, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Pisces_(constellation)"
+        },
+        {
+          "name": "Canis Major the Big Dog",
+          "rarity": "common",
+          "eduText": "Canis Major holds Sirius, the brightest star in the whole night sky.",
+          "imagePrompt": "a single cheerful glowing star-covered dog figure standing alert, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Canis_Major"
+        },
+        {
+          "name": "Canis Minor the Little Dog",
+          "rarity": "common",
+          "eduText": "Canis Minor is a small constellation shaped like Orion's loyal little hunting dog.",
+          "imagePrompt": "a single cheerful glowing star-covered small dog figure sitting, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Canis_Minor"
+        },
+        {
+          "name": "Ursa Minor the Little Bear",
+          "rarity": "common",
+          "eduText": "Ursa Minor's tail holds Polaris, the North Star that always points the way home.",
+          "imagePrompt": "a single cheerful glowing star-covered small bear figure, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Ursa_Minor"
+        },
+        {
+          "name": "Cepheus the King",
+          "rarity": "common",
+          "eduText": "Cepheus the king stands in the northern sky wearing a tall glowing crown of stars.",
+          "imagePrompt": "a single cheerful glowing star-covered crowned king figure standing tall, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cepheus_(constellation)"
+        },
+        {
+          "name": "Lupus the Wolf",
+          "rarity": "common",
+          "eduText": "Lupus is a southern constellation shaped like a wolf among the stars.",
+          "imagePrompt": "a single friendly glowing star-covered wolf figure standing alert, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lupus_(constellation)"
+        },
+        {
+          "name": "Corvus the Crow",
+          "rarity": "common",
+          "eduText": "Corvus is a small, neat constellation shaped like a crow perched among the stars.",
+          "imagePrompt": "a single cheerful glowing star-covered crow figure perched, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Corvus_(constellation)"
+        },
+        {
+          "name": "Cetus the Sea Monster",
+          "rarity": "common",
+          "eduText": "Cetus is a large constellation named for a mythical sea monster from an old Greek tale.",
+          "imagePrompt": "a single friendly glowing star-covered sea-monster figure with a long curved body, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Cetus"
+        },
+        {
+          "name": "Lepus the Hare",
+          "rarity": "common",
+          "eduText": "Lepus the hare sits quietly in the sky just beneath Orion's feet.",
+          "imagePrompt": "a single cheerful glowing star-covered hare figure sitting, on a dark night sky background",
+          "sourceUrl": "https://en.wikipedia.org/wiki/Lepus_(constellation)"
+        }
+      ]
     }
   ]
 }
