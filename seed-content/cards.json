@@ -5643,6 +5643,7 @@
     },
     {
       "name": "Tiny World",
+      "provider": "supergrok-manual",
       "cards": [
         {
           "name": "Tardigrade",
@@ -5858,6 +5859,7 @@
     },
     {
       "name": "Mushrooms & Fungi",
+      "provider": "supergrok-manual",
       "cards": [
         {
           "name": "Fly Agaric",
