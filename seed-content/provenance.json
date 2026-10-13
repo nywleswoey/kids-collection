@@ -2249,6 +2249,338 @@
         "reviewed": true
       }
     },
+    "Mushrooms & Fungi": {
+      "Beefsteak Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-beefsteak-fungus-6d4507cd-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Bioluminescent Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-bioluminescent-fungus-e9ece180-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Bird's Nest Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-bird-s-nest-fungus-b0958fe5-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Bracket Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-bracket-fungus-35a473e9-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Button Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-button-mushroom-c8efd57f-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Chanterelle": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-chanterelle-a6708729-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Chicken of the Woods": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-chicken-of-the-woods-6b488031-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Coral Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-coral-fungus-c856b97b-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Cup Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-cup-fungus-43c85a57-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Death Cap": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-death-cap-18be68e5-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Destroying Angel": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-destroying-angel-89a99007-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Earthstar": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-earthstar-67b6ca21-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Field Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-field-mushroom-9a3198c0-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Fly Agaric": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-fly-agaric-38cbff61-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Giant Puffball": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-giant-puffball-0a03e5f8-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Humongous Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-humongous-fungus-b39a43d0-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Inkcap Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-inkcap-mushroom-05474d99-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Jelly Fungus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-jelly-fungus-8ffe3514-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Lichen": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-lichen-36d2a799-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Lion's Mane Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-lion-s-mane-mushroom-f46c1dd4-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Morel": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-morel-ac780af2-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Oyster Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-oyster-mushroom-65716779-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Parasol Mushroom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-parasol-mushroom-c04def8f-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Porcini": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-porcini-a28e065b-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Puffball": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-puffball-6a4fd61b-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Shiitake": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-shiitake-4a203541-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Slime Mold": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-slime-mold-9a94b412-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Stinkhorn": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-stinkhorn-0ed9c323-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Toadstool": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-toadstool-f6268506-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Turkey Tail": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "mushrooms-fungi-turkey-tail-e323a0a9-supergrok-manual-3082",
+        "reviewed": true
+      }
+    },
     "Musical Instruments": {
       "Accordion": {
         "provider": "cloudflare-sdxl",
@@ -4150,6 +4482,338 @@
         },
         "format": "jpeg",
         "reviewKey": "rocks-and-gems-turquoise-52ce5950-pollinations-dff2",
+        "reviewed": true
+      }
+    },
+    "Tiny World": {
+      "Amoeba": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-amoeba-739bbf25-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Bacteria": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-bacteria-0d996eda-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Butterfly Wing Scale": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-butterfly-wing-scale-e9aac225-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Diatom": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-diatom-1c5eedec-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Dust Mite": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-dust-mite-4d4dfd1a-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Euglena": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-euglena-faf53736-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Fingerprint Ridge": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-fingerprint-ridge-95e2d025-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Flea": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-flea-2dcb6034-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Grain of Sand": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-grain-of-sand-fddcfaa3-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Human Hair Strand": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-human-hair-strand-8f8fe0b8-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Mold Spore": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-mold-spore-eab19737-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Nerve Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-nerve-cell-5e001e7b-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Onion Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-onion-cell-21388916-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Paramecium": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-paramecium-cab18210-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Plant Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-plant-cell-24cbbdda-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Pollen Grain": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-pollen-grain-998174bc-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Red Blood Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-red-blood-cell-58ca4f50-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Rotifer": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-rotifer-a75de757-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Salt Crystal": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-salt-crystal-d10d89de-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Skin Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-skin-cell-440a2f5f-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Snow Crystal": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-snow-crystal-f3cc1cf8-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Spider Mite": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-spider-mite-bb983056-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Spider Silk Strand": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-spider-silk-strand-d441dbb4-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Springtail": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-springtail-d34ae1b3-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Sugar Crystal": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-sugar-crystal-1334e38b-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Tardigrade": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-tardigrade-db1b82bf-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Virus": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-virus-df930393-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Water Flea": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-water-flea-572c6ac5-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "White Blood Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-white-blood-cell-ab826e0d-supergrok-manual-3082",
+        "reviewed": true
+      },
+      "Yeast Cell": {
+        "provider": "supergrok-manual",
+        "model": null,
+        "params": {
+          "fit": "cover",
+          "encode": "png"
+        },
+        "format": "png",
+        "reviewKey": "tiny-world-yeast-cell-00349e4b-supergrok-manual-3082",
         "reviewed": true
       }
     },
