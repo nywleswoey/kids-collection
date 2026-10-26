@@ -50,17 +50,33 @@
  * not grow a key for it. The owner generates pictures by hand; `--review`
  * imports the files when the lane is named. Role `manual` keeps it out of the
  * default fan-out, so a review that is not using it neither aborts nor waits.
+ *
+ * ── `pokeapi-official-artwork`, escape hatch ─────────────────────────────────
+ * Fetches the real Pokémon artwork for the ~60 cards it can map (Kanto Pokémon,
+ * Johto Pokémon) rather than drawing anything. It is registered the same as any
+ * other provider — the bake-off, contact sheet, `theme-picks` and `--sync` all
+ * resolve it — but `role: "escape-hatch"` keeps every OTHER theme's `--review`
+ * from carrying a permanent column of "not drawn" for a lane that answers
+ * `ProviderNotDrawn` for every prompt outside those two themes. Name it to
+ * include it: `--providers=pokeapi-official-artwork`. See
+ * `providers/pokeapi-official-artwork.ts` and `docs/NEW-THEME-RUNBOOK.md`.
  */
 import { cloudflareSdxl } from "./cloudflare-sdxl";
 import { supergrokManual } from "./supergrok-manual";
+import { pokeapiOfficialArtwork } from "./pokeapi-official-artwork";
 import type { ImageProvider } from "./provider";
 
 export * from "./provider";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
 export { supergrokManual } from "./supergrok-manual";
+export { pokeapiOfficialArtwork } from "./pokeapi-official-artwork";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), supergrokManual()];
+export const PROVIDERS: readonly ImageProvider[] = [
+  cloudflareSdxl(),
+  supergrokManual(),
+  pokeapiOfficialArtwork(),
+];
 
 /** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);

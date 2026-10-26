@@ -144,8 +144,9 @@ wording. It is written **per provider**, because they do not fail the same way. 
 **`pollinations` is retired.** On *Food Around the World* every one of its 30 candidates came back with a
 "pollinations.ai" logo stamped into the corner despite `nologo=true`, and text in the image is a rejection on
 sight — so it could no longer win a row. It is gone from the registry: the one automatic lane today is
-`cloudflare-sdxl`, with `supergrok-manual` as an opt-in drop-folder lane (below) and **no escape hatch
-currently registered** — `ai-horde`, the first one, was retired after its pinned model lost its workers.
+`cloudflare-sdxl`, with `supergrok-manual` as an opt-in drop-folder lane and `pokeapi-official-artwork`
+(below) as the one escape hatch currently registered — `ai-horde`, the first one, was retired after its
+pinned model lost its workers.
 Pollinations' column below is kept as the record of why earlier themes look the way they do, and because
 its failure classes are what a replacement lane (or hatch) has to beat. Cards already published from it are
 unaffected — `--sync` never resolves the provider of a card it is not inserting.
@@ -268,7 +269,8 @@ so a human can compare candidates side by side and pick the best draughtsman per
 30 images *per lane* — 30 today, on `cloudflare-sdxl` alone, in a few minutes. With more than one lane they
 run alongside each other and pace themselves independently, so the wall-clock is the slowest lane, not the
 sum. An **escape hatch** — registered but not a lane, sitting out unless named (below) — is a role the
-registry still supports; none is currently registered (`ai-horde`, the first one, was retired).
+registry still supports. `ai-horde`, the first one, was retired; `pokeapi-official-artwork` (below) is
+the one escape hatch currently registered, and it only ever draws two themes' worth of cards.
 
 If a provider's key is missing the run **aborts and generates nothing**, rather than quietly leaving that
 provider out — a lane absent from a comparison looks like a provider that drew badly. Add the key, or narrow
@@ -297,6 +299,43 @@ pnpm seed --review --providers=supergrok-manual
 ```
 
 You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) or after the lanes have already run. Import reads the drop folder, fits each picture to 768×768 PNG (center crop, no letterbox — a letterbox is a border), and writes the usual content-addressed review file. `--sync` publishes **that** file, byte for byte, the same way it publishes any lane. It does not read the drop folder again.
+
+### The official-artwork escape hatch — real Pokémon art, not a drawing of one
+
+`pokeapi-official-artwork` is a different kind of lane: it does not draw anything. It fetches **the
+real, official Pokémon artwork** from PokéAPI's sprites repository (no key, no xAI, no billed API —
+a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~60
+cards it has a national-dex-number mapping for (`src/shared/pool/pokemon-dex-numbers.ts`) — today
+that is *Kanto Pokémon* and *Johto Pokémon*, and no other theme. Everywhere else it is simply not
+drawn.
+
+**This is the one place in the pipeline that ships someone else's copyrighted art.** Official Pokémon
+artwork belongs to Nintendo/Game Freak/The Pokémon Company, not to this project. It is appropriate
+**only** because this app is private, sign-in-only, and the owner has accepted that these two themes'
+pictures are for private family use and not for a public or commercial deployment. Do not reach for
+this lane on a theme without that same understanding, and do not use it as a general "the AI lanes
+failed" escape hatch — it exists for named, real-world characters a diffusion model cannot faithfully
+draw regardless of prompt, which Pikachu and Charmander are and almost nothing else in this pool is.
+
+Role is `escape-hatch`, not `lane` — it is registered the same as any other provider (the bake-off,
+the contact sheet, `theme-picks`, `--sync`, and `provenance.json` all resolve it like any other), but
+it sits out of the default fan-out and only runs when named:
+
+```bash
+pnpm seed --review --themes="Kanto Pokémon,Johto Pokémon" --providers=cloudflare-sdxl,pokeapi-official-artwork
+```
+
+(Name `supergrok-manual` too if you are also importing a Grok drop for the same batch.) It writes
+into the **same** `seed-content/review/` folder as every other lane, so `pnpm contact-sheet` shows it
+as a third column to judge alongside Cloudflare and Grok — the pick is still yours, the same way as
+every other theme.
+
+Each card's sidecar and `provenance.json` entry record the fetch **honestly**: `model` carries the
+exact national dex number and the exact source URL fetched (e.g. `PokéAPI official artwork (National
+Dex #25) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png`),
+never an invented model name — nothing here was generated, so nothing pretends to have been. A card in
+one of these two themes with no table entry is a **loud, non-retryable failure** naming the card, not
+a silent skip; add it to `pokemon-dex-numbers.ts` before reviewing it with this lane.
 
 #### Scripting the manual lane
 
@@ -494,7 +533,7 @@ re-prompting fixes the wrong words.**
 | One provider drew it well, another badly | **Neither.** That is a *pick* — record it in Step 8. Do not re-prompt a card another lane already nailed (#63) |
 | Every candidate is the same subject drawn in a style you dislike | **Pick**, or accept. Style is a property of the lane, not of your wording — see the per-provider table in Step 4 |
 | Every candidate misreads the *subject* — wrong object, fused parts, duplicated weapon | **Re-prompt.** Apply Step 4's wording levers |
-| Every candidate fails and the subject is a small held object | **`supergrok-manual`**, below (Step 6) — no escape hatch is currently registered. Re-prompting this class has never fixed it on the lane |
+| Every candidate fails and the subject is a small held object | **`supergrok-manual`**, below (Step 6) — the one escape hatch currently registered, `pokeapi-official-artwork`, only maps ~60 named Pokémon and does not help here. Re-prompting this class has never fixed it on the lane |
 | One candidate is nearly empty, the rest are fine | **Re-roll** that one file. Not a re-prompt round. An outright *black* frame no longer reaches you — the seam refuses it and the lane redraws (#78) |
 | One cell is missing from the sheet entirely | Not a judgement call: that lane failed the card and printed a `✗` line naming it. Re-run `--review` |
 
@@ -517,9 +556,10 @@ Then re-run `pnpm seed --review`. **Re-prompt only the cards that NO provider dr
 at 2 re-prompt rounds.** If a card still fails everywhere after two, take it to the human at the checkpoint
 with the problem named — do not swap the subject silently, and do not spend the session fighting the model.
 
-**No escape hatch for a card the lane refuses.** `ai-horde`, the first one, was retired because its pinned
-model lost its workers — the registry still supports the role (`escape-hatch`), but nothing is currently
-registered under it. A card that fails the small-held-object
+**No general escape hatch for a card the lane refuses.** `ai-horde`, the first one, was retired because
+its pinned model lost its workers, and no general-purpose replacement is registered — `pokeapi-official-artwork`
+(above) is the one escape hatch currently registered, and it only ever draws the ~60 named Pokémon it has a
+dex-number mapping for. A card that fails the small-held-object
 class (Step 4) or that Cloudflare refuses outright now has exactly two levers, both in Step 4/6: reword it
 (drop the weapon, let clothing carry the subject) or draw it yourself through `supergrok-manual`. Treat
 small-held-object subjects as a real constraint on Step 3's subject list again, not a solved problem.

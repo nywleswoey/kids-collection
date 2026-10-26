@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { deriveThemePicks, resolveProviderAlias, ThemePicksError, type CardRecommendation } from "../src/shared/pool/theme-picks";
 
-const PROVIDER_IDS = ["cloudflare-sdxl", "supergrok-manual"];
+const PROVIDER_IDS = ["cloudflare-sdxl", "supergrok-manual", "pokeapi-official-artwork"];
 
 function recs(entries: Record<string, string | undefined>): Map<string, CardRecommendation> {
   return new Map(Object.entries(entries).map(([name, providerId]) => [name, { providerId }]));
@@ -12,9 +12,10 @@ describe("resolveProviderAlias", () => {
     expect(resolveProviderAlias("cloudflare-sdxl", PROVIDER_IDS)).toBe("cloudflare-sdxl");
   });
 
-  it("resolves the grok and cloudflare aliases", () => {
+  it("resolves the grok, cloudflare, and official aliases", () => {
     expect(resolveProviderAlias("grok", PROVIDER_IDS)).toBe("supergrok-manual");
     expect(resolveProviderAlias("cloudflare", PROVIDER_IDS)).toBe("cloudflare-sdxl");
+    expect(resolveProviderAlias("official", PROVIDER_IDS)).toBe("pokeapi-official-artwork");
   });
 
   it("returns an unknown token unchanged so the caller's validation names it", () => {

@@ -29,6 +29,7 @@ export class ThemePicksError extends Error {
 const PROVIDER_ALIASES: Record<string, string> = {
   grok: "supergrok-manual",
   cloudflare: "cloudflare-sdxl",
+  official: "pokeapi-official-artwork",
 };
 
 /**
