@@ -111,15 +111,14 @@ export class ProviderSelectionError extends Error {
  * message. Called before anything is generated, so a misconfigured run costs
  * nothing and writes nothing — the `DATABASE_URL` treatment, applied to keys.
  *
- * Naming a provider explicitly would also reach an escape hatch, if one were
- * registered — that is what the role is for. The role only decides the
- * DEFAULT set. No hatch is currently registered (AI Horde, retired above); the
- * manual lane (`supergrok-manual`) is the present-day answer for a subject a
- * lane keeps drawing badly.
+ * Naming a provider explicitly also reaches an escape hatch — that is what the
+ * role is for. The role only decides the DEFAULT set: the one registered hatch,
+ * `pokeapi-official-artwork`, runs only when named via
+ * `--providers=pokeapi-official-artwork`.
  *
  * @param requested ids from `--providers=a,b`; undefined means every lane.
  * @param registry defaults to the real one; injectable so the escape-hatch path
- *   is testable before an escape hatch is registered.
+ *   is testable against a stand-in registry.
  */
 export function selectLanes(
   requested?: readonly string[],

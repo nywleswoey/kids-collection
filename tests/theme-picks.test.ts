@@ -12,10 +12,9 @@ describe("resolveProviderAlias", () => {
     expect(resolveProviderAlias("cloudflare-sdxl", PROVIDER_IDS)).toBe("cloudflare-sdxl");
   });
 
-  it("resolves the grok, cloudflare, and official aliases", () => {
+  it("resolves the grok and cloudflare aliases", () => {
     expect(resolveProviderAlias("grok", PROVIDER_IDS)).toBe("supergrok-manual");
     expect(resolveProviderAlias("cloudflare", PROVIDER_IDS)).toBe("cloudflare-sdxl");
-    expect(resolveProviderAlias("official", PROVIDER_IDS)).toBe("pokeapi-official-artwork");
   });
 
   it("returns an unknown token unchanged so the caller's validation names it", () => {

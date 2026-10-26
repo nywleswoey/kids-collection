@@ -116,14 +116,20 @@ describe("resolvePokemonCard", () => {
 describe("POKEMON_NATIONAL_DEX_NUMBERS", () => {
   const data = JSON.parse(
     readFileSync(join(process.cwd(), "seed-content", "cards.json"), "utf8"),
-  ) as { themes: { name: string; cards: { name: string }[] }[] };
+  ) as { themes: { name: string; cards: { name: string; imagePrompt: string }[] }[] };
 
-  it("maps every Kanto Pokémon and Johto Pokémon card in cards.json", () => {
+  it("maps every Kanto Pokémon and Johto Pokémon card in cards.json, by its built prompt", () => {
     const pokemonThemes = data.themes.filter((t) => t.name === "Kanto Pokémon" || t.name === "Johto Pokémon");
     expect(pokemonThemes).toHaveLength(2);
     for (const theme of pokemonThemes) {
       for (const card of theme.cards) {
-        expect(nationalDexNumber(card.name), `${theme.name} / ${card.name}`).toBeTypeOf("number");
+        const dexNumber = nationalDexNumber(card.name);
+        expect(dexNumber, `${theme.name} / ${card.name}`).toBeTypeOf("number");
+        expect(resolvePokemonCard(buildPrompt(card)), `${theme.name} / ${card.name}`).toEqual({
+          kind: "mapped",
+          name: card.name,
+          dexNumber,
+        });
       }
     }
   });
