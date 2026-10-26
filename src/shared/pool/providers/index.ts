@@ -20,9 +20,9 @@
  * hatch is registered but reachable only by naming it (`--providers=<id>`).
  * Everything else about a hatch is identical — `--sync` resolves it, and its
  * candidates are named the same way — because a card published from the hatch
- * must be as traceable as any other. The role itself is kept even with no
- * member currently registered (below) — the next hatch needs it, and the tests
- * exercise it with an injected registry rather than a real adapter.
+ * must be as traceable as any other. The tests exercise the role with an
+ * injected registry rather than a real adapter; `pokeapi-official-artwork`
+ * (below) is the one member currently registered.
  *
  * ── AI Horde, retired ─────────────────────────────────────────────────────────
  * #71 resolved AI Horde to "keyed and wired, but NOT a bake-off lane" (the first

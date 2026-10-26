@@ -107,10 +107,11 @@ free provider:
   default `--review` fan-out; an **escape hatch** is registered and resolvable but
   sits out the fan-out, reached only by naming it (`--providers=<id>`). Everything
   else about a hatch is identical, so a card published from one is as traceable as
-  any other (`providers/index.ts`, #71). **No hatch is currently registered** — AI
-  Horde, the first one, was retired (its pinned model lost its workers; no published
-  card was drawn by it) — but the role stays, with its machinery exercised by an
-  injected registry in tests, for whatever the next one is. A **manual** lane
+  any other (`providers/index.ts`, #71). AI Horde, the first one, was retired (its
+  pinned model lost its workers; no published card was drawn by it). The one hatch
+  currently registered is `pokeapi-official-artwork`, which fetches official artwork
+  for the Kanto/Johto Pokémon cards instead of drawing (see
+  `docs/NEW-THEME-RUNBOOK.md`). A **manual** lane
   (`supergrok-manual`) also sits out until named, but draws nothing: it imports
   pictures the owner made by hand, and a card with no picture is **not drawn** — a
   missing file, not a failed generation.
