@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { deriveThemePicks, resolveProviderAlias, ThemePicksError, type CardRecommendation } from "../src/shared/pool/theme-picks";
 
-const PROVIDER_IDS = ["cloudflare-sdxl", "supergrok-manual"];
+const PROVIDER_IDS = ["cloudflare-sdxl", "supergrok-manual", "pokeapi-official-artwork"];
 
 function recs(entries: Record<string, string | undefined>): Map<string, CardRecommendation> {
   return new Map(Object.entries(entries).map(([name, providerId]) => [name, { providerId }]));

@@ -20,9 +20,9 @@
  * hatch is registered but reachable only by naming it (`--providers=<id>`).
  * Everything else about a hatch is identical — `--sync` resolves it, and its
  * candidates are named the same way — because a card published from the hatch
- * must be as traceable as any other. The role itself is kept even with no
- * member currently registered (below) — the next hatch needs it, and the tests
- * exercise it with an injected registry rather than a real adapter.
+ * must be as traceable as any other. The tests exercise the role with an
+ * injected registry rather than a real adapter; `pokeapi-official-artwork`
+ * (below) is the one member currently registered.
  *
  * ── AI Horde, retired ─────────────────────────────────────────────────────────
  * #71 resolved AI Horde to "keyed and wired, but NOT a bake-off lane" (the first
@@ -50,17 +50,33 @@
  * not grow a key for it. The owner generates pictures by hand; `--review`
  * imports the files when the lane is named. Role `manual` keeps it out of the
  * default fan-out, so a review that is not using it neither aborts nor waits.
+ *
+ * ── `pokeapi-official-artwork`, escape hatch ─────────────────────────────────
+ * Fetches the real Pokémon artwork for the ~60 cards it can map (Kanto Pokémon,
+ * Johto Pokémon) rather than drawing anything. It is registered the same as any
+ * other provider — the bake-off, contact sheet, `theme-picks` and `--sync` all
+ * resolve it — but `role: "escape-hatch"` keeps every OTHER theme's `--review`
+ * from carrying a permanent column of "not drawn" for a lane that answers
+ * `ProviderNotDrawn` for every prompt outside those two themes. Name it to
+ * include it: `--providers=pokeapi-official-artwork`. See
+ * `providers/pokeapi-official-artwork.ts` and `docs/NEW-THEME-RUNBOOK.md`.
  */
 import { cloudflareSdxl } from "./cloudflare-sdxl";
 import { supergrokManual } from "./supergrok-manual";
+import { pokeapiOfficialArtwork } from "./pokeapi-official-artwork";
 import type { ImageProvider } from "./provider";
 
 export * from "./provider";
 export { cloudflareSdxl } from "./cloudflare-sdxl";
 export { supergrokManual } from "./supergrok-manual";
+export { pokeapiOfficialArtwork } from "./pokeapi-official-artwork";
 
 /** Every provider that exists. Adding or removing one is a reviewable code change. */
-export const PROVIDERS: readonly ImageProvider[] = [cloudflareSdxl(), supergrokManual()];
+export const PROVIDERS: readonly ImageProvider[] = [
+  cloudflareSdxl(),
+  supergrokManual(),
+  pokeapiOfficialArtwork(),
+];
 
 /** Array of all registered provider IDs. */
 export const PROVIDER_IDS: readonly string[] = PROVIDERS.map((p) => p.id);
@@ -95,15 +111,14 @@ export class ProviderSelectionError extends Error {
  * message. Called before anything is generated, so a misconfigured run costs
  * nothing and writes nothing — the `DATABASE_URL` treatment, applied to keys.
  *
- * Naming a provider explicitly would also reach an escape hatch, if one were
- * registered — that is what the role is for. The role only decides the
- * DEFAULT set. No hatch is currently registered (AI Horde, retired above); the
- * manual lane (`supergrok-manual`) is the present-day answer for a subject a
- * lane keeps drawing badly.
+ * Naming a provider explicitly also reaches an escape hatch — that is what the
+ * role is for. The role only decides the DEFAULT set: the one registered hatch,
+ * `pokeapi-official-artwork`, runs only when named via
+ * `--providers=pokeapi-official-artwork`.
  *
  * @param requested ids from `--providers=a,b`; undefined means every lane.
  * @param registry defaults to the real one; injectable so the escape-hatch path
- *   is testable before an escape hatch is registered.
+ *   is testable against a stand-in registry.
  */
 export function selectLanes(
   requested?: readonly string[],
