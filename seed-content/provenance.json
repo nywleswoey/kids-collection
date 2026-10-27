@@ -1866,6 +1866,790 @@
         "reviewed": true
       }
     },
+    "Johto Pokémon": {
+      "Ampharos": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #181) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/181.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-ampharos-918c7b62-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Celebi": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #251) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/251.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-celebi-3f85abe9-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Chikorita": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #152) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/152.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-chikorita-9cc1414a-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Cyndaquil": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #155) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/155.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-cyndaquil-3fdcc522-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Entei": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #244) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/244.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-entei-5f42b41c-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Espeon": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #196) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/196.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-espeon-c951b266-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Feraligatr": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #160) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/160.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-feraligatr-e66de516-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Ho-Oh": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #250) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/250.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-ho-oh-121a038a-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Hoothoot": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #163) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/163.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-hoothoot-484205e5-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Hoppip": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #187) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/187.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-hoppip-8d9261f9-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Houndoom": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #229) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/229.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-houndoom-906503ee-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Ledyba": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #165) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/165.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-ledyba-243803aa-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Lugia": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #249) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/249.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-lugia-c2631f04-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Mareep": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #179) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/179.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-mareep-e4827a60-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Marill": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #183) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/183.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-marill-217fbf9b-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Meganium": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #154) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/154.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-meganium-a6f8f793-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Pichu": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #172) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/172.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-pichu-d41d1775-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Pineco": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #204) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/204.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-pineco-b9b70eae-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Raikou": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #243) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/243.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-raikou-6d0675bc-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Scizor": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #212) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/212.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-scizor-ae4d8e0b-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Sentret": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #161) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/161.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-sentret-27875d14-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Slugma": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #218) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/218.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-slugma-62b391ac-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Spinarak": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #167) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/167.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-spinarak-58c94f43-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Suicune": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #245) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/245.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-suicune-c2c9f9b8-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Togepi": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #175) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/175.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-togepi-b4ea46e5-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Totodile": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #158) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/158.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-totodile-98e80c7f-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Typhlosion": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #157) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/157.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-typhlosion-d1465f6e-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Tyranitar": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #248) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/248.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-tyranitar-583816b4-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Umbreon": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #197) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/197.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-umbreon-7e1bd1c5-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Wooper": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #194) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/194.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "johto-pok-mon-wooper-772b39e6-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      }
+    },
+    "Kanto Pokémon": {
+      "Alakazam": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #65) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/65.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-alakazam-b4d07f62-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Arcanine": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #59) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-arcanine-b6e07c85-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Articuno": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #144) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/144.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-articuno-b6500b05-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Bulbasaur": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #1) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-bulbasaur-45e85fbf-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Caterpie": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #10) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-caterpie-5eb659ba-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Charizard": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #6) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-charizard-386182d0-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Charmander": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #4) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-charmander-5dba134a-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Diglett": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #50) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/50.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-diglett-f28d9d85-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Dragonite": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #149) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-dragonite-14ce50a0-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Eevee": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #133) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-eevee-c687b640-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Ekans": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #23) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/23.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-ekans-2bd4f516-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Gengar": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #94) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-gengar-dcc3ea6b-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Growlithe": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #58) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-growlithe-398c40ae-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Gyarados": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #130) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-gyarados-f679eb21-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Jigglypuff": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #39) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-jigglypuff-a43fd683-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Machamp": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #68) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/68.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-machamp-ef80a892-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Magikarp": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #129) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/129.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-magikarp-ec34fecb-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Meowth": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #52) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/52.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-meowth-c558bc5d-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Mew": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #151) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-mew-60148528-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Mewtwo": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #150) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-mewtwo-7c6661e0-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Moltres": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #146) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/146.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-moltres-b9d71994-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Nidoking": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #34) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/34.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-nidoking-668a7ace-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Pidgey": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #16) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/16.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-pidgey-026e805e-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Pikachu": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #25) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-pikachu-aa7d830b-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Psyduck": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #54) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-psyduck-df4c527e-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Rattata": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #19) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/19.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-rattata-78be281b-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Snorlax": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #143) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-snorlax-53cc7ace-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Squirtle": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #7) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-squirtle-5abc4a4a-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Vaporeon": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #134) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/134.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-vaporeon-f138170c-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      },
+      "Zapdos": {
+        "provider": "pokeapi-official-artwork",
+        "model": "PokéAPI official artwork (National Dex #145) — https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/145.png",
+        "params": {
+          "source": "pokeapi-sprites-official-artwork",
+          "fit": "contain",
+          "background": "type-gradient-v2",
+          "marginRatio": 0.82
+        },
+        "format": "png",
+        "reviewKey": "kanto-pok-mon-zapdos-d36aa7aa-pokeapi-official-artwork-2ca4",
+        "reviewed": true
+      }
+    },
     "Land Machines": {
       "Ambulance": {
         "provider": "cloudflare-sdxl",
