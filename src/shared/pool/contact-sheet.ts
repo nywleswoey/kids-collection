@@ -57,6 +57,7 @@ import type { ProviderRole } from "./providers/provider";
 import { RARITIES } from "@/lib/types";
 import { animatedReviewFileName } from "./animated-brief";
 import { buildPrompt } from "./prompt";
+import { isAnimationEligible } from "./animation-eligibility";
 
 /**
  * What the grid needs to know about a provider: how to name its file, and
@@ -114,10 +115,11 @@ export interface SheetRow {
   candidates: SheetCandidate[];
   /**
    * The manual animation lane's cell for this card (see AGENTS.md):
-   * legendary-only, and not a bake-off column — there is one candidate at
-   * most, keyed to whichever still the card resolved to, not to a provider.
-   * `undefined` for a non-legendary or unpicked card, which renders no cell at
-   * all rather than an always-empty one.
+   * gated on `isAnimationEligible` (legendary, or the escape-hatch Pokémon
+   * lane), and not a bake-off column — there is one candidate at most, keyed
+   * to whichever still the card resolved to, not to a provider. `undefined`
+   * for an ineligible or unpicked card, which renders no cell at all rather
+   * than an always-empty one.
    */
   animation?: { fileName: string; present: boolean };
 }
@@ -196,7 +198,7 @@ export function planContactSheet(
       });
 
       const animationFileName =
-        card.rarity === "legendary" && resolved !== undefined
+        resolved !== undefined && isAnimationEligible(theme, { ...card, provider: resolved })
           ? animatedReviewFileName(theme.name, card.name, buildPrompt(card), resolved)
           : undefined;
       if (animationFileName) expected.add(animationFileName);
@@ -337,7 +339,7 @@ ${banner}
               : ""
         }</th>`,
     )
-    .join("")}${hasAnimationColumn ? `<th>Animation<div class="hatch">legendary-only, manual</div></th>` : ""}</tr></thead>
+    .join("")}${hasAnimationColumn ? `<th>Animation<div class="hatch">legendary or Pokémon escape-hatch, manual</div></th>` : ""}</tr></thead>
 <tbody>
 ${rows}
 </tbody>
