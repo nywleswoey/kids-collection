@@ -10,6 +10,7 @@ import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./
 import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
+import { MoreGalaxiesModal } from "./MoreGalaxiesModal";
 import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/shared/sound/useSound";
@@ -34,12 +35,15 @@ export function PullButton({
   initialBalance,
   flashPool = [],
   themes = [],
+  moreThemes = [],
   easterEggTickets = 0,
 }: {
   childId: string;
   initialBalance: number;
   flashPool?: FlashCard[];
   themes?: { id: string; name: string }[];
+  /** Older categories, hidden from the chip row but still choosable (#kcmg). */
+  moreThemes?: { id: string; name: string }[];
   easterEggTickets?: number;
 }) {
   const [balance, setBalance] = useState(initialBalance);
@@ -51,6 +55,7 @@ export function PullButton({
   const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome | PullRefundedOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
+  const [showMoreGalaxies, setShowMoreGalaxies] = useState(false); // #kcmg
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [stuck, setStuck] = useState(false); // #kcpi: stuck-loading timeout fired
   const [refundedNotice, setRefundedNotice] = useState(false); // #kcpi: swept claim replayed
@@ -80,6 +85,7 @@ export function PullButton({
     [router],
   );
 
+  const selectedMoreTheme = moreThemes.find((t) => t.id === themeId); // #kcmg
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
   // all. If they still hold an Easter Egg ticket, keep the Discover button visible
@@ -213,7 +219,7 @@ export function PullButton({
       </p>
 
       {/* Category chips — prominent + persistent, stay visible on the result (FR2/FR3). */}
-      {themes.length > 0 ? (
+      {themes.length > 0 || moreThemes.length > 0 ? (
         <div className="flex w-full min-w-0 flex-col items-center gap-2">
           <span className="text-sm text-[color:var(--ink-soft)]">Pick a galaxy</span>
           {/* Mobile: one swipeable row (snap-scrolled, no page-level overflow
@@ -246,6 +252,28 @@ export function PullButton({
                 testid={`category-chip-${t.id}`}
               />
             ))}
+            {/* A category picked from "More galaxies" isn't one of the chips
+                above, so it gets its own active chip here - the same way a
+                visible one would show selected (#kcmg). */}
+            {selectedMoreTheme ? (
+              <CategoryChip
+                key={selectedMoreTheme.id}
+                label={selectedMoreTheme.name}
+                active
+                onClick={() => setShowMoreGalaxies(true)}
+                disabled={pending}
+                testid={`category-chip-${selectedMoreTheme.id}`}
+              />
+            ) : null}
+            {moreThemes.length > 0 ? (
+              <CategoryChip
+                label="🪐 More galaxies"
+                active={false}
+                onClick={() => setShowMoreGalaxies(true)}
+                disabled={pending}
+                testid="category-chip-more-galaxies"
+              />
+            ) : null}
           </div>
         </div>
       ) : null}
@@ -352,6 +380,17 @@ export function PullButton({
         cardId={hintCardId ?? ""}
         onClose={() => setHintCardId(null)}
       />
+
+      {showMoreGalaxies ? (
+        <MoreGalaxiesModal
+          themes={moreThemes}
+          onPick={(id) => {
+            setThemeId(id);
+            setShowMoreGalaxies(false);
+          }}
+          onClose={() => setShowMoreGalaxies(false)}
+        />
+      ) : null}
     </div>
   );
 }

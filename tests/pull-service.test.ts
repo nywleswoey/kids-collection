@@ -136,6 +136,22 @@ describe("makePullService.pull", () => {
     expect(rewards.calls[0][2]).toEqual([card("s1", "common", "space")]);
   });
 
+  it("accepts a themeId that the pull screen's chip row hides (older than MAX_PULL_CATEGORIES), same as any other category (#kcmg)", async () => {
+    // `pull()` never consults MAX_PULL_CATEGORIES/recentCategories - that cap
+    // only decides which chips render (categories.ts) - so a category reached
+    // through "More galaxies" instead of a chip must draw exactly like one
+    // reached through a chip: same cost, same odds, same validation.
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    const pool = [card("old1", "common", "oldest-theme"), card("new1", "common", "newest-theme")];
+    const { service, catalog } = setup({ kid: { pullTokens: 1 } }, {}, pool);
+
+    const result = await service.pull("kid", "oldest-theme", "req-1");
+
+    if (!("card" in result)) throw new Error("expected a card outcome");
+    expect(result.card.id).toBe("old1");
+    expect(catalog.listCardsCalls).toEqual(["oldest-theme"]);
+  });
+
   it("falls back to the full catalog when the chosen theme has no cards", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
     const pool = [card("a1", "common", "animals")];
