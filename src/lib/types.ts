@@ -42,7 +42,7 @@ export interface Card {
   /** Source URL backing the fun fact / legend origin. Shown admin-only (U4-FR5). */
   sourceUrl: string;
   /**
-   * Short looping animated WebP (legendary-only, manual lane). Optional so the
+   * Short looping animated WebP (`isAnimationEligible` cards only). Optional so the
    * many existing fixtures across the test suite that build a `Card` literal
    * without it keep compiling unchanged; every real row from `service.ts`
    * always sets it (to a URL or `null`).
