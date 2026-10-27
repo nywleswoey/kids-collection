@@ -7,6 +7,9 @@ import {
 } from "@/shared/pool/contact-sheet";
 import { reviewFileName } from "@/shared/pool/review-files";
 import { fakeProvider } from "@/shared/pool/providers/fake";
+import { animatedReviewFileName } from "@/shared/pool/animated-brief";
+import { buildPrompt } from "@/shared/pool/prompt";
+import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/shared/pool/providers/pokeapi-official-artwork";
 
 /**
  * Checkpoint 2's artifact (#63 Step 7, #67).
@@ -247,5 +250,38 @@ describe("renderContactSheet", () => {
     expect(html).not.toContain("<script>x</script>");
     expect(html).toContain("&lt;script&gt;");
     expect(html).toContain("a &amp; b");
+  });
+});
+
+describe("planContactSheet — animation column eligibility", () => {
+  it("shows a non-legendary card's animation when it resolves to the Pokémon escape hatch", () => {
+    const pikachu = {
+      name: "Pikachu",
+      rarity: "common",
+      eduText: "Zap.",
+      imagePrompt: "a pikachu",
+      provider: POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID,
+    };
+    const theme: SheetTheme = {
+      name: "Kanto Pokémon",
+      provider: POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID,
+      cards: [pikachu],
+    };
+    const animFile = animatedReviewFileName(
+      theme.name,
+      pikachu.name,
+      buildPrompt(pikachu),
+      POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID,
+    );
+    const sheet = planContactSheet(theme, PROVIDERS, deps([animFile]));
+    const row = sheet.rows.find((r) => r.name === "Pikachu")!;
+    expect(row.animation).toEqual({ fileName: animFile, present: true });
+  });
+
+  it("omits the animation cell for a non-legendary, non-escape-hatch card", () => {
+    const theme: SheetTheme = { name: "Warriors", provider: "pollinations", cards };
+    const sheet = planContactSheet(theme, PROVIDERS, deps(allFiles(theme)));
+    const row = sheet.rows.find((r) => r.name === "Longbowman")!;
+    expect(row.animation).toBeUndefined();
   });
 });
