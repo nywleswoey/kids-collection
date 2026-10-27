@@ -37,12 +37,15 @@
  *
  * ── Normalisation ─────────────────────────────────────────────────────────────
  * PokéAPI's official artwork is a transparent PNG, usually smaller than and
- * never exactly 768x768, padded differently per Pokémon. `fit: "contain"`
- * (never `"cover"`, which the other lanes use) keeps the whole figure in frame
- * rather than cropping it, and `flatten` composites the transparency onto a
- * plain white background before the resize fills the remaining letterbox with
- * the same colour — "a clean light background" rather than a checkerboard or a
- * crop.
+ * never exactly 768x768, padded differently per Pokémon. Flattening it onto a
+ * plain white square, filled edge to edge, looks flat next to this app's
+ * other bright, hand-drawn card art. Instead: the artwork is resized with `fit: "contain"`
+ * (never `"cover"`, which the other lanes use, since cropping a named
+ * creature is worse than letterboxing it) to `MARGIN_RATIO` of the frame so
+ * it has breathing room, composited (still transparent, never flattened to
+ * white) centred over a square rasterised from an SVG background: a soft
+ * radial gradient — lighter centre, the Pokémon's primary type's colour at
+ * the edge (`pokemon-types.ts`). Output stays the same square size/format.
  *
  * ── Provenance ────────────────────────────────────────────────────────────────
  * Nothing here is AI-generated, so there is no served "model" to witness in the
@@ -66,11 +69,29 @@ import {
   type ImageSizeRequest,
 } from "./provider";
 import { nationalDexNumber } from "../pokemon-dex-numbers";
+import { backgroundForType, primaryType } from "../pokemon-types";
 import sharp from "sharp";
 
 /** Raw GitHub mirror of PokéAPI's sprite data — no key, no rate limit tier. */
 const ARTWORK_BASE_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
+
+/** The artwork fills this fraction of the square frame, centred. */
+const MARGIN_RATIO = 0.82;
+
+/** Rasterise the type-coloured gradient backing square. */
+function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
+  const { center, edge } = backgroundForType(type);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}">
+    <defs>
+      <radialGradient id="bg" cx="50%" cy="50%" r="72%">
+        <stop offset="0%" stop-color="${center}" />
+        <stop offset="100%" stop-color="${edge}" />
+      </radialGradient>
+    </defs>
+    <rect width="${size.width}" height="${size.height}" fill="url(#bg)" />
+  </svg>`;
+}
 
 /** Build the exact source URL this lane fetches for a national dex number. */
 export function officialArtworkUrl(dexNumber: number): string {
@@ -140,7 +161,12 @@ export function pokeapiOfficialArtwork(
     params: {
       source: "pokeapi-sprites-official-artwork",
       fit: "contain",
-      background: "#ffffff",
+      // Bumped from the plain "#ffffff" fill: a type-coloured gradient +
+      // margin now determine the bytes, so this must change too — old
+      // white-background (or v1 ground-shadow) reviews must never be
+      // confused with these.
+      background: "type-gradient-v2",
+      marginRatio: MARGIN_RATIO,
     },
     minIntervalMs: 50,
     concurrency: 4,
@@ -160,18 +186,32 @@ export function pokeapiOfficialArtwork(
       assertOk(provider.id, res);
       const raw = await readBytes(provider.id, res);
 
-      const fitted = await sharp(raw)
-        .flatten({ background: { r: 255, g: 255, b: 255 } })
-        .resize(size.width, size.height, {
+      const name = extractPokemonName(prompt);
+      const type = (name && primaryType(name)) || "normal";
+      const background = await sharp(Buffer.from(buildBackgroundSvg(size, type)))
+        .png()
+        .toBuffer();
+
+      const artworkSize = {
+        width: Math.round(size.width * MARGIN_RATIO),
+        height: Math.round(size.height * MARGIN_RATIO),
+      };
+      const artwork = await sharp(raw)
+        .resize(artworkSize.width, artworkSize.height, {
           fit: "contain",
-          background: { r: 255, g: 255, b: 255 },
+          background: { r: 0, g: 0, b: 0, alpha: 0 },
         })
+        .png()
+        .toBuffer();
+
+      const composed = await sharp(background)
+        .composite([{ input: artwork, gravity: "center" }])
         .png()
         .toBuffer();
 
       return finishGeneration(
         provider,
-        new Uint8Array(fitted),
+        new Uint8Array(composed),
         size,
         `PokéAPI official artwork (National Dex #${dexNumber}) — ${url}`,
       );
