@@ -6505,6 +6505,7 @@
     },
     {
       "name": "Kanto Pokémon",
+      "provider": "pokeapi-official-artwork",
       "cards": [
         {
           "name": "Mew",
@@ -6720,6 +6721,7 @@
     },
     {
       "name": "Johto Pokémon",
+      "provider": "pokeapi-official-artwork",
       "cards": [
         {
           "name": "Lugia",

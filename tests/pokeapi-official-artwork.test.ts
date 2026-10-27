@@ -18,6 +18,12 @@ import {
   resolvePokemonCard,
 } from "@/shared/pool/providers/pokeapi-official-artwork";
 import { POKEMON_NATIONAL_DEX_NUMBERS, nationalDexNumber } from "@/shared/pool/pokemon-dex-numbers";
+import {
+  POKEMON_PRIMARY_TYPES,
+  TYPE_BACKGROUND_PALETTE,
+  backgroundForType,
+  primaryType,
+} from "@/shared/pool/pokemon-types";
 import { runImageProviderContract } from "./contracts/image-provider-contract";
 
 /**
@@ -144,6 +150,45 @@ describe("POKEMON_NATIONAL_DEX_NUMBERS", () => {
   });
 });
 
+describe("POKEMON_PRIMARY_TYPES", () => {
+  const data = JSON.parse(
+    readFileSync(join(process.cwd(), "seed-content", "cards.json"), "utf8"),
+  ) as { themes: { name: string; cards: { name: string }[] }[] };
+
+  it("maps every Kanto Pokémon and Johto Pokémon card to a known type with a palette entry", () => {
+    const pokemonThemes = data.themes.filter((t) => t.name === "Kanto Pokémon" || t.name === "Johto Pokémon");
+    expect(pokemonThemes).toHaveLength(2);
+    for (const theme of pokemonThemes) {
+      for (const card of theme.cards) {
+        const type = primaryType(card.name);
+        expect(type, `${theme.name} / ${card.name}`).toBeTypeOf("string");
+        expect(TYPE_BACKGROUND_PALETTE, `${theme.name} / ${card.name} type "${type}"`).toHaveProperty(
+          type as string,
+        );
+      }
+    }
+  });
+
+  it("covers every mapped dex number's card name with a type entry", () => {
+    for (const name of Object.keys(POKEMON_NATIONAL_DEX_NUMBERS)) {
+      expect(POKEMON_PRIMARY_TYPES, name).toHaveProperty(name);
+    }
+  });
+
+  it("gives every palette type a distinct centre/edge colour pair", () => {
+    const pairs = Object.values(TYPE_BACKGROUND_PALETTE).map((p) => `${p.center}/${p.edge}`);
+    expect(new Set(pairs).size).toBe(pairs.length);
+    for (const { center, edge } of Object.values(TYPE_BACKGROUND_PALETTE)) {
+      expect(center).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(edge).toMatch(/^#[0-9a-f]{6}$/i);
+    }
+  });
+
+  it("falls back to normal's colours for an unknown type", () => {
+    expect(backgroundForType("made-up-type")).toEqual(TYPE_BACKGROUND_PALETTE.normal);
+  });
+});
+
 // ── generate(): skip, loud failure, URL, normalisation, provenance ─────────
 
 describe("pokeapiOfficialArtwork().generate()", () => {
@@ -189,7 +234,7 @@ describe("pokeapiOfficialArtwork().generate()", () => {
     );
   });
 
-  it("flattens transparency onto a white background and fits the whole figure in frame", async () => {
+  it("composites the figure, scaled down with margin, onto a type-coloured gradient background", async () => {
     const provider = pokeapiOfficialArtwork({
       fetchImpl: async () => imageResponse(await noiseRgba(300, 500)), // tall, non-square source
     });
@@ -198,14 +243,46 @@ describe("pokeapiOfficialArtwork().generate()", () => {
 
     expect(readImageSize(image.bytes)).toMatchObject({ width: 768, height: 768, format: "png" });
 
-    // A non-square source under `fit: "contain"` letterboxes top/bottom or
-    // left/right with the flatten background — sample a corner pixel.
+    // Mew is psychic-type — the corner should carry the psychic gradient's
+    // edge colour (#ffb0d0), not plain white and not the raw noise.
     const { data, info } = await sharp(Buffer.from(image.bytes))
       .raw()
       .toBuffer({ resolveWithObject: true });
-    expect(info.channels).toBeLessThanOrEqual(3); // flattened: no alpha channel left
     const corner = [data[0], data[1], data[2]];
-    expect(corner).toEqual([255, 255, 255]);
+    expect(corner).not.toEqual([255, 255, 255]);
+    // Within a few levels of the psychic gradient's edge colour (#ffb0d0) —
+    // SVG rasterisation rounds slightly, so this tolerates that, not the type.
+    const expectedEdge = [0xff, 0xb0, 0xd0];
+    for (let i = 0; i < 3; i++) {
+      expect(Math.abs(corner[i]! - expectedEdge[i]!)).toBeLessThanOrEqual(4);
+    }
+    expect(info.width).toBe(768);
+    expect(info.height).toBe(768);
+  });
+
+  it("scales the artwork to roughly 80-85% of the frame, centred, with margin on every side", async () => {
+    const provider = pokeapiOfficialArtwork({
+      fetchImpl: async () => imageResponse(await noiseRgba(400, 400)), // square, opaque source
+    });
+    const prompt = buildPrompt({ imagePrompt: "Pikachu, the Pokémon: a small yellow creature" });
+    const image = await provider.generate(prompt, CARD_SIZE);
+
+    const { data, info } = await sharp(Buffer.from(image.bytes))
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const channels = info.channels;
+    const topLeft = [data[0], data[1], data[2]];
+    const centreIdx = (384 * info.width + 384) * channels;
+    const centre = [data[centreIdx], data[centreIdx + 1], data[centreIdx + 2]];
+    expect(topLeft).not.toEqual(centre);
+
+    // The frame's extreme corner (well outside 85% of the frame from centre)
+    // must still be background, confirming the artwork does not reach edge-to-edge.
+    const cornerFarIdx = (20 * info.width + 20) * channels;
+    const cornerFar = [data[cornerFarIdx], data[cornerFarIdx + 1], data[cornerFarIdx + 2]];
+    for (let i = 0; i < 3; i++) {
+      expect(Math.abs(cornerFar[i]! - topLeft[i]!)).toBeLessThanOrEqual(10);
+    }
   });
 
   it("records the exact source and link honestly, with no invented model name", async () => {
