@@ -63,6 +63,7 @@ export function PullButton({
   const { play } = useSound();
   const router = useRouter();
   const prevBalance = useRef(initialBalance);
+  const chipRowRef = useRef<HTMLDivElement>(null);
   const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pulledRef = useRef(false);
 
@@ -86,6 +87,25 @@ export function PullButton({
   );
 
   const selectedMoreTheme = moreThemes.find((t) => t.id === themeId); // #kcmg
+
+  // Keep the selected chip visible in the mobile swipe row (#kcmg). Scrolls only
+  // the row itself, never the page; desktop's wrapped row never overflows.
+  useEffect(() => {
+    const row = chipRowRef.current;
+    const chip = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (!row || !chip) return;
+    const rowBox = row.getBoundingClientRect();
+    const chipBox = chip.getBoundingClientRect();
+    const delta =
+      chipBox.left < rowBox.left
+        ? chipBox.left - rowBox.left
+        : chipBox.right > rowBox.right
+          ? chipBox.right - rowBox.right
+          : 0;
+    if (delta === 0) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    row.scrollBy({ left: delta, behavior: reduced ? "auto" : "smooth" });
+  }, [themeId]);
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
   // all. If they still hold an Easter Egg ticket, keep the Discover button visible
@@ -234,6 +254,7 @@ export function PullButton({
           <div
             className="flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 sm:w-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:scroll-px-0 sm:px-0 sm:py-0"
             data-testid="category-chips"
+            ref={chipRowRef}
           >
             <CategoryChip
               label="🎲 Random"
@@ -242,18 +263,17 @@ export function PullButton({
               disabled={pending}
               testid="category-chip-random"
             />
-            {themes.map((t) => (
+            {moreThemes.length > 0 ? (
               <CategoryChip
-                key={t.id}
-                label={t.name}
-                active={themeId === t.id}
-                onClick={() => setThemeId(t.id)}
+                label="🪐 More galaxies"
+                active={false}
+                onClick={() => setShowMoreGalaxies(true)}
                 disabled={pending}
-                testid={`category-chip-${t.id}`}
+                testid="category-chip-more-galaxies"
               />
-            ))}
+            ) : null}
             {/* A category picked from "More galaxies" isn't one of the chips
-                above, so it gets its own active chip here - the same way a
+                below, so it gets its own active chip up front - the same way a
                 visible one would show selected (#kcmg). */}
             {selectedMoreTheme ? (
               <CategoryChip
@@ -265,15 +285,16 @@ export function PullButton({
                 testid={`category-chip-${selectedMoreTheme.id}`}
               />
             ) : null}
-            {moreThemes.length > 0 ? (
+            {themes.map((t) => (
               <CategoryChip
-                label="🪐 More galaxies"
-                active={false}
-                onClick={() => setShowMoreGalaxies(true)}
+                key={t.id}
+                label={t.name}
+                active={themeId === t.id}
+                onClick={() => setThemeId(t.id)}
                 disabled={pending}
-                testid="category-chip-more-galaxies"
+                testid={`category-chip-${t.id}`}
               />
-            ) : null}
+            ))}
           </div>
         </div>
       ) : null}
