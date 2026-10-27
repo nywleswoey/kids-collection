@@ -26,9 +26,9 @@ export function Card({
   const { ref, onPointerMove, onPointerLeave } = useCardTilt(interactive);
   const dim = size === "lg" ? 320 : 160;
   const reducedMotion = useReducedMotion();
-  // Legendary-only manual animation lane (see AGENTS.md). `Card` itself
-  // only ever renders the pull reveal, the card detail modal, and the easter
-  // egg / reward reveals — never the collection grid (that renders
+  // Manual animation lane (`isAnimationEligible`, see AGENTS.md). `Card`
+  // itself only ever renders the pull reveal, the card detail modal, and the
+  // easter egg / reward reveals — never the collection grid (that renders
   // `RarityThumb` instead, in `CardSlot.tsx`) — so no extra "which surface"
   // gate is needed here. `next/image` flattens an animated WebP to its first
   // frame, so the animated element bypasses it entirely with a plain `<img>`.

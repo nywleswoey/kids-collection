@@ -434,6 +434,97 @@ describe("runSeed --review: a legendary card's dropped animation is imported for
   });
 });
 
+describe("runSeed --sync: a non-legendary Pokémon card publishes its reviewed animation", () => {
+  const POKEAPI = providerById("pokeapi-official-artwork")!;
+  const POKEMON_THEME = "Kanto Pokémon";
+  const commonPokemon: SeedCard = { ...card("Pikachu"), rarity: "common" };
+  const seed: SeedFile = {
+    themes: [{ name: POKEMON_THEME, provider: POKEAPI.id, cards: [commonPokemon] }],
+  };
+  const shape: PublishedCount[] = [{ theme: POKEMON_THEME, rarity: "common", n: 1 }];
+
+  function reviewedWith(provider = POKEAPI) {
+    const files = new Map<string, Uint8Array>();
+    files.set(reviewFileName(POKEMON_THEME, commonPokemon, provider), new Uint8Array([1, 2, 3]));
+    const sidecar = buildSidecar(provider, { bytes: new Uint8Array(), format: "png" });
+    files.set(
+      sidecarFileName(POKEMON_THEME, commonPokemon, provider),
+      new TextEncoder().encode(JSON.stringify(sidecar)),
+    );
+    return files;
+  }
+
+  it("uploads a non-legendary Pokémon card's animation and passes its URL to the insert", async () => {
+    const files = reviewedWith();
+    files.set(
+      animatedReviewFileName(POKEMON_THEME, commonPokemon.name, buildPrompt(commonPokemon), POKEAPI.id),
+      new Uint8Array([9]),
+    );
+    const h = harness({ seed, files, shape });
+
+    const code = await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(code).toBe(0);
+    expect(h.calls.filter((c) => c === "uploadAnimation")).toHaveLength(1);
+    expect(h.insertedAnimatedUrls.get("Pikachu")).toMatch(/-anim\.webp$/);
+  });
+
+  it("still ignores a non-legendary card in an unrelated theme/provider (regression guard)", async () => {
+    const files = reviewed("Robin", "Wren");
+    const unrelated: SeedFile = {
+      themes: [{ name: THEME, provider: PROVIDER.id, cards: [card("Robin"), card("Wren")] }],
+    };
+    files.set(
+      animatedReviewFileName(THEME, "Robin", buildPrompt(card("Robin")), PROVIDER.id),
+      new Uint8Array([9]),
+    );
+    const h = harness({ seed: unrelated, files, shape: [{ theme: THEME, rarity: "common", n: 2 }] });
+
+    await runSeed({ kind: "sync", allowPrune: false }, h.deps);
+
+    expect(h.calls).not.toContain("uploadAnimation");
+    expect(h.insertedAnimatedUrls.get("Robin")).toBeUndefined();
+  });
+});
+
+describe("runSeed --review: a non-legendary Pokémon card's dropped animation is imported", () => {
+  const POKEAPI = providerById("pokeapi-official-artwork")!;
+  const POKEMON_THEME = "Kanto Pokémon";
+  const commonPokemon: SeedCard = { ...card("Pikachu"), rarity: "common" };
+  const seedWith = (provider: string): SeedFile => ({
+    themes: [{ name: POKEMON_THEME, provider, cards: [commonPokemon] }],
+  });
+  const dropFor = (providerId: string) =>
+    new Map([
+      [
+        `${animatedStem(POKEMON_THEME, commonPokemon.name, buildPrompt(commonPokemon), providerId)}.webp`,
+        new Uint8Array([7]),
+      ],
+    ]);
+  const reviewedPokemon = () => {
+    const files = new Map<string, Uint8Array>();
+    files.set(reviewFileName(POKEMON_THEME, commonPokemon, POKEAPI), new Uint8Array([1]));
+    return files;
+  };
+
+  it("writes a non-legendary Pokémon card's animation into the review folder", async () => {
+    const h = harness({
+      seed: seedWith(POKEAPI.id),
+      files: reviewedPokemon(),
+      drop: dropFor(POKEAPI.id),
+    });
+
+    const code = await runSeed({ kind: "review", providers: [POKEAPI.id] }, h.deps);
+
+    expect(code).toBe(0);
+    expect(
+      h.written.get(
+        animatedReviewFileName(POKEMON_THEME, commonPokemon.name, buildPrompt(commonPokemon), POKEAPI.id),
+      ),
+    ).toEqual(new Uint8Array([7]));
+  });
+});
+
 describe("runSeed --sync: --themes scopes the run to named theme(s)", () => {
   const MAMMALS = "Mammals";
   // Mammals carries no `provider` on the theme or either card — an unjudged

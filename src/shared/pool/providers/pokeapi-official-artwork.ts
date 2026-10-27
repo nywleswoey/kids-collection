@@ -76,11 +76,19 @@ import sharp from "sharp";
 const ARTWORK_BASE_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
 
-/** The artwork fills this fraction of the square frame, centred. */
-const MARGIN_RATIO = 0.82;
+/**
+ * The artwork fills this fraction of the square frame, centred. Exported so
+ * `scripts/pokemon-anim/` can recreate this exact framing per animation frame
+ * without duplicating the constant.
+ */
+export const MARGIN_RATIO = 0.82;
 
-/** Rasterise the type-coloured gradient backing square. */
-function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
+/**
+ * Rasterise the type-coloured gradient backing square. Exported so
+ * `scripts/pokemon-anim/` reuses the identical background rather than
+ * duplicating the SVG.
+ */
+export function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
   const { center, edge } = backgroundForType(type);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}">
     <defs>

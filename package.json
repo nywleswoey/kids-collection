@@ -25,6 +25,7 @@
     "seed": "tsx --env-file-if-exists=.env.local scripts/seed/index.ts",
     "contact-sheet": "tsx --env-file-if-exists=.env.local scripts/contact-sheet/index.ts",
     "supergrok": "tsx scripts/supergrok-helper/index.ts",
+    "pokemon-anim": "tsx scripts/pokemon-anim/index.ts",
     "theme-images": "tsx --env-file-if-exists=.env.local scripts/theme-images/index.ts",
     "theme-picks": "tsx scripts/theme-picks/index.ts",
     "reconcile": "tsx --env-file-if-exists=.env.local scripts/reconcile/index.ts",
