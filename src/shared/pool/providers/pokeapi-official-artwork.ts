@@ -72,15 +72,26 @@ import { nationalDexNumber } from "../pokemon-dex-numbers";
 import { backgroundForType, primaryType } from "../pokemon-types";
 import sharp from "sharp";
 
+/** This lane's registry id - the one definition every caller compares against. */
+export const POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID = "pokeapi-official-artwork";
+
 /** Raw GitHub mirror of PokéAPI's sprite data — no key, no rate limit tier. */
 const ARTWORK_BASE_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
 
-/** The artwork fills this fraction of the square frame, centred. */
-const MARGIN_RATIO = 0.82;
+/**
+ * The artwork fills this fraction of the square frame, centred. Exported so
+ * `scripts/pokemon-anim/` can recreate this exact framing per animation frame
+ * without duplicating the constant.
+ */
+export const MARGIN_RATIO = 0.82;
 
-/** Rasterise the type-coloured gradient backing square. */
-function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
+/**
+ * Rasterise the type-coloured gradient backing square. Exported so
+ * `scripts/pokemon-anim/` reuses the identical background rather than
+ * duplicating the SVG.
+ */
+export function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
   const { center, edge } = backgroundForType(type);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}">
     <defs>
@@ -155,7 +166,7 @@ export function pokeapiOfficialArtwork(
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   const resolveDexNumber = opts.resolveDexNumber ?? defaultResolveDexNumber;
   const provider: ImageProvider = {
-    id: "pokeapi-official-artwork",
+    id: POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID,
     role: "escape-hatch",
     format: "png",
     params: {

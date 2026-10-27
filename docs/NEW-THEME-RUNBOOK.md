@@ -670,6 +670,26 @@ reported, not generated. It then runs the same `--review` import and contact she
 `--sync` publishes the animation with the card. Existing published cards are never given one. Details:
 `scripts/supergrok-helper/index.ts`'s header and `AGENTS.md`.
 
+### Optional — animate Kanto/Johto Pokémon cards (local, no AI)
+
+Every card in the Kanto Pokémon / Johto Pokémon themes may also get a short looping animation — not just the
+legendaries — generated entirely locally, with no Grok call: Grok's `image_to_video` is blocked by content
+moderation on named, recognisable Pokémon, so this lane recomposites the same transparent official artwork and
+type-gradient background the still provider draws, with a synthesized float/breathe/sway and a few type-coloured
+sparkles, instead of animating a clip.
+
+```bash
+pnpm pokemon-anim   # needs `brew install webp` for img2webp — no ffmpeg (there is no video to decode)
+```
+
+One command animates every card across both themes in one pass: it skips a card whose drop-folder animation
+already exists (reruns resume), and reports — never fabricates — a card whose still has not been picked yet in
+`seed-content/review/` under `pokeapi-official-artwork` (run `pnpm seed --review --providers=pokeapi-official-artwork`
+and `pnpm theme-picks` first). From there, the usual hand-off applies with no new flags: `pnpm seed --review
+--providers=pokeapi-official-artwork` imports what was generated, `pnpm contact-sheet` shows it, and `pnpm seed
+--sync` publishes it with each card's first insert. Details: `scripts/pokemon-anim/index.ts`'s header and
+`AGENTS.md`.
+
 ## Step 9 — Publish
 
 Only after approval:
