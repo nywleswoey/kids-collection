@@ -3,7 +3,7 @@ import { requireActivePlayer } from "@/features/profiles/active-profile";
 import { tokenService } from "@/features/pull/token-service.prod";
 import { pullService } from "@/features/pull/pull-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
-import { recentCategories } from "@/features/pull/categories";
+import { recentCategories, remainingCategories } from "@/features/pull/categories";
 import { listCards, listThemes } from "@/shared/pool/service";
 
 export default async function PullPage() {
@@ -16,9 +16,11 @@ export default async function PullPage() {
     tokenService.getEasterEggBalance(child.id),
   ]);
   // Only the most recent categories get a chip, so the row stays readable on a
-  // phone (Inc21 FR3). Capped here, server-side, so the hidden ones are never
-  // serialized into the client payload. 🎲 Random still draws from all of them.
+  // phone (Inc21 FR3). Every older category is still choosable - just through
+  // the "More galaxies" picker instead of a chip (#kcmg) - so both lists go to
+  // the client; 🎲 Random still draws from all of them either way.
   const visibleThemes = recentCategories(themes);
+  const moreThemes = remainingCategories(themes);
   // Card fronts flashed during the pre-reveal slot-machine (FR1).
   const flashPool = allCards.map((c) => ({
     id: c.id,
@@ -42,6 +44,7 @@ export default async function PullPage() {
         initialBalance={balance}
         flashPool={flashPool}
         themes={visibleThemes.map((t) => ({ id: t.id, name: t.name }))}
+        moreThemes={moreThemes.map((t) => ({ id: t.id, name: t.name }))}
         easterEggTickets={easterEggTickets}
       />
       <div className="flex gap-3 text-sm">

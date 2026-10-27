@@ -10,6 +10,7 @@ import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./
 import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
+import { MoreGalaxiesModal } from "./MoreGalaxiesModal";
 import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/shared/sound/useSound";
@@ -34,12 +35,15 @@ export function PullButton({
   initialBalance,
   flashPool = [],
   themes = [],
+  moreThemes = [],
   easterEggTickets = 0,
 }: {
   childId: string;
   initialBalance: number;
   flashPool?: FlashCard[];
   themes?: { id: string; name: string }[];
+  /** Older categories, hidden from the chip row but still choosable (#kcmg). */
+  moreThemes?: { id: string; name: string }[];
   easterEggTickets?: number;
 }) {
   const [balance, setBalance] = useState(initialBalance);
@@ -51,6 +55,7 @@ export function PullButton({
   const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome | PullRefundedOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
+  const [showMoreGalaxies, setShowMoreGalaxies] = useState(false); // #kcmg
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
   const [stuck, setStuck] = useState(false); // #kcpi: stuck-loading timeout fired
   const [refundedNotice, setRefundedNotice] = useState(false); // #kcpi: swept claim replayed
@@ -58,6 +63,7 @@ export function PullButton({
   const { play } = useSound();
   const router = useRouter();
   const prevBalance = useRef(initialBalance);
+  const chipRowRef = useRef<HTMLDivElement>(null);
   const stuckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pulledRef = useRef(false);
 
@@ -80,6 +86,26 @@ export function PullButton({
     [router],
   );
 
+  const selectedMoreTheme = moreThemes.find((t) => t.id === themeId); // #kcmg
+
+  // Keep the selected chip visible in the mobile swipe row (#kcmg). Scrolls only
+  // the row itself, never the page; desktop's wrapped row never overflows.
+  useEffect(() => {
+    const row = chipRowRef.current;
+    const chip = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (!row || !chip) return;
+    const rowBox = row.getBoundingClientRect();
+    const chipBox = chip.getBoundingClientRect();
+    const delta =
+      chipBox.left < rowBox.left
+        ? chipBox.left - rowBox.left
+        : chipBox.right > rowBox.right
+          ? chipBox.right - rowBox.right
+          : 0;
+    if (delta === 0) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    row.scrollBy({ left: delta, behavior: reduced ? "auto" : "smooth" });
+  }, [themeId]);
   const outOfTokens = balance < 1;
   // FR2 (Inc10): only nag "ask a parent" when the child has nothing to spend at
   // all. If they still hold an Easter Egg ticket, keep the Discover button visible
@@ -213,7 +239,7 @@ export function PullButton({
       </p>
 
       {/* Category chips — prominent + persistent, stay visible on the result (FR2/FR3). */}
-      {themes.length > 0 ? (
+      {themes.length > 0 || moreThemes.length > 0 ? (
         <div className="flex w-full min-w-0 flex-col items-center gap-2">
           <span className="text-sm text-[color:var(--ink-soft)]">Pick a galaxy</span>
           {/* Mobile: one swipeable row (snap-scrolled, no page-level overflow
@@ -228,6 +254,7 @@ export function PullButton({
           <div
             className="flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 sm:w-auto sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:scroll-px-0 sm:px-0 sm:py-0"
             data-testid="category-chips"
+            ref={chipRowRef}
           >
             <CategoryChip
               label="🎲 Random"
@@ -236,6 +263,28 @@ export function PullButton({
               disabled={pending}
               testid="category-chip-random"
             />
+            {moreThemes.length > 0 ? (
+              <CategoryChip
+                label="🪐 More galaxies"
+                active={false}
+                onClick={() => setShowMoreGalaxies(true)}
+                disabled={pending}
+                testid="category-chip-more-galaxies"
+              />
+            ) : null}
+            {/* A category picked from "More galaxies" isn't one of the chips
+                below, so it gets its own active chip up front - the same way a
+                visible one would show selected (#kcmg). */}
+            {selectedMoreTheme ? (
+              <CategoryChip
+                key={selectedMoreTheme.id}
+                label={selectedMoreTheme.name}
+                active
+                onClick={() => setShowMoreGalaxies(true)}
+                disabled={pending}
+                testid={`category-chip-${selectedMoreTheme.id}`}
+              />
+            ) : null}
             {themes.map((t) => (
               <CategoryChip
                 key={t.id}
@@ -352,6 +401,17 @@ export function PullButton({
         cardId={hintCardId ?? ""}
         onClose={() => setHintCardId(null)}
       />
+
+      {showMoreGalaxies ? (
+        <MoreGalaxiesModal
+          themes={moreThemes}
+          onPick={(id) => {
+            setThemeId(id);
+            setShowMoreGalaxies(false);
+          }}
+          onClose={() => setShowMoreGalaxies(false)}
+        />
+      ) : null}
     </div>
   );
 }
