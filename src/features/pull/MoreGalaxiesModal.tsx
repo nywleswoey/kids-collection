@@ -56,7 +56,12 @@ export function MoreGalaxiesModal({
         className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
       />
 
-      <div className="panel relative z-10 flex max-h-[80vh] w-full max-w-sm flex-col gap-3 p-4">
+      {/* Solid `--bg-1`, not the glassy default: the sheet sits right on top
+          of the chip row, which would otherwise show through its tiles. */}
+      <div
+        className="panel relative z-10 flex max-h-[80vh] w-full max-w-sm flex-col gap-3 p-4"
+        style={{ background: "var(--bg-1)" }}
+      >
         <div className="flex items-center justify-between gap-3">
           <h2 id="more-galaxies-title" className="text-lg font-bold">
             🪐 More galaxies
