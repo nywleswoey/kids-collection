@@ -117,3 +117,33 @@ export const TYPE_BACKGROUND_PALETTE: Readonly<
 export function backgroundForType(type: string): { center: string; edge: string } {
   return TYPE_BACKGROUND_PALETTE[type] ?? TYPE_BACKGROUND_PALETTE.normal!;
 }
+
+/**
+ * A bright, saturated colour per type (the classic in-game type badge
+ * colours) - the pastel `edge` above is too washed out to read as the type's
+ * colour on something as small as `pnpm pokemon-anim`'s sparkles. Same
+ * coverage and `normal` fallback as `TYPE_BACKGROUND_PALETTE`.
+ */
+export const TYPE_ACCENT_COLORS: Readonly<Record<string, string>> = {
+  normal: "#a8a878",
+  fire: "#f08030",
+  water: "#6890f0",
+  electric: "#f8d030",
+  grass: "#78c850",
+  ice: "#98d8d8",
+  fighting: "#c03028",
+  poison: "#a040a0",
+  ground: "#e0c068",
+  psychic: "#f85888",
+  bug: "#a8b820",
+  rock: "#b8a038",
+  ghost: "#705898",
+  dragon: "#7038f8",
+  dark: "#705848",
+  fairy: "#ee99ac",
+};
+
+/** Accent colour for a type, falling back to `normal`'s if unknown. */
+export function accentColorForType(type: string): string {
+  return TYPE_ACCENT_COLORS[type] ?? TYPE_ACCENT_COLORS.normal!;
+}

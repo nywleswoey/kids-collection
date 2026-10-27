@@ -13,9 +13,8 @@ import { animatedStem } from "@/shared/pool/animated-brief";
 import { buildPrompt } from "@/shared/pool/prompt";
 import { reviewFileName, resolveProviderId } from "@/shared/pool/review-files";
 import { providerById } from "@/shared/pool/providers";
+import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/shared/pool/providers/pokeapi-official-artwork";
 import type { SeedFile } from "@/shared/pool/seed-schema";
-
-export const POKEAPI_PROVIDER_ID = "pokeapi-official-artwork";
 
 export interface PokemonAnimEntry {
   theme: string;
@@ -30,13 +29,13 @@ export interface PokemonAnimEntry {
 
 /** Every card, in any theme, whose resolved provider is `pokeapi-official-artwork`. */
 export function planPokemonAnimEntries(seed: SeedFile): PokemonAnimEntry[] {
-  const provider = providerById(POKEAPI_PROVIDER_ID);
+  const provider = providerById(POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID);
   if (!provider) return [];
 
   const entries: PokemonAnimEntry[] = [];
   for (const theme of seed.themes) {
     for (const card of theme.cards) {
-      if (resolveProviderId(theme, card) !== POKEAPI_PROVIDER_ID) continue;
+      if (resolveProviderId(theme, card) !== POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID) continue;
       const prompt = buildPrompt(card);
       entries.push({
         theme: theme.name,

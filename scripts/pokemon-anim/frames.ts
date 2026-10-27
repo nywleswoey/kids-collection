@@ -13,10 +13,11 @@
  * unlike the Grok-video lane's `runFfmpegConvert` (which animates an
  * arbitrary clip and needs one). Gentle, kid-friendly amplitudes: a vertical
  * float, a breathing scale pulse, a soft sway, and a few twinkling sparkles
- * in the card's type colour drifting around it.
+ * in the card's type colour drifting around it - drawn BEHIND the artwork, so
+ * they show only around the Pokémon's silhouette, never across its body.
  */
 import sharp from "sharp";
-import { backgroundForType } from "@/shared/pool/pokemon-types";
+import { accentColorForType } from "@/shared/pool/pokemon-types";
 import {
   buildBackgroundSvg,
   MARGIN_RATIO,
@@ -32,22 +33,15 @@ const BREATH_AMPLITUDE_RATIO = 0.02; // scale pulse, fraction of artwork size
 const SWAY_DEGREES = 2.5; // sway, degrees of rotation
 const SPARKLE_COUNT = 4;
 const SPARKLE_ORBIT_RATIO = 0.42; // fraction of frame size
-const SPARKLE_RADIUS_RATIO = 0.028; // fraction of frame size
-const SPARKLE_STROKE_RATIO = 0.006; // fraction of frame size
-/** Darkened so the rim reads against the gradient's own lightest (centre) stop, not just its edge. */
+const SPARKLE_RADIUS_RATIO = 0.04; // fraction of frame size
+const SPARKLE_STROKE_RATIO = 0.005; // fraction of frame size
+const SPARKLE_HIGHLIGHT_RATIO = 0.18; // white glint, fraction of the sparkle's own radius
+/** Darkened so pale accents (electric yellow, ice) still read against the gradient's lightest stop. */
 const SPARKLE_RIM_DARKEN_AMOUNT = 0.35;
 
 const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
-/**
- * Blend a `#rrggbb` colour toward black by `amount` (0-1) — used for the
- * sparkle's rim, never its fill. The type palette's "edge" colour is already
- * a pastel close in lightness to the background gradient's own mid-tones (it
- * IS one of the gradient's two stops), so a same-hue LIGHTENED sparkle nearly
- * vanishes against the gradient at the radius it orbits. A solid white core
- * with a darkened-edge-colour rim stays legible against every stop of the
- * gradient instead of only the outermost one.
- */
+/** Blend a `#rrggbb` colour toward black by `amount` (0-1) - the sparkle's thin rim. */
 function darken(hex: string, amount: number): string {
   const n = Number.parseInt(hex.slice(1), 16);
   const mix = (shift: number) => {
@@ -73,12 +67,12 @@ function sparklePath(cx: number, cy: number, r: number): string {
   return `M ${pts.map((p) => p.map((v) => v.toFixed(1)).join(",")).join(" L ")} Z`;
 }
 
-function sparkleSvg(size: number, typeEdgeColor: string, t: number): string {
+function sparkleSvg(size: number, accentColor: string, t: number): string {
   const cx = size / 2;
   const cy = size / 2;
   const orbitRadius = size * SPARKLE_ORBIT_RATIO;
   const baseRadius = size * SPARKLE_RADIUS_RATIO;
-  const rimColor = darken(typeEdgeColor, SPARKLE_RIM_DARKEN_AMOUNT);
+  const rimColor = darken(accentColor, SPARKLE_RIM_DARKEN_AMOUNT);
   const strokeWidth = (size * SPARKLE_STROKE_RATIO).toFixed(1);
   let glints = "";
   for (let i = 0; i < SPARKLE_COUNT; i++) {
@@ -86,18 +80,23 @@ function sparkleSvg(size: number, typeEdgeColor: string, t: number): string {
     const angle = t * 2 * Math.PI + phase;
     const radius = orbitRadius * (0.85 + 0.15 * Math.sin(angle * 2));
     const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius * 0.6; // flattened into an ellipse
+    const y = cy + Math.sin(angle) * radius;
     const twinkle = Math.abs(Math.sin(t * 4 * Math.PI + phase));
     const opacity = (0.4 + 0.6 * twinkle).toFixed(2);
     const scaledRadius = baseRadius * (0.6 + 0.4 * twinkle);
-    glints += `<path d="${sparklePath(x, y, scaledRadius)}" fill="white" stroke="${rimColor}" stroke-width="${strokeWidth}" opacity="${opacity}" />`;
+    const highlightRadius = (scaledRadius * SPARKLE_HIGHLIGHT_RATIO).toFixed(1);
+    glints +=
+      `<g opacity="${opacity}">` +
+      `<path d="${sparklePath(x, y, scaledRadius)}" fill="${accentColor}" stroke="${rimColor}" stroke-width="${strokeWidth}" />` +
+      `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${highlightRadius}" fill="white" />` +
+      `</g>`;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">${glints}</svg>`;
 }
 
 /**
- * One frame: the static type-gradient background, the artwork transformed by
- * this moment's float/breathe/sway, and this moment's sparkles on top.
+ * One frame: the static type-gradient background, this moment's sparkles,
+ * then the artwork transformed by this moment's float/breathe/sway on top.
  */
 async function renderFrame(
   background: Buffer,
@@ -125,17 +124,16 @@ async function renderFrame(
   const layerWidth = rotatedMeta.width ?? frameArtworkSize;
   const layerHeight = rotatedMeta.height ?? frameArtworkSize;
 
-  const { edge } = backgroundForType(type);
-  const sparkles = await sharp(Buffer.from(sparkleSvg(size, edge, t))).png().toBuffer();
+  const sparkles = await sharp(Buffer.from(sparkleSvg(size, accentColorForType(type), t))).png().toBuffer();
 
   return sharp(background)
     .composite([
+      { input: sparkles, left: 0, top: 0 },
       {
         input: rotated,
         left: Math.round((size - layerWidth) / 2),
         top: Math.round((size - layerHeight) / 2 + floatPx),
       },
-      { input: sparkles, left: 0, top: 0 },
     ])
     .png()
     .toBuffer();

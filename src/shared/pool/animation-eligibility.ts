@@ -9,9 +9,8 @@
  * theme names, so any future theme that opts into the same escape hatch is
  * eligible too, and every other theme's behaviour is unchanged.
  */
+import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "./providers/pokeapi-official-artwork";
 import { resolveProviderId } from "./review-files";
-
-const POKEAPI_PROVIDER_ID = "pokeapi-official-artwork";
 
 export interface EligibilityTheme {
   provider?: string;
@@ -27,5 +26,5 @@ export function isAnimationEligible(
   card: EligibilityCard,
 ): boolean {
   if (card.rarity === "legendary") return true;
-  return resolveProviderId(theme, card) === POKEAPI_PROVIDER_ID;
+  return resolveProviderId(theme, card) === POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID;
 }

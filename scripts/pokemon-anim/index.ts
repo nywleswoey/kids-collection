@@ -21,7 +21,7 @@
  * `pnpm contact-sheet` shows it, and `pnpm seed --sync` publishes it on each
  * card's first insert — see docs/NEW-THEME-RUNBOOK.md.
  */
-import { existsSync, mkdirSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { ANIMATED_DROP_DIR } from "@/shared/pool/animated-brief";
 import { loadSeed } from "@/shared/pool/loader";
@@ -50,26 +50,12 @@ async function main(): Promise<number> {
 
   let generated = 0;
   let skipped = 0;
-  let missingStill = 0;
   const failures: GenerateFailure[] = [];
 
   for (const [i, entry] of entries.entries()) {
-    const dropNames = existsSync(DROP_DIR_ABS)
-      ? readdirSync(DROP_DIR_ABS, { withFileTypes: true })
-          .filter((e) => e.isFile())
-          .map((e) => e.name)
-      : [];
-    if (dropNames.includes(entry.fileName)) {
+    if (existsSync(join(DROP_DIR_ABS, entry.fileName))) {
       console.log(`[${i + 1}/${entries.length}] ${entry.card} — already generated (${entry.fileName}), skipping.`);
       skipped++;
-      continue;
-    }
-    if (!existsSync(join(REVIEW_DIR, entry.stillReviewFileName))) {
-      console.log(
-        `[${i + 1}/${entries.length}] ${entry.card} — no approved still yet, skipping (run ` +
-          `\`pnpm seed --review --providers=pokeapi-official-artwork\` first).`,
-      );
-      missingStill++;
       continue;
     }
 
@@ -90,8 +76,8 @@ async function main(): Promise<number> {
   }
 
   console.log(
-    `\n${generated} generated this run, ${skipped} already generated, ${missingStill} missing an approved ` +
-      `still, ${failures.length} failed, ${entries.length} card(s) total.`,
+    `\n${generated} generated this run, ${skipped} already generated, ${failures.length} failed, ` +
+      `${entries.length} card(s) total.`,
   );
   if (failures.length > 0) {
     console.log(`Failed cards:`);

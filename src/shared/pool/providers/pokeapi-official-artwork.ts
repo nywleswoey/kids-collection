@@ -72,6 +72,9 @@ import { nationalDexNumber } from "../pokemon-dex-numbers";
 import { backgroundForType, primaryType } from "../pokemon-types";
 import sharp from "sharp";
 
+/** This lane's registry id - the one definition every caller compares against. */
+export const POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID = "pokeapi-official-artwork";
+
 /** Raw GitHub mirror of PokéAPI's sprite data — no key, no rate limit tier. */
 const ARTWORK_BASE_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
@@ -163,7 +166,7 @@ export function pokeapiOfficialArtwork(
   const fetchImpl: FetchImpl = opts.fetchImpl ?? fetch;
   const resolveDexNumber = opts.resolveDexNumber ?? defaultResolveDexNumber;
   const provider: ImageProvider = {
-    id: "pokeapi-official-artwork",
+    id: POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID,
     role: "escape-hatch",
     format: "png",
     params: {
