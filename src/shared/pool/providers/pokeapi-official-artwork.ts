@@ -37,9 +37,9 @@
  *
  * ── Normalisation ─────────────────────────────────────────────────────────────
  * PokéAPI's official artwork is a transparent PNG, usually smaller than and
- * never exactly 768x768, padded differently per Pokémon, on a plain white
- * square filled edge to edge — flat next to this app's other bright,
- * hand-drawn card art. Instead: the artwork is resized with `fit: "contain"`
+ * never exactly 768x768, padded differently per Pokémon. Flattening it onto a
+ * plain white square, filled edge to edge, looks flat next to this app's
+ * other bright, hand-drawn card art. Instead: the artwork is resized with `fit: "contain"`
  * (never `"cover"`, which the other lanes use, since cropping a named
  * creature is worse than letterboxing it) to `MARGIN_RATIO` of the frame so
  * it has breathing room, composited (still transparent, never flattened to
