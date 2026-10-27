@@ -89,9 +89,8 @@ export function primaryType(name: string): string | undefined {
 /**
  * A soft, kid-friendly radial-gradient colour pair per Pokémon type: `center`
  * (lighter, at the middle of the frame) and `edge` (the type's colour, at the
- * frame's corners). Covers every type the main series uses, not only the
- * ones these two themes' primary types happen to hit, so a future theme
- * reusing this helper never needs a new palette entry.
+ * frame's corners). Covers only the types `POKEMON_PRIMARY_TYPES` uses;
+ * anything else falls back to `normal`'s pair (`backgroundForType`).
  */
 export const TYPE_BACKGROUND_PALETTE: Readonly<
   Record<string, { center: string; edge: string }>
@@ -105,14 +104,12 @@ export const TYPE_BACKGROUND_PALETTE: Readonly<
   fighting: { center: "#fdeeee", edge: "#e8a0a0" },
   poison: { center: "#f6ecfb", edge: "#d59fe0" },
   ground: { center: "#faf1e0", edge: "#e0c088" },
-  flying: { center: "#f0f6ff", edge: "#c3d7f5" },
   psychic: { center: "#fff0f6", edge: "#ffb0d0" },
   bug: { center: "#f6fbe8", edge: "#cfe6a0" },
   rock: { center: "#f5f0e6", edge: "#d0c3a0" },
   ghost: { center: "#f3eefb", edge: "#b8a0d8" },
   dragon: { center: "#eef0fb", edge: "#a8b0e8" },
   dark: { center: "#efeef2", edge: "#a8a0b0" },
-  steel: { center: "#f2f4f5", edge: "#c0c8cc" },
   fairy: { center: "#fff0f6", edge: "#ffc0da" },
 };
 

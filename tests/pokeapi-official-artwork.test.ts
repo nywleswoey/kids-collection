@@ -175,6 +175,11 @@ describe("POKEMON_PRIMARY_TYPES", () => {
     }
   });
 
+  it("has a palette entry only for types some mapped card actually uses", () => {
+    const usedTypes = new Set(Object.values(POKEMON_PRIMARY_TYPES));
+    expect(new Set(Object.keys(TYPE_BACKGROUND_PALETTE))).toEqual(usedTypes);
+  });
+
   it("gives every palette type a distinct centre/edge colour pair", () => {
     const pairs = Object.values(TYPE_BACKGROUND_PALETTE).map((p) => `${p.center}/${p.edge}`);
     expect(new Set(pairs).size).toBe(pairs.length);

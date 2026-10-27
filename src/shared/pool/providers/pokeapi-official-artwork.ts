@@ -45,9 +45,7 @@
  * it has breathing room, composited (still transparent, never flattened to
  * white) centred over a square rasterised from an SVG background: a soft
  * radial gradient — lighter centre, the Pokémon's primary type's colour at
- * the edge (`pokemon-types.ts`) — plus a blurred ground-shadow ellipse under
- * where the artwork sits, so it reads as standing on the card rather than
- * floating on a flat fill. Output stays the same square size/format.
+ * the edge (`pokemon-types.ts`). Output stays the same square size/format.
  *
  * ── Provenance ────────────────────────────────────────────────────────────────
  * Nothing here is AI-generated, so there is no served "model" to witness in the
@@ -81,27 +79,17 @@ const ARTWORK_BASE_URL =
 /** The artwork fills this fraction of the square frame, centred. */
 const MARGIN_RATIO = 0.82;
 
-/** Rasterise the type-coloured gradient + ground shadow backing square. */
+/** Rasterise the type-coloured gradient backing square. */
 function buildBackgroundSvg(size: ImageSizeRequest, type: string): string {
   const { center, edge } = backgroundForType(type);
-  const cx = size.width / 2;
-  const cy = size.height / 2;
-  const shadowWidth = size.width * (MARGIN_RATIO * 0.55);
-  const shadowHeight = size.height * 0.08;
-  const shadowY = cy + size.height * (MARGIN_RATIO / 2) * 0.62;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}">
     <defs>
       <radialGradient id="bg" cx="50%" cy="50%" r="72%">
         <stop offset="0%" stop-color="${center}" />
         <stop offset="100%" stop-color="${edge}" />
       </radialGradient>
-      <filter id="soft-shadow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="${size.height * 0.02}" />
-      </filter>
     </defs>
     <rect width="${size.width}" height="${size.height}" fill="url(#bg)" />
-    <ellipse cx="${cx}" cy="${shadowY}" rx="${shadowWidth / 2}" ry="${shadowHeight / 2}"
-      fill="#000000" opacity="0.16" filter="url(#soft-shadow)" />
   </svg>`;
 }
 
@@ -174,9 +162,10 @@ export function pokeapiOfficialArtwork(
       source: "pokeapi-sprites-official-artwork",
       fit: "contain",
       // Bumped from the plain "#ffffff" fill: a type-coloured gradient +
-      // margin + shadow now determine the bytes, so this must change too —
-      // old white-background reviews must never be confused with these.
-      background: "type-gradient-v1",
+      // margin now determine the bytes, so this must change too — old
+      // white-background (or v1 ground-shadow) reviews must never be
+      // confused with these.
+      background: "type-gradient-v2",
       marginRatio: MARGIN_RATIO,
     },
     minIntervalMs: 50,
