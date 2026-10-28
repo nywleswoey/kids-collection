@@ -266,7 +266,7 @@ export const POKEMON_PRIMARY_TYPES: Readonly<Record<string, string>> = {
   Duraludon: "steel",
   Cinderace: "fire",
   Rillaboom: "grass",
-  Intelleon: "water",
+  Inteleon: "water",
   Dragapult: "dragon",
   Corviknight: "flying",
   Zacian: "fairy",

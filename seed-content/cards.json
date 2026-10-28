@@ -8195,11 +8195,11 @@
           "sourceUrl": "https://www.pokemon.com/us/pokedex/rillaboom"
         },
         {
-          "name": "Intelleon",
+          "name": "Inteleon",
           "rarity": "epic",
-          "eduText": "Intelleon is the final form of Sobble, a Water-type Pokémon known for being cool, sharp, and precise.",
-          "imagePrompt": "Intelleon, the Pokémon: a single tall blue secret-agent-like lizard creature, standing on green grass under a blue sky",
-          "sourceUrl": "https://www.pokemon.com/us/pokedex/intelleon"
+          "eduText": "Inteleon is the final form of Sobble, a Water-type Pokémon known for being cool, sharp, and precise.",
+          "imagePrompt": "Inteleon, the Pokémon: a single tall blue secret-agent-like lizard creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/inteleon"
         },
         {
           "name": "Dragapult",

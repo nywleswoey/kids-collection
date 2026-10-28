@@ -266,7 +266,7 @@ export const POKEMON_NATIONAL_DEX_NUMBERS: Readonly<Record<string, number>> = {
   Duraludon: 884,
   Cinderace: 815,
   Rillaboom: 812,
-  Intelleon: 818,
+  Inteleon: 818,
   Dragapult: 887,
   Corviknight: 823,
   Zacian: 888,
