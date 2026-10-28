@@ -110,7 +110,7 @@ free provider:
   any other (`providers/index.ts`, #71). AI Horde, the first one, was retired (its
   pinned model lost its workers; no published card was drawn by it). The one hatch
   currently registered is `pokeapi-official-artwork`, which fetches official artwork
-  for the Kanto/Johto Pokémon cards instead of drawing (see
+  for the Pokémon region themes' cards (Kanto through Paldea) instead of drawing (see
   `docs/NEW-THEME-RUNBOOK.md`). A **manual** lane
   (`supergrok-manual`) also sits out until named, but draws nothing: it imports
   pictures the owner made by hand, and a card with no picture is **not drawn** — a
