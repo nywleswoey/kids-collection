@@ -260,7 +260,7 @@ export const POKEMON_NATIONAL_DEX_NUMBERS: Readonly<Record<string, number>> = {
   Grimmsnarl: 861,
   Centiskorch: 851,
   Hatterene: 858,
-  Barraskewda: 848,
+  Barraskewda: 847,
   Copperajah: 879,
   Falinks: 870,
   Duraludon: 884,
