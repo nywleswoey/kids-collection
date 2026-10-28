@@ -7,23 +7,23 @@
  * Charmander — Grok's moderation blocks named Pokémon outright and drew from
  * nameless descriptions instead, and a diffusion model's version of a named
  * creature is, at best, a resemblance. The owner asked for the real thing as a
- * third bake-off candidate for exactly these two themes, with its origin
+ * third bake-off candidate for exactly these Pokémon themes, with its origin
  * recorded honestly rather than passed off as original art.
  *
  * ── Role: escape hatch, not a lane ───────────────────────────────────────────
- * This provider can only ever draw the ~60 cards in `pokemon-dex-numbers.ts` —
+ * This provider can only ever draw the ~270 cards in `pokemon-dex-numbers.ts` —
  * every other theme's prompt does not match `resolvePokemonCard` at all, so it
  * answers `ProviderNotDrawn` for all of them. Put in the default fan-out
  * (`role: "lane"`), every future theme's `--review` would carry a column of
  * silent "not drawn" cells forever, for a lane that was only ever meant to
- * settle two themes. `role: "escape-hatch"` keeps it registered — the
+ * settle these Pokémon themes. `role: "escape-hatch"` keeps it registered — the
  * bake-off, contact sheet, `theme-picks` and `--sync` all resolve it like any
  * other provider — while reaching it still needs naming it explicitly:
  * `--providers=pokeapi-official-artwork`.
  *
  * ── Mapping a prompt back to a card ───────────────────────────────────────────
  * `generate()` only ever receives the built prompt string (`bake-off.ts`), not
- * the card. Every card in these two themes was authored with `imagePrompt`
+ * the card. Every card in these Pokémon themes was authored with `imagePrompt`
  * starting `"<Name>, the Pokémon: ..."` (checked by a repo test), so the name is
  * recovered from the prompt itself rather than by re-reading `cards.json` —
  * keeping this adapter as free of filesystem coupling as `cloudflare-sdxl`.
@@ -31,7 +31,7 @@
  * A prompt that does not match that shape at all (every other theme) is an
  * honest "not drawn", same as the manual lane's empty drop folder. A prompt
  * that DOES match it but names a Pokémon absent from the table is different: a
- * future card in one of these two themes forgetting to update the table is a
+ * future card in one of these Pokémon themes forgetting to update the table is a
  * mistake worth stopping over, not a silent skip, so that throws a plain
  * (non-retryable) error instead.
  *
@@ -110,7 +110,7 @@ export function officialArtworkUrl(dexNumber: number): string {
 }
 
 /**
- * Every card in these two themes was authored `"<Name>, the Pokémon: ..."` —
+ * Every card in these Pokémon themes was authored `"<Name>, the Pokémon: ..."` —
  * pull the name back out of the built prompt (which appends `ART_STYLE` after
  * a comma, so matching only the leading segment is enough).
  */

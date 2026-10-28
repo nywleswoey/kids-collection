@@ -6934,6 +6934,1518 @@
           "sourceUrl": "https://www.pokemon.com/us/pokedex/slugma"
         }
       ]
+    },
+    {
+      "name": "Hoenn Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Treecko",
+          "rarity": "common",
+          "eduText": "Treecko is a cool, calm Grass-type Pokémon whose feet have tiny hooks that let it climb smooth walls.",
+          "imagePrompt": "Treecko, the Pokémon: a single small green gecko-like creature with a long tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/treecko"
+        },
+        {
+          "name": "Torchic",
+          "rarity": "common",
+          "eduText": "Torchic is a round, fluffy Fire-type Pokémon that keeps a warm fire glowing inside its own body.",
+          "imagePrompt": "Torchic, the Pokémon: a single small round orange fluffy chick-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/torchic"
+        },
+        {
+          "name": "Mudkip",
+          "rarity": "common",
+          "eduText": "Mudkip is a Water-type Pokémon with a fin on its head that senses changes in the air and water.",
+          "imagePrompt": "Mudkip, the Pokémon: a single small blue amphibian-like creature with a fin on its head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/mudkip"
+        },
+        {
+          "name": "Poochyena",
+          "rarity": "common",
+          "eduText": "Poochyena is a Dark-type Pokémon that never gives up chasing after its prey, no matter how far it runs.",
+          "imagePrompt": "Poochyena, the Pokémon: a single small grey wolf-pup-like creature with a dark mane, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/poochyena"
+        },
+        {
+          "name": "Zigzagoon",
+          "rarity": "common",
+          "eduText": "Zigzagoon is a Normal-type Pokémon that always walks and runs in zigzag lines, wherever it goes.",
+          "imagePrompt": "Zigzagoon, the Pokémon: a single small raccoon-like creature with grey and white fur, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zigzagoon"
+        },
+        {
+          "name": "Wurmple",
+          "rarity": "common",
+          "eduText": "Wurmple is a Bug-type Pokémon with a sharp spike on its tail that it uses to mark its territory.",
+          "imagePrompt": "Wurmple, the Pokémon: a single small red caterpillar-like creature with a spiky tail, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/wurmple"
+        },
+        {
+          "name": "Ralts",
+          "rarity": "common",
+          "eduText": "Ralts is a gentle Psychic-type Pokémon that can sense the feelings of people and Pokémon nearby.",
+          "imagePrompt": "Ralts, the Pokémon: a single small pale green humanoid creature with horn-like feelers, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/ralts"
+        },
+        {
+          "name": "Makuhita",
+          "rarity": "common",
+          "eduText": "Makuhita is a Fighting-type Pokémon that trains by pushing against big trees to build up its strength.",
+          "imagePrompt": "Makuhita, the Pokémon: a single small round tan creature with big fists, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/makuhita"
+        },
+        {
+          "name": "Nincada",
+          "rarity": "common",
+          "eduText": "Nincada is a Bug-type Pokémon that lives underground in the dark, feeding on tree roots.",
+          "imagePrompt": "Nincada, the Pokémon: a single small brown insect-like creature with tiny claws, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/nincada"
+        },
+        {
+          "name": "Whismur",
+          "rarity": "common",
+          "eduText": "Whismur is a Normal-type Pokémon that lets out a huge, startled cry if it ever feels surprised.",
+          "imagePrompt": "Whismur, the Pokémon: a single small round purple creature with big ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/whismur"
+        },
+        {
+          "name": "Skitty",
+          "rarity": "common",
+          "eduText": "Skitty is a playful Normal-type Pokémon that loves chasing anything that moves, especially its own tail.",
+          "imagePrompt": "Skitty, the Pokémon: a single small pink kitten-like creature with a long curled tail, sitting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/skitty"
+        },
+        {
+          "name": "Shroomish",
+          "rarity": "common",
+          "eduText": "Shroomish is a Grass-type Pokémon that releases a cloud of itchy spores when it is startled.",
+          "imagePrompt": "Shroomish, the Pokémon: a single small round tan mushroom-headed creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/shroomish"
+        },
+        {
+          "name": "Taillow",
+          "rarity": "common",
+          "eduText": "Taillow is a small, brave bird Pokémon that flies long distances even in storms without ever giving up.",
+          "imagePrompt": "Taillow, the Pokémon: a single small blue and white swallow-like bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/taillow"
+        },
+        {
+          "name": "Wingull",
+          "rarity": "common",
+          "eduText": "Wingull is a Water-type seagull Pokémon that rides the ocean winds and glides gracefully over the waves.",
+          "imagePrompt": "Wingull, the Pokémon: a single small blue and white seagull-like creature with wide wings, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/wingull"
+        },
+        {
+          "name": "Surskit",
+          "rarity": "common",
+          "eduText": "Surskit is a Bug-type Pokémon with sticky legs that let it skate smoothly across the surface of ponds.",
+          "imagePrompt": "Surskit, the Pokémon: a single small blue pond-skater insect creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/surskit"
+        },
+        {
+          "name": "Gardevoir",
+          "rarity": "rare",
+          "eduText": "Gardevoir is a Psychic-type Pokémon said to be able to sense the emotions of the people it cares about.",
+          "imagePrompt": "Gardevoir, the Pokémon: a single tall slender white and green humanoid creature in a flowing gown-like form, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gardevoir"
+        },
+        {
+          "name": "Aggron",
+          "rarity": "rare",
+          "eduText": "Aggron is a huge Steel-type Pokémon that polishes its own metal armor by rubbing against mountainsides.",
+          "imagePrompt": "Aggron, the Pokémon: a single huge grey armored dinosaur-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/aggron"
+        },
+        {
+          "name": "Flygon",
+          "rarity": "rare",
+          "eduText": "Flygon is a Ground-type Pokémon that lives in the desert, where its wings whip up swirling sandstorms.",
+          "imagePrompt": "Flygon, the Pokémon: a single green dragonfly-dragon-like creature with large wings, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/flygon"
+        },
+        {
+          "name": "Absol",
+          "rarity": "rare",
+          "eduText": "Absol is a Dark-type Pokémon said to appear just before a disaster, though it is only trying to warn people.",
+          "imagePrompt": "Absol, the Pokémon: a single white four-legged creature with a curved horn and a dark tail-fin, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/absol"
+        },
+        {
+          "name": "Walrein",
+          "rarity": "rare",
+          "eduText": "Walrein is an Ice-type Pokémon with thick blubber and tusks that help it survive in freezing icy waters.",
+          "imagePrompt": "Walrein, the Pokémon: a single large blue-white walrus-like creature with big tusks, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/walrein"
+        },
+        {
+          "name": "Milotic",
+          "rarity": "rare",
+          "eduText": "Milotic is a Water-type Pokémon admired for its graceful, flowing body, said to be the most beautiful of all.",
+          "imagePrompt": "Milotic, the Pokémon: a single long slender pink and white serpentine creature, coiled on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/milotic"
+        },
+        {
+          "name": "Latios",
+          "rarity": "rare",
+          "eduText": "Latios is a Dragon-type Pokémon that can fly faster than a jet plane and bend light to turn invisible.",
+          "imagePrompt": "Latios, the Pokémon: a single sleek blue jet-shaped dragon creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/latios"
+        },
+        {
+          "name": "Latias",
+          "rarity": "rare",
+          "eduText": "Latias is a Dragon-type Pokémon that can change its appearance and shares a close bond with its twin.",
+          "imagePrompt": "Latias, the Pokémon: a single sleek red and white jet-shaped dragon creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/latias"
+        },
+        {
+          "name": "Blaziken",
+          "rarity": "epic",
+          "eduText": "Blaziken is the final form of Torchic, a Fire-type Pokémon known for its powerful, fiery kicks.",
+          "imagePrompt": "Blaziken, the Pokémon: a single tall orange and yellow bird-like creature with flame-tipped wrists, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/blaziken"
+        },
+        {
+          "name": "Swampert",
+          "rarity": "epic",
+          "eduText": "Swampert is the final form of Mudkip, a sturdy Water-type Pokémon that can sense coming storms.",
+          "imagePrompt": "Swampert, the Pokémon: a single sturdy blue and orange amphibian-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/swampert"
+        },
+        {
+          "name": "Sceptile",
+          "rarity": "epic",
+          "eduText": "Sceptile is the final form of Treecko, a Grass-type Pokémon that lives quietly deep in dense forests.",
+          "imagePrompt": "Sceptile, the Pokémon: a single tall green gecko-dinosaur-like creature with leaf-tipped arms, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sceptile"
+        },
+        {
+          "name": "Salamence",
+          "rarity": "epic",
+          "eduText": "Salamence is a Dragon-type Pokémon that dreamed of flying for so long its body finally grew wings.",
+          "imagePrompt": "Salamence, the Pokémon: a single large blue dragon creature with wide red-tipped wings, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/salamence"
+        },
+        {
+          "name": "Metagross",
+          "rarity": "epic",
+          "eduText": "Metagross is a Steel-type Pokémon formed from four smaller Pokémon joined together, with a brain faster than a computer.",
+          "imagePrompt": "Metagross, the Pokémon: a single huge four-legged blue-grey metallic creature with a large X-shaped head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/metagross"
+        },
+        {
+          "name": "Rayquaza",
+          "rarity": "legendary",
+          "eduText": "Rayquaza is a legendary Dragon-type Pokémon said to live high in the ozone layer, calming storms below.",
+          "imagePrompt": "Rayquaza, the Pokémon: a single long green serpentine dragon creature flying high above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rayquaza"
+        },
+        {
+          "name": "Deoxys",
+          "rarity": "legendary",
+          "eduText": "Deoxys is a mythical Psychic-type Pokémon said to have formed from a virus from outer space.",
+          "imagePrompt": "Deoxys, the Pokémon: a single slender red and blue crystalline humanoid creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/deoxys"
+        }
+      ]
+    },
+    {
+      "name": "Sinnoh Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Turtwig",
+          "rarity": "common",
+          "eduText": "Turtwig is a Grass-type Pokémon with a tiny tree growing right on its head, soaking up sunlight.",
+          "imagePrompt": "Turtwig, the Pokémon: a single small green turtle-like creature with a leaf-sprig on its head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/turtwig"
+        },
+        {
+          "name": "Chimchar",
+          "rarity": "common",
+          "eduText": "Chimchar is a Fire-type Pokémon that keeps a small flame burning on its tail, fed by gas in its stomach.",
+          "imagePrompt": "Chimchar, the Pokémon: a single small orange monkey-like creature with a flame-tipped tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/chimchar"
+        },
+        {
+          "name": "Piplup",
+          "rarity": "common",
+          "eduText": "Piplup is a proud little Water-type penguin Pokémon that does not like taking food from people.",
+          "imagePrompt": "Piplup, the Pokémon: a single small blue and white penguin-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/piplup"
+        },
+        {
+          "name": "Starly",
+          "rarity": "common",
+          "eduText": "Starly is a Normal-type bird Pokémon that flies in large, noisy flocks to protect its territory.",
+          "imagePrompt": "Starly, the Pokémon: a single small brown and white starling-like bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/starly"
+        },
+        {
+          "name": "Bidoof",
+          "rarity": "common",
+          "eduText": "Bidoof is a famously ordinary Normal-type Pokémon whose front teeth never stop growing, like a real beaver.",
+          "imagePrompt": "Bidoof, the Pokémon: a single small round brown beaver-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/bidoof"
+        },
+        {
+          "name": "Shinx",
+          "rarity": "common",
+          "eduText": "Shinx is an Electric-type Pokémon whose eyes glow brightly whenever it releases a burst of electricity.",
+          "imagePrompt": "Shinx, the Pokémon: a single small blue lion-cub-like creature with yellow markings, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/shinx"
+        },
+        {
+          "name": "Buizel",
+          "rarity": "common",
+          "eduText": "Buizel is a Water-type Pokémon with a flotation sac that lets it bob and swim easily in rivers.",
+          "imagePrompt": "Buizel, the Pokémon: a single small orange otter-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/buizel"
+        },
+        {
+          "name": "Pachirisu",
+          "rarity": "common",
+          "eduText": "Pachirisu is a cheerful Electric-type squirrel Pokémon that stores electricity in its fluffy cheeks.",
+          "imagePrompt": "Pachirisu, the Pokémon: a single small blue and white squirrel-like creature with fluffy tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pachirisu"
+        },
+        {
+          "name": "Cranidos",
+          "rarity": "common",
+          "eduText": "Cranidos is an ancient Rock-type Pokémon, restored from a fossil, with an incredibly tough skull.",
+          "imagePrompt": "Cranidos, the Pokémon: a single small grey dinosaur-like creature with a thick bony head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/cranidos"
+        },
+        {
+          "name": "Shieldon",
+          "rarity": "common",
+          "eduText": "Shieldon is an ancient Rock-type Pokémon, restored from a fossil, with a face shaped like a shield.",
+          "imagePrompt": "Shieldon, the Pokémon: a single small grey-brown dinosaur-like creature with a shield-shaped face, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/shieldon"
+        },
+        {
+          "name": "Combee",
+          "rarity": "common",
+          "eduText": "Combee is a Bug-type Pokémon made of three little bee faces joined together, who work as a team.",
+          "imagePrompt": "Combee, the Pokémon: a single small yellow honeycomb-shaped creature with tiny wings, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/combee"
+        },
+        {
+          "name": "Buneary",
+          "rarity": "common",
+          "eduText": "Buneary is a Normal-type Pokémon that can curl its long ears into a tight spring to bounce around.",
+          "imagePrompt": "Buneary, the Pokémon: a single small brown and cream rabbit-like creature with coiled ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/buneary"
+        },
+        {
+          "name": "Glameow",
+          "rarity": "common",
+          "eduText": "Glameow is a graceful Normal-type cat Pokémon known for its elegant, curled tail shaped like a hook.",
+          "imagePrompt": "Glameow, the Pokémon: a single small grey cat-like creature with a curled tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/glameow"
+        },
+        {
+          "name": "Stunky",
+          "rarity": "common",
+          "eduText": "Stunky is a Poison-type Pokémon that sprays a terrible smelling fluid from its tail to scare off threats.",
+          "imagePrompt": "Stunky, the Pokémon: a single small purple and cream skunk-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/stunky"
+        },
+        {
+          "name": "Finneon",
+          "rarity": "common",
+          "eduText": "Finneon is a Water-type Pokémon whose fins glow softly, shimmering like stars under the moonlight.",
+          "imagePrompt": "Finneon, the Pokémon: a single small blue and pink fish-like creature with glowing fin patterns, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/finneon"
+        },
+        {
+          "name": "Rotom",
+          "rarity": "rare",
+          "eduText": "Rotom is an Electric-type Pokémon made of plasma that loves to zip inside household appliances.",
+          "imagePrompt": "Rotom, the Pokémon: a single small red glowing plasma-like creature hovering near a tiny television shape, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rotom"
+        },
+        {
+          "name": "Gallade",
+          "rarity": "rare",
+          "eduText": "Gallade is a Psychic-type Pokémon with blade-like arms, known for its calm and focused nature.",
+          "imagePrompt": "Gallade, the Pokémon: a single tall green and white humanoid creature with blade-shaped arms, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gallade"
+        },
+        {
+          "name": "Weavile",
+          "rarity": "rare",
+          "eduText": "Weavile is a Dark-type Pokémon that lives in snowy mountains and communicates using sharp claw-marks.",
+          "imagePrompt": "Weavile, the Pokémon: a single sleek black and red feathered creature with sharp claws, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/weavile"
+        },
+        {
+          "name": "Magnezone",
+          "rarity": "rare",
+          "eduText": "Magnezone is an Electric-type Pokémon shaped like a UFO that is thought to receive signals from space.",
+          "imagePrompt": "Magnezone, the Pokémon: a single round silver magnet-shaped creature with three eyes, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/magnezone"
+        },
+        {
+          "name": "Rhyperior",
+          "rarity": "rare",
+          "eduText": "Rhyperior is a Ground-type Pokémon covered in thick rocky armor that protects it from almost anything.",
+          "imagePrompt": "Rhyperior, the Pokémon: a single huge grey rock-armored rhinoceros-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rhyperior"
+        },
+        {
+          "name": "Gastrodon",
+          "rarity": "rare",
+          "eduText": "Gastrodon is a Water-type Pokémon shaped like a sea slug that lives along quiet, muddy shorelines.",
+          "imagePrompt": "Gastrodon, the Pokémon: a single pink and brown sea-slug-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gastrodon"
+        },
+        {
+          "name": "Roserade",
+          "rarity": "rare",
+          "eduText": "Roserade is a Grass-type Pokémon that carries a bouquet in each hand, said to have the finest poison.",
+          "imagePrompt": "Roserade, the Pokémon: a single green humanoid creature holding a red and blue flower-bouquet in each hand, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/roserade"
+        },
+        {
+          "name": "Drifblim",
+          "rarity": "rare",
+          "eduText": "Drifblim is a Ghost-type Pokémon shaped like a big balloon that drifts wherever the wind carries it.",
+          "imagePrompt": "Drifblim, the Pokémon: a single huge round purple balloon-shaped creature with tiny arms, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/drifblim"
+        },
+        {
+          "name": "Garchomp",
+          "rarity": "epic",
+          "eduText": "Garchomp is a Dragon-type Pokémon shaped like a jet fighter, able to fly faster than sound.",
+          "imagePrompt": "Garchomp, the Pokémon: a single large blue shark-dragon-like creature with jet-shaped fins, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/garchomp"
+        },
+        {
+          "name": "Lucario",
+          "rarity": "epic",
+          "eduText": "Lucario is a Fighting-type Pokémon that can sense a kind of life energy called aura all around it.",
+          "imagePrompt": "Lucario, the Pokémon: a single blue and black jackal-like creature standing upright, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lucario"
+        },
+        {
+          "name": "Infernape",
+          "rarity": "epic",
+          "eduText": "Infernape is the final form of Chimchar, a Fire-type Pokémon with a flame burning on top of its head.",
+          "imagePrompt": "Infernape, the Pokémon: a single orange and black monkey-like creature with a flame-crown, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/infernape"
+        },
+        {
+          "name": "Empoleon",
+          "rarity": "epic",
+          "eduText": "Empoleon is the final form of Piplup, a Water-type Pokémon with a metal crest shaped like a crown.",
+          "imagePrompt": "Empoleon, the Pokémon: a single tall blue and gold penguin-like creature with crest feathers, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/empoleon"
+        },
+        {
+          "name": "Torterra",
+          "rarity": "epic",
+          "eduText": "Torterra is the final form of Turtwig, a Grass-type Pokémon so large that a small forest grows on its back.",
+          "imagePrompt": "Torterra, the Pokémon: a single huge green turtle-like creature with trees growing on its back, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/torterra"
+        },
+        {
+          "name": "Giratina",
+          "rarity": "legendary",
+          "eduText": "Giratina is a legendary Ghost-type Pokémon said to live quietly in a strange, upside-down world.",
+          "imagePrompt": "Giratina, the Pokémon: a single huge grey and gold six-legged dragon-like creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/giratina"
+        },
+        {
+          "name": "Arceus",
+          "rarity": "legendary",
+          "eduText": "Arceus is a mythical Pokémon from ancient legend, said to have shaped the entire Sinnoh region.",
+          "imagePrompt": "Arceus, the Pokémon: a single white four-legged creature with a golden ring around its middle, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/arceus"
+        }
+      ]
+    },
+    {
+      "name": "Unova Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Snivy",
+          "rarity": "common",
+          "eduText": "Snivy is a Grass-type Pokémon that photosynthesizes sunlight using its tail to stay full of energy.",
+          "imagePrompt": "Snivy, the Pokémon: a single small green snake-like creature standing upright, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/snivy"
+        },
+        {
+          "name": "Tepig",
+          "rarity": "common",
+          "eduText": "Tepig is a Fire-type Pokémon that can shoot fire from its snout when its nose gets a little runny.",
+          "imagePrompt": "Tepig, the Pokémon: a single small orange pig-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/tepig"
+        },
+        {
+          "name": "Oshawott",
+          "rarity": "common",
+          "eduText": "Oshawott is a Water-type Pokémon that carries a small scalchop shell on its belly like a tool.",
+          "imagePrompt": "Oshawott, the Pokémon: a single small blue and white otter-like creature with a shell on its chest, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/oshawott"
+        },
+        {
+          "name": "Patrat",
+          "rarity": "common",
+          "eduText": "Patrat is a Normal-type Pokémon that always keeps watch, storing food in its cheeks for later.",
+          "imagePrompt": "Patrat, the Pokémon: a single small brown and white weasel-like creature sitting upright, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/patrat"
+        },
+        {
+          "name": "Lillipup",
+          "rarity": "common",
+          "eduText": "Lillipup is a Normal-type puppy Pokémon with fur so long it can see what is happening behind it.",
+          "imagePrompt": "Lillipup, the Pokémon: a single small brown and white puppy-like creature with long fur, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lillipup"
+        },
+        {
+          "name": "Purrloin",
+          "rarity": "common",
+          "eduText": "Purrloin is a Dark-type Pokémon that acts cute to trick people, then playfully swipes small items.",
+          "imagePrompt": "Purrloin, the Pokémon: a single small purple cat-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/purrloin"
+        },
+        {
+          "name": "Pidove",
+          "rarity": "common",
+          "eduText": "Pidove is a Normal-type bird Pokémon that is a bit forgetful about exactly where it is flying.",
+          "imagePrompt": "Pidove, the Pokémon: a single small grey and pink pigeon-like bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pidove"
+        },
+        {
+          "name": "Woobat",
+          "rarity": "common",
+          "eduText": "Woobat is a Psychic-type Pokémon that uses the heart-shaped patch on its chest to stick to cave walls.",
+          "imagePrompt": "Woobat, the Pokémon: a single small round blue bat-like creature with a heart-shaped nose, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/woobat"
+        },
+        {
+          "name": "Timburr",
+          "rarity": "common",
+          "eduText": "Timburr is a Fighting-type Pokémon that always carries a sturdy wooden beam, training its strength.",
+          "imagePrompt": "Timburr, the Pokémon: a single small grey creature carrying a wooden beam, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/timburr"
+        },
+        {
+          "name": "Venipede",
+          "rarity": "common",
+          "eduText": "Venipede is a Bug-type Pokémon that curls into a ball and rolls downhill to escape danger quickly.",
+          "imagePrompt": "Venipede, the Pokémon: a single small orange and black centipede-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/venipede"
+        },
+        {
+          "name": "Audino",
+          "rarity": "common",
+          "eduText": "Audino is a gentle Normal-type Pokémon whose sensitive ear-feelers can tell how another creature feels.",
+          "imagePrompt": "Audino, the Pokémon: a single small pink creature with large ear flaps, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/audino"
+        },
+        {
+          "name": "Minccino",
+          "rarity": "common",
+          "eduText": "Minccino is a tidy Normal-type chinchilla Pokémon that loves to clean, sweeping with its fluffy tail.",
+          "imagePrompt": "Minccino, the Pokémon: a single small grey chinchilla-like creature with a fluffy tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/minccino"
+        },
+        {
+          "name": "Deerling",
+          "rarity": "common",
+          "eduText": "Deerling is a Normal-type Pokémon whose colors change along with the four seasons of the year.",
+          "imagePrompt": "Deerling, the Pokémon: a single small brown deer-like creature with leaf-pattern fur, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/deerling"
+        },
+        {
+          "name": "Sewaddle",
+          "rarity": "common",
+          "eduText": "Sewaddle is a Bug-type Pokémon that snips leaves with its jaws to sew itself a cozy little coat.",
+          "imagePrompt": "Sewaddle, the Pokémon: a single small green leaf-covered caterpillar-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sewaddle"
+        },
+        {
+          "name": "Pansage",
+          "rarity": "common",
+          "eduText": "Pansage is a Grass-type monkey Pokémon that shares the leaf on its head with weak or hungry Pokémon.",
+          "imagePrompt": "Pansage, the Pokémon: a single small green monkey-like creature with a leaf sprout on its head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pansage"
+        },
+        {
+          "name": "Zoroark",
+          "rarity": "rare",
+          "eduText": "Zoroark is a Dark-type Pokémon able to create illusions so real that others cannot tell them from truth.",
+          "imagePrompt": "Zoroark, the Pokémon: a single sleek grey and red fox-like creature with a flowing mane, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zoroark"
+        },
+        {
+          "name": "Chandelure",
+          "rarity": "rare",
+          "eduText": "Chandelure is a Ghost-type Pokémon shaped like a candelabra, with flames that burn a mysterious purple.",
+          "imagePrompt": "Chandelure, the Pokémon: a single purple candelabra-shaped creature with glowing flames, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/chandelure"
+        },
+        {
+          "name": "Hydreigon",
+          "rarity": "rare",
+          "eduText": "Hydreigon is a Dark-type Pokémon with three heads, once feared as a ruthless, destructive dragon of legend.",
+          "imagePrompt": "Hydreigon, the Pokémon: a single dark blue three-headed dragon-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/hydreigon"
+        },
+        {
+          "name": "Bisharp",
+          "rarity": "rare",
+          "eduText": "Bisharp is a Dark-type Pokémon with a blade-shaped head, often leading small groups of its kind.",
+          "imagePrompt": "Bisharp, the Pokémon: a single grey and red armored creature with a blade on its head, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/bisharp"
+        },
+        {
+          "name": "Gigalith",
+          "rarity": "rare",
+          "eduText": "Gigalith is a Rock-type Pokémon that stores up solar energy and releases it in a sudden, powerful burst.",
+          "imagePrompt": "Gigalith, the Pokémon: a single huge grey boulder-like creature with glowing red crystals, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gigalith"
+        },
+        {
+          "name": "Scrafty",
+          "rarity": "rare",
+          "eduText": "Scrafty is a Dark-type Pokémon that wears its own molted skin like baggy trousers around its waist.",
+          "imagePrompt": "Scrafty, the Pokémon: a single small orange and yellow creature with a hood-like ridge, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/scrafty"
+        },
+        {
+          "name": "Krookodile",
+          "rarity": "rare",
+          "eduText": "Krookodile is a Ground-type Pokémon with eyes that work like built-in sunglasses against desert glare.",
+          "imagePrompt": "Krookodile, the Pokémon: a single large yellow crocodile-like creature with dark eye markings, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/krookodile"
+        },
+        {
+          "name": "Lilligant",
+          "rarity": "rare",
+          "eduText": "Lilligant is a Grass-type Pokémon that grows a lovely, sweet-smelling flower on top of its head.",
+          "imagePrompt": "Lilligant, the Pokémon: a single small green humanoid creature with a flower-shaped head and leafy skirt, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lilligant"
+        },
+        {
+          "name": "Serperior",
+          "rarity": "epic",
+          "eduText": "Serperior is the final form of Snivy, a Grass-type Pokémon admired for its calm, elegant movements.",
+          "imagePrompt": "Serperior, the Pokémon: a single long slender green serpent-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/serperior"
+        },
+        {
+          "name": "Emboar",
+          "rarity": "epic",
+          "eduText": "Emboar is the final form of Tepig, a Fire-type Pokémon that cooks for its friends using fire from its chin.",
+          "imagePrompt": "Emboar, the Pokémon: a single large orange pig-like creature with a fiery chin, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/emboar"
+        },
+        {
+          "name": "Samurott",
+          "rarity": "epic",
+          "eduText": "Samurott is the final form of Oshawott, a Water-type Pokémon with armor shaped like a seashell helmet.",
+          "imagePrompt": "Samurott, the Pokémon: a single large blue sea-lion-like creature with shell armor, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/samurott"
+        },
+        {
+          "name": "Haxorus",
+          "rarity": "epic",
+          "eduText": "Haxorus is a Dragon-type Pokémon with tusks so tough they can slice clean through solid steel beams.",
+          "imagePrompt": "Haxorus, the Pokémon: a single large grey and yellow dragon-like creature with sharp tusks, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/haxorus"
+        },
+        {
+          "name": "Volcarona",
+          "rarity": "epic",
+          "eduText": "Volcarona is a Bug-type Pokémon said to have hatched from an ancient cocoon after a great fire long ago.",
+          "imagePrompt": "Volcarona, the Pokémon: a single large orange and white moth-like creature with fiery wing patterns, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/volcarona"
+        },
+        {
+          "name": "Reshiram",
+          "rarity": "legendary",
+          "eduText": "Reshiram is a legendary Dragon-type Pokémon from Unova myth, said to scorch the world with truth.",
+          "imagePrompt": "Reshiram, the Pokémon: a single huge white dragon creature with flame-shaped tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/reshiram"
+        },
+        {
+          "name": "Zekrom",
+          "rarity": "legendary",
+          "eduText": "Zekrom is a legendary Dragon-type Pokémon from Unova myth, said to crackle with the power of ideals.",
+          "imagePrompt": "Zekrom, the Pokémon: a single huge black dragon creature with lightning-shaped tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zekrom"
+        }
+      ]
+    },
+    {
+      "name": "Kalos Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Chespin",
+          "rarity": "common",
+          "eduText": "Chespin is a Grass-type Pokémon with a tough shell on its head, so sturdy it barely ever notices a bump.",
+          "imagePrompt": "Chespin, the Pokémon: a single small brown and green spiny creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/chespin"
+        },
+        {
+          "name": "Fennekin",
+          "rarity": "common",
+          "eduText": "Fennekin is a Fire-type fox Pokémon that snacks on twigs, which keep its warm flames burning brightly.",
+          "imagePrompt": "Fennekin, the Pokémon: a single small orange fox-like creature with large ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/fennekin"
+        },
+        {
+          "name": "Froakie",
+          "rarity": "common",
+          "eduText": "Froakie is a Water-type frog Pokémon covered in bubbly foam that cushions it from hard landings.",
+          "imagePrompt": "Froakie, the Pokémon: a single small blue frog-like creature covered in tiny bubbles, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/froakie"
+        },
+        {
+          "name": "Bunnelby",
+          "rarity": "common",
+          "eduText": "Bunnelby is a Normal-type Pokémon that digs incredibly fast burrows using its long, shovel-like ears.",
+          "imagePrompt": "Bunnelby, the Pokémon: a single small brown rabbit-like creature with long ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/bunnelby"
+        },
+        {
+          "name": "Fletchling",
+          "rarity": "common",
+          "eduText": "Fletchling is a Normal-type bird Pokémon with a cheerful, musical chirp that brightens up any morning.",
+          "imagePrompt": "Fletchling, the Pokémon: a single small red and brown robin-like bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/fletchling"
+        },
+        {
+          "name": "Litleo",
+          "rarity": "common",
+          "eduText": "Litleo is a Fire-type Pokémon, young and still growing a proper mane, that lives together in a pride.",
+          "imagePrompt": "Litleo, the Pokémon: a single small golden lion-cub-like creature with a small mane tuft, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/litleo"
+        },
+        {
+          "name": "Pancham",
+          "rarity": "common",
+          "eduText": "Pancham is a Fighting-type Pokémon that always tries to look tough, chewing on a leaf to seem fierce.",
+          "imagePrompt": "Pancham, the Pokémon: a single small black and white panda-like creature chewing a leaf, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pancham"
+        },
+        {
+          "name": "Skiddo",
+          "rarity": "common",
+          "eduText": "Skiddo is a Grass-type goat Pokémon gentle enough that people sometimes ride on its sturdy back.",
+          "imagePrompt": "Skiddo, the Pokémon: a single small brown and cream goat-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/skiddo"
+        },
+        {
+          "name": "Spritzee",
+          "rarity": "common",
+          "eduText": "Spritzee is a Fairy-type Pokémon that carries a sweet scent in a pouch, once prized as perfume.",
+          "imagePrompt": "Spritzee, the Pokémon: a single small pink round creature with a perfume-bottle tail, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/spritzee"
+        },
+        {
+          "name": "Swirlix",
+          "rarity": "common",
+          "eduText": "Swirlix is a Fairy-type Pokémon that produces cotton-candy fluff from its fur, sweet enough to eat.",
+          "imagePrompt": "Swirlix, the Pokémon: a single small white fluffy round creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/swirlix"
+        },
+        {
+          "name": "Dedenne",
+          "rarity": "common",
+          "eduText": "Dedenne is an Electric-type Pokémon that stores electricity in its cheeks and whiskers like a battery.",
+          "imagePrompt": "Dedenne, the Pokémon: a single small orange mouse-like creature with long whiskers, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/dedenne"
+        },
+        {
+          "name": "Noibat",
+          "rarity": "common",
+          "eduText": "Noibat is a Flying-type bat Pokémon that uses ultrasonic waves from its big ears to find its way.",
+          "imagePrompt": "Noibat, the Pokémon: a single small purple bat-like creature with large round ears, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/noibat"
+        },
+        {
+          "name": "Skrelp",
+          "rarity": "common",
+          "eduText": "Skrelp is a Poison-type Pokémon that looks like a piece of drifting seaweed to hide from danger.",
+          "imagePrompt": "Skrelp, the Pokémon: a single small pink and purple seaweed-shaped creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/skrelp"
+        },
+        {
+          "name": "Honedge",
+          "rarity": "common",
+          "eduText": "Honedge is a Steel-type Pokémon shaped like a sword, with a blue cloth handle wrapped around its hilt.",
+          "imagePrompt": "Honedge, the Pokémon: a single small grey sword-shaped creature with a blue ribbon handle, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/honedge"
+        },
+        {
+          "name": "Binacle",
+          "rarity": "common",
+          "eduText": "Binacle is a Rock-type Pokémon made of two barnacle creatures that always work together, side by side.",
+          "imagePrompt": "Binacle, the Pokémon: a single small blue and grey barnacle-pair creature on a rock, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/binacle"
+        },
+        {
+          "name": "Talonflame",
+          "rarity": "rare",
+          "eduText": "Talonflame is a Fire-type Pokémon that dives at incredible speed, trailing bright embers behind it.",
+          "imagePrompt": "Talonflame, the Pokémon: a single orange and red falcon-like bird creature with flame-tipped feathers, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/talonflame"
+        },
+        {
+          "name": "Pangoro",
+          "rarity": "rare",
+          "eduText": "Pangoro is a Fighting-type Pokémon with a tough, intimidating look that it uses mostly to protect others.",
+          "imagePrompt": "Pangoro, the Pokémon: a single large black and white panda-like creature chewing a leaf, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pangoro"
+        },
+        {
+          "name": "Malamar",
+          "rarity": "rare",
+          "eduText": "Malamar is a Dark-type Pokémon shaped like an upside-down squid, said to be able to control minds.",
+          "imagePrompt": "Malamar, the Pokémon: a single purple upside-down squid-like creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/malamar"
+        },
+        {
+          "name": "Sylveon",
+          "rarity": "rare",
+          "eduText": "Sylveon is a Fairy-type evolution of Eevee that wraps its feeler-ribbons around a trainer to calm them.",
+          "imagePrompt": "Sylveon, the Pokémon: a single cream and pink fox-like creature with ribbon-like feelers, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sylveon"
+        },
+        {
+          "name": "Noivern",
+          "rarity": "rare",
+          "eduText": "Noivern is a Flying-type dragon Pokémon known in Kalos as the terror of the night sky.",
+          "imagePrompt": "Noivern, the Pokémon: a single large purple bat-dragon-like creature with big ears, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/noivern"
+        },
+        {
+          "name": "Trevenant",
+          "rarity": "rare",
+          "eduText": "Trevenant is a Ghost-type Pokémon that looks like an old, gnarled tree, said to protect the forest.",
+          "imagePrompt": "Trevenant, the Pokémon: a single large brown twisted tree-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/trevenant"
+        },
+        {
+          "name": "Florges",
+          "rarity": "rare",
+          "eduText": "Florges is a Fairy-type Pokémon that tends gardens, decorating itself with whichever flower it gathers.",
+          "imagePrompt": "Florges, the Pokémon: a single elegant green humanoid creature with a flower crown, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/florges"
+        },
+        {
+          "name": "Pyroar",
+          "rarity": "rare",
+          "eduText": "Pyroar is a Fire-type lion Pokémon with a mane that blazes brightly whenever it feels protective.",
+          "imagePrompt": "Pyroar, the Pokémon: a single golden lion-like creature with a flame-shaped mane, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pyroar"
+        },
+        {
+          "name": "Greninja",
+          "rarity": "epic",
+          "eduText": "Greninja is the final form of Froakie, a Water-type Pokémon that moves so fast it seems to vanish.",
+          "imagePrompt": "Greninja, the Pokémon: a single tall blue frog-ninja-like creature with a long tongue scarf, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/greninja"
+        },
+        {
+          "name": "Delphox",
+          "rarity": "epic",
+          "eduText": "Delphox is the final form of Fennekin, a Fire-type Pokémon that peers into flames said to show the future.",
+          "imagePrompt": "Delphox, the Pokémon: a single tall orange fox-like creature wearing a twig-like staff, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/delphox"
+        },
+        {
+          "name": "Chesnaught",
+          "rarity": "epic",
+          "eduText": "Chesnaught is the final form of Chespin, a Grass-type Pokémon with a nearly unbreakable spiky shell.",
+          "imagePrompt": "Chesnaught, the Pokémon: a single large brown and green armored creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/chesnaught"
+        },
+        {
+          "name": "Aegislash",
+          "rarity": "epic",
+          "eduText": "Aegislash is a Steel-type Pokémon shaped like a sword and shield, once honored by ancient kings.",
+          "imagePrompt": "Aegislash, the Pokémon: a single grey sword-and-shield-shaped creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/aegislash"
+        },
+        {
+          "name": "Goodra",
+          "rarity": "epic",
+          "eduText": "Goodra is a Dragon-type Pokémon so gentle and friendly that it loves to hug anyone who visits it.",
+          "imagePrompt": "Goodra, the Pokémon: a single large pale purple slimy dragon-like creature with antenna-horns, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/goodra"
+        },
+        {
+          "name": "Xerneas",
+          "rarity": "legendary",
+          "eduText": "Xerneas is a legendary Fairy-type Pokémon from Kalos myth, said to be able to grant eternal life.",
+          "imagePrompt": "Xerneas, the Pokémon: a single tall white deer-like creature with colorful antlers, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/xerneas"
+        },
+        {
+          "name": "Zygarde",
+          "rarity": "legendary",
+          "eduText": "Zygarde is a legendary Pokémon that watches over the Kalos ecosystem, keeping it in careful balance.",
+          "imagePrompt": "Zygarde, the Pokémon: a single green and black serpentine creature with a single red eye, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zygarde"
+        }
+      ]
+    },
+    {
+      "name": "Alola Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Rowlet",
+          "rarity": "common",
+          "eduText": "Rowlet is a Grass-type owl Pokémon that can turn its head almost all the way around to look behind it.",
+          "imagePrompt": "Rowlet, the Pokémon: a single small brown and green owl-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rowlet"
+        },
+        {
+          "name": "Litten",
+          "rarity": "common",
+          "eduText": "Litten is a Fire-type cat Pokémon that grooms itself and spits up the fur as fiery little fireballs.",
+          "imagePrompt": "Litten, the Pokémon: a single small black and red cat-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/litten"
+        },
+        {
+          "name": "Popplio",
+          "rarity": "common",
+          "eduText": "Popplio is a Water-type sea lion Pokémon that practices blowing balloons out of bubbly water.",
+          "imagePrompt": "Popplio, the Pokémon: a single small blue sea-lion-like creature with a round nose, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/popplio"
+        },
+        {
+          "name": "Pikipek",
+          "rarity": "common",
+          "eduText": "Pikipek is a Normal-type woodpecker Pokémon that pecks trees so fast it sounds like a drum roll.",
+          "imagePrompt": "Pikipek, the Pokémon: a single small brown and red woodpecker-like bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pikipek"
+        },
+        {
+          "name": "Yungoos",
+          "rarity": "common",
+          "eduText": "Yungoos is a Normal-type Pokémon that is always hungry and wanders about searching for its next meal.",
+          "imagePrompt": "Yungoos, the Pokémon: a single small brown mongoose-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/yungoos"
+        },
+        {
+          "name": "Grubbin",
+          "rarity": "common",
+          "eduText": "Grubbin is a Bug-type Pokémon with a strong grip that lets it dangle safely from branches and vines.",
+          "imagePrompt": "Grubbin, the Pokémon: a single small yellow grub-like creature with pincers, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/grubbin"
+        },
+        {
+          "name": "Crabrawler",
+          "rarity": "common",
+          "eduText": "Crabrawler is a Fighting-type crab Pokémon that loves to spar, throwing playful punches with its claws.",
+          "imagePrompt": "Crabrawler, the Pokémon: a single small red crab-like creature with boxing-glove claws, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/crabrawler"
+        },
+        {
+          "name": "Mudbray",
+          "rarity": "common",
+          "eduText": "Mudbray is a Ground-type donkey Pokémon that loves playing in mud, which keeps its hooves nice and strong.",
+          "imagePrompt": "Mudbray, the Pokémon: a single small brown donkey-like creature covered in mud patches, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/mudbray"
+        },
+        {
+          "name": "Wishiwashi",
+          "rarity": "common",
+          "eduText": "Wishiwashi is a Water-type Pokémon that is timid alone, but feels safe when swimming in a big school.",
+          "imagePrompt": "Wishiwashi, the Pokémon: a single small blue fish-like creature with large eyes, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/wishiwashi"
+        },
+        {
+          "name": "Mareanie",
+          "rarity": "common",
+          "eduText": "Mareanie is a Poison-type starfish Pokémon that nibbles gently on the tentacles of other sea creatures.",
+          "imagePrompt": "Mareanie, the Pokémon: a single small blue and pink starfish-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/mareanie"
+        },
+        {
+          "name": "Bounsweet",
+          "rarity": "common",
+          "eduText": "Bounsweet is a Grass-type Pokémon that smells so sweet, like fruit, that other creatures want to carry it off.",
+          "imagePrompt": "Bounsweet, the Pokémon: a single small pink fruit-shaped creature with tiny leaf arms, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/bounsweet"
+        },
+        {
+          "name": "Komala",
+          "rarity": "common",
+          "eduText": "Komala is a Normal-type Pokémon that sleeps its entire life, clinging tightly to a little log.",
+          "imagePrompt": "Komala, the Pokémon: a single small grey koala-like creature hugging a small log, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/komala"
+        },
+        {
+          "name": "Rockruff",
+          "rarity": "common",
+          "eduText": "Rockruff is a friendly Rock-type puppy Pokémon that wags its rocky tail happily around its trainer.",
+          "imagePrompt": "Rockruff, the Pokémon: a single small tan and brown rock-covered puppy-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rockruff"
+        },
+        {
+          "name": "Cutiefly",
+          "rarity": "common",
+          "eduText": "Cutiefly is a Bug-type Pokémon that senses flowing energy in the air to find flowers full of pollen.",
+          "imagePrompt": "Cutiefly, the Pokémon: a single small yellow and pink bee-fairy-like creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/cutiefly"
+        },
+        {
+          "name": "Morelull",
+          "rarity": "common",
+          "eduText": "Morelull is a Grass-type mushroom Pokémon that gives off a gentle, glowing light to attract insects.",
+          "imagePrompt": "Morelull, the Pokémon: a single small white and pink glowing mushroom-cap creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/morelull"
+        },
+        {
+          "name": "Toxapex",
+          "rarity": "rare",
+          "eduText": "Toxapex is a Poison-type starfish Pokémon covered in sharp points, said to have very dangerous venom.",
+          "imagePrompt": "Toxapex, the Pokémon: a single purple and pink spiky starfish-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/toxapex"
+        },
+        {
+          "name": "Vikavolt",
+          "rarity": "rare",
+          "eduText": "Vikavolt is a Bug-type stag beetle Pokémon that generates electricity by rubbing its wings together fast.",
+          "imagePrompt": "Vikavolt, the Pokémon: a single yellow and black stag-beetle-like creature with large mandibles, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/vikavolt"
+        },
+        {
+          "name": "Kommo-o",
+          "rarity": "rare",
+          "eduText": "Kommo-o is a Dragon-type Pokémon covered in scales that rattle loudly like a warning before it moves.",
+          "imagePrompt": "Kommo-o, the Pokémon: a single green and yellow armored dragon-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/kommo-o"
+        },
+        {
+          "name": "Tsareena",
+          "rarity": "rare",
+          "eduText": "Tsareena is a regal Grass-type Pokémon known for its graceful, powerful kicks and elegant posture.",
+          "imagePrompt": "Tsareena, the Pokémon: a single tall pink and green fruit-crowned humanoid creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/tsareena"
+        },
+        {
+          "name": "Bewear",
+          "rarity": "rare",
+          "eduText": "Bewear is a Normal-type bear Pokémon that loves to hug, though its hugs are stronger than they look.",
+          "imagePrompt": "Bewear, the Pokémon: a single large pink and black bear-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/bewear"
+        },
+        {
+          "name": "Palossand",
+          "rarity": "rare",
+          "eduText": "Palossand is a Ghost-type Pokémon shaped like a sandcastle, said to lure the unwary into the sand.",
+          "imagePrompt": "Palossand, the Pokémon: a single tan sandcastle-shaped creature with glowing eyes, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/palossand"
+        },
+        {
+          "name": "Toucannon",
+          "rarity": "rare",
+          "eduText": "Toucannon is a Normal-type bird Pokémon with a rock-hard beak that it claps loudly like a drum.",
+          "imagePrompt": "Toucannon, the Pokémon: a single colorful toucan-like bird creature with a large beak, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/toucannon"
+        },
+        {
+          "name": "Oricorio",
+          "rarity": "rare",
+          "eduText": "Oricorio is a dancer Pokémon that changes its style and look depending on the flower nectar it drinks.",
+          "imagePrompt": "Oricorio, the Pokémon: a single small red and yellow flamenco-dancer-like bird creature, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/oricorio"
+        },
+        {
+          "name": "Decidueye",
+          "rarity": "epic",
+          "eduText": "Decidueye is the final form of Rowlet, a Grass-type Pokémon that can fire feather arrows with pinpoint aim.",
+          "imagePrompt": "Decidueye, the Pokémon: a single tall brown and green owl-archer-like creature with a leaf-quiver, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/decidueye"
+        },
+        {
+          "name": "Incineroar",
+          "rarity": "epic",
+          "eduText": "Incineroar is the final form of Litten, a Fire-type Pokémon known for its dramatic, showy performances.",
+          "imagePrompt": "Incineroar, the Pokémon: a single large red and black wrestler-cat-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/incineroar"
+        },
+        {
+          "name": "Primarina",
+          "rarity": "epic",
+          "eduText": "Primarina is the final form of Popplio, a Water-type Pokémon that sings beautiful melodies made of water bubbles.",
+          "imagePrompt": "Primarina, the Pokémon: a single tall blue and white sea-lion-singer-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/primarina"
+        },
+        {
+          "name": "Lycanroc",
+          "rarity": "epic",
+          "eduText": "Lycanroc is a Rock-type Pokémon that can look quite different depending on the time of day it evolved.",
+          "imagePrompt": "Lycanroc, the Pokémon: a single sleek tan and red wolf-like creature with jagged rocky mane, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lycanroc"
+        },
+        {
+          "name": "Mimikyu",
+          "rarity": "epic",
+          "eduText": "Mimikyu is a Ghost-type Pokémon that hides under a hand-sewn disguise because its true form is lonely.",
+          "imagePrompt": "Mimikyu, the Pokémon: a single small creature wearing a yellow ragged hand-sewn costume, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/mimikyu"
+        },
+        {
+          "name": "Solgaleo",
+          "rarity": "legendary",
+          "eduText": "Solgaleo is a legendary Psychic-type Pokémon said to be the guardian deity of Alola's sunlit day.",
+          "imagePrompt": "Solgaleo, the Pokémon: a single huge white and gold lion-like creature with a mane like the sun, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/solgaleo"
+        },
+        {
+          "name": "Lunala",
+          "rarity": "legendary",
+          "eduText": "Lunala is a legendary Psychic-type Pokémon said to be the guardian deity of Alola's moonlit night.",
+          "imagePrompt": "Lunala, the Pokémon: a single huge grey and purple bat-like creature with crescent-moon wings, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lunala"
+        }
+      ]
+    },
+    {
+      "name": "Galar Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Grookey",
+          "rarity": "common",
+          "eduText": "Grookey is a Grass-type Pokémon that drums with the stick it carries, making plants sprout around it.",
+          "imagePrompt": "Grookey, the Pokémon: a single small green monkey-like creature holding a small stick, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/grookey"
+        },
+        {
+          "name": "Scorbunny",
+          "rarity": "common",
+          "eduText": "Scorbunny is a Fire-type rabbit Pokémon that is always warming up, bouncing around on energetic legs.",
+          "imagePrompt": "Scorbunny, the Pokémon: a single small white and orange rabbit-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/scorbunny"
+        },
+        {
+          "name": "Sobble",
+          "rarity": "common",
+          "eduText": "Sobble is a shy Water-type Pokémon that cries without meaning to whenever it feels embarrassed.",
+          "imagePrompt": "Sobble, the Pokémon: a single small blue lizard-like creature with big teary eyes, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sobble"
+        },
+        {
+          "name": "Skwovet",
+          "rarity": "common",
+          "eduText": "Skwovet is a Normal-type squirrel Pokémon that stuffs food into its cheeks until they are completely full.",
+          "imagePrompt": "Skwovet, the Pokémon: a single small orange and cream squirrel-like creature with full cheeks, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/skwovet"
+        },
+        {
+          "name": "Wooloo",
+          "rarity": "common",
+          "eduText": "Wooloo is a Normal-type sheep Pokémon with endlessly fluffy wool that regrows as soon as it is sheared.",
+          "imagePrompt": "Wooloo, the Pokémon: a single small round fluffy white sheep-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/wooloo"
+        },
+        {
+          "name": "Rookidee",
+          "rarity": "common",
+          "eduText": "Rookidee is a small Flying-type Pokémon that travels in flocks, watching carefully for any danger.",
+          "imagePrompt": "Rookidee, the Pokémon: a single small blue and black fledgling bird creature, perched on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rookidee"
+        },
+        {
+          "name": "Yamper",
+          "rarity": "common",
+          "eduText": "Yamper is an Electric-type corgi Pokémon that loves to chase things, sparking static with its stubby legs.",
+          "imagePrompt": "Yamper, the Pokémon: a single small yellow and black corgi-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/yamper"
+        },
+        {
+          "name": "Gossifleur",
+          "rarity": "common",
+          "eduText": "Gossifleur is a Grass-type Pokémon that absorbs nutrients through its feet while planted in rich soil.",
+          "imagePrompt": "Gossifleur, the Pokémon: a single small green and pink flower-topped creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gossifleur"
+        },
+        {
+          "name": "Sizzlipede",
+          "rarity": "common",
+          "eduText": "Sizzlipede is a Fire-type centipede Pokémon with a body that gets warmer and warmer as it moves along.",
+          "imagePrompt": "Sizzlipede, the Pokémon: a single small red and yellow centipede-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sizzlipede"
+        },
+        {
+          "name": "Chewtle",
+          "rarity": "common",
+          "eduText": "Chewtle is a Water-type turtle Pokémon that bites down on anything nearby, though its jaw still isn't very strong yet.",
+          "imagePrompt": "Chewtle, the Pokémon: a single small blue snapping-turtle-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/chewtle"
+        },
+        {
+          "name": "Sinistea",
+          "rarity": "common",
+          "eduText": "Sinistea is a Ghost-type Pokémon that looks just like a cup of tea, formed from leftover emotion.",
+          "imagePrompt": "Sinistea, the Pokémon: a single small blue teacup-shaped creature with a ghostly face, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sinistea"
+        },
+        {
+          "name": "Impidimp",
+          "rarity": "common",
+          "eduText": "Impidimp is a Dark-type Pokémon that loves mischief, sneaking up to give people and Pokémon a little fright.",
+          "imagePrompt": "Impidimp, the Pokémon: a single small purple imp-like creature with pointed ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/impidimp"
+        },
+        {
+          "name": "Applin",
+          "rarity": "common",
+          "eduText": "Applin is a Grass-type Pokémon that lives inside a sweet apple, nibbling it from the inside out.",
+          "imagePrompt": "Applin, the Pokémon: a single small green creature peeking out of a red apple shell, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/applin"
+        },
+        {
+          "name": "Nickit",
+          "rarity": "common",
+          "eduText": "Nickit is a Dark-type fox Pokémon that uses its fluffy tail to hide its tracks from anyone chasing it.",
+          "imagePrompt": "Nickit, the Pokémon: a single small orange fox-like creature with a large fluffy tail, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/nickit"
+        },
+        {
+          "name": "Cramorant",
+          "rarity": "common",
+          "eduText": "Cramorant is a Flying-type Pokémon that is a bit forgetful, often swallowing more than it means to.",
+          "imagePrompt": "Cramorant, the Pokémon: a single small black and yellow cormorant-like bird creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/cramorant"
+        },
+        {
+          "name": "Toxtricity",
+          "rarity": "rare",
+          "eduText": "Toxtricity is an Electric-type Pokémon that releases built-up poison as loud, crackling electric energy.",
+          "imagePrompt": "Toxtricity, the Pokémon: a single purple and yellow punk-styled electric creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/toxtricity"
+        },
+        {
+          "name": "Grimmsnarl",
+          "rarity": "rare",
+          "eduText": "Grimmsnarl is a Dark-type Pokémon with long hair-like growths that it can stiffen into a tough whip.",
+          "imagePrompt": "Grimmsnarl, the Pokémon: a single tall purple and pink haired creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/grimmsnarl"
+        },
+        {
+          "name": "Centiskorch",
+          "rarity": "rare",
+          "eduText": "Centiskorch is a Fire-type centipede Pokémon so long and hot that the ground beneath it can scorch.",
+          "imagePrompt": "Centiskorch, the Pokémon: a single long red and black centipede-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/centiskorch"
+        },
+        {
+          "name": "Hatterene",
+          "rarity": "rare",
+          "eduText": "Hatterene is a tall Psychic-type Pokémon that can sense feelings from very far away using its long hair.",
+          "imagePrompt": "Hatterene, the Pokémon: a single tall pink and white witch-hat-shaped creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/hatterene"
+        },
+        {
+          "name": "Barraskewda",
+          "rarity": "rare",
+          "eduText": "Barraskewda is a Water-type Pokémon shaped like a swordfish, one of the fastest swimmers in the sea.",
+          "imagePrompt": "Barraskewda, the Pokémon: a single sleek blue swordfish-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/barraskewda"
+        },
+        {
+          "name": "Copperajah",
+          "rarity": "rare",
+          "eduText": "Copperajah is a Steel-type elephant Pokémon strong enough to push over a whole steel tower with its trunk.",
+          "imagePrompt": "Copperajah, the Pokémon: a single huge copper-colored elephant-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/copperajah"
+        },
+        {
+          "name": "Falinks",
+          "rarity": "rare",
+          "eduText": "Falinks is a Fighting-type Pokémon made of six little soldiers who always move and act as one unit.",
+          "imagePrompt": "Falinks, the Pokémon: a single line of six small yellow and black soldier-like creatures, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/falinks"
+        },
+        {
+          "name": "Duraludon",
+          "rarity": "rare",
+          "eduText": "Duraludon is a Steel-type Pokémon made from a light, strong metal, said to have the look of a skyscraper.",
+          "imagePrompt": "Duraludon, the Pokémon: a single tall silver and blue skyscraper-shaped dragon-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/duraludon"
+        },
+        {
+          "name": "Cinderace",
+          "rarity": "epic",
+          "eduText": "Cinderace is the final form of Scorbunny, a Fire-type Pokémon famous for its powerful, fiery kicks.",
+          "imagePrompt": "Cinderace, the Pokémon: a single tall orange and white rabbit-striker-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/cinderace"
+        },
+        {
+          "name": "Rillaboom",
+          "rarity": "epic",
+          "eduText": "Rillaboom is the final form of Grookey, a Grass-type Pokémon that drums on its own belly to the beat.",
+          "imagePrompt": "Rillaboom, the Pokémon: a single large brown gorilla-like creature with a drumstick, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/rillaboom"
+        },
+        {
+          "name": "Intelleon",
+          "rarity": "epic",
+          "eduText": "Intelleon is the final form of Sobble, a Water-type Pokémon known for being cool, sharp, and precise.",
+          "imagePrompt": "Intelleon, the Pokémon: a single tall blue secret-agent-like lizard creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/intelleon"
+        },
+        {
+          "name": "Dragapult",
+          "rarity": "epic",
+          "eduText": "Dragapult is a Dragon-type Pokémon that launches smaller dragon Pokémon off its body like living missiles.",
+          "imagePrompt": "Dragapult, the Pokémon: a single sleek purple and pink dragon-like creature, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/dragapult"
+        },
+        {
+          "name": "Corviknight",
+          "rarity": "epic",
+          "eduText": "Corviknight is a Flying-type raven Pokémon so dependable it is used as flying taxi transport in Galar.",
+          "imagePrompt": "Corviknight, the Pokémon: a single large black and grey armored raven-like creature, flying above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/corviknight"
+        },
+        {
+          "name": "Zacian",
+          "rarity": "legendary",
+          "eduText": "Zacian is a legendary Fairy-type Pokémon of Galar legend, said to carry a sword passed down for ages.",
+          "imagePrompt": "Zacian, the Pokémon: a single sleek blue wolf-like creature carrying a long sword in its mouth, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zacian"
+        },
+        {
+          "name": "Zamazenta",
+          "rarity": "legendary",
+          "eduText": "Zamazenta is a legendary Fighting-type Pokémon of Galar legend, said to carry a shield to protect others.",
+          "imagePrompt": "Zamazenta, the Pokémon: a single sleek red wolf-like creature carrying a round shield, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/zamazenta"
+        }
+      ]
+    },
+    {
+      "name": "Paldea Pokémon",
+      "provider": "pokeapi-official-artwork",
+      "cards": [
+        {
+          "name": "Sprigatito",
+          "rarity": "common",
+          "eduText": "Sprigatito is a Grass-type cat Pokémon whose fur releases a lovely scent, like fresh-cut herbs.",
+          "imagePrompt": "Sprigatito, the Pokémon: a single small green cat-like creature with leaf-shaped ears, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/sprigatito"
+        },
+        {
+          "name": "Fuecoco",
+          "rarity": "common",
+          "eduText": "Fuecoco is a Fire-type Pokémon that naps on warm rocks, with flames flickering along its back.",
+          "imagePrompt": "Fuecoco, the Pokémon: a single small red crocodile-like creature sitting upright, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/fuecoco"
+        },
+        {
+          "name": "Quaxly",
+          "rarity": "common",
+          "eduText": "Quaxly is a Water-type duckling Pokémon that is very tidy, always keeping its feathers neatly combed.",
+          "imagePrompt": "Quaxly, the Pokémon: a single small blue duckling-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/quaxly"
+        },
+        {
+          "name": "Lechonk",
+          "rarity": "common",
+          "eduText": "Lechonk is a Normal-type Pokémon that follows its nose everywhere, sniffing out anything tasty nearby.",
+          "imagePrompt": "Lechonk, the Pokémon: a single small pink and brown pig-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/lechonk"
+        },
+        {
+          "name": "Fidough",
+          "rarity": "common",
+          "eduText": "Fidough is a Fairy-type Pokémon shaped like a loaf of bread, with a nose that smells like fresh yeast.",
+          "imagePrompt": "Fidough, the Pokémon: a single small cream round dough-shaped puppy creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/fidough"
+        },
+        {
+          "name": "Smoliv",
+          "rarity": "common",
+          "eduText": "Smoliv is a Grass-type Pokémon shaped like a tiny olive, which drips a nourishing oil when it is tired.",
+          "imagePrompt": "Smoliv, the Pokémon: a single small green olive-shaped creature with leaf sprigs, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/smoliv"
+        },
+        {
+          "name": "Tandemaus",
+          "rarity": "common",
+          "eduText": "Tandemaus is a Normal-type Pokémon made of two little mice that always travel everywhere side by side.",
+          "imagePrompt": "Tandemaus, the Pokémon: a single pair of small grey mouse-like creatures standing together, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/tandemaus"
+        },
+        {
+          "name": "Wiglett",
+          "rarity": "common",
+          "eduText": "Wiglett is a Water-type Pokémon that pokes up out of sandy beaches, looking just like a garden eel.",
+          "imagePrompt": "Wiglett, the Pokémon: a single small white and pink eel-like creature poking out of sand, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/wiglett"
+        },
+        {
+          "name": "Pawmi",
+          "rarity": "common",
+          "eduText": "Pawmi is an Electric-type mouse Pokémon that rubs its cheeks to build up a small static charge.",
+          "imagePrompt": "Pawmi, the Pokémon: a single small yellow and cream mouse-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/pawmi"
+        },
+        {
+          "name": "Nymble",
+          "rarity": "common",
+          "eduText": "Nymble is a Bug-type cricket Pokémon with strong legs that let it hop remarkably high and far.",
+          "imagePrompt": "Nymble, the Pokémon: a single small tan cricket-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/nymble"
+        },
+        {
+          "name": "Flittle",
+          "rarity": "common",
+          "eduText": "Flittle is a Psychic-type Pokémon shaped like a small ostrich, which can float by using psychic power.",
+          "imagePrompt": "Flittle, the Pokémon: a single small pale blue ostrich-like creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/flittle"
+        },
+        {
+          "name": "Tinkatink",
+          "rarity": "common",
+          "eduText": "Tinkatink is a Fairy-type Pokémon that carries a tiny hammer, made from the materials it finds and forges.",
+          "imagePrompt": "Tinkatink, the Pokémon: a single small blue-haired creature holding a small hammer, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/tinkatink"
+        },
+        {
+          "name": "Shroodle",
+          "rarity": "common",
+          "eduText": "Shroodle is a Poison-type Pokémon that likes to leave a sticky, striped mess wherever it mischievously goes.",
+          "imagePrompt": "Shroodle, the Pokémon: a single small pink and orange striped mongoose-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/shroodle"
+        },
+        {
+          "name": "Varoom",
+          "rarity": "common",
+          "eduText": "Varoom is a Steel-type Pokémon that looks like an engine, giving off puffs of exhaust when it moves.",
+          "imagePrompt": "Varoom, the Pokémon: a single small purple engine-shaped creature with exhaust puffs, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/varoom"
+        },
+        {
+          "name": "Klawf",
+          "rarity": "common",
+          "eduText": "Klawf is a Rock-type crab Pokémon that disguises itself among rocks, waiting patiently and still.",
+          "imagePrompt": "Klawf, the Pokémon: a single small orange rocky-shelled crab-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/klawf"
+        },
+        {
+          "name": "Kingambit",
+          "rarity": "rare",
+          "eduText": "Kingambit is a Dark-type Pokémon that commands other Pokémon in battle formations like a general.",
+          "imagePrompt": "Kingambit, the Pokémon: a single large grey and gold armored axe-headed creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/kingambit"
+        },
+        {
+          "name": "Garganacl",
+          "rarity": "rare",
+          "eduText": "Garganacl is a towering Rock-type Pokémon made of salt crystal, admired for its calm, steady strength.",
+          "imagePrompt": "Garganacl, the Pokémon: a single huge grey salt-crystal rock-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/garganacl"
+        },
+        {
+          "name": "Clodsire",
+          "rarity": "rare",
+          "eduText": "Clodsire is a sturdy Poison-type Pokémon that rarely seems bothered no matter what happens around it.",
+          "imagePrompt": "Clodsire, the Pokémon: a single large pink and yellow catfish-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/clodsire"
+        },
+        {
+          "name": "Armarouge",
+          "rarity": "rare",
+          "eduText": "Armarouge is a Fire-type Pokémon wearing armor that channels a fiery psychic power through its spear.",
+          "imagePrompt": "Armarouge, the Pokémon: a single red and gold armored creature holding a spear, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/armarouge"
+        },
+        {
+          "name": "Ceruledge",
+          "rarity": "rare",
+          "eduText": "Ceruledge is a Fire-type Pokémon with blade-shaped arms that burn with a cool, ghostly blue flame.",
+          "imagePrompt": "Ceruledge, the Pokémon: a single blue-flamed armored creature with blade arms, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/ceruledge"
+        },
+        {
+          "name": "Dondozo",
+          "rarity": "rare",
+          "eduText": "Dondozo is an enormous Water-type Pokémon, so easygoing that it lets a smaller Pokémon ride inside its mouth.",
+          "imagePrompt": "Dondozo, the Pokémon: a single enormous blue catfish-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/dondozo"
+        },
+        {
+          "name": "Tatsugiri",
+          "rarity": "rare",
+          "eduText": "Tatsugiri is a small Dragon-type Pokémon that loves to perform and put on a dramatic little show.",
+          "imagePrompt": "Tatsugiri, the Pokémon: a single small pink and white dragon-fish-like creature, resting on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/tatsugiri"
+        },
+        {
+          "name": "Glimmora",
+          "rarity": "rare",
+          "eduText": "Glimmora is a Rock-type Pokémon that grows gem-like crystals on its body, sparkling like little jewels.",
+          "imagePrompt": "Glimmora, the Pokémon: a single purple and yellow crystal-covered rock creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/glimmora"
+        },
+        {
+          "name": "Skeledirge",
+          "rarity": "epic",
+          "eduText": "Skeledirge is the final form of Fuecoco, a Fire-type Pokémon that sings a deep, soulful song.",
+          "imagePrompt": "Skeledirge, the Pokémon: a single large red and black skeletal-crooner-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/skeledirge"
+        },
+        {
+          "name": "Meowscarada",
+          "rarity": "epic",
+          "eduText": "Meowscarada is the final form of Sprigatito, a Grass-type Pokémon as swift and clever as a magician.",
+          "imagePrompt": "Meowscarada, the Pokémon: a single tall green cat-magician-like creature with a flower-cape, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/meowscarada"
+        },
+        {
+          "name": "Quaquaval",
+          "rarity": "epic",
+          "eduText": "Quaquaval is the final form of Quaxly, a Water-type Pokémon famous for its graceful, dancing footwork.",
+          "imagePrompt": "Quaquaval, the Pokémon: a single tall blue dancer-duck-like creature with a feathered headdress, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/quaquaval"
+        },
+        {
+          "name": "Baxcalibur",
+          "rarity": "epic",
+          "eduText": "Baxcalibur is a Dragon-type Pokémon with icy blade-like horns, a fierce chaser across frozen ground.",
+          "imagePrompt": "Baxcalibur, the Pokémon: a single large blue and white ice-dragon-like creature with sword-shaped horns, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/baxcalibur"
+        },
+        {
+          "name": "Gholdengo",
+          "rarity": "epic",
+          "eduText": "Gholdengo is a rare Steel-type Pokémon formed from a thousand tiny coins that joined together as one.",
+          "imagePrompt": "Gholdengo, the Pokémon: a single golden coin-covered creature, floating above green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/gholdengo"
+        },
+        {
+          "name": "Koraidon",
+          "rarity": "legendary",
+          "eduText": "Koraidon is a legendary Pokémon from a distant past, a powerful runner said to sprint faster than sound.",
+          "imagePrompt": "Koraidon, the Pokémon: a single huge red and black primal dragon-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/koraidon"
+        },
+        {
+          "name": "Miraidon",
+          "rarity": "legendary",
+          "eduText": "Miraidon is a legendary Pokémon from a distant future, sleek and electric, built like advanced technology.",
+          "imagePrompt": "Miraidon, the Pokémon: a single huge purple and black sleek mechanical dragon-like creature, standing on green grass under a blue sky",
+          "sourceUrl": "https://www.pokemon.com/us/pokedex/miraidon"
+        }
+      ]
     }
   ]
 }
