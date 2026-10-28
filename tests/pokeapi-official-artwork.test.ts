@@ -122,11 +122,13 @@ describe("resolvePokemonCard", () => {
 describe("POKEMON_NATIONAL_DEX_NUMBERS", () => {
   const data = JSON.parse(
     readFileSync(join(process.cwd(), "seed-content", "cards.json"), "utf8"),
-  ) as { themes: { name: string; cards: { name: string; imagePrompt: string }[] }[] };
+  ) as {
+    themes: { name: string; provider?: string; cards: { name: string; imagePrompt: string }[] }[];
+  };
 
-  it("maps every Kanto Pokémon and Johto Pokémon card in cards.json, by its built prompt", () => {
-    const pokemonThemes = data.themes.filter((t) => t.name === "Kanto Pokémon" || t.name === "Johto Pokémon");
-    expect(pokemonThemes).toHaveLength(2);
+  it("maps every pokeapi-official-artwork theme's card in cards.json, by its built prompt", () => {
+    const pokemonThemes = data.themes.filter((t) => t.provider === "pokeapi-official-artwork");
+    expect(pokemonThemes.length).toBeGreaterThanOrEqual(2);
     for (const theme of pokemonThemes) {
       for (const card of theme.cards) {
         const dexNumber = nationalDexNumber(card.name);
@@ -145,7 +147,7 @@ describe("POKEMON_NATIONAL_DEX_NUMBERS", () => {
     expect(new Set(numbers).size).toBe(numbers.length);
     for (const n of numbers) {
       expect(n).toBeGreaterThanOrEqual(1);
-      expect(n).toBeLessThanOrEqual(251);
+      expect(n).toBeLessThanOrEqual(1025);
     }
   });
 });
@@ -153,11 +155,11 @@ describe("POKEMON_NATIONAL_DEX_NUMBERS", () => {
 describe("POKEMON_PRIMARY_TYPES", () => {
   const data = JSON.parse(
     readFileSync(join(process.cwd(), "seed-content", "cards.json"), "utf8"),
-  ) as { themes: { name: string; cards: { name: string }[] }[] };
+  ) as { themes: { name: string; provider?: string; cards: { name: string }[] }[] };
 
-  it("maps every Kanto Pokémon and Johto Pokémon card to a known type with a palette entry", () => {
-    const pokemonThemes = data.themes.filter((t) => t.name === "Kanto Pokémon" || t.name === "Johto Pokémon");
-    expect(pokemonThemes).toHaveLength(2);
+  it("maps every pokeapi-official-artwork theme's card to a known type with a palette entry", () => {
+    const pokemonThemes = data.themes.filter((t) => t.provider === "pokeapi-official-artwork");
+    expect(pokemonThemes.length).toBeGreaterThanOrEqual(2);
     for (const theme of pokemonThemes) {
       for (const card of theme.cards) {
         const type = primaryType(card.name);

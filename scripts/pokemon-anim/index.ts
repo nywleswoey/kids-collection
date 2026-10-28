@@ -1,5 +1,5 @@
 /**
- * Local (no AI) animation generator for the Kanto Pokémon / Johto Pokémon
+ * Local (no AI) animation generator for the Pokémon region themes'
  * official-artwork cards — the owner's one-shot command:
  *
  *   pnpm pokemon-anim

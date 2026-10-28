@@ -304,14 +304,14 @@ You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) 
 
 `pokeapi-official-artwork` is a different kind of lane: it does not draw anything. It fetches **the
 real, official Pokémon artwork** from PokéAPI's sprites repository (no key, no xAI, no billed API —
-a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~60
+a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~270
 cards it has a national-dex-number mapping for (`src/shared/pool/pokemon-dex-numbers.ts`) — today
-that is *Kanto Pokémon* and *Johto Pokémon*, and no other theme. Everywhere else it is simply not
+that is the nine region themes, *Kanto Pokémon* through *Paldea Pokémon*, and no other theme. Everywhere else it is simply not
 drawn.
 
 **This is the one place in the pipeline that ships someone else's copyrighted art.** Official Pokémon
 artwork belongs to Nintendo/Game Freak/The Pokémon Company, not to this project. It is appropriate
-**only** because this app is private, sign-in-only, and the owner has accepted that these two themes'
+**only** because this app is private, sign-in-only, and the owner has accepted that these Pokémon themes'
 pictures are for private family use and not for a public or commercial deployment. Do not reach for
 this lane on a theme without that same understanding, and do not use it as a general "the AI lanes
 failed" escape hatch — it exists for named, real-world characters a diffusion model cannot faithfully
@@ -670,9 +670,9 @@ reported, not generated. It then runs the same `--review` import and contact she
 `--sync` publishes the animation with the card. Existing published cards are never given one. Details:
 `scripts/supergrok-helper/index.ts`'s header and `AGENTS.md`.
 
-### Optional — animate Kanto/Johto Pokémon cards (local, no AI)
+### Optional — animate Pokémon region cards (local, no AI)
 
-Every card in the Kanto Pokémon / Johto Pokémon themes may also get a short looping animation — not just the
+Every card in the Pokémon region themes (*Kanto Pokémon* through *Paldea Pokémon*) may also get a short looping animation — not just the
 legendaries — generated entirely locally, with no Grok call: Grok's `image_to_video` is blocked by content
 moderation on named, recognisable Pokémon, so this lane recomposites the same transparent official artwork and
 type-gradient background the still provider draws, with a synthesized float/breathe/sway and a few type-coloured
@@ -682,7 +682,7 @@ sparkles, instead of animating a clip.
 pnpm pokemon-anim   # needs `brew install webp` for img2webp — no ffmpeg (there is no video to decode)
 ```
 
-One command animates every card across both themes in one pass: it skips a card whose drop-folder animation
+One command animates every card across all those themes in one pass: it skips a card whose drop-folder animation
 already exists (reruns resume), and reports — never fabricates — a card whose still has not been picked yet in
 `seed-content/review/` under `pokeapi-official-artwork` (run `pnpm seed --review --providers=pokeapi-official-artwork`
 and `pnpm theme-picks` first). From there, the usual hand-off applies with no new flags: `pnpm seed --review
