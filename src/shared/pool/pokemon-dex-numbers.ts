@@ -2,7 +2,8 @@
  * Card name -> National Pokédex number, for the cards the
  * `pokeapi-official-artwork` provider can draw (Kanto Pokémon, Johto Pokémon,
  * Hoenn Pokémon, Sinnoh Pokémon, Unova Pokémon, Kalos Pokémon, Alola Pokémon,
- * Galar Pokémon, Paldea Pokémon).
+ * Galar Pokémon, Paldea Pokémon, plus each region's "<Region> Pokémon 2"
+ * part-2 theme).
  *
  * Checked in rather than resolved at request time: PokéAPI's `/pokemon/<name>`
  * lookup would make the mapping change underneath a reviewed image with no diff
@@ -10,7 +11,7 @@
  * exist to prevent elsewhere in this pipeline. Pinning it here makes a wrong
  * entry a one-line PR comment instead of a silent drift.
  *
- * Only these nine Pokémon themes are covered. A card from any other theme is
+ * Only these eighteen Pokémon themes are covered. A card from any other theme is
  * not drawn by this lane at all - see `pokeapi-official-artwork.ts`'s
  * `resolvePokemonCard`, which never consults this table unless the prompt
  * already looks like one of these cards'.

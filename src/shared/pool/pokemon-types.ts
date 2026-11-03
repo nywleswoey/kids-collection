@@ -1,5 +1,5 @@
 /**
- * Card name -> primary Pokémon type, for the same ~270 cards
+ * Card name -> primary Pokémon type, for the same ~540 cards
  * `pokemon-dex-numbers.ts` maps to a national dex number.
  *
  * Checked in for the same reason as that table: pinning it here makes a wrong
@@ -9,7 +9,7 @@
  * only the FIRST-listed ("primary") type, which is what the official Pokédex
  * entry leads with.
  *
- * Only these nine Pokémon themes are covered; see `pokemon-dex-numbers.ts` for
+ * Only these eighteen Pokémon themes are covered; see `pokemon-dex-numbers.ts` for
  * why a lookup miss there is treated as "not one of these cards" rather than
  * an error. A missing entry here instead falls back to `"normal"`'s colours
  * (`backgroundForType`) rather than throwing, since the background is a

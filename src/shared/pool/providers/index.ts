@@ -52,8 +52,8 @@
  * default fan-out, so a review that is not using it neither aborts nor waits.
  *
  * ── `pokeapi-official-artwork`, escape hatch ─────────────────────────────────
- * Fetches the real Pokémon artwork for the ~270 cards it can map (the nine
- * Pokémon region themes) rather than drawing anything. It is registered the same as any
+ * Fetches the real Pokémon artwork for the ~540 cards it can map (the 18
+ * Pokémon region themes, two per region) rather than drawing anything. It is registered the same as any
  * other provider — the bake-off, contact sheet, `theme-picks` and `--sync` all
  * resolve it — but `role: "escape-hatch"` keeps every OTHER theme's `--review`
  * from carrying a permanent column of "not drawn" for a lane that answers

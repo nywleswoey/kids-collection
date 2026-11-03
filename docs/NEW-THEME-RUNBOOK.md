@@ -304,9 +304,10 @@ You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) 
 
 `pokeapi-official-artwork` is a different kind of lane: it does not draw anything. It fetches **the
 real, official Pokémon artwork** from PokéAPI's sprites repository (no key, no xAI, no billed API —
-a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~270
+a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~540
 cards it has a national-dex-number mapping for (`src/shared/pool/pokemon-dex-numbers.ts`) — today
-that is the nine region themes, *Kanto Pokémon* through *Paldea Pokémon*, and no other theme. Everywhere else it is simply not
+that is the nine region themes, *Kanto Pokémon* through *Paldea Pokémon*, plus each region's part-2
+theme (*Kanto Pokémon 2* through *Paldea Pokémon 2*), and no other theme. Everywhere else it is simply not
 drawn.
 
 **This is the one place in the pipeline that ships someone else's copyrighted art.** Official Pokémon
