@@ -32,8 +32,10 @@ export const themes = pgTable("themes", {
   sortOrder: integer("sort_order").notNull().default(0),
   // The theme-level provider pin from cards.json's "theme-picks" convention
   // (AGENTS.md), promoted to a real column so the binder hub can group by it
-  // mechanically instead of matching on theme names. NULL for every theme
-  // that isn't pinned to one provider; written by `upsertTheme` on sync.
+  // mechanically instead of matching on theme names. Holds whatever provider
+  // the theme is pinned to (e.g. cloudflare-sdxl, supergrok-manual for
+  // non-Pokémon themes), NULL when it has no pin; written by `upsertTheme` on
+  // sync. Only providers listed in `FRANCHISE_PROVIDERS` group into a tile.
   provider: text("provider"),
 });
 

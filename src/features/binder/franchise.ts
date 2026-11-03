@@ -13,6 +13,11 @@ import type { BinderCard, Theme, ThemeSection } from "@/lib/types";
  * rejected authored grouping as a recurring per-theme cost, and the provider
  * pin is already an unambiguous, mechanically-enforced fact of how a theme
  * was drawn — reading it adds no new authoring step.
+ *
+ * The column holds every theme's own pin (null when unpinned), so non-Pokémon
+ * themes store their real provider too (cloudflare-sdxl, supergrok-manual).
+ * Grouping keys only off this map: a provider absent from it never forms a
+ * franchise tile.
  */
 export const FRANCHISE_PROVIDERS: Record<string, string> = {
   "pokeapi-official-artwork": "Pokémon",
@@ -20,6 +25,7 @@ export const FRANCHISE_PROVIDERS: Record<string, string> = {
 
 const FRANCHISE_ID_PREFIX = "franchise:";
 
+/** The theme's franchise label, or null when its provider (or lack of one) isn't in `FRANCHISE_PROVIDERS`. */
 export function franchiseLabelForTheme(theme: Theme): string | null {
   return FRANCHISE_PROVIDERS[theme.provider ?? ""] ?? null;
 }

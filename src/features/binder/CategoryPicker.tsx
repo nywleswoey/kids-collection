@@ -178,7 +178,7 @@ function CategoryTile({
       <span className="flex flex-col gap-1.5 p-2.5">
         {/* Fixed two-line box: a one-line name must not lift its tile's bar out
             of line with the two-line names beside it. */}
-        <span className="line-clamp-2 min-h-[2.25rem] text-sm font-bold leading-[1.125rem]">
+        <span className="line-clamp-2 min-h-[2.25rem] hyphens-auto break-words text-sm font-bold leading-[1.125rem]">
           {theme.name}
         </span>
         <span className="h-2 overflow-hidden rounded-full bg-black/30 ring-1 ring-inset ring-white/10">
