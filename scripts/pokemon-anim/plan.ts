@@ -1,7 +1,7 @@
 /**
  * Pure planning for `pnpm pokemon-anim`: every card across all themes whose
  * resolved provider is `pokeapi-official-artwork` (today, every card in
- * the nine Pokémon region themes — all pinned at theme level in
+ * the 18 Pokémon region themes, two per region — all pinned at theme level in
  * `seed-content/cards.json`), in seed order.
  *
  * Mirrors `scripts/supergrok-helper/video-plan.ts`'s shape, scoped by

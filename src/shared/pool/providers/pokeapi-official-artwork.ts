@@ -11,7 +11,7 @@
  * recorded honestly rather than passed off as original art.
  *
  * ── Role: escape hatch, not a lane ───────────────────────────────────────────
- * This provider can only ever draw the ~270 cards in `pokemon-dex-numbers.ts` —
+ * This provider can only ever draw the ~540 cards in `pokemon-dex-numbers.ts` —
  * every other theme's prompt does not match `resolvePokemonCard` at all, so it
  * answers `ProviderNotDrawn` for all of them. Put in the default fan-out
  * (`role: "lane"`), every future theme's `--review` would carry a column of
