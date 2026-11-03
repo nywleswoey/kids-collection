@@ -35,8 +35,10 @@ import {
  * the hub, one category, or the burn pile — and that place lives in the URL as
  * `?at=` (see `binder-place.ts` for why). Three consequences:
  *
- *   - **The picker is the hub.** Both other places carry a `← All categories`
- *     bar, so there is exactly one way back and it is the same one everywhere.
+ *   - **The picker is the hub.** Every other place carries a `← All categories`
+ *     bar, so there is exactly one way back and it is the same one everywhere
+ *     (a regional set inside a franchise steps back to that franchise's
+ *     sub-hub first, `franchise.ts`).
  *   - **The burn pile is a door on the hub, not a mode above every screen.**
  *     Inc22 FR11 made the burn view global — it ignores category and rarity and
  *     counts across the whole galaxy — so a `🌌 All cards | 🔥 Ready to
@@ -49,7 +51,7 @@ import {
  *     destination, and 480 slots in one scroll was never a view anyone read.
  *
  * **Sticky budget: two layers, ever** — the page header, plus one place bar
- * inside a category or the burn pile. The rarity row deliberately scrolls away:
+ * inside a franchise sub-hub, a category or the burn pile. The rarity row deliberately scrolls away:
  * it is set on arrival and rarely changed mid-scroll, and a third sticky line
  * on a phone would re-open exactly the crowding #107 set out to fix.
  *
@@ -206,10 +208,13 @@ function BurnDoor({ count, onOpen }: { count: number; onOpen: () => void }) {
   );
 }
 
-/** The one sticky layer a place is allowed: the way back, and where you are. */
 /**
- * The sticky bar inside a category or the burn pile: one way back, where you
- * are, and how far along.
+ * The sticky bar inside a franchise sub-hub, a category or the burn pile: one
+ * way back, where you are, and how far along.
+ *
+ * Its offset is `top-0` below `sm:` and `top-24` from `sm:` up because the page
+ * header is only sticky from `sm:` up; a fixed `top-24` on a phone left a gap
+ * above the bar that tiles scrolled through.
  *
  * #122 gave it the category's cover thumbnail. The bar was pure text, and #108
  * moved the category heading INTO it — so for a child who cannot yet read the

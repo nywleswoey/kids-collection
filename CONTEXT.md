@@ -30,8 +30,9 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
   `docs/DATA-PRESERVATION-0009.md`.
 - **Collection** — a child's owned cards, one row per `(child, card)` with a `count`
   (`collections` table, `CHECK(count >= 1)`).
-- **Place** — where the binder is: the category picker (the hub), one category, or the
-  burn pile (#107, #108). The three are mutually exclusive, so a place is one value
+- **Place** — where the binder is: the category picker (the hub), a franchise sub-hub
+  (e.g. every Pokémon region, grouped by `themes.provider`), one category, or the
+  burn pile (#107, #108). They are mutually exclusive, so a place is one value
   rather than a category selection plus a mode flag, and it lives in the URL as `?at=`
   so a tapped card can come back to it. Rarity is deliberately **not** a place — it is
   a lens applied inside one and resets on entry (`src/features/binder/binder-place.ts`).
