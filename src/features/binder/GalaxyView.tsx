@@ -12,6 +12,13 @@ import { CardImage } from "@/shared/card/CardImage";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
 import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
+import {
+  franchiseByKey,
+  franchisePlaceForTheme,
+  franchiseProgress,
+  groupedHubSections,
+  hubTarget,
+} from "./franchise";
 
 /**
  * Galaxy category view (Inc9 FR1).
@@ -101,6 +108,27 @@ export function GalaxyView({
     );
   }
 
+  if (place.kind === "franchise") {
+    const group = franchiseByKey(sections, place.key);
+    if (group) {
+      const progress = franchiseProgress(group.members);
+      return (
+        <div className="flex flex-col gap-6">
+          <PlaceBar
+            title={group.label}
+            progress={{ owned: progress.owned, total: progress.total, complete: progress.complete }}
+            badge={`${progress.completeSets}/${progress.totalSets} sets`}
+            onBack={() => go(HUB)}
+          />
+          <CategoryPicker
+            sections={group.members}
+            onOpen={(themeId) => go({ kind: "category", themeId })}
+          />
+        </div>
+      );
+    }
+  }
+
   const open =
     place.kind === "category"
       ? (sections.find((s) => s.theme.id === place.themeId) ?? null)
@@ -116,7 +144,7 @@ export function GalaxyView({
           title={open.theme.name}
           cover={coverCard(open)?.card.imageUrl}
           progress={open.progress}
-          onBack={() => go(HUB)}
+          onBack={() => go(franchisePlaceForTheme(open.theme) ?? HUB)}
         />
 
         <div data-testid="galaxy-rarity-filter" className="flex flex-wrap gap-2">
@@ -148,10 +176,7 @@ export function GalaxyView({
   return (
     <div className="flex flex-col gap-6">
       <BurnDoor count={burnable.length} onOpen={() => go(BURN)} />
-      <CategoryPicker
-        sections={sections}
-        onOpen={(themeId) => go({ kind: "category", themeId })}
-      />
+      <CategoryPicker sections={groupedHubSections(sections)} onOpen={(themeId) => go(hubTarget(themeId))} />
     </div>
   );
 }
@@ -198,12 +223,15 @@ function PlaceBar({
   title,
   cover,
   progress,
+  badge,
   onBack,
 }: {
   title: string;
   /** The category's cover art; absent for the burn pile, which is no category. */
   cover?: string;
   progress?: { owned: number; total: number; complete: boolean };
+  /** A small count next to the title — the franchise sub-hub's "X/N sets". */
+  badge?: string;
   onBack: () => void;
 }) {
   const pct =
@@ -235,6 +263,14 @@ function PlaceBar({
         />
       ) : null}
       <span className="display min-w-0 flex-1 truncate text-lg">{title}</span>
+      {badge ? (
+        <span
+          data-testid="galaxy-place-badge"
+          className="text-sm font-bold text-[color:var(--ink-soft)]"
+        >
+          {badge}
+        </span>
+      ) : null}
       {progress ? (
         <span
           className="flex items-center gap-2"

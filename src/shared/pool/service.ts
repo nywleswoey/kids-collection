@@ -62,7 +62,7 @@ export async function listThemes(): Promise<Theme[]> {
       sql`${themes.name} COLLATE "C"`,
       sql`${themes.id} COLLATE "C"`,
     );
-  return rows.map((r) => ({ id: r.id, name: r.name }));
+  return rows.map((r) => ({ id: r.id, name: r.name, provider: r.provider }));
 }
 
 export async function listCards(themeId?: string): Promise<Card[]> {

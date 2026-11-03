@@ -60,6 +60,36 @@ describe("upsertTheme — idempotent insert, reorder in place (D1)", () => {
     const [row] = await sql`SELECT sort_order FROM themes WHERE id = ${id}`;
     expect(row.sort_order).toBe(3);
   });
+
+  it("writes the given provider on insert, and null when none is given", async () => {
+    const withProvider = await upsertTheme("Kanto Pokémon", 0, "pokeapi-official-artwork");
+    const [kanto] = await sql`SELECT provider FROM themes WHERE id = ${withProvider}`;
+    expect(kanto.provider).toBe("pokeapi-official-artwork");
+
+    const withoutProvider = await upsertTheme("Ocean", 1);
+    const [ocean] = await sql`SELECT provider FROM themes WHERE id = ${withoutProvider}`;
+    expect(ocean.provider).toBeNull();
+  });
+
+  it("backfills an existing theme's provider on a later sync, not only on insert", async () => {
+    // A theme published before this column existed — no provider yet.
+    const id = await upsertTheme("Kanto Pokémon", 0);
+    const [before] = await sql`SELECT provider FROM themes WHERE id = ${id}`;
+    expect(before.provider).toBeNull();
+
+    const again = await upsertTheme("Kanto Pokémon", 0, "pokeapi-official-artwork");
+    expect(again).toBe(id); // same row, not a duplicate
+
+    const [after] = await sql`SELECT provider FROM themes WHERE id = ${id}`;
+    expect(after.provider).toBe("pokeapi-official-artwork");
+  });
+
+  it("leaves provider untouched when it already matches", async () => {
+    const id = await upsertTheme("Kanto Pokémon", 0, "pokeapi-official-artwork");
+    await upsertTheme("Kanto Pokémon", 0, "pokeapi-official-artwork");
+    const [row] = await sql`SELECT provider FROM themes WHERE id = ${id}`;
+    expect(row.provider).toBe("pokeapi-official-artwork");
+  });
 });
 
 describe("updateCardMeta — text-only update, no image regeneration (D1)", () => {

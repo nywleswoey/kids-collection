@@ -21,6 +21,15 @@ function section(id: string): ThemeSection {
   };
 }
 
+/** A section pinned to the Pokémon franchise provider ("pokemon" franchise key). */
+function pokemonSection(id: string): ThemeSection {
+  return {
+    theme: { id, name: id, provider: "pokeapi-official-artwork" },
+    cards: [],
+    progress: { owned: 0, total: 0, complete: false },
+  };
+}
+
 /** Theme ids are `gen_random_uuid()`, so never the reserved `burn`. */
 const themeIdArb = fc.uuid();
 const sectionsArb = fc
@@ -31,6 +40,7 @@ const placeArb: fc.Arbitrary<Place> = fc.oneof(
   fc.constant(HUB),
   fc.constant(BURN),
   themeIdArb.map((themeId) => ({ kind: "category", themeId }) as Place),
+  fc.constant({ kind: "franchise", key: "pokemon" } as Place),
 );
 
 describe("parsePlace (#108 one place, in the URL)", () => {
@@ -68,10 +78,33 @@ describe("parsePlace (#108 one place, in the URL)", () => {
   it("round-trips every place that exists", () => {
     fc.assert(
       fc.property(placeArb, (place) => {
-        const sections = place.kind === "category" ? [section(place.themeId)] : [];
+        const sections =
+          place.kind === "category"
+            ? [section(place.themeId)]
+            : place.kind === "franchise"
+              ? [pokemonSection("p")]
+              : [];
         expect(parsePlace(placeParam(place) ?? undefined, sections)).toEqual(place);
       }),
     );
+  });
+});
+
+describe("parsePlace — franchise sub-hub", () => {
+  it("resolves a franchise key present among the sections", () => {
+    const sections = [pokemonSection("kanto"), pokemonSection("johto"), section("other")];
+    expect(parsePlace("pokemon", sections)).toEqual({ kind: "franchise", key: "pokemon" });
+  });
+
+  it("degrades to the hub for an unknown franchise key, same as a deleted theme", () => {
+    const sections = [section("a"), section("b")];
+    expect(parsePlace("pokemon", sections)).toEqual(HUB);
+  });
+
+  it("round-trips the franchise place through placeParam/placeHref", () => {
+    const place: Place = { kind: "franchise", key: "pokemon" };
+    expect(placeParam(place)).toBe("pokemon");
+    expect(placeHref(place)).toBe("/play/binder?at=pokemon");
   });
 });
 

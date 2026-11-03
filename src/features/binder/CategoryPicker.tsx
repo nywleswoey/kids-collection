@@ -1,6 +1,7 @@
 import type { ThemeSection as ThemeSectionData } from "@/lib/types";
 import { CardImage } from "@/shared/card/CardImage";
 import { coverCard } from "./category-cover";
+import { franchiseKeyFromThemeId } from "./franchise";
 
 /**
  * The galaxy's category picker (#107, densified by #140). A grid of picture
@@ -94,6 +95,27 @@ import { coverCard } from "./category-cover";
  *
  * Net: 32 themes now scroll ~2,070px, LESS than today's 18 themes at ~2,240px.
  * The pool nearly doubles and the hub does not get longer.
+ *
+ * ── The 36-theme tripwire hit, and Option A ─────────────────────────────────
+ * The catalog crossed the 36-theme line above (39 themes, 9 of them Pokémon
+ * regions) before the in-flight `kcpokepart2` work adds 9 more. Grouping is
+ * back on the table, but #140's objection to it stands for any GENERAL,
+ * authored `group` field: a human judgment call charged forever, and the
+ * worked counter-example (Warriors/Artillery/Land Machines) still has no
+ * clean split.
+ *
+ * What's different this time is the Pokémon regions specifically: each one's
+ * `themes.provider` is already an unambiguous, mechanically-enforced fact
+ * (the "theme-picks" convention, AGENTS.md) rather than a judgment call, and
+ * it never needs a second authoring step to read. `franchise.ts` groups by
+ * that column — `FRANCHISE_PROVIDERS["pokeapi-official-artwork"] = "Pokémon"`
+ * — collapsing the regions into one "Pokémon" tile whose position and cover
+ * reuse this file's own rules unchanged, rather than opening a general
+ * free-text taxonomy field #140 already rejected once. Region-pair merging
+ * (one 60-card set per region) was considered and rejected too: it would
+ * retroactively regrade part-1-only completions and break `seed-schema.ts`'s
+ * 30-card pyramid invariant, to solve a problem Option A solves without
+ * touching an existing row.
  */
 export function CategoryPicker({
   sections,
@@ -128,12 +150,13 @@ function CategoryTile({
   const { theme, progress } = section;
   const cover = coverCard(section);
   const pct = progress.total > 0 ? Math.round((progress.owned / progress.total) * 100) : 0;
+  const franchiseKey = franchiseKeyFromThemeId(theme.id);
 
   return (
     <button
       type="button"
       onClick={onOpen}
-      data-testid={`galaxy-category-${theme.id}`}
+      data-testid={franchiseKey ? `galaxy-franchise-${franchiseKey}` : `galaxy-category-${theme.id}`}
       aria-label={
         progress.complete
           ? `${theme.name}: set complete, all ${progress.total} collected`
@@ -164,6 +187,14 @@ function CategoryTile({
             style={{ width: `${pct}%` }}
           />
         </span>
+        {progress.sets ? (
+          <span
+            data-testid="galaxy-category-sets"
+            className="text-[0.65rem] font-bold text-[color:var(--ink-soft)]"
+          >
+            {progress.sets.owned}/{progress.sets.total} sets
+          </span>
+        ) : null}
       </span>
     </button>
   );

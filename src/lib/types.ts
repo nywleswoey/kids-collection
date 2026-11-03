@@ -30,6 +30,14 @@ export const RARITY_WEIGHTS: Record<Rarity, number> = {
 export interface Theme {
   id: string;
   name: string;
+  /**
+   * The theme-level provider pin from cards.json (null for every theme not
+   * pinned to one). Optional so existing `Theme` literals across the test
+   * suite keep compiling unchanged; every real row from `service.ts` always
+   * sets it (to a string or `null`). Drives the binder hub's franchise
+   * grouping (`features/binder/franchise.ts`) — nothing else reads it.
+   */
+  provider?: string | null;
 }
 
 export interface Card {
@@ -89,7 +97,13 @@ export interface BinderCard {
 export interface ThemeSection {
   theme: Theme;
   cards: BinderCard[];
-  progress: { owned: number; total: number; complete: boolean };
+  progress: {
+    owned: number;
+    total: number;
+    complete: boolean;
+    /** Set only on a franchise's synthetic section: complete sets / total sets. */
+    sets?: { owned: number; total: number };
+  };
 }
 
 export interface BinderView {
