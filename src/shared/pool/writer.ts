@@ -65,21 +65,31 @@ async function pruneNotIn(
  * Upsert a theme by name; returns its id (idempotent, U3-BR8). `sortOrder` is
  * the theme's position in seed-content/cards.json and is refreshed on every sync, so
  * reordering that file reorders the pull screen's chips (Inc21 FR2).
+ *
+ * `provider` is the theme-level provider pin (cards.json's "theme-picks"
+ * convention, AGENTS.md) — `null` for every theme not pinned to one. Also
+ * refreshed on every sync, the same way as `sortOrder`, so a theme already
+ * published before this column existed backfills its `provider` on the next
+ * routine `--sync` rather than needing a one-off migration of its own.
  */
 export async function upsertTheme(
   name: string,
   sortOrder: number,
+  provider: string | null = null,
 ): Promise<string> {
   const existing = await db.query.themes.findFirst({
     where: eq(themes.name, name),
   });
   if (existing) {
-    if (existing.sortOrder !== sortOrder) {
-      await db.update(themes).set({ sortOrder }).where(eq(themes.id, existing.id));
+    const changes: Partial<typeof themes.$inferInsert> = {};
+    if (existing.sortOrder !== sortOrder) changes.sortOrder = sortOrder;
+    if (existing.provider !== provider) changes.provider = provider;
+    if (Object.keys(changes).length > 0) {
+      await db.update(themes).set(changes).where(eq(themes.id, existing.id));
     }
     return existing.id;
   }
-  const [row] = await db.insert(themes).values({ name, sortOrder }).returning();
+  const [row] = await db.insert(themes).values({ name, sortOrder, provider }).returning();
   return row.id;
 }
 

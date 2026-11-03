@@ -30,6 +30,13 @@ export const themes = pgTable("themes", {
   // Display order, lowest = oldest (Inc21 FR1). Written from the theme's
   // position in seed-content/cards.json, so a newly appended theme is the most recent.
   sortOrder: integer("sort_order").notNull().default(0),
+  // The theme-level provider pin from cards.json's "theme-picks" convention
+  // (AGENTS.md), promoted to a real column so the binder hub can group by it
+  // mechanically instead of matching on theme names. Holds whatever provider
+  // the theme is pinned to (e.g. cloudflare-sdxl, supergrok-manual for
+  // non-Pokémon themes), NULL when it has no pin; written by `upsertTheme` on
+  // sync. Only providers listed in `FRANCHISE_PROVIDERS` group into a tile.
+  provider: text("provider"),
 });
 
 /** Cards — shared library. */

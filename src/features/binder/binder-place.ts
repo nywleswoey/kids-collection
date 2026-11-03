@@ -1,4 +1,5 @@
 import type { ThemeSection } from "@/lib/types";
+import { franchiseKeysIn } from "./franchise";
 
 /**
  * Where the binder is (#108). PURE → property-tested.
@@ -7,6 +8,11 @@ import type { ThemeSection } from "@/lib/types";
  * binder then shows exactly one of three things: the picker (the hub), one
  * category, or the burn pile. Those are mutually exclusive, so they are one
  * value, not a category selection plus a mode flag.
+ *
+ * A fourth place was added later: `franchise`, the Pokémon sub-hub
+ * (`features/binder/franchise.ts`) a grouped hub tile opens into. It behaves
+ * exactly like the hub one level down — its own scoped `CategoryPicker` —
+ * which is why it is a place rather than a mode flag on the hub.
  *
  * That value lives in the URL as `?at=`, for one reason: a card is a link.
  * Every tile deep-links to `/play/binder/<cardId>`, and before #108 coming
@@ -21,10 +27,12 @@ import type { ThemeSection } from "@/lib/types";
  * went.
  *
  * `burn` cannot collide with a category: `themes.id` is `gen_random_uuid()`.
+ * A franchise `key` cannot collide with a category id for the same reason.
  */
 export type Place =
   | { kind: "hub" }
   | { kind: "category"; themeId: string }
+  | { kind: "franchise"; key: string }
   | { kind: "burn" };
 
 /** The hub place (category picker). */
@@ -49,6 +57,7 @@ export function parsePlace(
   const raw = Array.isArray(at) ? at[0] : at;
   if (!raw) return HUB;
   if (raw === BURN_PARAM) return BURN;
+  if (franchiseKeysIn(sections).has(raw)) return { kind: "franchise", key: raw };
   return sections.some((s) => s.theme.id === raw)
     ? { kind: "category", themeId: raw }
     : HUB;
@@ -66,6 +75,8 @@ export function placeParam(place: Place): string | null {
       return BURN_PARAM;
     case "category":
       return place.themeId;
+    case "franchise":
+      return place.key;
   }
 }
 

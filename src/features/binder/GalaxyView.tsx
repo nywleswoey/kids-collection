@@ -12,6 +12,13 @@ import { CardImage } from "@/shared/card/CardImage";
 import { countOwnedByRarity, filterCardsByRarity } from "./rarity-filter";
 import { sacrificeReady } from "./sacrifice-filter";
 import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
+import {
+  franchiseByKey,
+  franchisePlaceForTheme,
+  franchiseProgress,
+  groupedHubSections,
+  hubTarget,
+} from "./franchise";
 
 /**
  * Galaxy category view (Inc9 FR1).
@@ -28,8 +35,10 @@ import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
  * the hub, one category, or the burn pile — and that place lives in the URL as
  * `?at=` (see `binder-place.ts` for why). Three consequences:
  *
- *   - **The picker is the hub.** Both other places carry a `← All categories`
- *     bar, so there is exactly one way back and it is the same one everywhere.
+ *   - **The picker is the hub.** Every other place carries a `← All categories`
+ *     bar, so there is exactly one way back and it is the same one everywhere
+ *     (a regional set inside a franchise steps back to that franchise's
+ *     sub-hub first, `franchise.ts`).
  *   - **The burn pile is a door on the hub, not a mode above every screen.**
  *     Inc22 FR11 made the burn view global — it ignores category and rarity and
  *     counts across the whole galaxy — so a `🌌 All cards | 🔥 Ready to
@@ -42,7 +51,7 @@ import { BURN, HUB, type Place, parsePlace, placeHref } from "./binder-place";
  *     destination, and 480 slots in one scroll was never a view anyone read.
  *
  * **Sticky budget: two layers, ever** — the page header, plus one place bar
- * inside a category or the burn pile. The rarity row deliberately scrolls away:
+ * inside a franchise sub-hub, a category or the burn pile. The rarity row deliberately scrolls away:
  * it is set on arrival and rarely changed mid-scroll, and a third sticky line
  * on a phone would re-open exactly the crowding #107 set out to fix.
  *
@@ -101,6 +110,27 @@ export function GalaxyView({
     );
   }
 
+  if (place.kind === "franchise") {
+    const group = franchiseByKey(sections, place.key);
+    if (group) {
+      const progress = franchiseProgress(group.members);
+      return (
+        <div className="flex flex-col gap-6">
+          <PlaceBar
+            title={group.label}
+            progress={{ owned: progress.owned, total: progress.total, complete: progress.complete }}
+            badge={`${progress.completeSets}/${progress.totalSets} sets`}
+            onBack={() => go(HUB)}
+          />
+          <CategoryPicker
+            sections={group.members}
+            onOpen={(themeId) => go({ kind: "category", themeId })}
+          />
+        </div>
+      );
+    }
+  }
+
   const open =
     place.kind === "category"
       ? (sections.find((s) => s.theme.id === place.themeId) ?? null)
@@ -116,7 +146,7 @@ export function GalaxyView({
           title={open.theme.name}
           cover={coverCard(open)?.card.imageUrl}
           progress={open.progress}
-          onBack={() => go(HUB)}
+          onBack={() => go(franchisePlaceForTheme(open.theme) ?? HUB)}
         />
 
         <div data-testid="galaxy-rarity-filter" className="flex flex-wrap gap-2">
@@ -148,10 +178,7 @@ export function GalaxyView({
   return (
     <div className="flex flex-col gap-6">
       <BurnDoor count={burnable.length} onOpen={() => go(BURN)} />
-      <CategoryPicker
-        sections={sections}
-        onOpen={(themeId) => go({ kind: "category", themeId })}
-      />
+      <CategoryPicker sections={groupedHubSections(sections)} onOpen={(themeId) => go(hubTarget(themeId))} />
     </div>
   );
 }
@@ -181,10 +208,13 @@ function BurnDoor({ count, onOpen }: { count: number; onOpen: () => void }) {
   );
 }
 
-/** The one sticky layer a place is allowed: the way back, and where you are. */
 /**
- * The sticky bar inside a category or the burn pile: one way back, where you
- * are, and how far along.
+ * The sticky bar inside a franchise sub-hub, a category or the burn pile: one
+ * way back, where you are, and how far along.
+ *
+ * Its offset is `top-0` below `sm:` and `top-24` from `sm:` up because the page
+ * header is only sticky from `sm:` up; a fixed `top-24` on a phone left a gap
+ * above the bar that tiles scrolled through.
  *
  * #122 gave it the category's cover thumbnail. The bar was pure text, and #108
  * moved the category heading INTO it — so for a child who cannot yet read the
@@ -198,12 +228,15 @@ function PlaceBar({
   title,
   cover,
   progress,
+  badge,
   onBack,
 }: {
   title: string;
   /** The category's cover art; absent for the burn pile, which is no category. */
   cover?: string;
   progress?: { owned: number; total: number; complete: boolean };
+  /** A small count next to the title — the franchise sub-hub's "X/N sets". */
+  badge?: string;
   onBack: () => void;
 }) {
   const pct =
@@ -214,7 +247,7 @@ function PlaceBar({
   return (
     <div
       data-testid="galaxy-place-bar"
-      className="sticky top-24 z-[9] flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
+      className="sticky top-0 z-[9] sm:top-24 flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
       style={{ background: "var(--bg-1)" }}
     >
       <button
@@ -235,6 +268,14 @@ function PlaceBar({
         />
       ) : null}
       <span className="display min-w-0 flex-1 truncate text-lg">{title}</span>
+      {badge ? (
+        <span
+          data-testid="galaxy-place-badge"
+          className="text-sm font-bold text-[color:var(--ink-soft)]"
+        >
+          {badge}
+        </span>
+      ) : null}
       {progress ? (
         <span
           className="flex items-center gap-2"
