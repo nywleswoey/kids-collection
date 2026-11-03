@@ -242,7 +242,7 @@ function PlaceBar({
   return (
     <div
       data-testid="galaxy-place-bar"
-      className="sticky top-24 z-[9] flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
+      className="sticky top-0 z-[9] sm:top-24 flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-[color:var(--glass-brd)] p-3 shadow-[var(--shadow-soft)]"
       style={{ background: "var(--bg-1)" }}
     >
       <button
