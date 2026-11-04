@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  groupThemesByFranchise,
+  isThemeFranchiseGroup,
+  type ThemeFranchiseGroup,
+} from "@/features/binder/franchise";
+import type { Theme } from "@/lib/types";
 
 /**
  * "More galaxies" picker (#kcmg). The pull screen's chip row only shows the
@@ -14,18 +20,29 @@ import { useEffect, useRef } from "react";
  * A scrollable full-height sheet rather than `CenteredModal`'s fixed small
  * card: the list it holds grows with the catalog (18+ themes today) and a
  * `max-w-sm` box would clip it.
+ *
+ * #kcpullgroup: `themes` here is always `moreThemes` (PullButton), itself
+ * `remainingCategories(allThemes)` - the chip row already shows the most
+ * recent `MAX_PULL_CATEGORIES`, so a Pokémon region among those chips never
+ * reaches this list, same as any other theme. The Pokémon regions that DO
+ * reach it collapse behind one "Pokémon" entry, reusing the binder hub's
+ * exact franchise-grouping signal (`franchise.ts`'s `groupThemesByFranchise`,
+ * the flat-list sibling of the hub's `groupFranchises`) rather than a second
+ * grouping algorithm. Picking a region from inside the group behaves exactly
+ * like picking any other entry - `onPick` only ever sees a real `themeId`.
  */
 export function MoreGalaxiesModal({
   themes,
   onPick,
   onClose,
 }: {
-  themes: { id: string; name: string }[];
+  themes: Theme[];
   onPick: (themeId: string) => void;
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const onCloseRef = useRef(onClose);
+  const [openFranchise, setOpenFranchise] = useState<ThemeFranchiseGroup<Theme> | null>(null);
 
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -39,6 +56,9 @@ export function MoreGalaxiesModal({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
+
+  const entries = groupThemesByFranchise(themes);
+  const visibleEntries = openFranchise ? openFranchise.members : entries;
 
   return (
     <div
@@ -64,7 +84,17 @@ export function MoreGalaxiesModal({
       >
         <div className="flex items-center justify-between gap-3">
           <h2 id="more-galaxies-title" className="text-lg font-bold">
-            🪐 More galaxies
+            {openFranchise ? (
+              <button
+                type="button"
+                onClick={() => setOpenFranchise(null)}
+                data-testid="more-galaxies-back"
+                className="mr-1 text-base font-bold text-[color:var(--ink-soft)]"
+              >
+                ←
+              </button>
+            ) : null}
+            {openFranchise ? openFranchise.label : "🪐 More galaxies"}
           </h2>
           <button
             type="button"
@@ -81,17 +111,29 @@ export function MoreGalaxiesModal({
           className="grid grid-cols-2 gap-2 overflow-y-auto"
           data-testid="more-galaxies-list"
         >
-          {themes.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => onPick(t.id)}
-              data-testid={`more-galaxy-${t.id}`}
-              className="rounded-xl bg-white/10 px-3 py-3 text-center text-sm font-semibold text-[color:var(--ink)] hover:bg-white/20"
-            >
-              {t.name}
-            </button>
-          ))}
+          {visibleEntries.map((entry) =>
+            isThemeFranchiseGroup(entry) ? (
+              <button
+                key={entry.key}
+                type="button"
+                onClick={() => setOpenFranchise(entry)}
+                data-testid={`more-galaxy-franchise-${entry.key}`}
+                className="rounded-xl bg-white/10 px-3 py-3 text-center text-sm font-semibold text-[color:var(--ink)] hover:bg-white/20"
+              >
+                {entry.label} ›
+              </button>
+            ) : (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() => onPick(entry.id)}
+                data-testid={`more-galaxy-${entry.id}`}
+                className="rounded-xl bg-white/10 px-3 py-3 text-center text-sm font-semibold text-[color:var(--ink)] hover:bg-white/20"
+              >
+                {entry.name}
+              </button>
+            ),
+          )}
         </div>
       </div>
     </div>

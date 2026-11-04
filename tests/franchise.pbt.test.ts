@@ -11,8 +11,10 @@ import {
   franchiseSection,
   groupFranchises,
   groupedHubSections,
+  groupThemesByFranchise,
   hubTarget,
   isFranchiseGroup,
+  isThemeFranchiseGroup,
 } from "@/features/binder/franchise";
 import { coverCard } from "@/features/binder/category-cover";
 import type { BinderCard, Rarity, Theme, ThemeSection } from "@/lib/types";
@@ -126,6 +128,79 @@ describe("groupFranchises (#140's revisit)", () => {
         expect(after).toBe(before);
       }),
     );
+  });
+});
+
+function themesFromTags(tags: boolean[]): Theme[] {
+  return tags.map((isPokemon, i) => theme(`t${i}`, isPokemon ? POKEMON_PROVIDER : null));
+}
+
+describe("groupThemesByFranchise (pull screen's 'More galaxies' picker, #kcpullgroup)", () => {
+  it("collapses every Pokémon theme into one group, leaving other themes flat - same signal as groupFranchises", () => {
+    const themes = [
+      theme("animals"),
+      theme("kanto", POKEMON_PROVIDER),
+      theme("superheroes"),
+      theme("johto", POKEMON_PROVIDER),
+    ];
+    const grouped = groupThemesByFranchise(themes);
+
+    expect(grouped).toHaveLength(3);
+    expect(isThemeFranchiseGroup(grouped[0]!)).toBe(false);
+    expect(isThemeFranchiseGroup(grouped[1]!)).toBe(true);
+    expect(isThemeFranchiseGroup(grouped[2]!)).toBe(false);
+    const group = grouped[1];
+    if (isThemeFranchiseGroup(group)) {
+      expect(group.key).toBe("pokemon");
+      expect(group.label).toBe("Pokémon");
+      expect(group.members.map((m) => m.id)).toEqual(["kanto", "johto"]);
+    }
+  });
+
+  it("is total by construction: every theme appears in exactly one entry", () => {
+    fc.assert(
+      fc.property(tagsArb, (tags) => {
+        const themes = themesFromTags(tags);
+        const grouped = groupThemesByFranchise(themes);
+        const allMembers = grouped.flatMap((e) => (isThemeFranchiseGroup(e) ? e.members : [e]));
+        expect(allMembers.map((t) => t.id).sort()).toEqual(themes.map((t) => t.id).sort());
+      }),
+    );
+  });
+
+  it("matches groupFranchises' grouping decision theme-for-theme (one shared algorithm)", () => {
+    fc.assert(
+      fc.property(tagsArb, (tags) => {
+        const themes = themesFromTags(tags);
+        const sections = themes.map((t) => ({ theme: t, cards: [], progress: { owned: 0, total: 1, complete: false } }));
+        const flatKeys = groupThemesByFranchise(themes)
+          .filter(isThemeFranchiseGroup)
+          .map((g) => g.key);
+        const sectionKeys = groupFranchises(sections)
+          .filter(isFranchiseGroup)
+          .map((g) => g.key);
+        expect(flatKeys).toEqual(sectionKeys);
+      }),
+    );
+  });
+
+  it("picking a region from inside the group resolves to that region's own real themeId, not the group key", () => {
+    const themes = [
+      theme("animals"),
+      theme("kanto", POKEMON_PROVIDER),
+      theme("johto", POKEMON_PROVIDER),
+    ];
+    const grouped = groupThemesByFranchise(themes);
+    const pokemonGroup = grouped.find(isThemeFranchiseGroup);
+    expect(pokemonGroup).toBeDefined();
+
+    // The picker opens the group, then picking one of its members' tiles
+    // calls `onPick(member.id)` exactly like a top-level tile would.
+    for (const member of pokemonGroup!.members) {
+      expect(member.id).not.toBe(pokemonGroup!.key);
+      expect(themes.map((t) => t.id)).toContain(member.id);
+    }
+    expect(pokemonGroup!.members.map((m) => m.id)).toEqual(["kanto", "johto"]);
   });
 });
 

@@ -57,24 +57,59 @@ export interface FranchiseGroup {
 export function groupFranchises(
   sections: ThemeSection[],
 ): (ThemeSection | FranchiseGroup)[] {
-  const result: (ThemeSection | FranchiseGroup)[] = [];
+  return groupByFranchise(sections, (s) => s.theme);
+}
+
+/**
+ * The grouping loop itself, generic over whatever carries a `Theme` — a hub
+ * `ThemeSection` or a flat picker theme alike — so `groupFranchises` (hub) and
+ * `groupThemesByFranchise` (pull screen's "More galaxies" picker, #kcpullgroup)
+ * share one algorithm instead of two copies that could drift apart.
+ */
+function groupByFranchise<T>(
+  items: T[],
+  themeOf: (item: T) => Theme,
+): (T | { key: string; label: string; members: T[] })[] {
+  const result: (T | { key: string; label: string; members: T[] })[] = [];
   const indexByKey = new Map<string, number>();
-  for (const section of sections) {
-    const label = franchiseLabelForTheme(section.theme);
+  for (const item of items) {
+    const label = franchiseLabelForTheme(themeOf(item));
     if (!label) {
-      result.push(section);
+      result.push(item);
       continue;
     }
     const key = franchiseKey(label);
     const idx = indexByKey.get(key);
     if (idx === undefined) {
       indexByKey.set(key, result.length);
-      result.push({ key, label, members: [section] });
+      result.push({ key, label, members: [item] });
     } else {
-      (result[idx] as FranchiseGroup).members.push(section);
+      (result[idx] as { key: string; label: string; members: T[] }).members.push(item);
     }
   }
   return result;
+}
+
+/** A franchise group over a flat theme list (no cards/progress) — the pull
+ *  screen's "More galaxies" picker shape, as opposed to the hub's `FranchiseGroup`. */
+export interface ThemeFranchiseGroup<T extends Theme = Theme> {
+  key: string;
+  label: string;
+  members: T[];
+}
+
+/** Same grouping signal as `groupFranchises`, over a flat `Theme[]` with no
+ *  section/progress data — for the pull screen's "More galaxies" picker. */
+export function groupThemesByFranchise<T extends Theme>(
+  themes: T[],
+): (T | ThemeFranchiseGroup<T>)[] {
+  return groupByFranchise(themes, (t) => t);
+}
+
+export function isThemeFranchiseGroup<T extends Theme>(
+  entry: T | ThemeFranchiseGroup<T>,
+): entry is ThemeFranchiseGroup<T> {
+  return "members" in entry;
 }
 
 export function isFranchiseGroup(
