@@ -3,7 +3,8 @@ import { orderCategoryCards } from "./card-order";
 import type { BinderCard, Theme, ThemeSection } from "@/lib/types";
 
 /**
- * Franchise grouping for the binder hub — #140's grouping tripwire (36
+ * Franchise grouping for the binder hub (and, since #kcpullgroup, the pull
+ * screen's "More galaxies" picker) — #140's grouping tripwire (36
  * themes), revisited now that the catalog has crossed it. PURE →
  * property-tested.
  *
