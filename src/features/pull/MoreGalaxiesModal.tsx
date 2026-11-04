@@ -83,19 +83,22 @@ export function MoreGalaxiesModal({
         style={{ background: "var(--bg-1)" }}
       >
         <div className="flex items-center justify-between gap-3">
-          <h2 id="more-galaxies-title" className="text-lg font-bold">
+          <div className="flex items-center gap-1">
             {openFranchise ? (
               <button
                 type="button"
+                aria-label="Back to all galaxies"
                 onClick={() => setOpenFranchise(null)}
                 data-testid="more-galaxies-back"
-                className="mr-1 text-base font-bold text-[color:var(--ink-soft)]"
+                className="text-base font-bold text-[color:var(--ink-soft)]"
               >
                 ←
               </button>
             ) : null}
-            {openFranchise ? openFranchise.label : "🪐 More galaxies"}
-          </h2>
+            <h2 id="more-galaxies-title" className="text-lg font-bold">
+              {openFranchise ? openFranchise.label : "🪐 More galaxies"}
+            </h2>
+          </div>
           <button
             type="button"
             ref={closeRef}
