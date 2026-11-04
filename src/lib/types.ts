@@ -34,8 +34,9 @@ export interface Theme {
    * The theme-level provider pin from cards.json (null for every theme not
    * pinned to one). Optional so existing `Theme` literals across the test
    * suite keep compiling unchanged; every real row from `service.ts` always
-   * sets it (to a string or `null`). Drives the binder hub's franchise
-   * grouping (`features/binder/franchise.ts`) — nothing else reads it.
+   * sets it (to a string or `null`). Drives the franchise grouping
+   * (`features/binder/franchise.ts`) shared by the binder hub and the pull
+   * screen's More galaxies picker - nothing else reads it.
    */
   provider?: string | null;
 }

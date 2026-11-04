@@ -44,7 +44,7 @@ export default async function PullPage() {
         initialBalance={balance}
         flashPool={flashPool}
         themes={visibleThemes.map((t) => ({ id: t.id, name: t.name }))}
-        moreThemes={moreThemes.map((t) => ({ id: t.id, name: t.name }))}
+        moreThemes={moreThemes}
         easterEggTickets={easterEggTickets}
       />
       <div className="flex gap-3 text-sm">

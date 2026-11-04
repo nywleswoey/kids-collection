@@ -11,6 +11,7 @@ import { RevealCard } from "@/shared/card/RevealCard";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
 import { MoreGalaxiesModal } from "./MoreGalaxiesModal";
+import type { Theme } from "@/lib/types";
 import { SacrificeHintModal } from "./SacrificeHintModal";
 import { hasSeenSacrificeHint, markSacrificeHintSeen } from "./sacrifice-hint";
 import { useSound } from "@/shared/sound/useSound";
@@ -42,8 +43,10 @@ export function PullButton({
   initialBalance: number;
   flashPool?: FlashCard[];
   themes?: { id: string; name: string }[];
-  /** Older categories, hidden from the chip row but still choosable (#kcmg). */
-  moreThemes?: { id: string; name: string }[];
+  /** Older categories, hidden from the chip row but still choosable (#kcmg).
+   *  Carries `provider` (unlike `themes`) so the picker can group Pokémon
+   *  regions behind one entry (#kcpullgroup). */
+  moreThemes?: Theme[];
   easterEggTickets?: number;
 }) {
   const [balance, setBalance] = useState(initialBalance);
