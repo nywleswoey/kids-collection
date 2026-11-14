@@ -3,7 +3,8 @@ import { requireParent } from "@/features/auth/guard";
 import { requireAdminGate } from "@/features/admin/gate";
 import { activityService } from "@/features/activity/activity-service.prod";
 import { profileService } from "@/features/profiles/service.prod";
-import type { ActivityEvent } from "@/features/activity/types";
+import { ACTIVITY_EVENT_TYPES, type ActivityEvent, type ActivityEventType } from "@/features/activity/types";
+import { parseChildIdParam, parseEventTypeParam } from "@/features/activity/filters";
 
 export const dynamic = "force-dynamic";
 
@@ -59,20 +60,31 @@ function describe(event: ActivityEvent): { icon: string; text: string } {
   }
 }
 
+/** Builds `/admin/activity?childId=...&type=...`, omitting a param that is
+ *  `null` so "All" never leaves a stale/empty query key in the URL. */
+function filterHref(childId: string | null, type: ActivityEventType | null): string {
+  const params = new URLSearchParams();
+  if (childId) params.set("childId", childId);
+  if (type) params.set("type", type);
+  const qs = params.toString();
+  return qs ? `/admin/activity?${qs}` : "/admin/activity";
+}
+
 export default async function AdminActivityPage({
   searchParams,
 }: {
-  searchParams: Promise<{ childId?: string | string[] }>;
+  searchParams: Promise<{ childId?: string | string[]; type?: string | string[] }>;
 }) {
   await requireParent(); // U2-SEC — parent-only
   await requireAdminGate(); // U4-FR1 passcode gate (defense in depth)
 
-  const { childId: rawChildId } = await searchParams;
-  const childId = typeof rawChildId === "string" && rawChildId.length > 0 ? rawChildId : null;
+  const { childId: rawChildId, type: rawType } = await searchParams;
+  const childId = parseChildIdParam(rawChildId);
+  const eventType = parseEventTypeParam(rawType);
 
   const [children, events] = await Promise.all([
     profileService.listChildren(),
-    activityService.getActivityLog(childId, 100),
+    activityService.getActivityLog(childId, 100, eventType),
   ]);
 
   return (
@@ -86,7 +98,7 @@ export default async function AdminActivityPage({
 
       <nav className="flex flex-wrap gap-2" data-testid="admin-activity-filter">
         <Link
-          href="/admin/activity"
+          href={filterHref(null, eventType)}
           data-testid="admin-activity-filter-all"
           className={childId === null ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
         >
@@ -95,11 +107,31 @@ export default async function AdminActivityPage({
         {children.map((c) => (
           <Link
             key={c.id}
-            href={`/admin/activity?childId=${c.id}`}
+            href={filterHref(c.id, eventType)}
             data-testid={`admin-activity-filter-${c.id}`}
             className={childId === c.id ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
           >
             {c.name}
+          </Link>
+        ))}
+      </nav>
+
+      <nav className="flex flex-wrap gap-2" data-testid="admin-activity-type-filter">
+        <Link
+          href={filterHref(childId, null)}
+          data-testid="admin-activity-type-filter-all"
+          className={eventType === null ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
+        >
+          All types
+        </Link>
+        {ACTIVITY_EVENT_TYPES.map((t) => (
+          <Link
+            key={t.type}
+            href={filterHref(childId, t.type)}
+            data-testid={`admin-activity-type-filter-${t.type}`}
+            className={eventType === t.type ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
+          >
+            <span aria-hidden>{t.icon}</span> {t.label}
           </Link>
         ))}
       </nav>

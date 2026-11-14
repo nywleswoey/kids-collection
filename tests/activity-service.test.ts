@@ -325,4 +325,55 @@ describe("makeActivityService.getActivityLog", () => {
 
     expect(await service.getActivityLog("kid", 2)).toHaveLength(2);
   });
+
+  it("filters by event type, combinable with the child filter", async () => {
+    const t = (secondsAgo: number) => new Date(Date.now() - secondsAgo * 1000);
+    const { service } = setup({
+      children: [kid("a", "Alice"), kid("b", "Bob")],
+      pulls: [
+        { requestId: "r1", outcome: { card: card("c1", "Fox"), isDuplicate: false }, createdAt: t(50) },
+      ],
+      rewardRows: [{ id: "rw1", themeId: "th", rarity: "rare", cardId: "c3", createdAt: t(30) }],
+      cards: [card("c1", "Fox"), card("c3", "Bear")],
+    });
+
+    // The stubs hand back the same rows regardless of childId, so both
+    // children get a copy of the one bonus_card row.
+    const bonusOnly = await service.getActivityLog(null, 50, "bonus_card");
+    expect(bonusOnly).toHaveLength(2);
+    expect(bonusOnly.every((e) => e.type === "bonus_card")).toBe(true);
+
+    const cardsForB = await service.getActivityLog("b", 50, "card_received");
+    expect(cardsForB).toHaveLength(1);
+    expect(cardsForB[0]).toMatchObject({ type: "card_received", childId: "b", cardName: "Fox" });
+
+    const cardsForA = await service.getActivityLog("a", 50, "card_received");
+    expect(cardsForA).toHaveLength(1);
+    expect(cardsForA[0]).toMatchObject({ type: "card_received", cardName: "Fox" });
+
+    const trades_ = await service.getActivityLog("a", 50, "trade");
+    expect(trades_).toEqual([]);
+  });
+
+  it("applies the limit after the type filter, not before", async () => {
+    const grants = inMemoryTicketGrantStore();
+    const trades = inMemoryTradeEventStore();
+    const service = makeActivityService({
+      claims: stubClaims([]),
+      offerClaims: stubOfferClaims([]),
+      rewards: stubRewards([{ id: "rw1", themeId: "th", rarity: "rare", cardId: "c1", createdAt: new Date() }]),
+      quiz: stubQuiz([]),
+      grants,
+      trades,
+      catalog: fakeCatalog([card("c1", "Bear")]),
+      profiles: { async listChildren() { return [kid("kid")]; } },
+    });
+    // Five newer ticket_given events bury the one older bonus_card event past
+    // a small limit — a naive cap-then-filter would drop it entirely.
+    for (let i = 0; i < 5; i++) await grants.record("kid", "pullTokens", 1, "admin", null);
+
+    const events = await service.getActivityLog("kid", 2, "bonus_card");
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ type: "bonus_card", cardName: "Bear" });
+  });
 });

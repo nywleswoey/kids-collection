@@ -9,7 +9,7 @@ import type { ChildDirectory } from "@/features/trade/trade-service";
 import type { BalanceColumn } from "@/db/stores/child-store";
 import { topicTitle } from "@/features/quiz/topics";
 import type { Rarity } from "@/lib/types";
-import type { ActivityEvent } from "./types";
+import type { ActivityEvent, ActivityEventType } from "./types";
 
 /** Per-source cap on how far back one child's raw rows are read before
  *  merging + sorting + truncating to the caller's `limit`. Generous relative
@@ -109,8 +109,15 @@ export function makeActivityService({
   }
 
   /** Reverse-chronological activity for one child, or every active child
-   *  (`childId = null`) merged into one feed (the parent view's filter). */
-  async function getActivityLog(childId: string | null, limit = 50): Promise<ActivityEvent[]> {
+   *  (`childId = null`) merged into one feed (the parent view's filter).
+   *  `eventType`, when given, narrows to that one event type — filtered
+   *  before `limit` is applied, so a filtered view still covers the same
+   *  history window as the unfiltered one rather than just its first page. */
+  async function getActivityLog(
+    childId: string | null,
+    limit = 50,
+    eventType: ActivityEventType | null = null,
+  ): Promise<ActivityEvent[]> {
     const children = await profiles.listChildren();
     const childName = new Map(children.map((c) => [c.id, c.name]));
     const targetIds = childId ? [childId] : children.map((c) => c.id);
@@ -242,7 +249,8 @@ export function makeActivityService({
     }
 
     events.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
-    return events.slice(0, limit);
+    const filtered = eventType ? events.filter((e) => e.type === eventType) : events;
+    return filtered.slice(0, limit);
   }
 
   return { getActivityLog };

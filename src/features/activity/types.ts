@@ -55,3 +55,16 @@ export interface TradeEvent extends ActivityEventBase {
 }
 
 export type ActivityEvent = TicketGivenEvent | CardReceivedEvent | BonusCardEvent | TradeEvent;
+
+export type ActivityEventType = ActivityEvent["type"];
+
+/** One entry per `ActivityEventType`, in list order — the type filter's
+ *  options (#kcactfilter). Icon matches the most common `describe()` icon for
+ *  that type (admin grant / pull / bonus / trade) since a type's icon can
+ *  otherwise vary by subtype. */
+export const ACTIVITY_EVENT_TYPES: Array<{ type: ActivityEventType; label: string; icon: string }> = [
+  { type: "ticket_given", label: "Tickets given", icon: "🎁" },
+  { type: "card_received", label: "Cards received", icon: "🎟️" },
+  { type: "bonus_card", label: "Bonus cards", icon: "🏆" },
+  { type: "trade", label: "Trades", icon: "🔄" },
+];
