@@ -81,6 +81,7 @@ export default async function AdminActivityPage({
   const { childId: rawChildId, type: rawType } = await searchParams;
   const childId = parseChildIdParam(rawChildId);
   const eventType = parseEventTypeParam(rawType);
+  const activeType = ACTIVITY_EVENT_TYPES.find((t) => t.type === eventType) ?? null;
 
   const [children, events] = await Promise.all([
     profileService.listChildren(),
@@ -138,7 +139,20 @@ export default async function AdminActivityPage({
 
       {events.length === 0 ? (
         <div className="panel flex flex-col items-center gap-3 px-6 py-4 text-[color:var(--ink-soft)]">
-          <span>No activity yet.</span>
+          {activeType === null ? (
+            <span>No activity yet.</span>
+          ) : (
+            <>
+              <span>No {activeType.label.toLowerCase()} yet.</span>
+              <Link
+                href={filterHref(childId, null)}
+                data-testid="admin-activity-empty-show-all-types"
+                className="btn btn--ghost text-sm"
+              >
+                Show all types
+              </Link>
+            </>
+          )}
         </div>
       ) : (
         <ul className="flex flex-col gap-2" data-testid="admin-activity-list">
