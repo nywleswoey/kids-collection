@@ -355,6 +355,32 @@ describe("makeActivityService.getActivityLog", () => {
     expect(trades_).toEqual([]);
   });
 
+  it("splits ticket events by source into parent grants, quizzes and sacrifices", async () => {
+    const t = (secondsAgo: number) => new Date(Date.now() - secondsAgo * 1000);
+    const { service, grants } = setup({
+      children: [kid("kid")],
+      quizRows: [quizRow({ childId: "kid", topic: "addition", createdAt: t(20) })],
+      cards: [],
+    });
+    await grants.record("kid", "pullTokens", 3, "admin", "Parent");
+    await grants.record("kid", "pullTokens", -1, "admin", "Parent");
+    await grants.record("kid", "easterEggTickets", 2, "sacrifice", null);
+
+    const given = await service.getActivityLog("kid", 50, "ticket_admin");
+    expect(given.every((e) => e.type === "ticket_given" && e.source === "admin")).toBe(true);
+    expect(given.map((e) => (e.type === "ticket_given" ? e.amount : 0)).sort()).toEqual([-1, 3]);
+
+    const quizzes = await service.getActivityLog("kid", 50, "ticket_quiz");
+    expect(quizzes).toHaveLength(1);
+    expect(quizzes[0]).toMatchObject({ type: "ticket_given", source: "quiz" });
+
+    const sacrifices = await service.getActivityLog("kid", 50, "ticket_sacrifice");
+    expect(sacrifices).toHaveLength(1);
+    expect(sacrifices[0]).toMatchObject({ type: "ticket_given", source: "sacrifice", amount: 2 });
+
+    expect(await service.getActivityLog("kid", 50)).toHaveLength(4);
+  });
+
   it("applies the limit after the type filter, not before", async () => {
     const grants = inMemoryTicketGrantStore();
     const trades = inMemoryTradeEventStore();

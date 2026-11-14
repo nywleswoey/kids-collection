@@ -1,4 +1,4 @@
-import { ACTIVITY_EVENT_TYPES, type ActivityEventType } from "./types";
+import { ACTIVITY_FILTERS, type ActivityFilter } from "./types";
 
 /** Parses the activity page's `?childId=`/`?type=` query params — shared by
  *  the page (reading `searchParams`) and its tests. An absent, empty,
@@ -9,7 +9,7 @@ export function parseChildIdParam(raw: string | string[] | undefined): string | 
   return typeof raw === "string" && raw.length > 0 ? raw : null;
 }
 
-export function parseEventTypeParam(raw: string | string[] | undefined): ActivityEventType | null {
+export function parseActivityFilterParam(raw: string | string[] | undefined): ActivityFilter | null {
   if (typeof raw !== "string") return null;
-  return ACTIVITY_EVENT_TYPES.some((t) => t.type === raw) ? (raw as ActivityEventType) : null;
+  return ACTIVITY_FILTERS.some((f) => f.filter === raw) ? (raw as ActivityFilter) : null;
 }

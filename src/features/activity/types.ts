@@ -56,15 +56,27 @@ export interface TradeEvent extends ActivityEventBase {
 
 export type ActivityEvent = TicketGivenEvent | CardReceivedEvent | BonusCardEvent | TradeEvent;
 
-export type ActivityEventType = ActivityEvent["type"];
+/** The activity page's type-filter options (#kcactfilter). A `ticket_given`
+ *  event splits by `source` into three options, since a parent grant, a quiz
+ *  reward and a sacrifice are different kinds of activity to a parent. */
+export type ActivityFilter =
+  | "ticket_admin"
+  | "ticket_quiz"
+  | "ticket_sacrifice"
+  | "card_received"
+  | "bonus_card"
+  | "trade";
 
-/** One entry per `ActivityEventType`, in list order — the type filter's
- *  options (#kcactfilter). Icon matches the most common `describe()` icon for
- *  that type (admin grant / pull / bonus / trade) since a type's icon can
- *  otherwise vary by subtype. */
-export const ACTIVITY_EVENT_TYPES: Array<{ type: ActivityEventType; label: string; icon: string }> = [
-  { type: "ticket_given", label: "Tickets given", icon: "🎁" },
-  { type: "card_received", label: "Cards received", icon: "🎟️" },
-  { type: "bonus_card", label: "Bonus cards", icon: "🏆" },
-  { type: "trade", label: "Trades", icon: "🔄" },
+export function activityFilterOf(event: ActivityEvent): ActivityFilter {
+  return event.type === "ticket_given" ? `ticket_${event.source}` : event.type;
+}
+
+/** One entry per `ActivityFilter`, in display order. */
+export const ACTIVITY_FILTERS: Array<{ filter: ActivityFilter; label: string; icon: string; empty: string }> = [
+  { filter: "ticket_admin", label: "Given by parent", icon: "🎁", empty: "No tickets given by a parent yet." },
+  { filter: "ticket_quiz", label: "Quizzes", icon: "🧠", empty: "No quiz rewards yet." },
+  { filter: "ticket_sacrifice", label: "Sacrifices", icon: "🔥", empty: "No sacrifices yet." },
+  { filter: "card_received", label: "Cards received", icon: "🎟️", empty: "No cards received yet." },
+  { filter: "bonus_card", label: "Bonus cards", icon: "🏆", empty: "No bonus cards yet." },
+  { filter: "trade", label: "Trades", icon: "🔄", empty: "No trades yet." },
 ];

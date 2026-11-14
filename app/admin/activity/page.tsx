@@ -3,8 +3,8 @@ import { requireParent } from "@/features/auth/guard";
 import { requireAdminGate } from "@/features/admin/gate";
 import { activityService } from "@/features/activity/activity-service.prod";
 import { profileService } from "@/features/profiles/service.prod";
-import { ACTIVITY_EVENT_TYPES, type ActivityEvent, type ActivityEventType } from "@/features/activity/types";
-import { parseChildIdParam, parseEventTypeParam } from "@/features/activity/filters";
+import { ACTIVITY_FILTERS, type ActivityEvent, type ActivityFilter } from "@/features/activity/types";
+import { parseChildIdParam, parseActivityFilterParam } from "@/features/activity/filters";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,7 @@ function describe(event: ActivityEvent): { icon: string; text: string } {
 
 /** Builds `/admin/activity?childId=...&type=...`, omitting a param that is
  *  `null` so "All" never leaves a stale/empty query key in the URL. */
-function filterHref(childId: string | null, type: ActivityEventType | null): string {
+function filterHref(childId: string | null, type: ActivityFilter | null): string {
   const params = new URLSearchParams();
   if (childId) params.set("childId", childId);
   if (type) params.set("type", type);
@@ -80,12 +80,12 @@ export default async function AdminActivityPage({
 
   const { childId: rawChildId, type: rawType } = await searchParams;
   const childId = parseChildIdParam(rawChildId);
-  const eventType = parseEventTypeParam(rawType);
-  const activeType = ACTIVITY_EVENT_TYPES.find((t) => t.type === eventType) ?? null;
+  const filter = parseActivityFilterParam(rawType);
+  const activeFilter = ACTIVITY_FILTERS.find((f) => f.filter === filter) ?? null;
 
   const [children, events] = await Promise.all([
     profileService.listChildren(),
-    activityService.getActivityLog(childId, 100, eventType),
+    activityService.getActivityLog(childId, 100, filter),
   ]);
 
   return (
@@ -99,7 +99,7 @@ export default async function AdminActivityPage({
 
       <nav className="flex flex-wrap gap-2" data-testid="admin-activity-filter">
         <Link
-          href={filterHref(null, eventType)}
+          href={filterHref(null, filter)}
           data-testid="admin-activity-filter-all"
           className={childId === null ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
         >
@@ -108,7 +108,7 @@ export default async function AdminActivityPage({
         {children.map((c) => (
           <Link
             key={c.id}
-            href={filterHref(c.id, eventType)}
+            href={filterHref(c.id, filter)}
             data-testid={`admin-activity-filter-${c.id}`}
             className={childId === c.id ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
           >
@@ -121,29 +121,29 @@ export default async function AdminActivityPage({
         <Link
           href={filterHref(childId, null)}
           data-testid="admin-activity-type-filter-all"
-          className={eventType === null ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
+          className={filter === null ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
         >
           All types
         </Link>
-        {ACTIVITY_EVENT_TYPES.map((t) => (
+        {ACTIVITY_FILTERS.map((f) => (
           <Link
-            key={t.type}
-            href={filterHref(childId, t.type)}
-            data-testid={`admin-activity-type-filter-${t.type}`}
-            className={eventType === t.type ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
+            key={f.filter}
+            href={filterHref(childId, f.filter)}
+            data-testid={`admin-activity-type-filter-${f.filter}`}
+            className={filter === f.filter ? "btn btn--primary text-sm" : "btn btn--ghost text-sm"}
           >
-            <span aria-hidden>{t.icon}</span> {t.label}
+            <span aria-hidden>{f.icon}</span> {f.label}
           </Link>
         ))}
       </nav>
 
       {events.length === 0 ? (
         <div className="panel flex flex-col items-center gap-3 px-6 py-4 text-[color:var(--ink-soft)]">
-          {activeType === null ? (
+          {activeFilter === null ? (
             <span>No activity yet.</span>
           ) : (
             <>
-              <span>No {activeType.label.toLowerCase()} yet.</span>
+              <span>{activeFilter.empty}</span>
               <Link
                 href={filterHref(childId, null)}
                 data-testid="admin-activity-empty-show-all-types"

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseChildIdParam, parseEventTypeParam } from "@/features/activity/filters";
+import { parseChildIdParam, parseActivityFilterParam } from "@/features/activity/filters";
 
 describe("parseChildIdParam", () => {
   it("passes through a plain string", () => {
@@ -13,16 +13,18 @@ describe("parseChildIdParam", () => {
   });
 });
 
-describe("parseEventTypeParam", () => {
-  it("passes through a recognised event type", () => {
-    expect(parseEventTypeParam("trade")).toBe("trade");
-    expect(parseEventTypeParam("bonus_card")).toBe("bonus_card");
+describe("parseActivityFilterParam", () => {
+  it("passes through every recognised filter, including the three ticket sources", () => {
+    for (const f of ["ticket_admin", "ticket_quiz", "ticket_sacrifice", "card_received", "bonus_card", "trade"]) {
+      expect(parseActivityFilterParam(f)).toBe(f);
+    }
   });
 
   it("falls back to All (null) for absent, unknown, or repeated-key (array) values", () => {
-    expect(parseEventTypeParam(undefined)).toBeNull();
-    expect(parseEventTypeParam("")).toBeNull();
-    expect(parseEventTypeParam("not_a_real_type")).toBeNull();
-    expect(parseEventTypeParam(["trade", "bonus_card"])).toBeNull();
+    expect(parseActivityFilterParam(undefined)).toBeNull();
+    expect(parseActivityFilterParam("")).toBeNull();
+    expect(parseActivityFilterParam("not_a_real_type")).toBeNull();
+    expect(parseActivityFilterParam("ticket_given")).toBeNull();
+    expect(parseActivityFilterParam(["trade", "bonus_card"])).toBeNull();
   });
 });
