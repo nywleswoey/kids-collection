@@ -55,15 +55,16 @@ export interface ClaimStore {
    * Take over an abandoned "granting" claim whose `claimedAt` is older than
    * `staleMs` — i.e. the original holder almost certainly died or was killed
    * before finishing. Bumps the fence (invalidating the old holder's lease)
-   * and returns a fresh lease + the balance that was spent originally, so the
-   * caller can complete the draw for that same spend. Returns null if the
+   * and returns a fresh lease + the balance that was spent originally + how
+   * many tokens THIS claim spent (`packSize`: 1 for a single pull, 5/10 for a
+   * pack), so the caller can complete the draw for that same spend. Returns null if the
    * claim is no longer "granting" (already done) or isn't stale yet (still
    * genuinely in flight) — the caller must not retry the draw in that case.
    */
   takeOverIfStale(
     requestId: string,
     staleMs: number,
-  ): Promise<{ lease: unknown; spentBalance: number } | null>;
+  ): Promise<{ lease: unknown; spentBalance: number; packSize: number } | null>;
 
   /**
    * Finish a successful normal-card draw: grant one copy of `cardId` and mark

@@ -486,9 +486,11 @@ export function makePullService({
 
     const takeover = await claims.takeOverIfStale(requestId, CLAIM_STALE_MS);
     if (!takeover) return stillInProgress(childId);
-    return packSize === 1
+    const spentSize = takeover.packSize;
+    if (!isValidPackSize(spentSize)) throw new Error(`pull: claim has invalid packSize ${spentSize}`);
+    return spentSize === 1
       ? completeGrant(childId, themeId, requestId, takeover.lease, takeover.spentBalance)
-      : completePackGrant(childId, themeId, packSize, requestId, takeover.lease, takeover.spentBalance);
+      : completePackGrant(childId, themeId, spentSize, requestId, takeover.lease, takeover.spentBalance);
   }
 
   /**

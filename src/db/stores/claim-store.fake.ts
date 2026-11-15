@@ -81,7 +81,7 @@ export function inMemoryClaimStore(
       if (now() - row.claimedAtMs < staleMs) return null;
       row.fence += 1;
       row.claimedAtMs = now();
-      return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spentBalance! };
+      return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spentBalance!, packSize: row.packSize };
     },
 
     async finishWithCardGrant(lease, requestId, childId, cardId, cardJson, newBalance) {

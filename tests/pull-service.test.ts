@@ -462,6 +462,34 @@ describe("makePullService.pull packs (#kcmassdraw)", () => {
     expect(await collections.cardCount("kid", "c1")).toBe(5);
   });
 
+  it.each([
+    { spent: 5, retried: 10 },
+    { spent: 10, retried: 5 },
+    { spent: 5, retried: 1 },
+    { spent: 1, retried: 10 },
+  ] as const)(
+    "a stale takeover retried as a $retried-pull grants the claim's own $spent cards, not the retry's size",
+    async ({ spent, retried }) => {
+      vi.spyOn(Math, "random").mockReturnValue(0.99);
+      let nowMs = 1_000;
+      const { service, children, collections, claims } = setup(
+        { kid: { pullTokens: 20 } },
+        {},
+        [card("c1")],
+        () => nowMs,
+      );
+
+      const claimed = await claims.claimAndSpend("req-mismatch", "kid", spent);
+      if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+
+      nowMs += 20_000; // past CLAIM_STALE_MS
+      await service.pull("kid", undefined, "req-mismatch", undefined, retried);
+
+      expect(await children.readColumn("kid", "pullTokens")).toBe(20 - spent);
+      expect(await collections.cardCount("kid", "c1")).toBe(spent);
+    },
+  );
+
   it("the abandoned-claim sweep refunds a stranded pack's full spend, not a flat one token", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99);
     let nowMs = 1_000;

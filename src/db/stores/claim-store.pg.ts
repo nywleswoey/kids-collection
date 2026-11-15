@@ -76,17 +76,17 @@ export const pgClaimStore: ClaimStore = {
   },
 
   async takeOverIfStale(requestId, staleMs) {
-    const result = await db.execute<{ fence: number; spent_balance: number | null }>(sql`
+    const result = await db.execute<{ fence: number; spent_balance: number | null; pack_size: number }>(sql`
       UPDATE pull_claims
       SET fence = fence + 1, claimed_at = now()
       WHERE request_id = ${requestId}
         AND status = 'granting'
         AND claimed_at < now() - (${staleMs}::double precision * interval '1 millisecond')
-      RETURNING fence, spent_balance
+      RETURNING fence, spent_balance, COALESCE((outcome->>'packSize')::int, 1) AS pack_size
     `);
     const row = result.rows[0];
     if (!row || row.spent_balance === null) return null;
-    return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spent_balance };
+    return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spent_balance, packSize: row.pack_size };
   },
 
   async finishWithCardGrant(lease, requestId, childId, cardId, cardJson, newBalance) {
