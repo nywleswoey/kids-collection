@@ -1,7 +1,7 @@
 /**
  * Writes Step 8's bake-off picks into `seed-content/cards.json` for one
  * theme, so the human never hand-edits that file (see
- * `docs/NEW-THEME-RUNBOOK.md` Step 8 and AGENTS.md).
+ * `docs/NEW-THEME-RUNBOOK.md` Step 8 and `docs/IMAGE-PIPELINE.md`).
  *
  *   pnpm theme-picks "<Theme Name>" [--use "<Card Name>=<provider>"]...
  *

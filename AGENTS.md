@@ -19,10 +19,10 @@ holds the detail. Longer background lives in `docs/` and in each folder's
 | `seed-content/` | `cards.json` (the authored pool), `provenance.json`, review and drop folders. | `docs/NEW-THEME-RUNBOOK.md` |
 | `docs/` | Runbooks: new theme, image pipeline, restore, passkey cutover. | |
 
-Layering rules are enforced by tests, not convention: `src/shared/` never
-imports `src/features/`; the request path never reaches an image provider
-(`tests/provider-boundary.test.ts`); binder never imports admin
-(`tests/binder-admin-boundary.test.ts`).
+Layering rules: `src/shared/` never imports `src/features/` (convention,
+`CONTRIBUTING.md`); two rules are enforced by tests: the request path never
+reaches an image provider (`tests/provider-boundary.test.ts`) and binder never
+imports admin (`tests/binder-admin-boundary.test.ts`).
 
 ## How a feature is wired
 
@@ -32,7 +32,9 @@ imports `src/features/`; the request path never reaches an image provider
   and server actions import only the `.prod.ts` export.
 - Every store has three files in `src/db/stores/`: the port (`x-store.ts`), an
   in-memory fake (`x-store.fake.ts`) and the Postgres adapter (`x-store.pg.ts`).
-  One contract in `tests/contracts/` runs against both adapters.
+  Most stores have one contract in `tests/contracts/` that runs against both
+  adapters; `claim` and `offer-claim` are covered through
+  `tests/pull-service.test.ts` and `tests-pg/pull-idempotency.pg.test.ts`.
 - Server actions live in `<feature>/actions.ts` and return the shape in
   `src/lib/actions.ts`.
 

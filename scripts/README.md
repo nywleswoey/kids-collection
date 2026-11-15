@@ -18,11 +18,6 @@ text; read that first.
 Procedure for a new theme: `docs/NEW-THEME-RUNBOOK.md`. How the lanes are
 built: `docs/IMAGE-PIPELINE.md`.
 
-## Conventions
-
-- Parse flags with `node:util parseArgs` in a sibling `args.ts`, never
-  `process.argv.includes`.
-- Keep the entry `index.ts` thin. Logic that can run without a database or
-  network lives in `src/shared/pool/` with a unit test in `tests/`.
-- A script that writes anything says so in its usage comment and defaults to
-  the read-only or preview path.
+Seed flags and commands are parsed by `scripts/seed/args.ts` (`parseSeedArgs`,
+strict `node:util parseArgs`). Add a new one there, not via
+`process.argv.includes`.

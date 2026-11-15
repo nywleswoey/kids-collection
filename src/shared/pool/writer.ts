@@ -67,7 +67,7 @@ async function pruneNotIn(
  * reordering that file reorders the pull screen's chips (Inc21 FR2).
  *
  * `provider` is the theme-level provider pin (cards.json's "theme-picks"
- * convention, AGENTS.md) — `null` for every theme not pinned to one. Also
+ * convention, `docs/IMAGE-PIPELINE.md`) — `null` for every theme not pinned to one. Also
  * refreshed on every sync, the same way as `sortOrder`, so a theme already
  * published before this column existed backfills its `provider` on the next
  * routine `--sync` rather than needing a one-off migration of its own.

@@ -1,6 +1,6 @@
 /**
  * Pure planning for the `--auto-video` walker (the manual animation lane,
- * see AGENTS.md): legendary cards in one theme that already have an
+ * see `docs/IMAGE-PIPELINE.md`): legendary cards in one theme that already have an
  * APPROVED still in `seed-content/review/` — `image_to_video` animates that
  * still, it does not draw from the prompt itself, so a card whose bake-off was
  * never judged has nothing to animate yet and is reported, not silently

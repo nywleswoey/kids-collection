@@ -714,7 +714,7 @@ export async function runSeed(command: Command, deps: SeedDeps = realSeedDeps())
         const imageUrl = await deps.uploadImage(blobKey(theme.name, card.name), bytes);
 
         // Animation lane (manual or locally generated, additive — see
-        // AGENTS.md's animation entry). Published only from the REVIEWED copy
+        // `docs/IMAGE-PIPELINE.md`, Animations). Published only from the REVIEWED copy
         // `--review` already imported; a card with none gets
         // `animatedUrl: undefined` and behaves exactly as it did before this
         // lane existed.
@@ -886,7 +886,7 @@ async function review(
   }
   deps.log(`Review images in: ${REVIEW_DIR}`);
 
-  // Animation lane (manual or locally generated, additive — see AGENTS.md's
+  // Animation lane (manual or locally generated, additive — see `docs/IMAGE-PIPELINE.md`'s
   // animation entry). Not part of the bake-off above: it imports whichever
   // animation the owner already dropped for a still review already picked, so
   // this has no prompt and no provider of its own. A missing drop file is
