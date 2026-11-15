@@ -51,9 +51,9 @@ export function PackReveal({ cards }: { cards: PackSlot[] }) {
     const firstDuplicate = cards.find((c) => c.isDuplicate);
 
     return (
-      <div className="flex flex-col items-center gap-3" data-testid="pack-grid">
+      <div className="flex w-full flex-col items-center gap-3" data-testid="pack-grid">
         <span className="pill pill--gold">📦 {cards.length}-pack results</span>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid w-full max-w-sm grid-cols-5 gap-2">
           {cards.map(({ card, isDuplicate }, i) => (
             <button
               key={`${card.id}-${i}`}
@@ -65,7 +65,7 @@ export function PackReveal({ cards }: { cards: PackSlot[] }) {
               {isDuplicate ? (
                 <span
                   aria-label="Duplicate"
-                  className="badge-count absolute right-1 top-1"
+                  className="badge-count absolute right-0.5 top-0.5 px-1! py-0.5! text-[0.6rem]!"
                 >
                   ➕
                 </span>
