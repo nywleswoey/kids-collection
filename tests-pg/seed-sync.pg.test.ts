@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { neon } from "@neondatabase/serverless";
-import { upsertTheme, updateCardMeta } from "@/shared/pool/writer";
-import { listPublishedCardKeys, readPublishedShape } from "@/shared/pool/pool-reads";
-import { cardKey } from "@/shared/pool/publish-plan";
-import { comparePoolShape } from "@/shared/pool/completeness";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { upsertTheme, updateCardMeta } from "@/seed/writer";
+import { listPublishedCardKeys, readPublishedShape } from "@/seed/pool-reads";
+import { cardKey } from "@/seed/publish-plan";
+import { comparePoolShape } from "@/seed/completeness";
+import type { SeedFile } from "@/seed/seed-schema";
 import { resetAll } from "./db";
 
 /**

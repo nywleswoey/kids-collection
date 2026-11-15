@@ -7,10 +7,10 @@ import {
   sidecarFileName,
   unknownProviders,
   type AuditTheme,
-} from "@/shared/pool/review-files";
-import { promptHash } from "@/shared/pool/keys";
-import { cardKey } from "@/shared/pool/publish-plan";
-import { fakeProvider } from "@/shared/pool/providers/fake";
+} from "@/seed/review-files";
+import { promptHash } from "@/seed/keys";
+import { cardKey } from "@/seed/publish-plan";
+import { fakeProvider } from "@/seed/providers/fake";
 import {
   LANES,
   PROVIDERS,
@@ -20,7 +20,7 @@ import {
   paramHash,
   providerById,
   selectLanes,
-} from "@/shared/pool/providers";
+} from "@/seed/providers";
 
 const card = { name: "Longbowman", imagePrompt: "an English longbowman" };
 

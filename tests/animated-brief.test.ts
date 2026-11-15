@@ -2,13 +2,13 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { promptDigest } from "@/shared/pool/manual-brief";
+import { promptDigest } from "@/seed/manual-brief";
 import {
   animatedReviewFileName,
   animatedStem,
   findAnimatedDropFile,
   readApprovedAnimation,
-} from "@/shared/pool/animated-brief";
+} from "@/seed/animated-brief";
 
 const PROMPT = "a noble paladin, ART_STYLE";
 const PROVIDER_A = "cloudflare-sdxl";

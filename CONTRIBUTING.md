@@ -8,6 +8,10 @@ features (inventory: `src/features/README.md`). Features may depend on each
 other and on `src/shared/`, but `src/shared/` must never import from
 `src/features/`.
 
+`src/seed/` holds the offline seed and image pipeline (schema, loader, writer,
+providers, bake-off, judge, provenance). Only `scripts/` and tests import it;
+`tests/provider-boundary.test.ts` fails if anything on the request path does.
+
 Both are reached through the same `@/*` alias: `@/shared/...` and
 `@/features/...`.
 

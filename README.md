@@ -16,7 +16,7 @@ v2 (`/aidlc-discovery`).
 - Vercel Blob for card images
 - Google OAuth (parent) — added in U2
 - Card images generated once (seed-time) via free image providers behind a
-  provider seam (`src/shared/pool/providers/`) — added in U3
+  provider seam (`src/seed/providers/`) — added in U3
 
 ## Status (build units)
 Frozen since the initial build (`archive/aidlc-v1/`) — the product has shipped many
@@ -81,6 +81,7 @@ pnpm test                 # unit tests + property-based tests (fast-check)
 ```
 app/                  Next.js routes + layout
 src/shared/           shared kernel with no outbound feature deps (modules listed in src/shared/README.md)
+src/seed/             offline seed + image pipeline driven by scripts/ (never imported by the app)
 src/features/         domain features, one folder each (listed in src/features/README.md)
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations

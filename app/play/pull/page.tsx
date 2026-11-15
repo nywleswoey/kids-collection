@@ -4,7 +4,7 @@ import { tokenService } from "@/features/pull/token-service.prod";
 import { pullService } from "@/features/pull/pull-service.prod";
 import { PullButton } from "@/features/pull/PullButton";
 import { recentCategories, remainingCategories } from "@/features/pull/categories";
-import { listCards, listThemes } from "@/shared/pool/service";
+import { listCards, listThemes } from "@/shared/pool/catalog.pg";
 
 export default async function PullPage() {
   const child = await requireActivePlayer();

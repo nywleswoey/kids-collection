@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { neon } from "@neondatabase/serverless";
-import { previewPrune } from "@/shared/pool/blast-radius";
-import { upsertTheme, deleteCardsNotIn, deleteThemesNotIn, countCollections } from "@/shared/pool/writer";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { previewPrune } from "@/seed/blast-radius";
+import { upsertTheme, deleteCardsNotIn, deleteThemesNotIn, countCollections } from "@/seed/writer";
+import type { SeedFile } from "@/seed/seed-schema";
 import { resetAll, seedChildren } from "./db";
 
 /**

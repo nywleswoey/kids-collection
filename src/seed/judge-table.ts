@@ -81,7 +81,7 @@ function shellQuote(s: string): string {
  * Build the `pnpm theme-picks` command for the current per-row selections:
  * every selection that differs from its own row's recommendation (or whose
  * row has none) becomes a `--use "<name>=<id>"`. `deriveThemePicks`
- * (`src/shared/pool/theme-picks.ts`) gives every other card its
+ * (`src/seed/theme-picks.ts`) gives every other card its
  * recommendation, so the command reproduces exactly these selections. A row
  * with no selection (`providerId` undefined — no candidate at all) is left
  * out entirely.

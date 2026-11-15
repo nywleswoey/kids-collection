@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { join } from "node:path";
 import { judgeTheme } from "../scripts/theme-images/judge-theme";
-import { PROVIDERS } from "../src/shared/pool/providers";
-import { reviewFileName } from "../src/shared/pool/review-files";
-import type { ThemeSeed } from "../src/shared/pool/seed-schema";
-import type { JudgeCache } from "../src/shared/pool/judge";
+import { PROVIDERS } from "../src/seed/providers";
+import { reviewFileName } from "../src/seed/review-files";
+import type { ThemeSeed } from "../src/seed/seed-schema";
+import type { JudgeCache } from "../src/seed/judge";
 
 const theme: ThemeSeed = {
   name: "Warriors",

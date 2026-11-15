@@ -88,7 +88,7 @@
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CARD_SIZE } from "@/shared/pool/providers";
+import { CARD_SIZE } from "@/seed/providers";
 
 const OUT_DIR = join(process.cwd(), "seed-content", "review", "prototype-81");
 const CF_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";

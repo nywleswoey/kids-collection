@@ -1,18 +1,18 @@
 /**
  * Orchestrates `pnpm theme-images`'s judge step over a whole theme: for each
  * card, find whichever providers' candidates actually landed in
- * `seed-content/review/` and hand them to `judgeCard` (`src/shared/pool/judge.ts`).
+ * `seed-content/review/` and hand them to `judgeCard` (`src/seed/judge.ts`).
  *
  * Takes its filesystem as injected callbacks (`exists`/`read`), the same shape
  * `scripts/seed/index.ts`'s `SeedDeps` uses, so this is testable with an
  * in-memory file map and no real `seed-content/review/` directory.
  */
-import { buildPrompt } from "@/shared/pool/prompt";
-import { reviewFileName } from "@/shared/pool/review-files";
-import { judgeCard, type JudgeCache, type JudgeCandidate, type JudgeRunner } from "@/shared/pool/judge";
-import type { JudgeTableRow } from "@/shared/pool/judge-table";
-import type { ImageProvider } from "@/shared/pool/providers";
-import type { SeedCard, ThemeSeed } from "@/shared/pool/seed-schema";
+import { buildPrompt } from "@/seed/prompt";
+import { reviewFileName } from "@/seed/review-files";
+import { judgeCard, type JudgeCache, type JudgeCandidate, type JudgeRunner } from "@/seed/judge";
+import type { JudgeTableRow } from "@/seed/judge-table";
+import type { ImageProvider } from "@/seed/providers";
+import type { SeedCard, ThemeSeed } from "@/seed/seed-schema";
 
 export interface JudgeThemeDeps {
   exists: (path: string) => boolean;

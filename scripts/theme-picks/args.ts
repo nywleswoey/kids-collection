@@ -30,7 +30,7 @@ const USAGE =
   'Usage: pnpm theme-picks "<Theme Name>" [--use "<Card Name>=<provider>"]...\n' +
   "   The theme name must match seed-content/cards.json exactly.\n" +
   '   --use may be repeated; <provider> is a registered provider id (see\n' +
-  "   src/shared/pool/providers/index.ts) or a short alias such as grok/cloudflare.";
+  "   src/seed/providers/index.ts) or a short alias such as grok/cloudflare.";
 
 export function parseThemePicksArgs(argv: readonly string[]): ThemePicksArgs {
   let values: Record<string, unknown>;

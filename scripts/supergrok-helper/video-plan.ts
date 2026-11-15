@@ -6,11 +6,11 @@
  * never judged has nothing to animate yet and is reported, not silently
  * skipped.
  */
-import { animatedStem } from "@/shared/pool/animated-brief";
-import { buildPrompt } from "@/shared/pool/prompt";
-import { reviewFileName, resolveProviderId } from "@/shared/pool/review-files";
-import { providerById } from "@/shared/pool/providers";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { animatedStem } from "@/seed/animated-brief";
+import { buildPrompt } from "@/seed/prompt";
+import { reviewFileName, resolveProviderId } from "@/seed/review-files";
+import { providerById } from "@/seed/providers";
+import type { SeedFile } from "@/seed/seed-schema";
 import { ThemeNotFoundError } from "./plan";
 
 export interface VideoEntry {

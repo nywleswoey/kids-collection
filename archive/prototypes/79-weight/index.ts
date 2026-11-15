@@ -93,9 +93,9 @@
  * from `cards/` so a failed run strands nothing a card could be confused with.
  */
 import { put, del } from "@vercel/blob";
-import { ART_STYLE } from "@/shared/pool/prompt";
-import { readImageSize } from "@/shared/pool/image-size";
-import { CARD_SIZE } from "@/shared/pool/providers";
+import { ART_STYLE } from "@/seed/prompt";
+import { readImageSize } from "@/seed/image-size";
+import { CARD_SIZE } from "@/seed/providers";
 
 /** One subject, drawn by every arm, so the rows differ by encoder not by prompt length. */
 const SUBJECT = "A red panda curled on a mossy branch";

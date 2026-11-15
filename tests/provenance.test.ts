@@ -8,15 +8,15 @@ import {
   recordProvenance,
   serializeProvenance,
   toProvenance,
-} from "@/shared/pool/provenance";
+} from "@/seed/provenance";
 import {
   buildSidecar,
   parseSidecar,
   reviewFileName,
   reviewStem,
   type ReviewSidecar,
-} from "@/shared/pool/review-files";
-import { fakeProvider } from "@/shared/pool/providers/fake";
+} from "@/seed/review-files";
+import { fakeProvider } from "@/seed/providers/fake";
 
 const witnessed: ReviewSidecar = {
   provider: "pollinations",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildPickCommand, renderJudgeTable, type JudgeTableRow, type PickSelection } from "../src/shared/pool/judge-table";
+import { buildPickCommand, renderJudgeTable, type JudgeTableRow, type PickSelection } from "../src/seed/judge-table";
 
 function row(overrides: Partial<JudgeTableRow>): JudgeTableRow {
   return {
