@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { binderService } from "@/features/binder/service.prod";
+import { binderService } from "@/features/binder/binder-service.prod";
 import { GalaxyView } from "@/features/binder/GalaxyView";
 import { parsePlace } from "@/features/binder/binder-place";
-import { rewardService } from "@/features/rewards/service.prod";
+import { rewardService } from "@/features/rewards/reward-service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage({

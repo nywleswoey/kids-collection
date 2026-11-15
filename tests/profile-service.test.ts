@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeProfileService } from "@/features/profiles/service";
+import { makeProfileService } from "@/features/profiles/profile-service";
 import { inMemoryProfileStore, type ProfileSeed } from "@/db/stores/profile-store.fake";
 
 /** Reachable only because the service accepts a ProfileStore port. Covers the

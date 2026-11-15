@@ -9,7 +9,7 @@ import { Fireworks } from "@/shared/anim/Fireworks";
 import { useSound } from "@/shared/sound/useSound";
 import { CenteredModal } from "@/shared/ui/CenteredModal";
 import { playFanfare, playReward } from "@/shared/sound/sfx";
-import type { PendingReward } from "./service";
+import type { PendingReward } from "./reward-service";
 import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { markRewardsShownAction } from "./actions";
 import "@/shared/anim/anim.css";

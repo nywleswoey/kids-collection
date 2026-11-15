@@ -2,8 +2,6 @@ import "server-only";
 import { and, eq, gt, gte, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema";
-import { addCardCopy } from "@/db/collection-writes";
-import { getCardCount } from "@/db/collection-reads";
 import type { CollectionStore, SwapInput } from "./collection-store";
 
 /** WHERE (child, card) — the collection primary key. */
@@ -11,9 +9,36 @@ const at = (childId: string, cardId: string) =>
   and(eq(collections.childId, childId), eq(collections.cardId, cardId));
 
 /**
+ * Add one copy of a card to a child's collection: insert with count 1, or +1 on
+ * the (childId, cardId) unique conflict. Returns the Drizzle builder (not yet
+ * awaited) so callers can chain `.returning(...)`, `await` it directly, or drop
+ * it into a `db.batch([...])`. Single source of truth for the count upsert
+ * shared by pulls, easter eggs, completion rewards, and trades.
+ */
+function addCardCopy(childId: string, cardId: string) {
+  return db
+    .insert(collections)
+    .values({ childId, cardId, count: 1 })
+    .onConflictDoUpdate({
+      target: [collections.childId, collections.cardId],
+      set: { count: sql`${collections.count} + 1` },
+    });
+}
+
+/**
+ * How many copies of a card a child currently holds, 0 if the (childId, cardId)
+ * collection entry is absent. The DB CHECK `count >= 1` means a present row is
+ * always >= 1, so 0 unambiguously signals "not owned".
+ */
+async function getCardCount(childId: string, cardId: string): Promise<number> {
+  const row = await db.query.collections.findFirst({ where: at(childId, cardId) });
+  return row?.count ?? 0;
+}
+
+/**
  * Postgres adapter for CollectionStore. Composes the `addCardCopy`/`getCardCount`
- * builders with inline SQL for the atomic paths. The only `server-only` code
- * behind the seam.
+ * builders above with inline SQL for the atomic paths. The only `server-only`
+ * code behind the seam.
  */
 export const pgCollectionStore: CollectionStore = {
   async grantCard(childId, cardId) {

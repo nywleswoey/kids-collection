@@ -6,7 +6,7 @@ import { withParent } from "@/lib/actions";
 import { getParent } from "@/features/auth/guard";
 import { field } from "@/lib/form";
 import { captureServerException, getPostHogClient } from "@/lib/posthog-server";
-import { profileService } from "./service.prod";
+import { profileService } from "./profile-service.prod";
 import {
   setActiveProfile,
   clearActiveProfile,

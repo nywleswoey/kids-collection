@@ -6,7 +6,6 @@
 | `index.ts` | The `db` client (neon-http). Importing it reads `DATABASE_URL` at module load. |
 | `migrations/` | Schema migrations come from `pnpm db:generate`; hand-written migrations also exist (`docs/DATA-PRESERVATION-0009.md` documents one). |
 | `stores/` | One port per table group, with a fake and a Postgres adapter (below). |
-| `child-reads.ts`, `collection-reads.ts`, `collection-writes.ts` | Loose SQL helpers used by one store or feature each. Prefer adding to a store. |
 
 ## Stores
 

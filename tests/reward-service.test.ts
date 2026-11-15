@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { makeRewardService } from "@/features/rewards/service";
+import { makeRewardService } from "@/features/rewards/reward-service";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryRewardStore } from "@/db/stores/reward-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";

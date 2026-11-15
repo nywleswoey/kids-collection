@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeBinderService } from "@/features/binder/service";
+import { makeBinderService } from "@/features/binder/binder-service";
 import { coverCard } from "@/features/binder/category-cover";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";
