@@ -1,29 +1,164 @@
 # Project agent memory
 
-This file is the project's committed home for project-intrinsic agent knowledge: build, test, release, architecture, and sharp-edge notes that should travel with the code.
+Project-intrinsic agent knowledge that should travel with the code: build, test,
+architecture and sharp edges. Each bullet is short and points at the file that
+holds the detail. Longer background lives in `docs/` and in each folder's
+`README.md`.
 
-- New card themes follow `docs/NEW-THEME-RUNBOOK.md`. Lanes are the registry in `src/shared/pool/providers/index.ts`; `ai-horde`, the first escape hatch, was retired. `pokeapi-official-artwork` is the one escape hatch currently registered (`--providers=pokeapi-official-artwork`): it fetches real official artwork from PokéAPI's sprites repo (no key) instead of drawing, for the ~540 cards checked into `src/shared/pool/pokemon-dex-numbers.ts` (today: *Kanto* through *Paldea Pokémon* plus each region's "Pokémon 2" part-2 theme - 18 themes across nine regions, all wired through the same table with no per-theme code; a region's part-2 theme never repeats a card name from its part-1 theme or any other theme in the pool) - it reads the Pokémon's name back out of `buildPrompt`'s leading `"<Name>, the Pokémon:"` text rather than touching `cards.json`, since `generate()` only ever receives the built prompt string. Every other theme's card is an honest `ProviderNotDrawn`; a Pokémon-shaped card with no table entry is a loud, non-retryable failure instead of a silent skip. `GeneratedImage.model` carries the exact dex number and source URL fetched (no invented model name), so `provenance.json` records it per card. Private-use copyright caveat (Nintendo/Game Freak/The Pokémon Company art) is in `docs/NEW-THEME-RUNBOOK.md`'s "official-artwork escape hatch" section - do not reach for this lane outside these Pokémon themes. Normalisation no longer flattens onto plain white: `src/shared/pool/pokemon-types.ts` maps each card to a primary type (checked in alongside the dex numbers, same reasoning) and a fixed pastel centre/edge colour pair per type - all 18 Pokémon types are in the palette now that the Hoenn-through-Paldea batch introduced the first Steel- and Flying-primary cards; `generate()` rasterises an SVG radial gradient at that card's colours, then composites the artwork (still transparent, never flattened) at `MARGIN_RATIO` (0.82) of the frame, centred. `params.background` carries a version tag (`"type-gradient-v2"`) rather than a literal colour, specifically so bumping the normalisation again invalidates old reviews the same way a literal colour change would. Every Pokémon theme's `provider` is pinned to `pokeapi-official-artwork` at theme level in `cards.json` (the `theme-picks` convention), so publishing needs no per-card picks. `tests/pokeapi-official-artwork.test.ts` asserts coverage by filtering `cards.json` themes on `provider === "pokeapi-official-artwork"` rather than naming themes, so a tenth region theme needs no test edit - only the dex-number and primary-type table entries. `supergrok-manual` is an opt-in drop folder (`pnpm seed --supergrok-export`); there is no xAI API key. `pnpm supergrok "<Theme Name>"` (`scripts/supergrok-helper/`) scripts the hand-drawn side of that lane — copies each card's prompt to the clipboard, watches `~/Downloads` for the saved picture, and moves it into `seed-content/supergrok-drop/` under the expected name — then hands off to `pnpm seed --review --providers=supergrok-manual` and `pnpm contact-sheet`. It reads only `seed-content/cards.json` and never opens `DATABASE_URL`; the default (manual) mode never calls Grok or automates a browser. `pnpm supergrok "<Theme Name>" --auto` drives the locally installed, signed-in Grok Build CLI (`grok -p` headless) per card instead — it has a built-in image-gen tool and reliably saves a square 1:1 image to an exact path when the prompt tells it to (confirmed by probing it directly; `--always-approve` is needed for unattended headless runs). Same plan/naming/resume logic, still no xAI API key or HTTP calls — only the `grok` CLI. Manual mode stays the default.
-- `pnpm theme-images "<Theme Name>"` (`scripts/theme-images/`) runs the Grok (`supergrok --auto`) and Cloudflare (`seed --review --themes=... --providers=cloudflare-sdxl`) lanes concurrently for one theme, reusing both commands unchanged, then judges each card's candidates with the local, signed-in `claude` CLI headless (`claude -p`, no API key/SDK — `scripts/theme-images/judge-runner.ts`; the judging logic, `src/shared/pool/judge.ts`, never spawns anything itself and caches verdicts by candidate content hash in `seed-content/review/<theme-slug>-judge-cache.json`). Writes `seed-content/review/<theme-slug>-images-review.html`, a two-column advisory table badging the judge's pick — alongside, not instead of, `pnpm contact-sheet`. Advisory only: nothing is written to `cards.json` and nothing is published; Step 7/8's human pick is unchanged. See `docs/NEW-THEME-RUNBOOK.md`'s "both lanes at once" subsection.
-- `pnpm theme-picks "<Theme Name>" [--use "<Card Name>=<provider>"]...` (`scripts/theme-picks/`, runbook Step 8) writes the bake-off pick into `cards.json` instead of a human hand-editing it: by default every card's pick is `theme-images`'s judge recommendation, read from its cache (never re-invoking `claude`); `--use` overrides any card by name (a registered provider id or a short alias — `src/shared/pool/theme-picks.ts`). The theme's majority provider and a sparse per-card override list are the only things written (`src/shared/pool/cards-json-edit.ts` edits just those lines, preserving the rest of the file byte-for-byte); re-running is idempotent and replaces the theme's previous picks. A card with no recommendation and no override refuses the whole run, by name, before any write. The images-review HTML page is interactive to match: each row's dropdown can switch its pick, and the page shows the exact `theme-picks` command for the current selections, ready to copy. Hand-editing `cards.json` is now only a documented fallback.
-- Legendary cards in a NEW theme may carry a short looping animated WebP (`cards.animated_url`, nullable; existing legendary cards are NOT backfilled — see the CSS-only glow/sparkle/tilt effects layered on the still instead, `card.css`'s `.card--legendary`). The lane: `pnpm supergrok "<Theme Name>" --auto-video` drives `grok`'s `image_to_video` tool on each legendary card's already-APPROVED still (it animates existing art, not a prompt — a card whose bake-off was never judged is reported as "no approved still yet", not generated from scratch), then converts the MP4 to a seamless bounce-loop animated WebP with local `ffmpeg` (frame extraction only — Homebrew ffmpeg has no libwebp encoder) + `img2webp` (`brew install ffmpeg webp`; recipe in `scripts/supergrok-helper/index.ts`'s `runFfmpegConvert`), dropping it in `seed-content/supergrok-drop-anim/` keyed by the SAME prompt hash as the still plus the still's provider id (`animatedStem`, reuses `manualDropStem`, `src/shared/pool/animated-brief.ts`), so changing a card's pick orphans its old animation. `pnpm seed --review` imports it into `seed-content/review/` as `<stem>.anim.webp` (`isAnimationEligible` cards only, see below; no bake-off — there is one candidate, not a provider grid), `pnpm contact-sheet` shows it in its own column, and `pnpm seed --sync` uploads it to a SEPARATE blob key (`cards/<key>-anim.webp`, via `uploadAnimation`) only on a card's first insert — an existing card is never revisited. `Card.tsx` (pull reveal and the card detail modal only; the collection grid renders `RarityThumb` instead and never sees `animatedUrl`) swaps in a plain `<img>` for it — `next/image` flattens animated WebP to its first frame — gated on `useReducedMotion`, falling back to the ordinary still otherwise. Eligibility for this whole lane (both `--review`'s import gate and `--sync`'s upload gate in `scripts/seed/index.ts`) is one predicate, `isAnimationEligible` (`src/shared/pool/animation-eligibility.ts`): legendary, OR the card's resolved provider is `pokeapi-official-artwork` — never `rarity === "legendary"` re-checked ad hoc, so the two gates can't drift apart. That second arm is what every Pokémon region theme's card (any rarity) animates through, via a SEPARATE, local, no-AI generator — `pnpm pokemon-anim` (`scripts/pokemon-anim/`) — since Grok's `image_to_video` is blocked by content moderation on this art. It recomposites the still provider's exact transparent artwork + type-gradient background (`providers/pokeapi-official-artwork.ts`'s `buildBackgroundSvg`/`MARGIN_RATIO`, exported for reuse) across one synthesized motion period (float, breathing scale pulse, sway, type-coloured sparkles — pure `sharp` work, no external binary) rather than animating a video clip, so it needs no bounce-loop trick and no `ffmpeg`; only `img2webp` (`brew install webp`) encodes the frames, at the same `-loop 0 -d 100 -lossy -q 50` flags as the legendary lane for a comparable file size. Writes into the SAME `seed-content/supergrok-drop-anim/` drop folder under the SAME `animatedStem` naming, so `--review`/`--sync`/`pnpm contact-sheet` pick it up through that same predicate — only a card with an already-APPROVED still in `seed-content/review/` is animated; one with none is reported, not fabricated.
-- `scripts/seed/index.ts`'s CLI flags are parsed by `scripts/seed/args.ts` (`parseSeedArgs`, strict `node:util parseArgs`). Add a new flag or command there, not via `process.argv.includes` in `main()`/`runSeed()`. Any code that deletes pool rows by a keep-list (prune previews or the real pruners) should share `notKept()` in `src/shared/pool/prune-predicate.ts` rather than re-implementing the empty-keep-list rule. The only commands are `--review` and `--sync` (plus the standalone read-only/export ones) — `--publish`, `--reset` and `--allow-unreviewed` were removed as dead/unsafe; `resetPool`/`previewReset` survive only for `tests-pg` to call directly. `--review`/`--sync --themes=<Name 1>,<Name 2>` scope a run to exactly the named theme(s) (by exact `cards.json` name) — pruning and the unscoped-default behaviour are unaffected, and an out-of-scope theme is never counted against FR9/FR12. This is how several themes can be appended to `cards.json` in one PR and published in smaller batches later; see NEW-THEME-RUNBOOK.md's "Authoring several themes, publishing fewer at a time".
-- Prototype scripts live in `archive/prototypes/` (not `scripts/prototypes/`) once retired — run them with `tsx`, not a `pnpm prototype:*` script, which no longer exists.
-- Passkey cutover is done: `docs/PASSKEY-CUTOVER.md`'s deploy 2 is cancelled and `ADMIN_PASSCODE` stays (see the decision note at the top of that doc).
-- `scripts/backup/*.ts` must stay dependency-free (only `node:fs`/`node:crypto`/`node:path`/`node:url`): `backup.yml` runs them with plain `node` (Node 24's built-in type stripping), not `tsx`, so the nightly job needs no `pnpm install` next to `secrets.BACKUP_DATABASE_URL`. A relative import between them needs an explicit `.ts` extension (`tsconfig.json`'s `allowImportingTsExtensions`) because Node's ESM resolver, unlike `tsx`, requires one. `backup.yml` also gates on `drizzle.__drizzle_migrations` vs. `src/db/migrations/meta/_journal.json` (`scripts/backup/check-migrations.ts`) — see CONTRIBUTING.md's Migrations section.
-- `tests-pg/db.ts`'s `resetAll()` derives its `TRUNCATE` table list from `src/db/schema.ts` via `drizzle-orm`'s `isTable`/`getTableName` — a new table needs no edit there.
-- Postgres access uses the neon-http driver, which has **no interactive transactions** (`db.transaction` throws at runtime). Any write that must be atomic across multiple statements/tables goes through ONE chained-CTE `db.execute(sql\`...\`)` statement instead — see `collection-store.pg.ts`'s `swapCards` and `claim-store.pg.ts`. `pull()`'s request-level idempotency (`src/features/pull/pull-service.ts`, `src/db/stores/claim-store.*`) is built this way: a `pull_claims` row with a fence-guarded "granting"/"done" lease, so a killed/retried pull can never double-spend or double-grant. Don't reorder `pull()`'s deduct-then-draw steps without re-reading that file's doc comments first. `pullAction` prefetches `pull()`'s catalog/owned-ids reads against the *unvalidated* cookie id concurrently with the gate — see `pull()`'s `prefetch` doc comment before changing that. Within ONE chained-CTE statement, a table can be WRITTEN at most once — a later CTE's UPDATE gated on `EXISTS(earlier_insert_cte)` into the SAME table matches zero rows even though that insert just committed (confirmed directly against local Postgres), because a sibling CTE can't see another's write to the same table within one statement. A claim/grant that needs two writes to its own claims table (insert-to-reserve, then update-to-finish) therefore needs TWO statements/round-trips, like `claim-store.pg.ts`'s `claimAndSpend` + `finishWithCardGrant` split — `offer-claim-store.pg.ts`'s `claimOffer` (the single-use easter-egg offer redemption, keyed by a signed `jti`, same two-phase shape) is the second example.
-- Any `revalidatePath` call in a server action (for any route) re-renders the *current* route into the action's own response — see the comment on `pullAction` in `src/features/pull/actions.ts`. So if a server component's JSX conditionally mounts a client child on a value the action just changed, React unmounts that child and drops its local post-action state (a success message, etc.) the instant the response lands. Gate the child's visibility on that prop *inside* the client component instead; see `SacrificePanel.tsx`.
-- The parent-facing per-child activity log (#kcact, `src/features/activity/activity-service.ts`) merges six sources by `childId`: `pull_claims`/`easter_egg_claims` (filtered to rows whose `outcome` carries a `card` — a refund/sweep has none), `collection_rewards`, `quiz_completions` (`awarded = true`), and two new append-only tables, `ticket_grants` and `trade_events` — the only two "who did what when" facts this app had NO record of before (an admin grant/sacrifice was a bare `children` column mutation; a trade was a bare `collections` swap via `swapCards`). **Any future event that isn't already a complete, unpruned row in some table needs its own append-only table + a write at the call site that causes it** — there is no catch-all event log to append to instead. `getActivityLog(childId: string | null, limit)` with `childId = null` merges every active child (the admin `/admin/activity` page's "All" filter); each event always carries its own `childId`/`childName`/`at` even in single-child mode.
-- **The `tests-pg/docker-compose.yml` Postgres binds FIXED host ports (5499/4499) as a single Docker Compose project (`kc-pgtest`), so it is shared by every concurrent treehouse worktree/session of this project on the machine, not per-worktree.** A sibling lane's `resetAll()` (TRUNCATE) can race with your rows, `pnpm pg:down`/`pg:up` mid-test can wipe uncommitted migrations or drop the container entirely underneath a concurrent `pnpm test:pg` run, and `local-neon-http-proxy` has a hard-capped connection pool (20) that degrades hard (every query "throws away" a connection) under sustained concurrent load from several sessions. Never run `pnpm pg:down` and avoid redundant `pnpm pg:up` unless you've confirmed it's actually down — coordinate first if you suspect other sessions are using it. If the container is already up and you only need to apply a migration you just added, don't run `pg:up` either: it replays EVERY file under `src/db/migrations/*.sql` from 0000 with no "already applied" tracking, so it errors on the first already-existing table. Apply only your new file directly instead: `PGPASSWORD=postgres psql -h localhost -p 5499 -U postgres -d main -v ON_ERROR_STOP=1 -f src/db/migrations/00NN_*.sql`. Before trusting an isolated, non-reproducing `test:pg` failure (FK violations, ECONNREFUSED, count mismatches) as a real regression, rule out a concurrent sibling touching the same container; re-running the same file alone is the fastest way to tell the two apart.
-- `pnpm seed --check-urls` imports `src/db/index.ts` at module load (per its own doc comment) even though the command itself never queries the database, so a worktree with no real `DATABASE_URL` still needs *some* syntactically valid connection string in the env or it throws before checking a single URL — the unused `postgres://postgres:postgres@localhost:5499/main` (the `tests-pg` proxy string) satisfies it with no container required. Authoring sourceUrls against `bulbapedia.bulbagarden.net`: it 403s every automated fetch (curl, Node `fetch`, spoofed User-Agent alike) even for pages that are live in a real browser, so it fails `--check-urls` outright — use `pokemon.com/us/pokedex/<name>` (lowercase, hyphenated for multi-word names, e.g. `ho-oh`) for Pokémon `sourceUrl`s instead.
-- The binder hub groups themes into franchise tiles (one "Pokémon" tile opening a sub-grid of the regional sets) once the catalog passes `CategoryPicker.tsx`'s 36-theme tripwire — see that file's design-notes comment for why Option A (grouping by `themes.provider`) won over a general authored `group` field or merging region pairs. `themes.provider` (the theme's cards.json provider pin, null when unpinned - non-Pokémon themes store their own pin like `cloudflare-sdxl` too; backfilled by `upsertTheme` on every `--sync`, not just on insert) is the ONLY grouping signal, and only providers in `FRANCHISE_PROVIDERS` form a tile — never match on theme name. `src/features/binder/franchise.ts` owns the mapping (`FRANCHISE_PROVIDERS`), the grouping/aggregation functions, and the `theme.id` convention for a synthetic franchise tile (`franchise:<key>`, read back by `franchiseKeyFromThemeId`/`hubTarget`). `binder-place.ts`'s `Place` union has a fourth kind, `{ kind: "franchise"; key }` (`?at=<key>`, e.g. `?at=pokemon`), reached from a franchise hub tile and also the "back" target from inside one of its member categories (`franchisePlaceForTheme`) — every other `?at=` link is unchanged. A new franchise needs only a `FRANCHISE_PROVIDERS` entry; grouping, position (fixed at the oldest member's hub slot), cover art, and the aggregate progress bar / "X of N sets" count / trophy-only-at-100% all fall out of the existing `coverCard`/`CategoryTile` rules with no new per-theme authoring step.
+## Map
 
-- The pull screen's "More galaxies" picker (`MoreGalaxiesModal.tsx`) groups Pokémon regions behind one "Pokémon" entry too (#kcpullgroup), reusing the SAME grouping signal as the binder hub: `franchise.ts`'s `groupByFranchise` private loop now backs both `groupFranchises` (hub, `ThemeSection[]`) and `groupThemesByFranchise` (picker, flat `Theme[]`) so there is one grouping algorithm, not two that could drift. The picker only ever receives `moreThemes` (`remainingCategories()` - the chip row's complement), so a Pokémon region among the 8 newest chips is never duplicated into the group, same treatment as any other chip-shown theme. Picking a region from inside the group calls `onPick` with that region's own real `themeId`, identical to picking any top-level entry.
-- Mass draw (#kcmassdraw): a 5-pack/10-pack sit next to the single pull, same 1 ticket/card, no rarity guarantee, eggs pack-exempt. The allow-list `[1, 5, 10]` lives once in `src/features/pull/pack-size.ts` (deliberately dependency-free so client components can import it alongside the server-only `pull-service.ts`) and is enforced at both `pullAction` and `pull()`. One `pull_claims` row is still one whole request spending N tokens at once (`ClaimStore.claimAndSpend`'s `count` param, default 1) — `pull_claims` took no new column for this, so while a claim is `status='granting'` its `outcome` instead holds a transient `{packSize: N}` marker (see `claim-store.pg.ts`'s doc comments) that `cleanupFailure`/`sweepAbandoned` read to refund the right amount; it's fully overwritten once the claim finishes. `ClaimStore.finishWithPackGrant` pre-aggregates a pack's (possibly repeated) card ids by `GROUP BY` inside the one statement before the `collections` upsert — a naive once-per-slot upsert hits Postgres's "ON CONFLICT affects the same row twice" error the moment a pack repeats a card; `tests-pg/pull-idempotency.pg.test.ts`'s "pre-aggregation regression" test is the one place that trap is provable (the in-memory fake has no such trap, so it just grants sequentially). A single pull and a pack tap use SEPARATE sessionStorage request-id keys (`pending-request.ts`'s `getOrCreateRequestId` vs. `getOrCreatePackRequestId`) so a stuck id from one can never be replayed as the other. Activity log: a pack's one claim still emits one `card_received` event per CARD (`activity-service.ts`'s `outcomeCardEntries`), not one per pack.
+| Folder | What lives there | Start at |
+|---|---|---|
+| `app/` | Next.js App Router routes. Thin: each page calls one feature service. | `app/play/`, `app/admin/` |
+| `src/features/` | Domain features (pull, binder, trade, quiz, rewards, profiles, admin, auth, activity). | `src/features/README.md` |
+| `src/shared/` | Leaf modules with no feature imports: card UI, sound, anim, ui, and the seed/image pipeline (`pool`). | `src/shared/README.md` |
+| `src/db/` | Drizzle schema, migrations, and the store ports with `.fake.ts` / `.pg.ts` adapters. | `src/db/README.md` |
+| `src/lib/` | Small cross-cutting helpers: env, domain types, rng, signed tokens, server-action shape. | `src/lib/types.ts` |
+| `scripts/` | Offline CLIs: seed, contact-sheet, supergrok, theme-images, theme-picks, pokemon-anim, reconcile, backup. | `scripts/README.md` |
+| `tests/`, `tests-pg/`, `tests-live/` | Unit + property tests, dockerised Postgres tests, opt-in live provider tests. | `CONTRIBUTING.md` |
+| `seed-content/` | `cards.json` (the authored pool), `provenance.json`, review and drop folders. | `docs/NEW-THEME-RUNBOOK.md` |
+| `docs/` | Runbooks: new theme, image pipeline, restore, passkey cutover. | |
+
+Layering rules are enforced by tests, not convention: `src/shared/` never
+imports `src/features/`; the request path never reaches an image provider
+(`tests/provider-boundary.test.ts`); binder never imports admin
+(`tests/binder-admin-boundary.test.ts`).
+
+## How a feature is wired
+
+- A feature's logic is a factory, `makeXService(deps)`, in its service file
+  (`service.ts` or `<name>-service.ts` today; PR "one naming rule" unifies these).
+  The sibling `*.prod.ts` binds the factory to the Postgres adapters once. Pages
+  and server actions import only the `.prod.ts` export.
+- Every store has three files in `src/db/stores/`: the port (`x-store.ts`), an
+  in-memory fake (`x-store.fake.ts`) and the Postgres adapter (`x-store.pg.ts`).
+  One contract in `tests/contracts/` runs against both adapters.
+- Server actions live in `<feature>/actions.ts` and return the shape in
+  `src/lib/actions.ts`.
+
+## Commands
+
+```bash
+pnpm typecheck && pnpm test     # fast gate, no services needed
+pnpm test:pg                    # needs the tests-pg Docker Postgres (see below)
+pnpm dev                        # http://localhost:3000
+```
+
+## Sharp edges: database
+
+- **No interactive transactions.** The neon-http driver throws on
+  `db.transaction`. A multi-statement atomic write is ONE chained-CTE
+  `db.execute(sql\`...\`)`. Examples: `swapCards` in `collection-store.pg.ts`,
+  `claim-store.pg.ts`.
+- **One write per table per CTE statement.** A later CTE's UPDATE gated on
+  `EXISTS(earlier_insert_cte)` into the SAME table matches zero rows (confirmed
+  against local Postgres). Insert-to-reserve then update-to-finish therefore
+  needs TWO round-trips: `claimAndSpend` + `finishWithCardGrant` in
+  `claim-store.pg.ts`, and `claimOffer` in `offer-claim-store.pg.ts`.
+- `tests-pg/db.ts`'s `resetAll()` derives its TRUNCATE list from
+  `src/db/schema.ts`, so a new table needs no edit there.
+- Run `pnpm db:migrate` against production BEFORE merging a PR that adds a
+  migration (`CONTRIBUTING.md`, Migrations).
+
+## Sharp edges: the shared test Postgres
+
+**`tests-pg/docker-compose.yml` binds FIXED host ports (5499/4499) as one
+Compose project (`kc-pgtest`), shared by every worktree and session on the
+machine.**
+
+- Never run `pnpm pg:down`. Avoid `pnpm pg:up` unless you confirmed it is down.
+- `pg:up` replays EVERY migration from 0000 with no applied-tracking, so on a
+  running container it errors on the first existing table. To apply one new
+  migration:
+  ```bash
+  PGPASSWORD=postgres psql -h localhost -p 5499 -U postgres -d main -v ON_ERROR_STOP=1 -f src/db/migrations/00NN_*.sql
+  ```
+- A sibling session's `resetAll()` can race your rows, and the proxy's pool
+  (20 connections) degrades hard under several sessions. Before trusting an
+  isolated, non-reproducing `test:pg` failure (FK violation, ECONNREFUSED,
+  count mismatch), re-run that one file alone.
+
+## Sharp edges: pull and claims
+
+- `pull()` (`src/features/pull/pull-service.ts`) is request-idempotent via a
+  `pull_claims` row with a fence-guarded "granting"/"done" lease. Do not reorder
+  its deduct-then-draw steps without re-reading that file's doc comments.
+- `pullAction` prefetches `pull()`'s catalog and owned-ids reads against the
+  unvalidated cookie id, concurrently with the gate. See `pull()`'s `prefetch`
+  doc comment before changing that.
+- Mass draw (5-pack / 10-pack): the allow-list `[1, 5, 10]` lives once in
+  `src/features/pull/pack-size.ts` (dependency-free so client components can
+  import it) and is enforced in both `pullAction` and `pull()`. One claim row
+  spends N tokens (`claimAndSpend`'s `count`); while `status='granting'` its
+  `outcome` holds a transient `{packSize: N}` marker that `cleanupFailure` /
+  `sweepAbandoned` read to refund the right amount. `finishWithPackGrant`
+  pre-aggregates repeated card ids with GROUP BY before the `collections`
+  upsert, or Postgres throws "ON CONFLICT affects the same row twice"; the
+  "pre-aggregation regression" test in `tests-pg/pull-idempotency.pg.test.ts`
+  is the only place that trap is provable. Single pull and pack use SEPARATE
+  sessionStorage request-id keys (`pending-request.ts`).
+
+## Sharp edges: server actions and React
+
+- Any `revalidatePath` in a server action re-renders the CURRENT route into the
+  action's own response (see `pullAction` in `src/features/pull/actions.ts`).
+  If a server component conditionally mounts a client child on a value the
+  action just changed, React unmounts it and drops its local state. Gate the
+  child's visibility on that prop INSIDE the client component; see
+  `SacrificePanel.tsx`.
+
+## Activity log
+
+`src/features/activity/activity-service.ts` merges six sources by `childId`:
+`pull_claims` and `easter_egg_claims` (only rows whose `outcome` carries a
+`card`), `collection_rewards`, `quiz_completions` (`awarded = true`), and the
+append-only `ticket_grants` and `trade_events` tables. **There is no catch-all
+event log.** A new "who did what when" fact that is not already a complete,
+unpruned row somewhere needs its own append-only table and a write at the call
+site. `getActivityLog(null, limit)` merges every active child. A pack emits one
+`card_received` event per CARD (`outcomeCardEntries`).
+
+## Franchise grouping (binder hub and pull picker)
+
+- `themes.provider` (the theme's `cards.json` provider pin, backfilled by
+  `upsertTheme` on every `--sync`) is the ONLY grouping signal, and only
+  providers in `FRANCHISE_PROVIDERS` (`src/features/binder/franchise.ts`) form
+  a tile. Never match on theme name. A new franchise needs only that one entry.
+- Synthetic tile ids are `franchise:<key>`; `binder-place.ts`'s `Place` has a
+  `{ kind: "franchise"; key }` arm (`?at=pokemon`). `CategoryPicker.tsx`'s
+  design-notes comment records why this beat an authored `group` field.
+- `MoreGalaxiesModal.tsx` groups the same way through `groupThemesByFranchise`,
+  which shares the one private `groupByFranchise` loop with the hub's
+  `groupFranchises`. The picker only ever receives `remainingCategories()`, so a
+  chip-shown region is never duplicated into the group.
+
+## Seed and image pipeline
+
+Procedure: `docs/NEW-THEME-RUNBOOK.md`. Implementation notes (lanes, the
+Pokémon official-artwork escape hatch, `theme-images`, `theme-picks`,
+animations, seed CLI flags): `docs/IMAGE-PIPELINE.md`. Two rules worth
+repeating here:
+
+- Add a seed flag or command in `scripts/seed/args.ts` (`parseSeedArgs`), never
+  via `process.argv.includes`.
+- Any keep-list prune shares `notKept()` in `src/shared/pool/prune-predicate.ts`.
+
+## Other
+
+- `scripts/backup/*.ts` must stay dependency-free (`node:` imports only) and
+  use explicit `.ts` extensions on relative imports: `backup.yml` runs them with
+  plain `node`, not `tsx`, so the nightly job needs no `pnpm install`. It also
+  gates on `drizzle.__drizzle_migrations` vs `src/db/migrations/meta/_journal.json`
+  (`scripts/backup/check-migrations.ts`).
+- Passkey cutover is done. `docs/PASSKEY-CUTOVER.md`'s deploy 2 is cancelled and
+  `ADMIN_PASSCODE` stays (decision note at the top of that doc).
+- Retired prototype scripts live in `archive/prototypes/`; run them with `tsx`.
+  There is no `pnpm prototype:*` script.
 
 ## Maintaining this file
 
-Keep this file for knowledge useful to almost every future agent session in this project.
-Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Keep this file for knowledge useful to almost every future agent session.
+Do not repeat what the codebase already shows; point to the authoritative file.
+One fact per bullet, a few lines each. Longer material goes in `docs/` or the
+folder's `README.md` with a pointer from here.
 Prefer rewriting or pruning existing entries over appending new ones.
-When updating this file, preserve this bar for all agents and keep entries concise.
