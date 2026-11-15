@@ -14,7 +14,7 @@ export interface AdminDeps {
  * Parent-oversight read model, parameterized by its ports. Aggregates each
  * child's balances + distinct-owned count against the pool totals. Parent gating
  * is the page's responsibility (admin/page.tsx, behind the admin gate). Prod
- * wiring: `service.prod.ts`.
+ * wiring: `admin-service.prod.ts`.
  */
 export function makeAdminService({ profiles, collections, catalog }: AdminDeps) {
   async function getAdminOverview(): Promise<AdminOverview> {

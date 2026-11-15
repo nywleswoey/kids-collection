@@ -27,9 +27,8 @@ imports `src/features/`; the request path never reaches `src/seed/`
 
 ## How a feature is wired
 
-- A feature's logic is a factory, `makeXService(deps)`, in its service file
-  (`service.ts` or `<name>-service.ts` today; PR "one naming rule" unifies these).
-  The sibling `*.prod.ts` binds the factory to the Postgres adapters once. Pages
+- A feature's logic is a factory, `makeXService(deps)`, in `<name>-service.ts`.
+  The sibling `<name>-service.prod.ts` binds it to the Postgres adapters once. Pages
   and server actions import only the `.prod.ts` export.
 - Every store has three files in `src/db/stores/`: the port (`x-store.ts`), an
   in-memory fake (`x-store.fake.ts`) and the Postgres adapter (`x-store.pg.ts`).

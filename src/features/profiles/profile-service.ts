@@ -26,7 +26,7 @@ export interface ProfileDeps {
 /**
  * Child-profile service, parameterized by its ProfileStore port. Owns input
  * validation + row→domain mapping; parent gating now lives at the action layer
- * (create/update/remove run inside `withParent`). Prod wiring: `service.prod.ts`.
+ * (create/update/remove run inside `withParent`). Prod wiring: `profile-service.prod.ts`.
  */
 export function makeProfileService({ profiles }: ProfileDeps) {
   /** All child profiles, ordered case-insensitively by name (Inc8 FR4). */

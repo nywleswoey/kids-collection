@@ -2,8 +2,8 @@ import "server-only";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgTradeEventStore } from "@/db/stores/trade-event-store.pg";
 import { pgCatalog } from "@/shared/pool/catalog.pg";
-import { rewardService } from "@/features/rewards/service.prod";
-import { profileService } from "@/features/profiles/service.prod";
+import { rewardService } from "@/features/rewards/reward-service.prod";
+import { profileService } from "@/features/profiles/profile-service.prod";
 import { makeTradeService } from "./trade-service";
 
 /** Prod-wired trade service: the factory bound to the pg adapters, once. */

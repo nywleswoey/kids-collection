@@ -17,7 +17,7 @@ export interface BinderDeps {
 /**
  * Binder read model (U5), parameterized by its ports. Pure assembly over the
  * collection entries + catalog pool; the owned/locked/progress computation is
- * unit-testable with fakes. Prod wiring: `service.prod.ts`.
+ * unit-testable with fakes. Prod wiring: `binder-service.prod.ts`.
  *
  * #123 puts `orderCategoryCards` here rather than in `GalaxyView`, so there is
  * exactly ONE card order in the app. Four things read `ThemeSection.cards` —

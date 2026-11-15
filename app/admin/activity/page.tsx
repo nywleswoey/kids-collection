@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
 import { requireAdminGate } from "@/features/admin/gate";
 import { activityService } from "@/features/activity/activity-service.prod";
-import { profileService } from "@/features/profiles/service.prod";
+import { profileService } from "@/features/profiles/profile-service.prod";
 import type { ActivityEvent } from "@/features/activity/types";
 
 export const dynamic = "force-dynamic";
