@@ -101,7 +101,7 @@ free provider:
   `generate(prompt, size)`, owning **one logical attempt** however many HTTP
   round-trips that takes (a submit-then-poll provider hides its loop behind it).
   Retry, backoff, concurrency and pacing live **above** the seam in the lane runner
-  (`scripts/seed/index.ts`); the adapter only *declares* `minIntervalMs` and
+  (`runBakeOff` in `src/seed/bake-off.ts`); the adapter only *declares* `minIntervalMs` and
   `concurrency` as data, because a throttle is cross-card scheduling that cannot
   live inside a single call.
 - **Lane vs escape hatch** — the `role` field on a provider. A **lane** is in the

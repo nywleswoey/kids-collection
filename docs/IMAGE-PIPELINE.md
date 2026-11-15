@@ -104,7 +104,7 @@ A lane is one registered image provider in `src/seed/providers/index.ts`.
 
 One predicate, `isAnimationEligible` in
 `src/seed/animation-eligibility.ts`, gates both `--review`'s import and
-`--sync`'s upload in `scripts/seed/index.ts`. A card is eligible when it is
+`--sync`'s upload (`scripts/seed/commands/review.ts` and `commands/sync.ts`). A card is eligible when it is
 legendary, OR its resolved provider is `pokeapi-official-artwork`. Never re-check
 `rarity === "legendary"` ad hoc, so the two gates cannot drift apart.
 
@@ -158,7 +158,8 @@ frame. It is gated on `useReducedMotion` and falls back to the still.
 
 - Flags are parsed by `scripts/seed/args.ts` (`parseSeedArgs`, strict
   `node:util parseArgs`). Add a new flag or command there, never via
-  `process.argv.includes` in `main()` or `runSeed()`.
+  `process.argv.includes` in `main()` or `runSeed()`. Each command's body is
+  one file under `scripts/seed/commands/`; `index.ts` only parses and dispatches.
 - The only commands are `--review` and `--sync`, plus the standalone read-only
   or export ones. `--publish`, `--reset` and `--allow-unreviewed` were removed as
   dead or unsafe; `resetPool` / `previewReset` survive only for `tests-pg`.
