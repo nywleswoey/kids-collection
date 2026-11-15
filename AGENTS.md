@@ -9,7 +9,7 @@ holds the detail. Longer background lives in `docs/` and in each folder's
 
 | Folder | What lives there | Start at |
 |---|---|---|
-| `app/` | Next.js App Router routes. Thin: each page calls one feature service. | `app/play/`, `app/admin/` |
+| `app/` | Next.js App Router routes. Thin: pages call feature services and render; no logic of their own. | `app/play/`, `app/admin/` |
 | `src/features/` | Domain features (pull, binder, trade, quiz, rewards, profiles, admin, auth, activity). | `src/features/README.md` |
 | `src/shared/` | Leaf modules with no feature imports: card UI, sound, anim, ui, and the seed/image pipeline (`pool`). | `src/shared/README.md` |
 | `src/db/` | Drizzle schema, migrations, and the store ports with `.fake.ts` / `.pg.ts` adapters. | `src/db/README.md` |

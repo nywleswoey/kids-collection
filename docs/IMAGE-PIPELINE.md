@@ -2,9 +2,11 @@
 
 How the seed-time card-art lanes are built. The step-by-step procedure for a
 new theme is `docs/NEW-THEME-RUNBOOK.md`; this file is the "why is the code
-shaped like this" companion that the runbook points at. Nothing here runs in the
-web app: every module named below is only reachable from `scripts/`
-(`tests/provider-boundary.test.ts` enforces that).
+shaped like this" companion that the runbook points at. The provider adapters
+in `src/shared/pool/providers/` never run in the web app:
+`tests/provider-boundary.test.ts` fails the request path if it imports one. The
+rest of `pool/` is seed-only by convention. The app-side pieces are `Card.tsx`
+and the `cards.animated_url` column ("In the app", below).
 
 ## Lanes
 
