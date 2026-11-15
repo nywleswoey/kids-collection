@@ -87,7 +87,7 @@ src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
 scripts/              seed CLI, contact-sheet, supergrok helper, theme-images, theme-picks, reconcile, backup verify
 seed-content/         card/theme source data (cards.json, provenance.json)
-docs/                 operational runbooks (new theme, restore, passkey cutover, migration notes)
+docs/                 runbooks (new theme, image pipeline, restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
 tests/                property-based + unit tests, plus tests/contracts/ shared specs
 tests-pg/             integration tests against a real dockerized Postgres
