@@ -17,6 +17,9 @@ import {
 } from "./easter-egg";
 import { SACRIFICE_COST } from "./sacrifice";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
+import { isValidPackSize, type PackSize } from "./pack-size";
+
+export { PACK_SIZES, isValidPackSize, type PackSize } from "./pack-size";
 
 /** Pick-1-of-5 easter egg: server offers choices, claimed later. */
 export interface EasterEggOutcome {
@@ -66,6 +69,7 @@ export interface PullRefundedOutcome {
 
 export type PullOutcome =
   | ({ outOfTokens: false; easterEgg?: false; stillInProgress?: false; refunded?: false } & PullResult)
+  | PackPullResult
   | EasterEggOutcome
   | { outOfTokens: true; stillInProgress?: false; refunded?: false }
   | PullStillInProgressOutcome
@@ -106,6 +110,21 @@ const CLAIM_STALE_MS = 15_000;
  * draw for that spend, instead of the sweep refunding it moments before.
  */
 const ABANDONED_CLAIM_SWEEP_MS = 10 * 60 * 1000;
+
+/**
+ * A finished mass-draw pack: every slot's card plus whether it was a
+ * duplicate at the time it was granted (the pack's own first copy of a
+ * never-before-owned card isn't one; a second copy of the SAME card later in
+ * the SAME pack is) — same meaning as PullResult's `isDuplicate`, per slot.
+ */
+export interface PackPullResult {
+  outOfTokens: false;
+  easterEgg?: false;
+  stillInProgress?: false;
+  refunded?: false;
+  cards: Array<{ card: Card; isDuplicate: boolean }>;
+  newBalance: number;
+}
 
 export interface PullDeps {
   children: ChildStore;
@@ -329,6 +348,54 @@ export function makePullService({
   }
 
   /**
+   * Draw `packSize` cards (mass draw, #kcmassdraw) from `pool` independently
+   * — each slot its own plain rarity-weighted draw, no guaranteed minimum
+   * rarity — then grant the whole pack + mark the claim done atomically
+   * (claims.finishWithPackGrant), THEN the completion-bonus fan-out, same
+   * shape as completeGrant/drawAndFinish above but for N cards instead of
+   * one. Easter eggs are pack-exempt (U6/Inc8's rollEasterEgg is never
+   * called here) — every slot is a normal draw. On any failure, refunds the
+   * whole pack's spend and deletes the claim, same as completeGrant.
+   */
+  async function completePackGrant(
+    childId: string,
+    themeId: string | undefined,
+    packSize: PackSize,
+    requestId: string,
+    lease: unknown,
+    spentBalance: number,
+    prePool?: Promise<Card[]>,
+  ): Promise<PullOutcome> {
+    prePool?.catch(() => {});
+    try {
+      let pool = await (prePool ?? catalog.listCards(themeId));
+      if (pool.length === 0 && themeId) pool = await catalog.listCards();
+      if (pool.length === 0) throw new Error("empty pool");
+
+      const drawn: Card[] = [];
+      for (let i = 0; i < packSize; i++) drawn.push(drawCard(pool));
+
+      const outcome = await claims.finishWithPackGrant(
+        lease,
+        requestId,
+        childId,
+        drawn.map((card) => ({ cardId: card.id, cardJson: card })),
+        spentBalance,
+      );
+      if (!outcome) return recoverLostLease(requestId, childId);
+      await rewards.grantCompletionRewards(childId, drawn.map((c) => c.id), pool);
+      return outcome as PullOutcome;
+    } catch (err) {
+      try {
+        await claims.cleanupFailure(lease, requestId, childId);
+      } catch (cleanupErr) {
+        console.error(`pull: pack cleanup failed for request ${requestId}`, cleanupErr);
+      }
+      throw err;
+    }
+  }
+
+  /**
    * Pull one card for a child. Atomic, no double-spend (U4-BR1/BR2), AND
    * request-level idempotent (#kcpi): `requestId` is a client-generated id for
    * one tap, persisted by the client until an outcome is shown so a reload or
@@ -365,22 +432,34 @@ export function makePullService({
    * same id these promises used, and if the gate instead rejects it, these
    * promises are simply never passed to anything (the caller discards them).
    * Omit it and this starts its own, as before — every other caller/test.
+   *
+   * `packSize` (#kcmassdraw) generalizes the single pull to a 5/10-pack: the
+   * SAME claim/spend/grant atomicity and request-id idempotency above, just
+   * spending/granting `packSize` at once instead of 1 — see
+   * completePackGrant. Defaults to 1 (today's single pull, unchanged), and
+   * stays the last parameter precisely so every existing 3-/4-arg call site
+   * and test keeps its exact old behavior with no edits. A stale-claim
+   * takeover ignores the retry's `packSize` and draws the size the original
+   * claim actually spent (`takeOverIfStale`'s `packSize`), since a 5-pack and
+   * a 10-pack share one pending request id.
    */
   async function pull(
     childId: string,
     themeId: string | undefined,
     requestId: string,
     prefetch?: { pool: Promise<Card[]>; owned: Promise<Set<string>> },
+    packSize: PackSize = 1,
   ): Promise<PullOutcome> {
+    if (!isValidPackSize(packSize)) throw new Error(`pull: invalid packSize ${packSize}`);
     const prePool = prefetch?.pool ?? catalog.listCards(themeId);
     const preOwned = prefetch?.owned ?? collections.ownedCardIds(childId);
 
-    let claimed = await claims.claimAndSpend(requestId, childId);
+    let claimed = await claims.claimAndSpend(requestId, childId, packSize);
     if (claimed.kind === "out_of_tokens" && !(await claims.read(requestId))) {
       // Only an empty balance pays for the sweep's round trip; if it frees a
       // ticket held by an abandoned claim, spend that instead.
       if ((await claims.sweepAbandoned(childId, ABANDONED_CLAIM_SWEEP_MS, requestId)) > 0) {
-        claimed = await claims.claimAndSpend(requestId, childId);
+        claimed = await claims.claimAndSpend(requestId, childId, packSize);
       }
       if (claimed.kind === "out_of_tokens") {
         prePool.catch(() => {});
@@ -389,7 +468,11 @@ export function makePullService({
       }
     }
     if (claimed.kind === "fresh") {
-      return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance, prePool, preOwned);
+      if (packSize === 1) {
+        return completeGrant(childId, themeId, requestId, claimed.lease, claimed.newBalance, prePool, preOwned);
+      }
+      preOwned.catch(() => {}); // packs skip the reward cascade's owned-ids optimization
+      return completePackGrant(childId, themeId, packSize, requestId, claimed.lease, claimed.newBalance, prePool);
     }
 
     prePool.catch(() => {});
@@ -406,7 +489,11 @@ export function makePullService({
 
     const takeover = await claims.takeOverIfStale(requestId, CLAIM_STALE_MS);
     if (!takeover) return stillInProgress(childId);
-    return completeGrant(childId, themeId, requestId, takeover.lease, takeover.spentBalance);
+    const spentSize = takeover.packSize;
+    if (!isValidPackSize(spentSize)) throw new Error(`pull: claim has invalid packSize ${spentSize}`);
+    return spentSize === 1
+      ? completeGrant(childId, themeId, requestId, takeover.lease, takeover.spentBalance)
+      : completePackGrant(childId, themeId, spentSize, requestId, takeover.lease, takeover.spentBalance);
   }
 
   /**

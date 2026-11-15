@@ -3,11 +3,19 @@
 import posthog from "posthog-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { EasterEggOutcome, PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
+import type { EasterEggOutcome, PackPullResult, PullOutcome, PullRefundedOutcome, PullStillInProgressOutcome } from "./pull-service";
 import { eggTicketsAfterClaim } from "./egg-tickets";
 import { pullAction, pullEasterEggAction } from "./actions";
-import { clearPendingRequestId, getOrCreateRequestId, reloadStuckPull } from "./pending-request";
+import {
+  clearPendingPackRequestId,
+  clearPendingRequestId,
+  getOrCreatePackRequestId,
+  getOrCreateRequestId,
+  reloadStuckPull,
+} from "./pending-request";
+import { PACK_SIZES, type PackSize } from "./pack-size";
 import { RevealCard } from "@/shared/card/RevealCard";
+import { PackReveal } from "./PackReveal";
 import { EasterEggPicker } from "./EasterEggPicker";
 import { CardRoulette, type FlashCard } from "./CardRoulette";
 import { MoreGalaxiesModal } from "./MoreGalaxiesModal";
@@ -25,6 +33,16 @@ import { FLASH_DIM, boundedFlashPool } from "./roulette-schedule";
  *  server's CLAIM_STALE_MS (pull-service.ts) so the child/parent sees this
  *  message before a retry could possibly recover the original attempt. */
 const STUCK_TIMEOUT_MS = 8000;
+
+/** Narrows a successful (non-egg) outcome to the mass-draw pack shape
+ *  (#kcmassdraw) vs. the single-card one — both carry the same
+ *  `{outOfTokens: false, easterEgg?: false}` flags, so `cards` (plural, only
+ *  on a pack) is the actual discriminant. */
+function isPackOutcome(
+  outcome: { outOfTokens: false; easterEgg?: false },
+): outcome is PackPullResult {
+  return "cards" in outcome;
+}
 
 /**
  * Main pull/gacha button component. Manages pull token balance, card reveal flow,
@@ -57,6 +75,7 @@ export function PullButton({
   // guards scattered through this component.
   const [outcome, setOutcome] = useState<Exclude<PullOutcome, PullStillInProgressOutcome | PullRefundedOutcome> | null>(null);
   const [cycling, setCycling] = useState(false);
+  const [packSize, setPackSize] = useState<PackSize>(1); // #kcmassdraw: 1 = today's single pull
   const [themeId, setThemeId] = useState(""); // "" = Random (default, FR2/FR3)
   const [showMoreGalaxies, setShowMoreGalaxies] = useState(false); // #kcmg
   const [hintCardId, setHintCardId] = useState<string | null>(null); // Inc13 FR4
@@ -122,6 +141,7 @@ export function PullButton({
   useEffect(() => {
     if (cycling) return;
     if (!outcome || outcome.outOfTokens || outcome.easterEgg) return;
+    if (isPackOutcome(outcome)) return; // packs get their own duplicate badges, not this one-time hint
     if (!outcome.isDuplicate) return;
     if (hasSeenSacrificeHint(childId)) return;
     markSacrificeHintSeen(childId);
@@ -155,7 +175,7 @@ export function PullButton({
   // #kcpi: arms a client-side stuck-loading timeout independent of `pending`
   // (a genuinely hung fetch never resolves on its own, so `pending` alone
   // can't recover).
-  function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg") {
+  function runPull(action: () => Promise<PullOutcome>, kind: "normal" | "easter_egg" | "pack") {
     play("click");
     play("packOpen");
     setOutcome(null);
@@ -186,7 +206,10 @@ export function PullButton({
         return;
       }
       setStuck(false);
-      clearPendingRequestId(childId); // outcome is about to be shown
+      // A pack and a single pull use SEPARATE pending-request keys (#kcmassdraw)
+      // — never the same stuck id reused across the two kinds of request.
+      if (kind === "pack") clearPendingPackRequestId(childId);
+      else clearPendingRequestId(childId);
       if (res.refunded) {
         setBalance(res.newBalance);
         setRefundedNotice(true);
@@ -197,31 +220,52 @@ export function PullButton({
         play("denied");
         return;
       }
-      // Start loading the won card's full-size art immediately — during the
-      // roulette spin for a normal draw, or right away on the reduced-motion
-      // path where there's no spin to hide the fetch behind.
-      if (!res.easterEgg) preloadCardImage(res.card.imageUrl, 512, "high");
       setBalance(res.newBalance);
-      posthog.capture("card_pulled", {
-        ticket_type: kind,
-        theme_id: themeId || null,
-        is_easter_egg: !!res.easterEgg,
-        ...(res.easterEgg
-          ? {}
-          : {
-              card_rarity: res.card.rarity,
-              is_duplicate: res.isDuplicate,
-              new_balance: res.newBalance,
-            }),
-      });
-      if (res.easterEgg) play("easterEgg");
-      else setCycling(true);
+      if (res.easterEgg) {
+        posthog.capture("card_pulled", { ticket_type: kind, theme_id: themeId || null, is_easter_egg: true });
+        play("easterEgg");
+      } else if (isPackOutcome(res)) {
+        // No roulette build-up for a pack (#kcmassdraw) — PackReveal's own
+        // per-slot flip is the reveal; just warm every card's full-size art.
+        for (const { card } of res.cards) preloadCardImage(card.imageUrl, 512, "high");
+        posthog.capture("pack_pulled", {
+          pack_size: res.cards.length,
+          theme_id: themeId || null,
+          new_balance: res.newBalance,
+          duplicate_count: res.cards.filter((c) => c.isDuplicate).length,
+        });
+      } else {
+        // Start loading the won card's full-size art immediately — during the
+        // roulette spin for a normal draw, or right away on the reduced-motion
+        // path where there's no spin to hide the fetch behind.
+        preloadCardImage(res.card.imageUrl, 512, "high");
+        posthog.capture("card_pulled", {
+          ticket_type: kind,
+          theme_id: themeId || null,
+          is_easter_egg: false,
+          card_rarity: res.card.rarity,
+          is_duplicate: res.isDuplicate,
+          new_balance: res.newBalance,
+        });
+        setCycling(true);
+      }
     });
   }
 
   function doPull() {
     const requestId = getOrCreateRequestId(childId);
     runPull(() => pullAction(requestId, themeId || undefined), "normal");
+  }
+
+  // #kcmassdraw: open a 5-pack/10-pack — same action, a pack-scoped request id.
+  function doPack(size: PackSize) {
+    const requestId = getOrCreatePackRequestId(childId);
+    runPull(() => pullAction(requestId, themeId || undefined, size), "pack");
+  }
+
+  function doDiscover() {
+    if (packSize === 1) doPull();
+    else doPack(packSize);
   }
 
   // Inc19: redeem the unified Easter Egg ticket → weighted-roll pick-1-of-5.
@@ -310,18 +354,53 @@ export function PullButton({
           You&apos;re out of tickets! Ask your parent for more. 🎟️
         </p>
       ) : (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-3">
+          {/* #kcmassdraw: a 5-pack/10-pack next to the existing single pull —
+              same 1 ticket per card, picked here and spent by the SAME
+              `doDiscover` tap below, no separate confirm step. */}
+          <div className="flex flex-wrap justify-center gap-2" data-testid="pack-size-picker">
+            <PackSizeChip
+              size={1}
+              label="🚀 Single"
+              active={packSize === 1}
+              onClick={() => setPackSize(1)}
+              disabled={pending}
+            />
+            {PACK_SIZES.map((size) => (
+              <PackSizeChip
+                key={size}
+                size={size}
+                label={size === 5 ? "📦 5-pack" : "🎁 10-pack"}
+                active={packSize === size}
+                onClick={() => setPackSize(size)}
+                disabled={pending || balance < size}
+              />
+            ))}
+          </div>
           <button
             type="button"
-            onClick={doPull}
-            disabled={pending || outOfTokens}
+            onClick={doDiscover}
+            disabled={pending || balance < packSize}
             data-testid="pull-button"
             className={`btn btn--primary btn--xl press font-extrabold ${
-              outOfTokens ? "opacity-50" : ""
+              balance < packSize ? "opacity-50" : ""
             }`}
           >
-            {pending ? (stuck ? "⏳ Still working…" : "Launching…") : "🚀 Discover a card"}
+            {pending
+              ? stuck
+                ? "⏳ Still working…"
+                : "Launching…"
+              : packSize === 1
+                ? "🚀 Discover a card"
+                : packSize === 5
+                  ? "📦 Open a 5-pack"
+                  : "🎁 Open a 10-pack"}
           </button>
+          {!pending && balance < packSize && balance >= 1 ? (
+            <span data-testid="pack-size-unaffordable-hint" className="text-sm text-[color:var(--ink-soft)]">
+              Need {packSize} tickets for a {packSize}-pack — you have {balance}.
+            </span>
+          ) : null}
           {stuck ? (
             <div
               data-testid="pull-stuck-message"
@@ -379,6 +458,8 @@ export function PullButton({
           offer={outcome.offer}
           onDone={(r) => onEggClaimed(r.newBalance, outcome)}
         />
+      ) : outcome && !outcome.outOfTokens && !outcome.easterEgg && isPackOutcome(outcome) ? (
+        <PackReveal key={outcome.cards.map((c) => c.card.id).join(",") + balance} cards={outcome.cards} />
       ) : outcome && !outcome.outOfTokens && !outcome.easterEgg ? (
         cycling ? (
           <CardRoulette
@@ -416,6 +497,40 @@ export function PullButton({
         />
       ) : null}
     </div>
+  );
+}
+
+/** A pack-size option (#kcmassdraw) — same visual language as CategoryChip,
+ *  a separate component since it toggles `packSize` on a different control
+ *  (always exactly one of 1/5/10 selected, never none). */
+function PackSizeChip({
+  size,
+  label,
+  active,
+  onClick,
+  disabled,
+}: {
+  size: PackSize;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={active}
+      data-testid={`pack-size-option-${size}`}
+      className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition disabled:opacity-50 ${
+        active
+          ? "bg-[color:var(--brand-1)] text-black ring-2 ring-[color:var(--brand-1)]"
+          : "bg-white/10 text-[color:var(--ink)] hover:bg-white/20"
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 

@@ -39,6 +39,31 @@ function outcomeCard(outcome: unknown): { id: string; rarity?: Rarity } | null {
   return card as { id: string; rarity?: Rarity };
 }
 
+type CardOutcomeEntry = { card: { id: string; rarity?: Rarity }; isDuplicate: boolean };
+
+/**
+ * A `pull_claims` row's granted card(s), one entry per card — a single pull's
+ * `{card, isDuplicate}` as a 1-entry list, or a mass-draw pack's (#kcmassdraw)
+ * `{cards: [{card, isDuplicate}, ...]}` as its own N entries, in draw order.
+ * The activity log stays one `card_received` event per CARD either way (the
+ * plan's FR: packs never collapse into one event) — this is the one place
+ * that difference is absorbed, so the caller loops over cards, never rows.
+ */
+function outcomeCardEntries(outcome: unknown): CardOutcomeEntry[] {
+  if (!outcome || typeof outcome !== "object") return [];
+  const cardsField = (outcome as Record<string, unknown>).cards;
+  if (Array.isArray(cardsField)) {
+    const entries: CardOutcomeEntry[] = [];
+    for (const entry of cardsField) {
+      const card = outcomeCard(entry);
+      if (card) entries.push({ card, isDuplicate: outcomeIsDuplicate(entry) });
+    }
+    return entries;
+  }
+  const card = outcomeCard(outcome);
+  return card ? [{ card, isDuplicate: outcomeIsDuplicate(outcome) }] : [];
+}
+
 /** Which balance an easter-egg claim spent (`spent`, written by
  *  OfferClaimStore.claimOffer); null for a row written before it was recorded. */
 function outcomeSpent(outcome: unknown): BalanceColumn | null {
@@ -97,8 +122,7 @@ export function makeActivityService({
     const cardIds = new Set<string>();
     for (const raw of byChild.values()) {
       for (const p of raw.pulls) {
-        const c = outcomeCard(p.outcome);
-        if (c) cardIds.add(c.id);
+        for (const entry of outcomeCardEntries(p.outcome)) cardIds.add(entry.card.id);
       }
       for (const e of raw.eggClaims) {
         const c = outcomeCard(e.outcome);
@@ -119,19 +143,25 @@ export function makeActivityService({
       const name = childName.get(id) ?? id;
 
       for (const p of raw.pulls) {
-        const card = outcomeCard(p.outcome);
-        if (!card) continue;
-        events.push({
-          type: "card_received",
-          childId: id,
-          childName: name,
-          at: p.createdAt.toISOString(),
-          via: "pull",
-          spent: "pullTokens",
-          cardId: card.id,
-          cardName: cardName.get(card.id) ?? card.id,
-          rarity: card.rarity ?? "common",
-          isDuplicate: outcomeIsDuplicate(p.outcome),
+        // A mass-draw pack's (#kcmassdraw) one claim yields N entries here,
+        // not one — the plan's FR that the activity log stays one
+        // `card_received` event per CARD, never one per pack. Each gets its
+        // own timestamp a millisecond apart (same claim, draw order) so the
+        // feed shows distinct-but-close events instead of N identical ones.
+        const entries = outcomeCardEntries(p.outcome);
+        entries.forEach((entry, i) => {
+          events.push({
+            type: "card_received",
+            childId: id,
+            childName: name,
+            at: new Date(p.createdAt.getTime() + i).toISOString(),
+            via: "pull",
+            spent: "pullTokens",
+            cardId: entry.card.id,
+            cardName: cardName.get(entry.card.id) ?? entry.card.id,
+            rarity: entry.card.rarity ?? "common",
+            isDuplicate: entry.isDuplicate,
+          });
         });
       }
 

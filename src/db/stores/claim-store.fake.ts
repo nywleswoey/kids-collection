@@ -9,6 +9,12 @@ interface ClaimRow {
   status: "granting" | "done";
   fence: number;
   spentBalance: number | null;
+  /** How many `pullTokens` THIS claim spent (1 for a single pull, 5/10 for a
+   *  mass-draw pack) — tracked directly as a plain field here, unlike the pg
+   *  adapter's transient `outcome.packSize` marker (that trick exists only to
+   *  avoid a new Postgres column; the fake has no such constraint). Read by
+   *  cleanupFailure/sweepAbandoned to refund the right amount. */
+  packSize: number;
   outcome: unknown;
   claimedAtMs: number;
   /** Set once, at claim time — unlike `claimedAtMs`, never bumped by a
@@ -42,18 +48,19 @@ export function inMemoryClaimStore(
   };
 
   return {
-    async claimAndSpend(requestId, childId) {
+    async claimAndSpend(requestId, childId, count = 1) {
       if (claims.has(requestId)) return { kind: "duplicate" };
       claims.set(requestId, {
         childId,
         status: "granting",
         fence: 1,
         spentBalance: null,
+        packSize: count,
         outcome: null,
         claimedAtMs: now(),
         createdAtMs: now(),
       });
-      const newBalance = await children.spendOne(childId, "pullTokens");
+      const newBalance = await children.spendOne(childId, "pullTokens", count);
       if (newBalance === null) {
         claims.delete(requestId);
         return { kind: "out_of_tokens" };
@@ -74,7 +81,7 @@ export function inMemoryClaimStore(
       if (now() - row.claimedAtMs < staleMs) return null;
       row.fence += 1;
       row.claimedAtMs = now();
-      return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spentBalance! };
+      return { lease: { fence: row.fence } satisfies Lease, spentBalance: row.spentBalance!, packSize: row.packSize };
     },
 
     async finishWithCardGrant(lease, requestId, childId, cardId, cardJson, newBalance) {
@@ -82,6 +89,24 @@ export function inMemoryClaimStore(
       if (!row) return null;
       const { count } = await collections.grantCard(childId, cardId);
       const outcome = { outOfTokens: false, card: cardJson, isDuplicate: count > 1, newBalance };
+      row.status = "done";
+      row.outcome = outcome;
+      return outcome;
+    },
+
+    async finishWithPackGrant(lease, requestId, childId, cards, newBalance) {
+      const row = own(requestId, lease);
+      if (!row) return null;
+      // Sequential, in draw order — unlike the pg adapter there is no SQL
+      // "same row twice" trap to pre-aggregate around here, and granting one
+      // at a time naturally gives each slot its own correct running
+      // isDuplicate (post-grant count > 1), same meaning as the single-card path.
+      const results: Array<{ card: unknown; isDuplicate: boolean }> = [];
+      for (const { cardId, cardJson } of cards) {
+        const { count } = await collections.grantCard(childId, cardId);
+        results.push({ card: cardJson, isDuplicate: count > 1 });
+      }
+      const outcome = { outOfTokens: false, cards: results, newBalance };
       row.status = "done";
       row.outcome = outcome;
       return outcome;
@@ -99,23 +124,25 @@ export function inMemoryClaimStore(
     async cleanupFailure(lease, requestId, childId) {
       const row = own(requestId, lease);
       if (!row) return;
-      await children.incrementColumn(childId, "pullTokens", 1);
+      await children.incrementColumn(childId, "pullTokens", row.packSize);
       claims.delete(requestId);
     },
 
     async sweepAbandoned(childId, staleMs, excludeRequestId) {
+      let refund = 0;
       let swept = 0;
       for (const [id, row] of claims.entries()) {
         if (id === excludeRequestId) continue;
         if (row.childId !== childId || row.status !== "granting") continue;
         if (now() - row.claimedAtMs < staleMs) continue;
+        refund += row.packSize;
         row.status = "done";
         row.fence += 1;
         row.claimedAtMs = now();
         row.outcome = { refunded: true };
         swept += 1;
       }
-      if (swept > 0) await children.incrementColumn(childId, "pullTokens", swept);
+      if (refund > 0) await children.incrementColumn(childId, "pullTokens", refund);
       return swept;
     },
 

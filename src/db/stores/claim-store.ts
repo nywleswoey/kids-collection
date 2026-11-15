@@ -20,18 +20,23 @@
 export interface ClaimStore {
   /**
    * Atomic claim + spend: insert a "granting" row for `requestId` iff one
-   * doesn't exist yet and the child has a token, and spend one `pullTokens`
-   * for `childId` in the SAME statement. Returns:
+   * doesn't exist yet and the child has at least `count` tokens (default 1 —
+   * a single pull; 5/10 for a mass-draw pack), and spend `count` `pullTokens`
+   * for `childId` in the SAME statement. One claim row always represents one
+   * whole request (one card, or one whole pack) — never a per-card row.
+   * Returns:
    * - `{ kind: "fresh", lease, newBalance }` — newly claimed and spent.
-   * - `{ kind: "out_of_tokens" }` — the child had no `pullTokens`; nothing
-   *   was written, so the id stays free to retry. It may still name an
-   *   earlier claim (caller should `read` it before treating it as new).
+   * - `{ kind: "out_of_tokens" }` — the child had fewer than `count`
+   *   `pullTokens`; nothing was written, so the id stays free to retry. It
+   *   may still name an earlier claim (caller should `read` it before
+   *   treating it as new).
    * - `{ kind: "duplicate" }` — this id was already claimed by an earlier
    *   call; nothing was touched. Caller should `read` it.
    */
   claimAndSpend(
     requestId: string,
     childId: string,
+    count?: number,
   ): Promise<
     | { kind: "fresh"; lease: unknown; newBalance: number }
     | { kind: "out_of_tokens" }
@@ -50,15 +55,16 @@ export interface ClaimStore {
    * Take over an abandoned "granting" claim whose `claimedAt` is older than
    * `staleMs` — i.e. the original holder almost certainly died or was killed
    * before finishing. Bumps the fence (invalidating the old holder's lease)
-   * and returns a fresh lease + the balance that was spent originally, so the
-   * caller can complete the draw for that same spend. Returns null if the
+   * and returns a fresh lease + the balance that was spent originally + how
+   * many tokens THIS claim spent (`packSize`: 1 for a single pull, 5/10 for a
+   * pack), so the caller can complete the draw for that same spend. Returns null if the
    * claim is no longer "granting" (already done) or isn't stale yet (still
    * genuinely in flight) — the caller must not retry the draw in that case.
    */
   takeOverIfStale(
     requestId: string,
     staleMs: number,
-  ): Promise<{ lease: unknown; spentBalance: number } | null>;
+  ): Promise<{ lease: unknown; spentBalance: number; packSize: number } | null>;
 
   /**
    * Finish a successful normal-card draw: grant one copy of `cardId` and mark
@@ -79,6 +85,30 @@ export interface ClaimStore {
   ): Promise<unknown | null>;
 
   /**
+   * Finish a successful mass-draw pack: grant every drawn card (in order,
+   * duplicates within the pack included) and mark the claim "done" in ONE
+   * statement, storing `{outOfTokens:false, cards: [{card, isDuplicate}, ...],
+   * newBalance}`. `cards` lists one entry per drawn slot, in draw order —
+   * the SAME card id may appear more than once (e.g. two commons in a
+   * 5-pack); the adapter pre-aggregates duplicate ids into one
+   * `collections` upsert per distinct card before writing (a naive
+   * once-per-slot upsert hits Postgres's "ON CONFLICT affects the same row
+   * twice" error the moment a pack repeats a card — see claim-store.pg.ts).
+   * `isDuplicate` per slot reflects the running total after that slot's
+   * grant (the pack's first copy of a never-before-owned card is not a
+   * duplicate; its second copy within the SAME pack is). Only applies while
+   * `lease` is still the live fence. Returns the stored outcome on success,
+   * or null if the lease was lost (caller should re-`read` the claim).
+   */
+  finishWithPackGrant(
+    lease: unknown,
+    requestId: string,
+    childId: string,
+    cards: Array<{ cardId: string; cardJson: unknown }>,
+    newBalance: number,
+  ): Promise<unknown | null>;
+
+  /**
    * Finish an easter-egg draw: refund one `pullTokens` (the egg mechanic
    * re-spends it at claim time) and mark the claim "done" with the given
    * outcome, atomically. Only applies while `lease` is still live. Returns
@@ -92,11 +122,13 @@ export interface ClaimStore {
   ): Promise<boolean>;
 
   /**
-   * Clean up after an in-process draw failure: refund one `pullTokens` and
-   * DELETE the claim row (rather than marking it "done"), so the same request
-   * id is free to be retried from scratch — there is nothing to replay for a
-   * failed attempt. Only applies while `lease` is still live; a no-op if the
-   * lease was lost (the new owner is responsible for the eventual outcome).
+   * Clean up after an in-process draw failure: refund however many
+   * `pullTokens` this claim actually spent (1 for a single pull, 5/10 for a
+   * pack) and DELETE the claim row (rather than marking it "done"), so the
+   * same request id is free to be retried from scratch — there is nothing to
+   * replay for a failed attempt. Only applies while `lease` is still live; a
+   * no-op if the lease was lost (the new owner is responsible for the
+   * eventual outcome).
    */
   cleanupFailure(lease: unknown, requestId: string, childId: string): Promise<void>;
 
@@ -106,8 +138,10 @@ export interface ClaimStore {
    * than `excludeRequestId`, the one the caller is about to resolve itself via
    * the duplicate/takeover path, which can still deliver its card. Each is
    * marked "done" with `{refunded:true}` and its fence bumped in the same
-   * write (so a late finish/takeover from its old holder no-ops), and the child
-   * gets back exactly one `pullTokens` per claim swept. Returns how many.
+   * write (so a late finish/takeover from its old holder no-ops), and the
+   * child gets back exactly as many `pullTokens` as that claim actually spent
+   * (1 for a single pull, 5/10 for a pack — never a flat one-per-claim
+   * refund). Returns how many claims were swept.
    */
   sweepAbandoned(childId: string, staleMs: number, excludeRequestId: string): Promise<number>;
 

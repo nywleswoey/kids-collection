@@ -20,11 +20,11 @@ export function inMemoryChildStore(seed: ChildSeed = {}): ChildStore {
     state.get(childId)?.[column] ?? 0;
 
   return {
-    async spendOne(childId, column) {
+    async spendOne(childId, column, count = 1) {
       const row = state.get(childId);
       if (!row) return null;
-      if ((row[column] ?? 0) < 1) return null; // guard failed
-      row[column] = (row[column] ?? 0) - 1;
+      if ((row[column] ?? 0) < count) return null; // guard failed
+      row[column] = (row[column] ?? 0) - count;
       return row.pullTokens ?? 0;
     },
 
