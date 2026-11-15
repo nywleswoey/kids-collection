@@ -8,7 +8,7 @@ import { playReward } from "@/shared/sound/sfx";
 import { ErrorBanner } from "@/shared/ui/ErrorBanner";
 import { recoverIfStale } from "@/shared/stale-deploy/recovery";
 import { sacrificeAction } from "./actions";
-import { SACRIFICE_COST, SACRIFICE_MIN } from "./sacrifice";
+import { SACRIFICE_COST, SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 
 /**
  * Sacrifice-to-upgrade panel (Inc8 FR2). Shown on the card detail page when the

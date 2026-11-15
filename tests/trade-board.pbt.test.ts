@@ -10,7 +10,7 @@ import {
   type BoardCard,
   type SwapTier,
 } from "@/features/trade/board";
-import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
+import { SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 import { validateTrade, type TradableCard } from "@/features/trade/trade-logic";
 import { RARITIES, type Rarity } from "@/lib/types";
 

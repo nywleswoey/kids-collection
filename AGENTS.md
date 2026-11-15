@@ -23,7 +23,10 @@ holds the detail. Longer background lives in `docs/` and in each folder's
 Layering rules are enforced by tests, not convention: `src/shared/` never
 imports `src/features/`; the request path never reaches `src/seed/`
 (`tests/provider-boundary.test.ts`); binder never imports admin
-(`tests/binder-admin-boundary.test.ts`).
+(`tests/binder-admin-boundary.test.ts`); features never import each other in a
+cycle (`tests/feature-cycles.test.ts`). A rule two or more features share, like
+the sacrifice cost, lives in `src/shared/rules/`, not in one feature for the
+others to reach into.
 
 ## How a feature is wired
 

@@ -15,7 +15,7 @@ import {
   pickRarityChoices,
   rollWeightedRarity,
 } from "./easter-egg";
-import { SACRIFICE_COST } from "./sacrifice";
+import { SACRIFICE_COST } from "@/shared/rules/sacrifice";
 import { makeOffer, verifyOffer, type OfferPayload } from "./offer";
 import { isValidPackSize, type PackSize } from "./pack-size";
 

@@ -1,5 +1,5 @@
 import { RARITIES, type Card, type Rarity } from "@/lib/types";
-import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
+import { SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 import type { TradableCard } from "./trade-logic";
 
 /**

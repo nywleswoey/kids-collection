@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { nextTier, pickUpgradeCard } from "@/features/pull/sacrifice";
+import { nextTier, pickUpgradeCard } from "@/shared/rules/sacrifice";
 import { RARITIES, type Card, type Rarity } from "@/lib/types";
 
 const cardArb = (i: number) =>

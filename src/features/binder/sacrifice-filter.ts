@@ -1,5 +1,5 @@
 import type { BinderCard, ThemeSection } from "@/lib/types";
-import { SACRIFICE_MIN } from "@/features/pull/sacrifice";
+import { SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 
 /**
  * Galaxy "ready to sacrifice" filter (Inc22 FR9–FR11). PURE — property-tested.

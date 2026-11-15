@@ -2,7 +2,7 @@ import type { Card, Rarity } from "@/lib/types";
 import type { CollectionStore } from "@/db/stores/collection-store";
 import type { RewardStore } from "@/db/stores/reward-store";
 import type { Catalog } from "@/shared/pool/catalog";
-import { pickUpgradeCard } from "@/features/pull/sacrifice";
+import { pickUpgradeCard } from "@/shared/rules/sacrifice";
 import { isRaritySetComplete, raritySetsFor } from "./collection-reward";
 
 export interface GrantedReward {

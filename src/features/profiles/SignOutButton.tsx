@@ -2,7 +2,7 @@
 
 import posthog from 'posthog-js';
 import { startTransition } from 'react';
-import { signOutAction } from '@/features/profiles/actions';
+import { signOutAction } from './actions';
 import { recoverIfStale } from '@/shared/stale-deploy/recovery';
 
 /**

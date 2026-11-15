@@ -37,7 +37,7 @@ describe("SignOutButton on a page that outlived a deploy", () => {
     const uncaught = vi.fn();
     process.on("unhandledRejection", uncaught);
     try {
-      const { SignOutButton } = await import("@/features/auth/SignOutButton");
+      const { SignOutButton } = await import("@/features/profiles/SignOutButton");
       const button = SignOutButton() as { props: { onClick: () => void } };
       button.props.onClick();
       await vi.advanceTimersByTimeAsync(NOTICE_MS);

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import { makeTradeService } from "@/features/trade/trade-service";
 import { makePullService } from "@/features/pull/pull-service";
-import { SACRIFICE_COST } from "@/features/pull/sacrifice";
+import { SACRIFICE_COST } from "@/shared/rules/sacrifice";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryChildStore } from "@/db/stores/child-store.fake";
 import { inMemoryClaimStore } from "@/db/stores/claim-store.fake";

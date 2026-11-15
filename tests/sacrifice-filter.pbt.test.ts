@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import { canSacrifice, sacrificeReady } from "@/features/binder/sacrifice-filter";
-import { SACRIFICE_COST, SACRIFICE_MIN } from "@/features/pull/sacrifice";
+import { SACRIFICE_COST, SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 import { RARITIES, type Rarity } from "@/lib/types";
 import type { BinderCard, ThemeSection } from "@/lib/types";
 

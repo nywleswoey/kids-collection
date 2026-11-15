@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { CenteredModal } from "@/shared/ui/CenteredModal";
-import { SACRIFICE_MIN } from "./sacrifice";
+import { SACRIFICE_MIN } from "@/shared/rules/sacrifice";
 
 /**
  * First-duplicate easter-egg hint (Inc13 FR4). Kid-friendly one-time modal that

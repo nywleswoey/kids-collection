@@ -17,14 +17,14 @@ and other features. `src/shared/` must never import from here.
 
 | Feature | Owns |
 |---|---|
-| `pull` | Spending a token to draw a card (single and 5/10 packs), easter-egg offers, sacrifice, the pull screen. Entry: `pull-service.ts`. |
+| `pull` | Spending a token to draw a card (single and 5/10 packs), easter-egg offers, the sacrifice flow, the pull screen. The sacrifice rules themselves are in `src/shared/rules/sacrifice.ts`. Entry: `pull-service.ts`. |
 | `binder` | A child's collection by theme, the category hub, franchise grouping, card order, burn pile. Entry: `binder-service.ts`. |
 | `trade` | Two-sided duplicate swap between children, the swap board tiers. Entry: `trade-service.ts`. |
 | `rewards` | Set-completion bonuses and the `RewardGranter` port that `pull` calls. Entry: `reward-service.ts`. |
 | `quiz` | Daily learn topics, generated maths/fraction questions, grammar bank, awarding tickets. Entry: `quiz-service.ts`. |
-| `profiles` | Child profiles: create, edit, archive, restore, the active-profile cookie. Entry: `profile-service.ts`. |
+| `profiles` | Child profiles: create, edit, archive, restore, the active-profile cookie, sign-out (it clears that cookie). Entry: `profile-service.ts`. |
 | `admin` | Parent dashboard: token grants, previews, the passcode and passkey gate (`webauthn/`). Entry: `admin-service.ts`. |
-| `auth` | Google sign-in allowlist, route guards, fresh-auth checks. |
+| `auth` | Google sign-in allowlist, route guards, fresh-auth checks. Imports no other feature. |
 | `activity` | Per-child activity log merged from six tables. Entry: `activity-service.ts`. |
 
 ## Testing

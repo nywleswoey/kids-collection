@@ -3,7 +3,8 @@
 ## `src/shared/` vs `src/features/`
 
 `src/shared/` holds the leaf/near-leaf modules with zero outbound feature
-imports: `pool` (the `Catalog` port and its Postgres adapter), `ui`
+imports: `pool` (the `Catalog` port and its Postgres adapter), `rules` (pure game
+rules shared by several features, e.g. the sacrifice cost), `ui`
 (AvatarBadge/CenteredModal/ErrorBanner), `sound`, `anim`, `card`, and
 `stale-deploy` (reload-once recovery for a page that outlived a deploy, #169).
 Anything under `src/features/` may import from `src/shared/`, but `src/shared/`
@@ -15,7 +16,8 @@ providers, bake-off, judge, provenance). Only `scripts/` and tests import it;
 
 `src/features/` holds the true domain features: `admin`, `binder`, `quiz`,
 `pull`, `trade`, `profiles`, `auth`, `rewards`. These may depend on each other
-and on `src/shared/`.
+and on `src/shared/`, but never in a cycle (`tests/feature-cycles.test.ts`). A
+rule two features both need goes in `src/shared/rules/`, not in one of them.
 
 Both are reached through the same `@/*` alias: `@/shared/...` and
 `@/features/...`.
