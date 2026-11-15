@@ -55,3 +55,28 @@ export interface TradeEvent extends ActivityEventBase {
 }
 
 export type ActivityEvent = TicketGivenEvent | CardReceivedEvent | BonusCardEvent | TradeEvent;
+
+/** The activity page's type-filter options (#kcactfilter). A `ticket_given`
+ *  event splits by `source` into three options, since a parent grant, a quiz
+ *  reward and a sacrifice are different kinds of activity to a parent. */
+export type ActivityFilter =
+  | "ticket_admin"
+  | "ticket_quiz"
+  | "ticket_sacrifice"
+  | "card_received"
+  | "bonus_card"
+  | "trade";
+
+export function activityFilterOf(event: ActivityEvent): ActivityFilter {
+  return event.type === "ticket_given" ? `ticket_${event.source}` : event.type;
+}
+
+/** One entry per `ActivityFilter`, in display order. */
+export const ACTIVITY_FILTERS: Array<{ filter: ActivityFilter; label: string; icon: string; empty: string }> = [
+  { filter: "ticket_admin", label: "Given by parent", icon: "🎁", empty: "No tickets given by a parent yet." },
+  { filter: "ticket_quiz", label: "Quizzes", icon: "🧠", empty: "No quiz rewards yet." },
+  { filter: "ticket_sacrifice", label: "Sacrifices", icon: "🔥", empty: "No sacrifices yet." },
+  { filter: "card_received", label: "Cards received", icon: "🎟️", empty: "No cards received yet." },
+  { filter: "bonus_card", label: "Bonus cards", icon: "🏆", empty: "No bonus cards yet." },
+  { filter: "trade", label: "Trades", icon: "🔄", empty: "No trades yet." },
+];
