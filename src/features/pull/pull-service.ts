@@ -438,7 +438,10 @@ export function makePullService({
    * spending/granting `packSize` at once instead of 1 — see
    * completePackGrant. Defaults to 1 (today's single pull, unchanged), and
    * stays the last parameter precisely so every existing 3-/4-arg call site
-   * and test keeps its exact old behavior with no edits.
+   * and test keeps its exact old behavior with no edits. A stale-claim
+   * takeover ignores the retry's `packSize` and draws the size the original
+   * claim actually spent (`takeOverIfStale`'s `packSize`), since a 5-pack and
+   * a 10-pack share one pending request id.
    */
   async function pull(
     childId: string,
