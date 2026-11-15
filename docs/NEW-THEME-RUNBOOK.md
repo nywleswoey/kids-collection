@@ -20,7 +20,7 @@ This file supersedes the old `AUTHORING_PROMPT.md`. It is the only card-authorin
 
 ## Rules the schema enforces
 
-`src/shared/pool/seed-schema.ts` runs on **every** `pnpm seed` command and fails the whole file, so a
+`src/seed/seed-schema.ts` runs on **every** `pnpm seed` command and fails the whole file, so a
 half-authored theme cannot be committed or published. You do not get to "fix it later":
 
 1. **Exactly 30 cards** per theme.
@@ -305,7 +305,7 @@ You can name it next to a lane (`--providers=cloudflare-sdxl,supergrok-manual`) 
 `pokeapi-official-artwork` is a different kind of lane: it does not draw anything. It fetches **the
 real, official Pokémon artwork** from PokéAPI's sprites repository (no key, no xAI, no billed API —
 a plain `raw.githubusercontent.com` file fetch) and fits it to the card format, for exactly the ~540
-cards it has a national-dex-number mapping for (`src/shared/pool/pokemon-dex-numbers.ts`) — today
+cards it has a national-dex-number mapping for (`src/seed/pokemon-dex-numbers.ts`) — today
 that is the nine region themes, *Kanto Pokémon* through *Paldea Pokémon*, plus each region's part-2
 theme (*Kanto Pokémon 2* through *Paldea Pokémon 2*), and no other theme. Everywhere else it is simply not
 drawn.
@@ -466,7 +466,7 @@ Rule out a candidate on:
   drew the card: a wooden frame or a tan mat with the subject inset inside it. The words are gone and the
   rate fell to about 1 in 20, so a frame is now rare rather than expected. If you see one it is a
   **re-roll, not a re-prompt** — and do not try to word your way out of it by asking for "no border",
-  which is a border cue rather than a prohibition. Measurements in `src/shared/pool/prompt.ts`.
+  which is a border cue rather than a prohibition. Measurements in `src/seed/prompt.ts`.
 - **A photograph or a 3D render**, whichever lane drew it (#77). The published set varies enormously in
   style, but it is always an *illustration*, so photoreal skin, camera depth-of-field blur, a naturalistic
   cast shadow, or the look of a glazed figurine on a surface reads as a different product sitting in the
@@ -481,7 +481,7 @@ Rule out a candidate on:
   lane's summary — so it reaches you as a *missing* candidate, never a black one.
   You may still meet a frame that is nearly empty but textured enough to clear the floor: that is a re-roll,
   not a re-prompt (delete that one file, re-run `--review`), and it is the one judgement the guard leaves to
-  you. See `src/shared/pool/blank-frame.ts` for what the floor is measured against.
+  you. See `src/seed/blank-frame.ts` for what the floor is measured against.
 
 Then, for each row, write down one of three outcomes: **a recommended provider with a one-line reason**,
 **a genuine tie** (say so — the human may have a taste preference), or **nothing usable**. Only the third
@@ -635,7 +635,7 @@ like:
 pnpm theme-picks "<Theme Name>" --use "Mons Meg=supergrok-manual" --use "Catapult=cloudflare"
 ```
 
-`<provider>` is a registered id (`src/shared/pool/providers/index.ts`) or a short alias (`grok`,
+`<provider>` is a registered id (`src/seed/providers/index.ts`) or a short alias (`grok`,
 `cloudflare`) when that's unambiguous; an unknown card name or provider id is refused by name, nothing is
 written. The images-review HTML page (Step 6) is interactive for exactly this: each row has a dropdown to
 switch its pick (the judge's recommendation preselected), and the page shows the matching `pnpm
@@ -796,12 +796,12 @@ Abort the run and report. Do not improvise past any of these.
   `provider` into `seed-content/cards.json`, and by nothing else.
 - Never delete a current candidate to narrow a row. A missing cell means a lane failed; making a rival
   disappear is answering checkpoint 2 for the human.
-- Never edit `src/shared/pool/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
+- Never edit `src/seed/seed-schema.ts` to make a theme fit. The theme bends, not the pyramid.
 - **Never hand-write or hand-edit `seed-content/provenance.json`.** It is what a publish *observed*, and a line
   typed into it by hand is indistinguishable from one the pipeline recorded. A card with no entry has no
   witness, and that is a true statement worth keeping.
 - Never move a provider between lane and escape hatch, or add one, to get a run through. The registry
-  (`src/shared/pool/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
+  (`src/seed/providers/index.ts`) is a reviewed code change, not a lever in an authoring session.
 - **Never silently tolerate a provider rewriting the prompt to get a blocked request through** (the retired
   AI Horde adapter's `replacement_filter` did exactly this). That kind of flag makes the refusal disappear by
   rewriting the prompt before anything sees it, with no signal anywhere in the response — you would then

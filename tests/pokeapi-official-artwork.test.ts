@@ -2,28 +2,28 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
-import { runBakeOff } from "@/shared/pool/bake-off";
-import { readImageSize } from "@/shared/pool/image-size";
-import { ART_STYLE, buildPrompt } from "@/shared/pool/prompt";
+import { runBakeOff } from "@/seed/bake-off";
+import { readImageSize } from "@/seed/image-size";
+import { ART_STYLE, buildPrompt } from "@/seed/prompt";
 import {
   CARD_SIZE,
   ProviderNotDrawn,
   ProviderRetryable,
   type ImageProvider,
-} from "@/shared/pool/providers";
+} from "@/seed/providers";
 import {
   extractPokemonName,
   officialArtworkUrl,
   pokeapiOfficialArtwork,
   resolvePokemonCard,
-} from "@/shared/pool/providers/pokeapi-official-artwork";
-import { POKEMON_NATIONAL_DEX_NUMBERS, nationalDexNumber } from "@/shared/pool/pokemon-dex-numbers";
+} from "@/seed/providers/pokeapi-official-artwork";
+import { POKEMON_NATIONAL_DEX_NUMBERS, nationalDexNumber } from "@/seed/pokemon-dex-numbers";
 import {
   POKEMON_PRIMARY_TYPES,
   TYPE_BACKGROUND_PALETTE,
   backgroundForType,
   primaryType,
-} from "@/shared/pool/pokemon-types";
+} from "@/seed/pokemon-types";
 import { runImageProviderContract } from "./contracts/image-provider-contract";
 
 /**

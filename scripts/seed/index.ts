@@ -105,19 +105,19 @@
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { loadSeed } from "@/shared/pool/loader";
-import { buildPrompt } from "@/shared/pool/prompt";
+import { loadSeed } from "@/seed/loader";
+import { buildPrompt } from "@/seed/prompt";
 import {
   planManualBrief,
   renderManualBrief,
   SUPERGROK_BRIEF_NAME,
   SUPERGROK_DROP_DIR,
-} from "@/shared/pool/manual-brief";
-import { uploadImage, uploadAnimation } from "@/shared/pool/image";
-import { blobKey } from "@/shared/pool/keys";
-import { animatedReviewFileName, readApprovedAnimation } from "@/shared/pool/animated-brief";
-import { isAnimationEligible } from "@/shared/pool/animation-eligibility";
-import { runBakeOff, type BakeOffJob } from "@/shared/pool/bake-off";
+} from "@/seed/manual-brief";
+import { uploadImage, uploadAnimation } from "@/seed/image";
+import { blobKey } from "@/seed/keys";
+import { animatedReviewFileName, readApprovedAnimation } from "@/seed/animated-brief";
+import { isAnimationEligible } from "@/seed/animation-eligibility";
+import { runBakeOff, type BakeOffJob } from "@/seed/bake-off";
 import {
   buildSidecar,
   missingReviews,
@@ -129,7 +129,7 @@ import {
   unknownProviders,
   type NamedCard,
   type ReviewSidecar,
-} from "@/shared/pool/review-files";
+} from "@/seed/review-files";
 import {
   emptyProvenance,
   parseProvenance,
@@ -138,9 +138,9 @@ import {
   toProvenance,
   type ProvenanceFile,
   type PublishedCard,
-} from "@/shared/pool/provenance";
-import { CARDS_PER_THEME } from "@/shared/pool/seed-schema";
-import type { SeedCard, SeedFile, ThemeSeed } from "@/shared/pool/seed-schema";
+} from "@/seed/provenance";
+import { CARDS_PER_THEME } from "@/seed/seed-schema";
+import type { SeedCard, SeedFile, ThemeSeed } from "@/seed/seed-schema";
 import {
   CARD_SIZE,
   PROVIDER_IDS,
@@ -149,39 +149,39 @@ import {
   providerById,
   selectLanes,
   type ImageProvider,
-} from "@/shared/pool/providers";
-import { planInserts, cardKey } from "@/shared/pool/publish-plan";
-import { comparePoolShape } from "@/shared/pool/completeness";
+} from "@/seed/providers";
+import { planInserts, cardKey } from "@/seed/publish-plan";
+import { comparePoolShape } from "@/seed/completeness";
 import {
   listPublishedCardKeys,
   readPublishedImages,
   readPublishedShape,
-} from "@/shared/pool/pool-reads";
-import { checkSourceUrls } from "@/shared/pool/url-check";
-import { auditPublishedImages } from "@/shared/pool/blank-audit";
+} from "@/seed/pool-reads";
+import { checkSourceUrls } from "@/seed/url-check";
+import { auditPublishedImages } from "@/seed/blank-audit";
 import {
   buildBlobBudget,
   formatBytes,
   readStoreObjects,
   WARN_FRACTION,
   type BlobBudget,
-} from "@/shared/pool/blob-budget";
+} from "@/seed/blob-budget";
 import {
   upsertTheme,
   insertCardIfNew,
   updateCardMeta,
   deleteThemesNotIn,
   deleteCardsNotIn,
-} from "@/shared/pool/writer";
-import { previewPrune, isEmpty } from "@/shared/pool/blast-radius";
-import { isProductionDatabaseUrl, describeTarget } from "@/shared/pool/db-target";
+} from "@/seed/writer";
+import { previewPrune, isEmpty } from "@/seed/blast-radius";
+import { isProductionDatabaseUrl, describeTarget } from "@/seed/db-target";
 import { confirmDestructive } from "./guard";
 import { parseSeedArgs, SeedArgsError, type Command } from "./args";
 import type { Rarity } from "@/lib/types";
 
 const SEED_PATH = join(process.cwd(), "seed-content", "cards.json");
 const REVIEW_DIR = join(process.cwd(), "seed-content", "review");
-/** Committed, generated, never hand-edited — see `shared/pool/provenance.ts` (#75). */
+/** Committed, generated, never hand-edited — see `src/seed/provenance.ts` (#75). */
 const PROVENANCE_PATH = join(process.cwd(), "seed-content", "provenance.json");
 
 // Retry budget per (card, provider) attempt, honoured by the lane runner.

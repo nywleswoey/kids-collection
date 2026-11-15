@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { confirmDestructive, DestructiveOperationAborted } from "../scripts/seed/guard";
-import type { BlastRadius } from "@/shared/pool/blast-radius";
+import type { BlastRadius } from "@/seed/blast-radius";
 
 /**
  * The destructive-operation guard (Inc23 FR4–FR6). Its only input channel is a

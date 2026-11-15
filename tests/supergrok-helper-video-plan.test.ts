@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { planLegendaryVideoEntries } from "../scripts/supergrok-helper/video-plan";
 import { ThemeNotFoundError } from "../scripts/supergrok-helper/plan";
-import { buildPrompt } from "@/shared/pool/prompt";
-import { animatedStem } from "@/shared/pool/animated-brief";
-import { reviewFileName } from "@/shared/pool/review-files";
-import { providerById } from "@/shared/pool/providers";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { buildPrompt } from "@/seed/prompt";
+import { animatedStem } from "@/seed/animated-brief";
+import { reviewFileName } from "@/seed/review-files";
+import { providerById } from "@/seed/providers";
+import type { SeedFile } from "@/seed/seed-schema";
 
 const CLOUDFLARE = providerById("cloudflare-sdxl")!;
 

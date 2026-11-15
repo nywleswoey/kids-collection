@@ -11,7 +11,8 @@ holds the detail. Longer background lives in `docs/` and in each folder's
 |---|---|---|
 | `app/` | Next.js App Router routes. Thin: each page calls one feature service. | `app/play/`, `app/admin/` |
 | `src/features/` | Domain features (pull, binder, trade, quiz, rewards, profiles, admin, auth, activity). | `src/features/README.md` |
-| `src/shared/` | Leaf modules with no feature imports: card UI, sound, anim, ui, and the seed/image pipeline (`pool`). | `src/shared/README.md` |
+| `src/shared/` | Leaf modules with no feature imports: card UI, sound, anim, ui, and the `Catalog` port (`pool`). | `src/shared/README.md` |
+| `src/seed/` | The offline seed and image pipeline the `scripts/` CLIs drive. Never imported by the app. | `src/seed/README.md` |
 | `src/db/` | Drizzle schema, migrations, and the store ports with `.fake.ts` / `.pg.ts` adapters. | `src/db/README.md` |
 | `src/lib/` | Small cross-cutting helpers: env, domain types, rng, signed tokens, server-action shape. | `src/lib/types.ts` |
 | `scripts/` | Offline CLIs: seed, contact-sheet, supergrok, theme-images, theme-picks, pokemon-anim, reconcile, backup. | `scripts/README.md` |
@@ -20,7 +21,7 @@ holds the detail. Longer background lives in `docs/` and in each folder's
 | `docs/` | Runbooks: new theme, image pipeline, restore, passkey cutover. | |
 
 Layering rules are enforced by tests, not convention: `src/shared/` never
-imports `src/features/`; the request path never reaches an image provider
+imports `src/features/`; the request path never reaches `src/seed/`
 (`tests/provider-boundary.test.ts`); binder never imports admin
 (`tests/binder-admin-boundary.test.ts`).
 
@@ -141,7 +142,7 @@ repeating here:
 
 - Add a seed flag or command in `scripts/seed/args.ts` (`parseSeedArgs`), never
   via `process.argv.includes`.
-- Any keep-list prune shares `notKept()` in `src/shared/pool/prune-predicate.ts`.
+- Any keep-list prune shares `notKept()` in `src/seed/prune-predicate.ts`.
 
 ## Other
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { runBakeOff, makeGate, type BakeOffJob } from "@/shared/pool/bake-off";
-import { fakeProvider } from "@/shared/pool/providers/fake";
+import { runBakeOff, makeGate, type BakeOffJob } from "@/seed/bake-off";
+import { fakeProvider } from "@/seed/providers/fake";
 import {
   CARD_SIZE,
   ProviderFailedTerminally,
@@ -8,7 +8,7 @@ import {
   ProviderRetryable,
   type GeneratedImage,
   type ImageProvider,
-} from "@/shared/pool/providers";
+} from "@/seed/providers";
 
 /**
  * The eager bake-off runner (#63's shape, #67's mechanics).

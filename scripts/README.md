@@ -23,6 +23,6 @@ built: `docs/IMAGE-PIPELINE.md`.
 - Parse flags with `node:util parseArgs` in a sibling `args.ts`, never
   `process.argv.includes`.
 - Keep the entry `index.ts` thin. Logic that can run without a database or
-  network lives in `src/shared/pool/` with a unit test in `tests/`.
+  network lives in `src/seed/` with a unit test in `tests/`.
 - A script that writes anything says so in its usage comment and defaults to
   the read-only or preview path.

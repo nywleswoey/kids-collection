@@ -3,24 +3,24 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import sharp from "sharp";
-import { runBakeOff } from "@/shared/pool/bake-off";
-import { readImageSize } from "@/shared/pool/image-size";
-import { promptHash } from "@/shared/pool/keys";
+import { runBakeOff } from "@/seed/bake-off";
+import { readImageSize } from "@/seed/image-size";
+import { promptHash } from "@/seed/keys";
 import {
   findDropFile,
   manualDropStem,
   planManualBrief,
   promptDigest,
   renderManualBrief,
-} from "@/shared/pool/manual-brief";
-import { ART_STYLE, buildPrompt } from "@/shared/pool/prompt";
-import { cardKey } from "@/shared/pool/publish-plan";
+} from "@/seed/manual-brief";
+import { ART_STYLE, buildPrompt } from "@/seed/prompt";
+import { cardKey } from "@/seed/publish-plan";
 import {
   CARD_SIZE,
   ProviderNotDrawn,
   type ImageProvider,
-} from "@/shared/pool/providers";
-import { supergrokManual } from "@/shared/pool/providers/supergrok-manual";
+} from "@/seed/providers";
+import { supergrokManual } from "@/seed/providers/supergrok-manual";
 import { runImageProviderContract } from "./contracts/image-provider-contract";
 
 /**

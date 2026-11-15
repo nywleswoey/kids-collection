@@ -3,11 +3,15 @@
 ## `src/shared/` vs `src/features/`
 
 `src/shared/` holds the leaf/near-leaf modules with zero outbound feature
-imports: `pool` (catalog/seed/image pipeline, the foundation layer), `ui`
+imports: `pool` (the `Catalog` port and its Postgres adapter), `ui`
 (AvatarBadge/CenteredModal/ErrorBanner), `sound`, `anim`, `card`, and
 `stale-deploy` (reload-once recovery for a page that outlived a deploy, #169).
 Anything under `src/features/` may import from `src/shared/`, but `src/shared/`
 must never import from `src/features/`.
+
+`src/seed/` holds the offline seed and image pipeline (schema, loader, writer,
+providers, bake-off, judge, provenance). Only `scripts/` and tests import it;
+`tests/provider-boundary.test.ts` fails if anything on the request path does.
 
 `src/features/` holds the true domain features: `admin`, `binder`, `quiz`,
 `pull`, `trade`, `profiles`, `auth`, `rewards`. These may depend on each other

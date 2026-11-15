@@ -12,17 +12,18 @@ import { ROOT, listFiles, specifiersIn, resolveSpecifier, crawlImports } from ".
  * than a property of the code. Three adapters each reading a secret makes it
  * worth converting into a red build.
  *
- * `src/shared/pool/providers/` is deliberately placed under `src/`, following
- * the convention `writer.ts` and `url-check.ts` already set: seed-only pool code
- * lives with the rest of the pool code. This test is what pays for that choice.
+ * All seed-only code lives in `src/seed/` (the providers and every other
+ * offline pool module), still under `src/` so it shares the `@/*` alias and the
+ * unit-test layout. This test is what pays for that choice: nothing reachable
+ * from the request path may import ANY of it, not just a provider.
  */
 
-const FORBIDDEN = join(ROOT, "src", "shared", "pool", "providers");
+const FORBIDDEN = join(ROOT, "src", "seed");
 const ENTRY_DIRS = ["app"];
 const ENTRY_FILES = ["middleware.ts", "instrumentation-client.ts", "next.config.ts"];
 
 describe("provider boundary (#67)", () => {
-  it("nothing reachable from the request path imports an image provider", () => {
+  it("nothing reachable from the request path imports src/seed", () => {
     const entries = [
       ...ENTRY_DIRS.flatMap((d) => listFiles(join(ROOT, d))),
       ...ENTRY_FILES.map((f) => join(ROOT, f)).filter((f) => existsSync(f)),

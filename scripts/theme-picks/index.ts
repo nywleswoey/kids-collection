@@ -13,12 +13,12 @@
  * cache doesn't already cover stays `unjudged`/`missing` rather than being
  * judged on the spot. `--use "<Card Name>=<provider>"` (repeatable)
  * overrides any card by name; `<provider>` is a registered id or a short
- * alias (`src/shared/pool/theme-picks.ts`'s `resolveProviderAlias`).
+ * alias (`src/seed/theme-picks.ts`'s `resolveProviderAlias`).
  *
  * A card with no judged recommendation and no override refuses the whole
  * run, by name, before anything is written (`deriveThemePicks`). The theme's
  * majority provider and the sparse per-card override list are then written
- * with `applyThemePicks` (`src/shared/pool/cards-json-edit.ts`), which edits
+ * with `applyThemePicks` (`src/seed/cards-json-edit.ts`), which edits
  * only those `provider` fields and reproduces every other byte of the file
  * unchanged. Re-running is idempotent and replaces this theme's previous
  * picks (an override from an earlier run that's no longer in the new set is
@@ -29,17 +29,17 @@
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { loadSeed } from "@/shared/pool/loader";
-import { PROVIDERS, PROVIDER_IDS } from "@/shared/pool/providers";
-import { slug } from "@/shared/pool/keys";
-import { parseJudgeCache, type JudgeCache } from "@/shared/pool/judge";
-import { applyThemePicks } from "@/shared/pool/cards-json-edit";
+import { loadSeed } from "@/seed/loader";
+import { PROVIDERS, PROVIDER_IDS } from "@/seed/providers";
+import { slug } from "@/seed/keys";
+import { parseJudgeCache, type JudgeCache } from "@/seed/judge";
+import { applyThemePicks } from "@/seed/cards-json-edit";
 import {
   deriveThemePicks,
   resolveProviderAlias,
   ThemePicksError,
   type CardRecommendation,
-} from "@/shared/pool/theme-picks";
+} from "@/seed/theme-picks";
 import { judgeTheme } from "../theme-images/judge-theme";
 import { parseThemePicksArgs, ThemePicksArgsError } from "./args";
 

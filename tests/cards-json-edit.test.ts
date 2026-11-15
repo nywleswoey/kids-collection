@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyThemePicks } from "../src/shared/pool/cards-json-edit";
+import { applyThemePicks } from "../src/seed/cards-json-edit";
 
 /**
  * A small two-theme fixture, hand-formatted the same way the real

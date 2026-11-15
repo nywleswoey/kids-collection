@@ -2,7 +2,7 @@
  * Format-preserving writer for `pnpm theme-picks`'s Step 8 edit: set the
  * theme's `provider` and a sparse per-card `provider` override list in
  * `seed-content/cards.json`, touching no other field and no other theme
- * (see `docs/NEW-THEME-RUNBOOK.md` Step 8 and `src/shared/pool/theme-picks.ts`).
+ * (see `docs/NEW-THEME-RUNBOOK.md` Step 8 and `src/seed/theme-picks.ts`).
  *
  * `JSON.parse` + `JSON.stringify` is not an option: it would reformat the
  * whole 3000+ line file (key order, spacing, trailing newline) and turn a

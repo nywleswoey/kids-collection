@@ -63,9 +63,9 @@ import {
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
-import { findDropFile, SUPERGROK_DROP_DIR, type ManualBriefEntry } from "@/shared/pool/manual-brief";
-import { ANIMATED_DROP_DIR } from "@/shared/pool/animated-brief";
-import { loadSeed } from "@/shared/pool/loader";
+import { findDropFile, SUPERGROK_DROP_DIR, type ManualBriefEntry } from "@/seed/manual-brief";
+import { ANIMATED_DROP_DIR } from "@/seed/animated-brief";
+import { loadSeed } from "@/seed/loader";
 import { parseSupergrokArgs, SupergrokArgsError } from "./args";
 import { type AutoCardFailure, type GrokRunResult, isAutoCardFailure, runAutoCard } from "./auto";
 import {

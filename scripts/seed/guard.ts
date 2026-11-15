@@ -12,7 +12,7 @@
  * credential.
  */
 import { createInterface } from "node:readline/promises";
-import type { BlastRadius } from "@/shared/pool/blast-radius";
+import type { BlastRadius } from "@/seed/blast-radius";
 
 export class DestructiveOperationAborted extends Error {
   constructor(reason: string) {

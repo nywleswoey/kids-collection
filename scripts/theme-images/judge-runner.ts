@@ -1,6 +1,6 @@
 /**
  * Real `claude -p` invocation for the judge step, wrapped so
- * `src/shared/pool/judge.ts` stays spawn-free and testable — the same split
+ * `src/seed/judge.ts` stays spawn-free and testable — the same split
  * `scripts/supergrok-helper/index.ts` uses for `grok -p` (`runGrokHeadless` /
  * `grokCliAvailable`).
  *
@@ -10,7 +10,7 @@
  * locally installed, signed-in `claude` CLI.
  */
 import { spawnSync } from "node:child_process";
-import type { JudgeRunner, RunJudgeResult } from "@/shared/pool/judge";
+import type { JudgeRunner, RunJudgeResult } from "@/seed/judge";
 
 /** True when a `claude` executable can be spawned at all (not ENOENT). */
 export function claudeCliAvailable(): boolean {

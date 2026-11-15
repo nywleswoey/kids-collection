@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { planThemeEntries, ThemeNotFoundError } from "../scripts/supergrok-helper/plan";
-import { buildPrompt } from "@/shared/pool/prompt";
-import { manualDropStem } from "@/shared/pool/manual-brief";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { buildPrompt } from "@/seed/prompt";
+import { manualDropStem } from "@/seed/manual-brief";
+import type { SeedFile } from "@/seed/seed-schema";
 
 const seed = {
   themes: [

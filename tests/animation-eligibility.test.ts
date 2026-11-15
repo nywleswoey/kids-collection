@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isAnimationEligible } from "@/shared/pool/animation-eligibility";
+import { isAnimationEligible } from "@/seed/animation-eligibility";
 
 describe("isAnimationEligible", () => {
   it("is true for a legendary card regardless of provider", () => {

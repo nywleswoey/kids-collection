@@ -11,9 +11,9 @@
  * and a card that happens to already be published just sits unused in the
  * drop folder (`--review` only imports cards it is about to insert).
  */
-import { cardKey } from "@/shared/pool/publish-plan";
-import { planManualBrief, type ManualBriefEntry } from "@/shared/pool/manual-brief";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { cardKey } from "@/seed/publish-plan";
+import { planManualBrief, type ManualBriefEntry } from "@/seed/manual-brief";
+import type { SeedFile } from "@/seed/seed-schema";
 
 export class ThemeNotFoundError extends Error {
   constructor(

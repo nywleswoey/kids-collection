@@ -3,12 +3,12 @@
 How the seed-time card-art lanes are built. The step-by-step procedure for a
 new theme is `docs/NEW-THEME-RUNBOOK.md`; this file is the "why is the code
 shaped like this" companion that the runbook points at. Nothing here runs in the
-web app: every module named below is only reachable from `scripts/`
+web app: the modules live in `src/seed/` and are only reachable from `scripts/`
 (`tests/provider-boundary.test.ts` enforces that).
 
 ## Lanes
 
-A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
+A lane is one registered image provider in `src/seed/providers/index.ts`.
 `ai-horde`, the first escape hatch, was retired. Today:
 
 | id | what it does | key |
@@ -20,7 +20,7 @@ A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
 ### `pokeapi-official-artwork` (escape hatch, Pokémon themes only)
 
 - Fetches from PokéAPI's sprites repo for the cards listed in
-  `src/shared/pool/pokemon-dex-numbers.ts` (about 540 cards: *Kanto* through
+  `src/seed/pokemon-dex-numbers.ts` (about 540 cards: *Kanto* through
   *Paldea Pokémon* plus each region's "Pokémon 2" part-2 theme, 18 themes over
   nine regions, all via one table with no per-theme code). A region's part-2
   theme never repeats a card name from its part-1 theme or any other theme.
@@ -31,7 +31,7 @@ A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
   with no table entry is a loud, non-retryable failure, not a silent skip.
 - `GeneratedImage.model` carries the exact dex number and source URL fetched (no
   invented model name), so `provenance.json` records it per card.
-- Background: `src/shared/pool/pokemon-types.ts` maps each card to a primary
+- Background: `src/seed/pokemon-types.ts` maps each card to a primary
   type and a fixed pastel centre/edge colour pair per type (all 18 types are in
   the palette). `generate()` rasterises an SVG radial gradient at those colours,
   then composites the still-transparent artwork at `MARGIN_RATIO` (0.82) of the
@@ -72,7 +72,7 @@ A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
   for one theme, reusing both commands unchanged.
 - It then judges each card's candidates with the local, signed-in `claude` CLI
   headless (`claude -p`, no API key or SDK): `scripts/theme-images/judge-runner.ts`
-  spawns it. The judging logic, `src/shared/pool/judge.ts`, never spawns anything
+  spawns it. The judging logic, `src/seed/judge.ts`, never spawns anything
   itself and caches verdicts by candidate content hash in
   `seed-content/review/<theme-slug>-judge-cache.json`.
 - Output: `seed-content/review/<theme-slug>-images-review.html`, a two-column
@@ -88,9 +88,9 @@ A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
   `cards.json` so nobody hand-edits it. Hand-editing is a documented fallback only.
 - Default pick per card: `theme-images`'s judge recommendation, read from its
   cache (never re-invoking `claude`). `--use` overrides any card by name with a
-  registered provider id or a short alias (`src/shared/pool/theme-picks.ts`).
+  registered provider id or a short alias (`src/seed/theme-picks.ts`).
 - Only the theme's majority provider and a sparse per-card override list are
-  written. `src/shared/pool/cards-json-edit.ts` edits just those lines and keeps
+  written. `src/seed/cards-json-edit.ts` edits just those lines and keeps
   the rest of the file byte-for-byte. Re-running is idempotent and replaces the
   theme's previous picks.
 - A card with no recommendation and no override refuses the whole run, by name,
@@ -101,7 +101,7 @@ A lane is one registered image provider in `src/shared/pool/providers/index.ts`.
 ### What is eligible
 
 One predicate, `isAnimationEligible` in
-`src/shared/pool/animation-eligibility.ts`, gates both `--review`'s import and
+`src/seed/animation-eligibility.ts`, gates both `--review`'s import and
 `--sync`'s upload in `scripts/seed/index.ts`. A card is eligible when it is
 legendary, OR its resolved provider is `pokeapi-official-artwork`. Never re-check
 `rarity === "legendary"` ad hoc, so the two gates cannot drift apart.
@@ -111,7 +111,7 @@ legendary, OR its resolved provider is `pokeapi-official-artwork`. Never re-chec
 - `cards.animated_url` is nullable. Existing legendary cards are NOT backfilled;
   they get the CSS-only glow/sparkle/tilt in `card.css`'s `.card--legendary`.
 - Drop folder: `seed-content/supergrok-drop-anim/`, keyed by `animatedStem`
-  (`src/shared/pool/animated-brief.ts`, reuses `manualDropStem`): the SAME
+  (`src/seed/animated-brief.ts`, reuses `manualDropStem`): the SAME
   prompt hash as the still plus the still's provider id. Changing a card's pick
   therefore orphans its old animation.
 - `pnpm seed --review` imports it into `seed-content/review/` as
@@ -166,7 +166,7 @@ frame. It is gated on `useReducedMotion` and falls back to the still.
   is how several themes land in one PR and publish in smaller batches later
   (runbook: "Authoring several themes, publishing fewer at a time").
 - Any code that deletes pool rows by a keep-list (prune previews or the real
-  pruners) must share `notKept()` in `src/shared/pool/prune-predicate.ts` rather
+  pruners) must share `notKept()` in `src/seed/prune-predicate.ts` rather
   than re-implement the empty-keep-list rule.
 - `pnpm seed --check-urls` imports `src/db/index.ts` at module load even though
   it never queries the database. A worktree with no real `DATABASE_URL` still

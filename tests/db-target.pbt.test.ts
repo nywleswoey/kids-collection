@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { isProductionDatabaseUrl, describeTarget } from "@/shared/pool/db-target";
+import { isProductionDatabaseUrl, describeTarget } from "@/seed/db-target";
 
 const LOCAL_HOSTS = ["localhost", "127.0.0.1", "[::1]"] as const;
 

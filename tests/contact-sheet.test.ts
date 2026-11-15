@@ -4,12 +4,12 @@ import {
   renderContactSheet,
   type SheetDeps,
   type SheetTheme,
-} from "@/shared/pool/contact-sheet";
-import { reviewFileName } from "@/shared/pool/review-files";
-import { fakeProvider } from "@/shared/pool/providers/fake";
-import { animatedReviewFileName } from "@/shared/pool/animated-brief";
-import { buildPrompt } from "@/shared/pool/prompt";
-import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/shared/pool/providers/pokeapi-official-artwork";
+} from "@/seed/contact-sheet";
+import { reviewFileName } from "@/seed/review-files";
+import { fakeProvider } from "@/seed/providers/fake";
+import { animatedReviewFileName } from "@/seed/animated-brief";
+import { buildPrompt } from "@/seed/prompt";
+import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/seed/providers/pokeapi-official-artwork";
 
 /**
  * Checkpoint 2's artifact (#63 Step 7, #67).
