@@ -18,12 +18,13 @@ export type BalanceColumn = "pullTokens" | "easterEggTickets";
  */
 export interface ChildStore {
   /**
-   * Atomic guarded −1 of one spendable column (single-use spend/claim): apply
-   * only while the column is >= 1. Returns the child's resulting *normal token*
+   * Atomic guarded `-count` of one spendable column (single-use spend/claim,
+   * or a mass-draw pack's N-at-once spend): apply only while the column is
+   * >= `count` (default 1). Returns the child's resulting *normal token*
    * balance (`pullTokens`) — spending a ticket column leaves that unchanged — or
    * `null` when the guard failed (nothing spent) or the child is absent.
    */
-  spendOne(childId: string, column: BalanceColumn): Promise<number | null>;
+  spendOne(childId: string, column: BalanceColumn, count?: number): Promise<number | null>;
 
   /** Atomic `column += by` (token refund, sacrifice-ticket grant). No-op if the
    *  child is absent. */

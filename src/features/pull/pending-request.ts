@@ -42,6 +42,31 @@ export function clearPendingRequestId(childId: string): void {
 }
 
 /**
+ * A mass-draw pack's (#kcmassdraw) own pending-request key, namespaced apart
+ * from the single-pull one above: a single pull and a pack tap are different
+ * server-side requests (one claim row's `spent_balance` means a different
+ * thing to each), so a stuck single pull's id must never be reused as a
+ * pack's `requestId` — or vice versa — just because they share a childId.
+ */
+export function pendingPackRequestKey(childId: string): string {
+  return `pull:pending:pack:${childId}`;
+}
+
+/** Same contract as `getOrCreateRequestId`, scoped to pack taps. */
+export function getOrCreatePackRequestId(childId: string): string {
+  const existing = storageGet("sessionStorage", pendingPackRequestKey(childId));
+  if (isPullRequestId(existing)) return existing;
+  const fresh = `pull_${crypto.randomUUID()}`;
+  storageSet("sessionStorage", pendingPackRequestKey(childId), fresh);
+  return fresh;
+}
+
+/** Same contract as `clearPendingRequestId`, scoped to pack taps. */
+export function clearPendingPackRequestId(childId: string): void {
+  storageRemove("sessionStorage", pendingPackRequestKey(childId));
+}
+
+/**
  * Escape a stuck pull. Next.js sends one client's server actions one at a
  * time, so re-invoking the action would queue behind the hung one; only a
  * reload gets out. The pending id survives it, so the next tap resumes the

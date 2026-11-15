@@ -7,6 +7,7 @@ import { peekActiveChildId } from "@/features/profiles/active-profile";
 import { pullService, prefetchPullReads } from "./pull-service.prod";
 import { tokenService } from "./token-service.prod";
 import { isPullRequestId } from "./pending-request";
+import { isValidPackSize } from "./pack-size";
 import type { PullOutcome, SacrificeResult } from "./pull-service";
 
 const PULL_PATHS = ["/play/pull", "/play/binder"] as const;
@@ -59,9 +60,15 @@ function parentGrant(
  * DB — see `peekActiveChildId`'s and `pull()`'s doc comments for why this is
  * safe. `rawChildId` absent just means the gate is about to fail anyway (no
  * cookie), so there's nothing to prefetch.
+ *
+ * `packSize` (#kcmassdraw) is the mass-draw pack size — 1 (default, today's
+ * single pull) or 5/10. Validated here against the server-side allow-list
+ * BEFORE it ever reaches `pull()`: a client is never trusted to send an
+ * arbitrary N, both for cost (spending the wrong token count) and abuse.
  */
-export async function pullAction(requestId: string, themeId?: string): Promise<PullOutcome> {
+export async function pullAction(requestId: string, themeId?: string, packSize = 1): Promise<PullOutcome> {
   if (!isPullRequestId(requestId)) throw new Error("pullAction: invalid request id");
+  if (!isValidPackSize(packSize)) throw new Error("pullAction: invalid pack size");
   const rawChildId = await peekActiveChildId();
   const prefetch = rawChildId ? prefetchPullReads(rawChildId, themeId) : undefined;
   // If the gate below rejects (no active child after all), these are never
@@ -69,9 +76,11 @@ export async function pullAction(requestId: string, themeId?: string): Promise<P
   // unhandled rejection.
   prefetch?.pool.catch(() => {});
   prefetch?.owned.catch(() => {});
-  return withActiveChild((childId) => pullService.pull(childId, themeId, requestId, prefetch), undefined, {
-    label: "pull",
-  });
+  return withActiveChild(
+    (childId) => pullService.pull(childId, themeId, requestId, prefetch, packSize),
+    undefined,
+    { label: "pull" },
+  );
 }
 
 /** Redeem the unified Easter Egg ticket for a weighted-roll pick-1-of-5 (Inc19 FR3). */

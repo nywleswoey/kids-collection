@@ -344,6 +344,141 @@ describe("makePullService.pull request-level idempotency (#kcpi)", () => {
   });
 });
 
+describe("makePullService.pull packs (#kcmassdraw)", () => {
+  it("rejects a pack size outside the [1, 5, 10] allow-list", async () => {
+    const { service } = setup({ kid: { pullTokens: 20 } }, {}, [card("c1")]);
+
+    await expect(
+      service.pull("kid", undefined, "req-bad", undefined, 999 as unknown as 1 | 5 | 10),
+    ).rejects.toThrow("invalid packSize");
+    expect(await service.pullBalance("kid")).toBe(20); // nothing spent
+  });
+
+  it("a 5-pack spends 5 tokens in one claim and grants all 5 drawn cards", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls (moot for packs, kept for parity)
+    const pool = [card("c1"), card("c2"), card("c3")];
+    const { service, children, collections, rewards } = setup({ kid: { pullTokens: 10 } }, {}, pool);
+
+    const result = await service.pull("kid", undefined, "req-pack", undefined, 5);
+
+    if (!("cards" in result)) throw new Error("expected a pack outcome");
+    expect(result.cards).toHaveLength(5);
+    expect(result.newBalance).toBe(5);
+    expect(await children.readColumn("kid", "pullTokens")).toBe(5);
+    const totalOwned = await Promise.all(pool.map((c) => collections.cardCount("kid", c.id)));
+    expect(totalOwned.reduce((a, b) => a + b, 0)).toBe(5); // all 5 slots landed somewhere
+    // The reward cascade fans out over every drawn card id, duplicates included.
+    expect(rewards.calls).toHaveLength(1);
+    expect(rewards.calls[0][0]).toBe("kid");
+    expect(rewards.calls[0][1]).toHaveLength(5);
+  });
+
+  // Regression test for the plan's "ON CONFLICT affects the same row twice"
+  // trap (§2.2/§2.8): a pack that draws the SAME card more than once must
+  // pre-aggregate before the collections upsert, not upsert once per slot.
+  it("a pack that draws the same card more than once grants the right total count without erroring (pre-aggregation regression)", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99);
+    // A single-card pool forces every one of the 5 slots to draw "c1".
+    const { service, collections } = setup({ kid: { pullTokens: 10 } }, {}, [card("c1")]);
+
+    const result = await service.pull("kid", undefined, "req-samecard", undefined, 5);
+
+    if (!("cards" in result)) throw new Error("expected a pack outcome");
+    expect(result.cards).toHaveLength(5);
+    expect(result.cards.every((c) => c.card.id === "c1")).toBe(true);
+    expect(await collections.cardCount("kid", "c1")).toBe(5); // accumulated, not overwritten
+    // First copy of a never-before-owned card isn't a duplicate; every
+    // subsequent copy within the SAME pack is.
+    expect(result.cards.map((c) => c.isDuplicate)).toEqual([false, true, true, true, true]);
+  });
+
+  it("isDuplicate reflects cards already owned before the pack, not just repeats within it", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99);
+    const { service, collections } = setup(
+      { kid: { pullTokens: 10 } },
+      { kid: { c1: 2 } }, // already owned
+      [card("c1")],
+    );
+
+    const result = await service.pull("kid", undefined, "req-preowned", undefined, 5);
+
+    if (!("cards" in result)) throw new Error("expected a pack outcome");
+    expect(result.cards.every((c) => c.isDuplicate)).toBe(true); // every slot was already a duplicate
+    expect(await collections.cardCount("kid", "c1")).toBe(7); // 2 + 5
+  });
+
+  it("easter eggs never roll inside a pack — every slot is a plain draw even under egg-triggering odds", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.001); // would force an egg roll for a single pull
+    const pool = [card("c1"), card("epic1", "epic")];
+    const { service } = setup({ kid: { pullTokens: 10 } }, {}, pool);
+
+    const result = await service.pull("kid", undefined, "req-noeggpack", undefined, 5);
+
+    expect("cards" in result).toBe(true);
+    expect("easterEgg" in result).toBe(false);
+  });
+
+  it("a duplicate request id for a pack charges once and replays the same cards", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99);
+    const { service, children } = setup({ kid: { pullTokens: 10 } }, {}, [card("c1"), card("c2")]);
+
+    const first = await service.pull("kid", undefined, "req-packdup", undefined, 5);
+    const second = await service.pull("kid", undefined, "req-packdup", undefined, 5);
+
+    expect(second).toEqual(first);
+    expect(await children.readColumn("kid", "pullTokens")).toBe(5); // charged once, not twice
+  });
+
+  it("a 10-pack draw failure refunds all 10 tokens and frees the request id", async () => {
+    const { service, children } = setup({ kid: { pullTokens: 10 } }, {}, []); // empty pool → throws
+
+    await expect(service.pull("kid", undefined, "req-packfail", undefined, 10)).rejects.toThrow("empty pool");
+    expect(await children.readColumn("kid", "pullTokens")).toBe(10); // refunded in full, not just 1
+
+    await expect(service.pull("kid", undefined, "req-packfail", undefined, 10)).rejects.toThrow("empty pool");
+    expect(await children.readColumn("kid", "pullTokens")).toBe(10); // refunded again, not lost
+  });
+
+  it("a retry after a pack's original claim goes stale completes the SAME spend — no lost tokens", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99);
+    let nowMs = 1_000;
+    const { service, children, collections, claims } = setup(
+      { kid: { pullTokens: 10 } },
+      {},
+      [card("c1")],
+      () => nowMs,
+    );
+
+    const claimed = await claims.claimAndSpend("req-packstale", "kid", 5);
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    expect(await children.readColumn("kid", "pullTokens")).toBe(5); // 5 spent up front
+
+    nowMs += 20_000; // past CLAIM_STALE_MS
+    const recovered = await service.pull("kid", undefined, "req-packstale", undefined, 5);
+
+    if (!("cards" in recovered)) throw new Error("expected a pack outcome");
+    expect(recovered.cards).toHaveLength(5);
+    expect(await children.readColumn("kid", "pullTokens")).toBe(5); // the ORIGINAL spend, not a new one
+    expect(await collections.cardCount("kid", "c1")).toBe(5);
+  });
+
+  it("the abandoned-claim sweep refunds a stranded pack's full spend, not a flat one token", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99);
+    let nowMs = 1_000;
+    const { service, children, claims } = setup({ kid: { pullTokens: 10 } }, {}, [card("c1")], () => nowMs);
+
+    const claimed = await claims.claimAndSpend("req-packabandoned", "kid", 10);
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    expect(await children.readColumn("kid", "pullTokens")).toBe(0); // all 10 spent
+
+    nowMs += 11 * 60_000; // past the sweep threshold
+    const next = await service.pull("kid", undefined, "req-afterpack", undefined, 1);
+
+    if (!("card" in next)) throw new Error("expected a card outcome");
+    expect(next.newBalance).toBe(9); // 0 + 10 refunded - 1 spent (not 0 + 1 - 1)
+  });
+});
+
 describe("makePullService.pullEasterEgg", () => {
   const prevSecret = process.env.AUTH_SECRET;
   beforeAll(() => {

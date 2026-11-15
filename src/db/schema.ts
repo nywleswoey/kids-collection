@@ -254,7 +254,11 @@ export const adminCredentials = pgTable(
  * `fence` value is ever live at a time. `claimedAt` is the staleness clock
  * (bumped on every takeover). `outcome` is the exact PullOutcome (or an
  * out-of-tokens marker) a duplicate request replays verbatim once `status` is
- * "done".
+ * "done". One claim row is one whole request — a mass-draw pack (#kcmassdraw)
+ * is still ONE row spending N tokens at once, not N rows; while `status` is
+ * "granting", `outcome` instead holds a transient `{packSize: N}` marker (see
+ * `claim-store.pg.ts`) so a sweep/cleanup refunds the right count with no new
+ * column, fully overwritten once the claim finishes.
  */
 export const pullClaims = pgTable(
   "pull_claims",

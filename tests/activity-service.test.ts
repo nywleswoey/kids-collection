@@ -204,6 +204,41 @@ describe("makeActivityService.getActivityLog", () => {
     expect(await service.getActivityLog("kid", 50)).toEqual([]);
   });
 
+  it("a mass-draw pack claim (#kcmassdraw) emits one card_received event per card, not one per claim", async () => {
+    const at = new Date("2026-01-01T00:00:00.000Z");
+    const { service } = setup({
+      children: [kid("kid")],
+      pulls: [
+        {
+          requestId: "r-pack",
+          outcome: {
+            cards: [
+              { card: card("c1", "Fox"), isDuplicate: false },
+              { card: card("c2", "Owl"), isDuplicate: true },
+              { card: card("c3", "Bear"), isDuplicate: false },
+            ],
+          },
+          createdAt: at,
+        },
+      ],
+      cards: [card("c1", "Fox"), card("c2", "Owl"), card("c3", "Bear")],
+    });
+
+    const events = await service.getActivityLog("kid", 50);
+
+    expect(events).toHaveLength(3);
+    expect(events.every((e) => e.type === "card_received")).toBe(true);
+    // Reverse-chronological: the pack's LAST drawn card (closest to "now")
+    // sorts first, same ordering a pull_claims row's single card already had.
+    expect(events.map((e) => (e.type === "card_received" ? e.cardId : null))).toEqual(["c3", "c2", "c1"]);
+    // Each card keeps its own isDuplicate flag from its slot in the pack.
+    expect(events.map((e) => (e.type === "card_received" ? e.isDuplicate : null))).toEqual([false, true, false]);
+    // Distinct-but-close timestamps (same claim, draw order), not N identical ones.
+    const times = events.map((e) => Date.parse(e.at));
+    expect(new Set(times).size).toBe(3);
+    for (const t of times) expect(Math.abs(t - at.getTime())).toBeLessThan(10);
+  });
+
   it("ignores an unawarded quiz completion", async () => {
     const { service } = setup({
       children: [kid("kid")],

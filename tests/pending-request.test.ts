@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import {
+  clearPendingPackRequestId,
   clearPendingRequestId,
+  getOrCreatePackRequestId,
   getOrCreateRequestId,
   isPullRequestId,
   reloadStuckPull,
@@ -48,6 +50,37 @@ describe("pending pull request id", () => {
   it("still mints a usable id when sessionStorage is unavailable", () => {
     vi.stubGlobal("window", undefined);
     expect(isPullRequestId(getOrCreateRequestId("kid"))).toBe(true);
+  });
+});
+
+describe("pending pack request id (#kcmassdraw)", () => {
+  it("is namespaced apart from the single-pull id — neither reuses the other's pending id", () => {
+    const single = getOrCreateRequestId("kid");
+    const pack = getOrCreatePackRequestId("kid");
+
+    expect(pack).not.toBe(single);
+    // A reload-style re-read of either still returns its OWN pending id, not
+    // the other's — a stuck single pull must never resolve a pack tap's claim.
+    expect(getOrCreateRequestId("kid")).toBe(single);
+    expect(getOrCreatePackRequestId("kid")).toBe(pack);
+  });
+
+  it("mints a fresh pack id once that pack's outcome has been shown, isolated per child", () => {
+    const first = getOrCreatePackRequestId("kid");
+    expect(getOrCreatePackRequestId("other")).not.toBe(first);
+
+    clearPendingPackRequestId("kid");
+
+    expect(getOrCreatePackRequestId("kid")).not.toBe(first);
+  });
+
+  it("clearing the pack id leaves a pending single-pull id untouched, and vice versa", () => {
+    const single = getOrCreateRequestId("kid");
+    getOrCreatePackRequestId("kid");
+
+    clearPendingPackRequestId("kid");
+
+    expect(getOrCreateRequestId("kid")).toBe(single); // untouched by the pack clear
   });
 });
 

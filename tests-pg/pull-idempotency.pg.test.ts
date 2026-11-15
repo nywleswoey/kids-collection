@@ -314,6 +314,95 @@ describe("pull() request-level idempotency, against real Postgres (#kcpi)", () =
   });
 });
 
+describe("mass-draw packs (#kcmassdraw), against real Postgres", () => {
+  // The critical regression this feature adds (plan §2.2/§2.8): a naive
+  // once-per-slot `collections` upsert hits Postgres's "ON CONFLICT affects
+  // the same row twice in one statement" error the moment a pack repeats a
+  // card — only a REAL Postgres statement can prove the pre-aggregation fix,
+  // the in-memory fake has no such trap to catch.
+  it("a pack that draws the same card more than once upserts once per distinct card, with no ON CONFLICT error", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    // A single-card pool forces every one of the 5 slots to draw "c1".
+    const service = await makeService([card("c1")]);
+
+    const result = await service.pull("kid", undefined, "req-samecard", undefined, 5);
+
+    if (!("cards" in result)) throw new Error("expected a pack outcome");
+    expect(result.cards).toHaveLength(5);
+    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(5); // accumulated once, not 5 conflicting writes
+    expect(result.cards.map((c) => c.isDuplicate)).toEqual([false, true, true, true, true]);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(5);
+  });
+
+  it("a duplicate request id for a pack charges once and replays the same cards (atomicity generalized to N)", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1"), card("c2")]);
+
+    const first = await service.pull("kid", undefined, "req-packdup", undefined, 5);
+    const second = await service.pull("kid", undefined, "req-packdup", undefined, 5); // "reload" / double-tap
+
+    expect(second).toEqual(first);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(5); // ONE charge of 5, not two
+  });
+
+  it("a killed-after-spend pack recovers the SAME spend on retry — no lost tokens", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1")]);
+
+    const claimed = await pgClaimStore.claimAndSpend("req-packkilled", "kid", 5);
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(5); // 5 spent, nothing granted yet
+    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(0);
+
+    await backdateClaim("req-packkilled", 20); // past CLAIM_STALE_MS
+
+    const recovered = await service.pull("kid", undefined, "req-packkilled", undefined, 5);
+    if (!("cards" in recovered)) throw new Error("expected a pack outcome");
+    expect(recovered.cards).toHaveLength(5);
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(5); // the ORIGINAL spend, not a new one
+    expect(await pgCollectionStore.cardCount("kid", "c1")).toBe(5);
+  });
+
+  it("a draw failure refunds the whole pack's tokens, not just one", async () => {
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([]); // empty pool -> throws
+
+    await expect(service.pull("kid", undefined, "req-packfail", undefined, 10)).rejects.toThrow("empty pool");
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(10); // refunded in full
+
+    await expect(service.pull("kid", undefined, "req-packfail", undefined, 10)).rejects.toThrow("empty pool");
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(10); // refunded again, not double
+  });
+
+  it("the abandoned-claim sweep refunds a stranded pack's full spend, not a flat one-per-claim", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.99); // no egg rolls
+    await resetAll();
+    await seedChildren({ kid: { pullTokens: 10 } });
+    const service = await makeService([card("c1")]);
+
+    const claimed = await pgClaimStore.claimAndSpend("req-packabandoned", "kid", 10);
+    if (claimed.kind !== "fresh") throw new Error("expected a fresh claim");
+    expect(await pgChildStore.readColumn("kid", "pullTokens")).toBe(0); // all 10 spent
+    await backdateClaim("req-packabandoned", 11 * 60); // tab closed; nobody retries it
+
+    const next = await service.pull("kid", undefined, "req-afterpack", undefined, 1);
+    if (!("card" in next)) throw new Error("expected a card outcome");
+    expect(next.newBalance).toBe(9); // 0 + 10 refunded - 1 spent (not 0 + 1 - 1)
+    expect(await pgClaimStore.read("req-packabandoned")).toEqual({
+      childId: "kid",
+      status: "done",
+      outcome: { refunded: true },
+    });
+  });
+});
+
 describe("claimEasterEgg single-use offer redemption, against real Postgres (overcharge fix)", () => {
   it("two concurrent claims of the SAME offer (double tap) spend once and grant one copy", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.001); // forces the epic+ egg roll

@@ -11,12 +11,12 @@ import type { ChildStore } from "./child-store";
  * behind the seam.
  */
 export const pgChildStore: ChildStore = {
-  async spendOne(childId, column) {
+  async spendOne(childId, column, count = 1) {
     const col = children[column];
     const [row] = await db
       .update(children)
-      .set({ [column]: sql`${col} - 1` })
-      .where(and(eq(children.id, childId), gte(col, 1)))
+      .set({ [column]: sql`${col} - ${count}` })
+      .where(and(eq(children.id, childId), gte(col, count)))
       .returning({ pullTokens: children.pullTokens });
     return row ? row.pullTokens : null;
   },
