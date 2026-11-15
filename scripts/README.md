@@ -6,7 +6,7 @@ text; read that first.
 
 | Command | Folder | Does |
 |---|---|---|
-| `pnpm seed --review` / `--sync` / `--check-urls` / `--check-images` / `--blob-budget` / `--supergrok-export` | `seed/` | The seed pipeline: validate `cards.json`, generate review images per lane, publish picked images to Blob and Postgres. Flags: `seed/args.ts`. |
+| `pnpm seed --review` / `--sync` / `--check-urls` / `--check-images` / `--blob-budget` / `--supergrok-export` | `seed/` | The seed pipeline: validate `cards.json`, generate review images per lane, publish picked images to Blob and Postgres. Flags: `seed/args.ts`; one file per command in `seed/commands/`. |
 | `pnpm contact-sheet "<Theme>"` | `contact-sheet/` | Subject x provider review grid for one theme. |
 | `pnpm supergrok "<Theme>" [--auto\|--auto-video]` | `supergrok-helper/` | The Grok lane: manual clipboard walk, headless `grok` CLI drawing, or legendary animation. |
 | `pnpm theme-images "<Theme>"` | `theme-images/` | Grok and Cloudflare lanes concurrently plus an advisory `claude` judge. |
