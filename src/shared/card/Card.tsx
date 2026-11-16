@@ -26,7 +26,7 @@ export function Card({
   const { ref, onPointerMove, onPointerLeave } = useCardTilt(interactive);
   const dim = size === "lg" ? 320 : 160;
   const reducedMotion = useReducedMotion();
-  // Manual animation lane (`isAnimationEligible`, see AGENTS.md). `Card`
+  // Manual animation lane (`isAnimationEligible`, see `docs/IMAGE-PIPELINE.md`). `Card`
   // itself only ever renders the pull reveal, the card detail modal, and the
   // easter egg / reward reveals — never the collection grid (that renders
   // `RarityThumb` instead, in `CardSlot.tsx`) — so no extra "which surface"

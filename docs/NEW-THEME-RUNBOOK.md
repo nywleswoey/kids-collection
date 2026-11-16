@@ -669,7 +669,7 @@ pnpm supergrok "<Theme Name>" --auto-video   # needs grok signed in, plus `brew 
 It animates only legendary cards whose picked still is already in `seed-content/review/`; one with no pick yet is
 reported, not generated. It then runs the same `--review` import and contact sheet as the other lanes, and
 `--sync` publishes the animation with the card. Existing published cards are never given one. Details:
-`scripts/supergrok-helper/index.ts`'s header and `AGENTS.md`.
+`scripts/supergrok-helper/index.ts`'s header and `docs/IMAGE-PIPELINE.md`.
 
 ### Optional — animate Pokémon region cards (local, no AI)
 
@@ -689,7 +689,7 @@ already exists (reruns resume), and reports — never fabricates — a card whos
 and `pnpm theme-picks` first). From there, the usual hand-off applies with no new flags: `pnpm seed --review
 --providers=pokeapi-official-artwork` imports what was generated, `pnpm contact-sheet` shows it, and `pnpm seed
 --sync` publishes it with each card's first insert. Details: `scripts/pokemon-anim/index.ts`'s header and
-`AGENTS.md`.
+`docs/IMAGE-PIPELINE.md`.
 
 ## Step 9 — Publish
 

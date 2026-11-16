@@ -1,6 +1,6 @@
 /**
  * Pure derivation logic for `pnpm theme-picks` (see `docs/NEW-THEME-RUNBOOK.md`
- * Step 8 and AGENTS.md). Decides, for one theme, which provider each card's
+ * Step 8 and `docs/IMAGE-PIPELINE.md`). Decides, for one theme, which provider each card's
  * `cards.json` entry should record and which should be the theme's default —
  * no filesystem, no CLI invocation, so it is unit-testable on its own.
  *

@@ -114,7 +114,7 @@ export interface SheetRow {
   resolvedProvider?: string;
   candidates: SheetCandidate[];
   /**
-   * The manual animation lane's cell for this card (see AGENTS.md):
+   * The manual animation lane's cell for this card (see `docs/IMAGE-PIPELINE.md`):
    * gated on `isAnimationEligible` (legendary, or the escape-hatch Pokémon
    * lane), and not a bake-off column — there is one candidate at most, keyed
    * to whichever still the card resolved to, not to a provider. `undefined`

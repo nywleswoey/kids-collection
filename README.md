@@ -80,14 +80,14 @@ pnpm test                 # unit tests + property-based tests (fast-check)
 ## Project layout
 ```
 app/                  Next.js routes + layout
-src/shared/           shared kernel with no outbound feature deps (modules listed in CONTRIBUTING.md)
-src/features/         domain features (binder, pull, trade, admin, quiz, profiles, auth, rewards)
+src/shared/           shared kernel with no outbound feature deps (modules listed in src/shared/README.md)
+src/features/         domain features, one folder each (listed in src/features/README.md)
 src/auth/             NextAuth config
 src/db/               Drizzle schema, client, migrations
 src/lib/              env, types, avatars, server-action shape, pure logic
-scripts/              seed CLI, contact-sheet, supergrok helper, theme-images, theme-picks, reconcile, backup verify
+scripts/              offline CLIs, one pnpm script each (listed in scripts/README.md)
 seed-content/         card/theme source data (cards.json, provenance.json)
-docs/                 operational runbooks (new theme, restore, passkey cutover, migration notes)
+docs/                 runbooks (new theme, image pipeline, restore, passkey cutover, migration notes)
 .claude/              Claude Code config (skills, commands, aidlc-discovery tooling)
 tests/                property-based + unit tests, plus tests/contracts/ shared specs
 tests-pg/             integration tests against a real dockerized Postgres

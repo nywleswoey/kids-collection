@@ -1,5 +1,5 @@
 /**
- * Pure judging logic for `pnpm theme-images`'s review step (see AGENTS.md and
+ * Pure judging logic for `pnpm theme-images`'s review step (see `docs/IMAGE-PIPELINE.md` and
  * `docs/NEW-THEME-RUNBOOK.md`'s "both lanes at once" subsection).
  *
  * For a card with more than one candidate image, the local `claude` CLI

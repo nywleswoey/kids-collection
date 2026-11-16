@@ -40,7 +40,7 @@
  * clipboard walk above stays the default.
  *
  * `--auto-video` (`pnpm supergrok "<Theme Name>" --auto-video`) is the
- * separate manual ANIMATION lane (see AGENTS.md): for every
+ * separate manual ANIMATION lane (see `docs/IMAGE-PIPELINE.md`): for every
  * legendary card in the theme that already has an approved still in
  * `seed-content/review/`, it drives `grok`'s `image_to_video` tool on that
  * still (not a prompt — `image_to_video` animates existing art) and converts
@@ -333,7 +333,7 @@ async function runAutoWalk(themeName: string, entries: readonly ManualBriefEntry
 
 /**
  * `--auto-video`: animates every legendary card's already-approved still —
- * the manual animation lane (see AGENTS.md). A card the drop
+ * the manual animation lane (see `docs/IMAGE-PIPELINE.md`). A card the drop
  * folder already has a matching animation for (by prompt hash and still
  * provider, same rule `findAnimatedDropFile` uses for import) is skipped — reruns resume. A
  * legendary card with no resolved provider yet — the still's own bake-off

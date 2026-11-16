@@ -17,7 +17,7 @@ export interface SupergrokArgs {
   themeName: string;
   /** Drive the `grok` CLI instead of the clipboard/Downloads walk. */
   auto: boolean;
-  /** Animate legendary cards' already-approved stills via `grok`'s `image_to_video` (see AGENTS.md). */
+  /** Animate legendary cards' already-approved stills via `grok`'s `image_to_video` (see `docs/IMAGE-PIPELINE.md`). */
   autoVideo: boolean;
 }
 

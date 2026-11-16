@@ -106,7 +106,7 @@ import { franchiseKeyFromThemeId } from "./franchise";
  *
  * What's different this time is the Pokémon regions specifically: each one's
  * `themes.provider` is already an unambiguous, mechanically-enforced fact
- * (the "theme-picks" convention, AGENTS.md) rather than a judgment call, and
+ * (the "theme-picks" convention, `docs/IMAGE-PIPELINE.md`) rather than a judgment call, and
  * it never needs a second authoring step to read. `franchise.ts` groups by
  * that column — `FRANCHISE_PROVIDERS["pokeapi-official-artwork"] = "Pokémon"`
  * — collapsing the regions into one "Pokémon" tile whose position and cover
