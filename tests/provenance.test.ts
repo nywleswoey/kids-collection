@@ -79,7 +79,7 @@ describe("toProvenance (#75)", () => {
   });
 
   it("still carries `reviewed` mechanically — the caller decides the value", () => {
-    // `toProvenance` is a pure, generic mapping; it is `scripts/seed/index.ts`
+    // `toProvenance` is a pure, generic mapping; it is `scripts/seed/commands/sync.ts`
     // that now only ever calls it with `true` (A4 removed the one path that
     // passed `false`, `--allow-unreviewed`). This pins that the field itself
     // is not hardcoded inside the function.

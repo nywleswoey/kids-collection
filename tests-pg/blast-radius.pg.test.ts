@@ -10,7 +10,7 @@ import { resetAll, seedChildren } from "./db";
  * blast-radius header's claim that it "resolve[s] the SAME predicate the
  * pruners use, so the report can never be narrower than the deletion". Proven
  * here against a REAL database by running the preview, then running the
- * actual pruners `scripts/seed/index.ts` runs for `--sync`, and asserting the
+ * actual pruners `scripts/seed/commands/sync.ts` runs for `--sync`, and asserting the
  * preview's numbers equal what was actually destroyed.
  */
 const sql = neon(process.env.DATABASE_URL!);
@@ -41,7 +41,7 @@ function seed(themes: { name: string; cards: string[] }[]): SeedFile {
 }
 
 /** What `--sync` does with a seed file's pruning: per-theme card prune, then
- *  whole-theme prune — the same order scripts/seed/index.ts's main() runs. */
+ *  whole-theme prune — the same order scripts/seed/commands/sync.ts runs. */
 async function runPruners(seedFile: SeedFile): Promise<void> {
   for (const [sortOrder, theme] of seedFile.themes.entries()) {
     const themeId = await upsertTheme(theme.name, sortOrder);
