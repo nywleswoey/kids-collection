@@ -15,6 +15,6 @@ app imports it, and `tests/provider-boundary.test.ts` fails if that changes.
 | Pokémon tables | `pokemon-dex-numbers.ts`, `pokemon-types.ts` |
 
 Pure modules (no `db`, no network) are the default here so `tests/` can cover
-them; the few that read the database (`pool-reads.ts`, `writer.ts`) say so in
-their header. How it all fits: `docs/IMAGE-PIPELINE.md`. Procedure:
+them; only `pool-reads.ts`, `writer.ts` and `blast-radius.ts` import the
+database. How it all fits: `docs/IMAGE-PIPELINE.md`. Procedure:
 `docs/NEW-THEME-RUNBOOK.md`.
