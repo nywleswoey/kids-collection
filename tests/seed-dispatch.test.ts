@@ -16,19 +16,19 @@ vi.mock("@/db", () => ({
 }));
 
 import { runSeed, type SeedDeps } from "../scripts/seed/index";
-import { providerById } from "@/shared/pool/providers";
-import { buildSidecar, reviewFileName, sidecarFileName } from "@/shared/pool/review-files";
-import { parseProvenance } from "@/shared/pool/provenance";
-import { cardKey } from "@/shared/pool/publish-plan";
+import { providerById } from "@/seed/providers";
+import { buildSidecar, reviewFileName, sidecarFileName } from "@/seed/review-files";
+import { parseProvenance } from "@/seed/provenance";
+import { cardKey } from "@/seed/publish-plan";
 import {
   animatedReviewFileName,
   animatedStem,
   findAnimatedDropFile,
-} from "@/shared/pool/animated-brief";
-import { buildPrompt } from "@/shared/pool/prompt";
-import type { BlastRadius } from "@/shared/pool/blast-radius";
-import type { PublishedCount } from "@/shared/pool/completeness";
-import type { SeedCard, SeedFile } from "@/shared/pool/seed-schema";
+} from "@/seed/animated-brief";
+import { buildPrompt } from "@/seed/prompt";
+import type { BlastRadius } from "@/seed/blast-radius";
+import type { PublishedCount } from "@/seed/completeness";
+import type { SeedCard, SeedFile } from "@/seed/seed-schema";
 
 /**
  * The seed CLI's dispatcher (A2) against fakes. These pin the ordering

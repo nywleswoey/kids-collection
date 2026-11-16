@@ -6,7 +6,7 @@ import {
   deleteCardsNotIn,
   deleteThemesNotIn,
   PruneEmptyKeepListError,
-} from "@/shared/pool/writer";
+} from "@/seed/writer";
 import { resetAll, seedChildren, seedCollections } from "./db";
 
 /**

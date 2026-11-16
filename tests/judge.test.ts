@@ -10,7 +10,7 @@ import {
   type JudgeCache,
   type JudgeCandidate,
   type RunJudgeResult,
-} from "../src/shared/pool/judge";
+} from "../src/seed/judge";
 
 const bytesA = new TextEncoder().encode("candidate-a-bytes");
 const bytesB = new TextEncoder().encode("candidate-b-bytes");

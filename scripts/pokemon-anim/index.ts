@@ -23,8 +23,8 @@
  */
 import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { ANIMATED_DROP_DIR } from "@/shared/pool/animated-brief";
-import { loadSeed } from "@/shared/pool/loader";
+import { ANIMATED_DROP_DIR } from "@/seed/animated-brief";
+import { loadSeed } from "@/seed/loader";
 import { fetchOfficialArtwork } from "./artwork";
 import { encodeLoopingWebp } from "./encode";
 import { type GenerateFailure, generatePokemonAnim, isGenerateFailure } from "./generate";

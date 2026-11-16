@@ -4,7 +4,7 @@
  * makes for the still, reused here rather than re-fetching through the
  * provider port. The only network call this lane makes.
  */
-import { officialArtworkUrl } from "@/shared/pool/providers/pokeapi-official-artwork";
+import { officialArtworkUrl } from "@/seed/providers/pokeapi-official-artwork";
 
 export type ArtworkFetcher = (dexNumber: number) => Promise<Uint8Array>;
 

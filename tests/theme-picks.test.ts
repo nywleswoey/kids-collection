@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deriveThemePicks, resolveProviderAlias, ThemePicksError, type CardRecommendation } from "../src/shared/pool/theme-picks";
+import { deriveThemePicks, resolveProviderAlias, ThemePicksError, type CardRecommendation } from "../src/seed/theme-picks";
 
 const PROVIDER_IDS = ["cloudflare-sdxl", "supergrok-manual", "pokeapi-official-artwork"];
 

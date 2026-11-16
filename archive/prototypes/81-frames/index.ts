@@ -4,7 +4,7 @@
  * ARCHIVED (tech-debt review, B3): moved out of `scripts/prototypes/` because it fetches the
  * retired `image.pollinations.ai` endpoint and is no longer runnable via a `pnpm prototype:*`
  * script. Kept — not deleted — because it is cited as the reproducer for #81's measurements
- * (`CONTEXT.md`, `src/shared/pool/prompt.ts`). Run directly with
+ * (`CONTEXT.md`, `src/seed/prompt.ts`). Run directly with
  * `tsx --env-file-if-exists=.env.local archive/prototypes/81-frames/index.ts`.
  *
  * The question: `cloudflare-sdxl` bakes a decorative frame border into most
@@ -34,7 +34,7 @@
  * flat band — but it under-counts every arm equally, so the ranking holds.
  *
  * ── What it found ───────────────────────────────────────────────────────────
- * Framed, by eye and by the detector on the same images. `src/shared/pool/
+ * Framed, by eye and by the detector on the same images. `src/seed/
  * prompt.ts` holds the canonical table and the reasoning; this is the run that
  * produced it:
  *
@@ -88,7 +88,7 @@
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CARD_SIZE } from "@/shared/pool/providers";
+import { CARD_SIZE } from "@/seed/providers";
 
 const OUT_DIR = join(process.cwd(), "seed-content", "review", "prototype-81");
 const CF_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";

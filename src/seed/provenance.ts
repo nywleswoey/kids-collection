@@ -73,7 +73,7 @@ export const PROVENANCE_README =
   "parameter hash. `reviewed` is always true — there is no bypass flag, so `--sync` can only " +
   "publish bytes a human saw in seed-content/review/ first. Cards published before #75 are absent " +
   "and stay absent: their review files are gone and inventing entries would be fabrication. See " +
-  "src/shared/pool/provenance.ts.";
+  "src/seed/provenance.ts.";
 
 const cardProvenanceSchema = z.object({
   /** Registered adapter that drew the published bytes. */

@@ -9,8 +9,8 @@
  */
 import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { nationalDexNumber } from "@/shared/pool/pokemon-dex-numbers";
-import { primaryType } from "@/shared/pool/pokemon-types";
+import { nationalDexNumber } from "@/seed/pokemon-dex-numbers";
+import { primaryType } from "@/seed/pokemon-types";
 import { synthesizeFrames } from "./frames";
 import type { ArtworkFetcher } from "./artwork";
 import type { Encoder } from "./encode";

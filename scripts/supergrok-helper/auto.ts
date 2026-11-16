@@ -12,7 +12,7 @@
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ManualBriefEntry } from "@/shared/pool/manual-brief";
+import type { ManualBriefEntry } from "@/seed/manual-brief";
 import { isImageFile } from "./downloads";
 import { destFileName } from "./naming";
 

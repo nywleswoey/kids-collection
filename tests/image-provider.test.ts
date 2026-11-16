@@ -4,9 +4,9 @@ import {
   runImageProviderContract,
   type ContractFixtures,
 } from "./contracts/image-provider-contract";
-import { fakeProvider, picturePng, solidPng } from "@/shared/pool/providers/fake";
-import { cloudflareSdxl } from "@/shared/pool/providers/cloudflare-sdxl";
-import { CARD_SIZE } from "@/shared/pool/providers";
+import { fakeProvider, picturePng, solidPng } from "@/seed/providers/fake";
+import { cloudflareSdxl } from "@/seed/providers/cloudflare-sdxl";
+import { CARD_SIZE } from "@/seed/providers";
 
 /**
  * The provider contract, run against every implementation (#67).

@@ -17,11 +17,11 @@
  * they show only around the Pokémon's silhouette, never across its body.
  */
 import sharp from "sharp";
-import { accentColorForType } from "@/shared/pool/pokemon-types";
+import { accentColorForType } from "@/seed/pokemon-types";
 import {
   buildBackgroundSvg,
   MARGIN_RATIO,
-} from "@/shared/pool/providers/pokeapi-official-artwork";
+} from "@/seed/providers/pokeapi-official-artwork";
 
 /** Matches the Grok-video lane's `scale=384:384` so both animation lanes render identically in `Card.tsx`. */
 export const FRAME_SIZE = 384;

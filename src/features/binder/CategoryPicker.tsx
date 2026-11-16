@@ -41,7 +41,7 @@ import { franchiseKeyFromThemeId } from "./franchise";
  * OWNED cover and #123 rejected an owned-first grid on the same rule, *a
  * landmark that moves is not a landmark*; a hub tile is the largest landmark in
  * the app, so the rule binds hardest here. `listThemes` was made **total**
- * (see `pool/service.ts`) so that inherited order is now pinned rather than
+ * (see `pool/catalog.pg.ts`) so that inherited order is now pinned rather than
  * resting on a query's partial `ORDER BY`.
  *
  * The failure is not reaching the NEWEST category — that is the pull screen's

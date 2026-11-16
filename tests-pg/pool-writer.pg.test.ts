@@ -4,8 +4,8 @@ import {
   resetPool,
   countCollections,
   PoolResetBlockedError,
-} from "@/shared/pool/writer";
-import { previewReset } from "@/shared/pool/blast-radius";
+} from "@/seed/writer";
+import { previewReset } from "@/seed/blast-radius";
 import { resetAll, seedChildren, seedCards, seedCollections } from "./db";
 
 /**

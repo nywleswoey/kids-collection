@@ -10,7 +10,7 @@ import {
   type GrokRunResult,
   type GrokRunner,
 } from "../scripts/supergrok-helper/auto";
-import type { ManualBriefEntry } from "../src/shared/pool/manual-brief";
+import type { ManualBriefEntry } from "../src/seed/manual-brief";
 
 describe("buildAutoPrompt", () => {
   it("carries the exact card prompt verbatim plus square/save-path instructions", () => {

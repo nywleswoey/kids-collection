@@ -18,7 +18,7 @@
  * Then, for every card in the theme, it looks at whichever candidates landed
  * in `seed-content/review/` from either provider and — for a card with more
  * than one — asks the local `claude` CLI, headless, to pick between them
- * (`src/shared/pool/judge.ts`). The verdict is cached by the candidates'
+ * (`src/seed/judge.ts`). The verdict is cached by the candidates'
  * content hashes in `seed-content/review/<theme-slug>-judge-cache.json`, so a
  * re-run never re-judges a pair it has already seen. A card with one usable
  * candidate gets that one with no judge call; a card the `claude` CLI could
@@ -38,11 +38,11 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { join } from "node:path";
-import { loadSeed } from "@/shared/pool/loader";
-import { PROVIDERS } from "@/shared/pool/providers";
-import { slug } from "@/shared/pool/keys";
-import { parseJudgeCache, serializeJudgeCache, type JudgeCache } from "@/shared/pool/judge";
-import { renderJudgeTable } from "@/shared/pool/judge-table";
+import { loadSeed } from "@/seed/loader";
+import { PROVIDERS } from "@/seed/providers";
+import { slug } from "@/seed/keys";
+import { parseJudgeCache, serializeJudgeCache, type JudgeCache } from "@/seed/judge";
+import { renderJudgeTable } from "@/seed/judge-table";
 import { parseThemeImagesArgs, ThemeImagesArgsError } from "./args";
 import { runLanes, type LaneOutcome, type LaneSpec } from "./lanes";
 import { claudeCliAvailable, judgeRunner } from "./judge-runner";

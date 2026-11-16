@@ -9,12 +9,12 @@
  * the provider is already known by construction (it is what makes a card
  * eligible in the first place), not something a bake-off still needs to pick.
  */
-import { animatedStem } from "@/shared/pool/animated-brief";
-import { buildPrompt } from "@/shared/pool/prompt";
-import { reviewFileName, resolveProviderId } from "@/shared/pool/review-files";
-import { providerById } from "@/shared/pool/providers";
-import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/shared/pool/providers/pokeapi-official-artwork";
-import type { SeedFile } from "@/shared/pool/seed-schema";
+import { animatedStem } from "@/seed/animated-brief";
+import { buildPrompt } from "@/seed/prompt";
+import { reviewFileName, resolveProviderId } from "@/seed/review-files";
+import { providerById } from "@/seed/providers";
+import { POKEAPI_OFFICIAL_ARTWORK_PROVIDER_ID } from "@/seed/providers/pokeapi-official-artwork";
+import type { SeedFile } from "@/seed/seed-schema";
 
 export interface PokemonAnimEntry {
   theme: string;
