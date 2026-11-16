@@ -36,7 +36,8 @@ imports admin (`tests/binder-admin-boundary.test.ts`).
   adapters; `claim` and `offer-claim` are covered through
   `tests/pull-service.test.ts` and `tests-pg/pull-idempotency.pg.test.ts`.
 - Server actions live in `<feature>/actions.ts` and return the shape in
-  `src/lib/actions.ts`.
+  `src/lib/actions.ts`; the admin gate actions (`admin/unlock-action.ts`,
+  `admin/webauthn/`) are the exception.
 
 ## Commands
 

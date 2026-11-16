@@ -9,7 +9,7 @@ and other features. `src/shared/` must never import from here.
 |---|---|
 | `*service.ts` | The logic: `makeXService(deps)` factory over store ports. Pure enough to test with the `.fake.ts` stores. |
 | `*service.prod.ts` | Binds that factory to the Postgres adapters, once. Pages and actions import this. |
-| `actions.ts` | `"use server"` actions called from client components. Return `src/lib/actions.ts`'s result shape. |
+| `actions.ts` | `"use server"` actions called from client components. Return `src/lib/actions.ts`'s result shape. The admin gate actions (`unlock-action.ts`, `webauthn/`) are the exception. |
 | `*.tsx` | Client components for this feature's screens. |
 | other `*.ts` | Pure helpers with their own tests in `tests/`. |
 
