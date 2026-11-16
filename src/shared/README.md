@@ -21,5 +21,5 @@ Only three files are part of the running app:
 
 Every other file in `pool/` and all of `pool/providers/` is the offline
 seed and image pipeline, only reachable from `scripts/`:
-`tests/provider-boundary.test.ts` fails the build if the request path ever
-imports a provider. How those pieces fit together: `docs/IMAGE-PIPELINE.md`.
+`tests/provider-boundary.test.ts` fails if any import chain from `app/` reaches
+a provider. How those pieces fit together: `docs/IMAGE-PIPELINE.md`.
