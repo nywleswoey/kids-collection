@@ -4,7 +4,7 @@
  * `seed-content/review/` and hand them to `judgeCard` (`src/seed/judge.ts`).
  *
  * Takes its filesystem as injected callbacks (`exists`/`read`), the same shape
- * `scripts/seed/index.ts`'s `SeedDeps` uses, so this is testable with an
+ * `scripts/seed/deps.ts`'s `SeedDeps` uses, so this is testable with an
  * in-memory file map and no real `seed-content/review/` directory.
  */
 import { buildPrompt } from "@/seed/prompt";

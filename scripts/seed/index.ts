@@ -113,7 +113,7 @@ import { supergrokExport } from "./commands/supergrok-export";
 import { review } from "./commands/review";
 import { sync } from "./commands/sync";
 
-export { realSeedDeps, type SeedDeps } from "./deps";
+export type { SeedDeps } from "./deps";
 
 async function main() {
   let command: Command;

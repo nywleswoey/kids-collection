@@ -18,8 +18,8 @@
  * throttling a requirement rather than an optimisation (a single global gate
  * costs N x wall-clock under an eager bake-off and defeats the map's throughput
  * driver), and a throttle is cross-card scheduling — it cannot live inside a
- * single call. So the adapter DECLARES its pacing as data and the runner in
- * `scripts/seed/index.ts` enforces it.
+ * single call. So the adapter DECLARES its pacing as data and the runner
+ * (`runBakeOff` in `src/seed/bake-off.ts`) enforces it.
  *
  * ── The two kinds of provider knowledge, and why they are separate ───────────
  * `params` determines the BYTES and is hashed into the review filename.

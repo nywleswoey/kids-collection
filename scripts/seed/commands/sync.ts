@@ -48,6 +48,7 @@ import {
   runPool,
   type SeedDeps,
 } from "../deps";
+import type { Command } from "../args";
 import { announceRun, planRun } from "../plan";
 
 /**
@@ -57,12 +58,11 @@ import { announceRun, planRun } from "../plan";
  */
 const PUBLISH_CONCURRENCY = intEnv("SEED_CONCURRENCY", 4);
 
-export interface SyncCommand {
-  allowPrune: boolean;
-  themes?: string[];
-}
-
-export async function sync(deps: SeedDeps, seed: SeedFile, command: SyncCommand): Promise<number> {
+export async function sync(
+  deps: SeedDeps,
+  seed: SeedFile,
+  command: Extract<Command, { kind: "sync" }>,
+): Promise<number> {
   announceRun(deps, seed, "sync");
 
   // Clear, early guardrails (better than a deep getter throw at import time).

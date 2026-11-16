@@ -22,6 +22,7 @@ import {
   type ImageProvider,
 } from "@/seed/providers";
 import { cardKey } from "@/seed/publish-plan";
+import type { Command } from "../args";
 import { intEnv, requireDatabaseUrl, reviewPath, REVIEW_DIR, type SeedDeps } from "../deps";
 import { announceRun, planRun } from "../plan";
 
@@ -34,15 +35,10 @@ import { announceRun, planRun } from "../plan";
 // says out loud. SEED_RETRIES is an unrelated, still-live knob — see `.env.example`.
 const RETRIES = intEnv("SEED_RETRIES", 5);
 
-export interface ReviewCommand {
-  providers?: string[];
-  themes?: string[];
-}
-
 export async function review(
   deps: SeedDeps,
   seed: SeedFile,
-  command: ReviewCommand,
+  command: Extract<Command, { kind: "review" }>,
 ): Promise<number> {
   deps.fs.mkdir(REVIEW_DIR);
   announceRun(deps, seed, "review");
