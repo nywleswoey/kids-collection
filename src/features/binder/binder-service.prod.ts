@@ -1,7 +1,7 @@
 import "server-only";
 import { pgCollectionStore } from "@/db/stores/collection-store.pg";
 import { pgCatalog } from "@/shared/pool/catalog.pg";
-import { makeBinderService } from "./service";
+import { makeBinderService } from "./binder-service";
 
 /** Prod-wired binder service: the factory bound to the pg adapters, once. */
 export const binderService = makeBinderService({

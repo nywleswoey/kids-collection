@@ -12,9 +12,10 @@ same way. Domain nouns come from the app; architecture nouns from `/codebase-des
 - **Archived profile** — a child whose `children.archived_at` is stamped (#97). The
   app's only "remove a profile": it deletes nothing, and a parent restores it from
   Admin → Manage Profiles. `archived_at IS NULL` means active, and that predicate is
-  carried by `ProfileStore.list/find/update` and `findChildRow`, so an archived child
-  vanishes from the picker, the trade board, the admin overview **and** a still-set
-  `activeChildId` cookie. `listArchived` is the single read that sees the other half.
+  carried by `ProfileStore.list/find/update`, so an archived child vanishes from
+  the picker, the trade board, the admin overview **and** a still-set
+  `activeChildId` cookie (which re-validates through `find`). `listArchived` is the
+  single read that sees the other half.
   There is deliberately no hard delete behind the seam any more — a `DELETE FROM
   children` still cascades into `collections`, `quiz_completions`,
   `quiz_seen_questions` and `collection_rewards` (BR14, pinned), but nothing in the

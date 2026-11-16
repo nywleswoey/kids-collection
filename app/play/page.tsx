@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
-import { profileService } from "@/features/profiles/service.prod";
+import { profileService } from "@/features/profiles/profile-service.prod";
 import { ProfileCard } from "@/features/profiles/ProfileCard";
 import { SignOutButton } from "@/features/auth/SignOutButton";
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
-import { binderService } from "@/features/binder/service.prod";
-import { profileService } from "@/features/profiles/service.prod";
+import { binderService } from "@/features/binder/binder-service.prod";
+import { profileService } from "@/features/profiles/profile-service.prod";
 import { ThemeSection } from "@/features/binder/ThemeSection";
 import { requireAdminGate } from "@/features/admin/gate";
 

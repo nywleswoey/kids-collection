@@ -1,7 +1,7 @@
 "use server";
 
 import { withActiveChild } from "@/lib/actions";
-import { rewardService } from "./service.prod";
+import { rewardService } from "./reward-service.prod";
 
 /** Mark the given pending collection-reward modals as shown (Inc16 FR5). */
 export async function markRewardsShownAction(ids: string[]): Promise<void> {

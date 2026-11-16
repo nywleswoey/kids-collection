@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { binderService } from "@/features/binder/service.prod";
+import { binderService } from "@/features/binder/binder-service.prod";
 import { GalaxyView } from "@/features/binder/GalaxyView";
 import { parsePlace } from "@/features/binder/binder-place";
-import { rewardService } from "@/features/rewards/service.prod";
+import { rewardService } from "@/features/rewards/reward-service.prod";
 import { CollectionRewardModal } from "@/features/rewards/CollectionRewardModal";
 
 export default async function BinderPage({
@@ -34,7 +34,7 @@ export default async function BinderPage({
         // Pinned only from `sm:` up, and `sm:flex-nowrap` there is what makes
         // that safe: galaxy-tabs pins to a fixed offset below this header, so
         // the header's height has to be a constant, not a function of the
-        // child's name. Names run to 40 chars (profiles/service.ts), which
+        // child's name. Names run to 40 chars (profiles/profile-service.ts), which
         // wrapped this to two rows (155px) and buried the tab bar underneath
         // it. Nowrap + a truncating title holds it at one row (88px).
         // On a phone it still wraps, which is fine -- it is not pinned there,

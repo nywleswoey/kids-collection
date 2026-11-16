@@ -6,7 +6,7 @@ import type { RewardStore } from "./reward-store";
 
 /**
  * Postgres adapter for RewardStore. Holds the collection_rewards SQL that was
- * inlined in rewards/service (the insert-first claim, the pending read, the
+ * inlined in rewards/reward-service (the insert-first claim, the pending read, the
  * guarded shown-update). The only `server-only` code behind the seam.
  */
 export const pgRewardStore: RewardStore = {

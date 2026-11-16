@@ -554,7 +554,7 @@ The Store-seam trio, in reading order:
    binds them once, returns the function cluster. Dependency injection with no DI container.
 2. **`src/features/trade/trade-service.prod.ts`** — production wiring: which concrete adapters bind into
    the singleton.
-3. **`src/db/collection-reads.ts`** — an adapter-side read, and where `import "server-only"` belongs.
+3. **`src/db/stores/collection-store.pg.ts`** — an adapter-side read, and where `import "server-only"` belongs.
 
 *Conventions*: pure logic modules take no `db` import so they're testable without a database; services
 accept ports rather than reaching for the singleton; a new persistence operation becomes a port method with
@@ -596,7 +596,7 @@ Canonical set to load before writing code:
 
 - `src/lib/actions.ts` — the Server Action shape
 - `src/features/trade/trade-service.ts` + `trade-service.prod.ts` — factory / port wiring
-- `src/db/collection-reads.ts` — adapter-side read, `server-only` placement
+- `src/db/stores/collection-store.pg.ts` — adapter-side read, `server-only` placement
 - `tests/sacrifice.pbt.test.ts` — property-based shape
 - `tests/contracts/child-store-contract.ts` — dual-adapter conformance shape
 - `CONTEXT.md` — the domain and architecture vocabulary that names all of the above

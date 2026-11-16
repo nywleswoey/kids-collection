@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireActivePlayer } from "@/features/profiles/active-profile";
-import { binderService } from "@/features/binder/service.prod";
+import { binderService } from "@/features/binder/binder-service.prod";
 import { Card } from "@/shared/card/Card";
 import { SacrificePanel } from "@/features/pull/SacrificePanel";
 import { backHref } from "@/features/binder/binder-place";

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { makeTradeService } from "@/features/trade/trade-service";
-import { makeProfileService } from "@/features/profiles/service";
+import { makeProfileService } from "@/features/profiles/profile-service";
 import type { RewardGranter } from "@/features/rewards/reward-granter";
 import { inMemoryCollectionStore, type CollectionSeed } from "@/db/stores/collection-store.fake";
 import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";

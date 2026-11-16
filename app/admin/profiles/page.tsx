@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { requireParent } from "@/features/auth/guard";
-import { adminService } from "@/features/admin/service.prod";
+import { adminService } from "@/features/admin/admin-service.prod";
 import { ProfileForm } from "@/features/profiles/ProfileForm";
 import { ProfileRow } from "@/features/profiles/ProfileRow";
 import { ArchivedProfileRow } from "@/features/profiles/ArchivedProfileRow";
-import { profileService } from "@/features/profiles/service.prod";
+import { profileService } from "@/features/profiles/profile-service.prod";
 import { requireAdminGate } from "@/features/admin/gate";
 
 // Force dynamic rendering since this page requires database access

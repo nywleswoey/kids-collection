@@ -8,7 +8,7 @@ const byName = sql`lower(${children.name})`;
 
 /**
  * Postgres adapter for ProfileStore. Holds the children-row CRUD SQL that was
- * inlined across profiles/service and admin/service (the case-insensitive
+ * inlined across profiles/profile-service and admin/admin-service (the case-insensitive
  * ordering, the by-id read, the insert/update). The only `server-only` code
  * behind the seam.
  *

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeAdminService } from "@/features/admin/service";
+import { makeAdminService } from "@/features/admin/admin-service";
 import { inMemoryProfileStore } from "@/db/stores/profile-store.fake";
 import { inMemoryCollectionStore } from "@/db/stores/collection-store.fake";
 import type { Catalog } from "@/shared/pool/catalog";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { adminService } from "@/features/admin/service.prod";
+import { adminService } from "@/features/admin/admin-service.prod";
 import { ChildAdminRow } from "@/features/admin/ChildAdminRow";
 import { requireAdminGate } from "@/features/admin/gate";
 import { requireParent } from "@/features/auth/guard";
