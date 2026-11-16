@@ -34,7 +34,7 @@ export default async function BinderPage({
         // Pinned only from `sm:` up, and `sm:flex-nowrap` there is what makes
         // that safe: galaxy-tabs pins to a fixed offset below this header, so
         // the header's height has to be a constant, not a function of the
-        // child's name. Names run to 40 chars (profiles/service.ts), which
+        // child's name. Names run to 40 chars (profiles/profile-service.ts), which
         // wrapped this to two rows (155px) and buried the tab bar underneath
         // it. Nowrap + a truncating title holds it at one row (88px).
         // On a phone it still wraps, which is fine -- it is not pinned there,
