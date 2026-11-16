@@ -15,8 +15,11 @@ Each store is three files:
 ```
 x-store.ts        the port: an interface the services depend on
 x-store.fake.ts   in-memory adapter for unit tests
-x-store.pg.ts     Postgres adapter, imported only by *.prod.ts wiring
+x-store.pg.ts     Postgres adapter, bound in *.prod.ts wiring
 ```
+
+The admin passkey code under `src/features/admin/webauthn/` imports
+`credential-store.pg` directly; it has no service factory.
 
 Ports today: `child`, `claim`, `collection`, `credential`, `offer-claim`,
 `profile`, `quiz`, `reward`, `ticket-grant`, `trade-event`.
