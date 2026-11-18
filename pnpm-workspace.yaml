@@ -24,9 +24,9 @@ overrides:
   # sharp is `next`'s optional image-optimization dependency, pinned below the
   # 0.35.0 that fixes GHSA-f88m-g3jw-g9cj (HIGH). Note this is a 0.x MINOR bump,
   # which for a 0.x package is a breaking-change slot. The seed's manual lane
-  # also depends on sharp directly, so the override matches that ^0.35.4 range;
+  # also depends on sharp directly, so the override matches that ^0.35.5 range;
   # a lower override rewrites the direct specifier and breaks a frozen install.
-  sharp: "^0.35.4"
+  sharp: "^0.35.5"
 
   # vitest 3 ACCEPTS vite 5, 6 or 7, so bumping vitest alone left the resolved
   # vite at 5.4.21 — a lockfile carry-over, not a constraint. Three alerts
