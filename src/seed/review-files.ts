@@ -85,7 +85,7 @@ const reviewSidecarSchema = z.object({
   /** What the response named, where it named anything. Absent means unwitnessed. */
   model: z.string().min(1).optional(),
   /** What was requested — the hashed bag, recorded so a stale file is explicable. */
-  params: z.record(z.union([z.string(), z.number(), z.boolean()])),
+  params: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
   format: z.string().min(1),
 });
 

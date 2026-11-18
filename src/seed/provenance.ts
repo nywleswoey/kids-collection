@@ -81,7 +81,7 @@ const cardProvenanceSchema = z.object({
   /** What the response NAMED. `null` means the provider witnessed nothing. */
   model: z.string().min(1).nullable(),
   /** What was ASKED FOR — the adapter's total, hashed parameter bag. */
-  params: z.record(z.union([z.string(), z.number(), z.boolean()])),
+  params: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
   /** Encoded format of the published bytes, sniffed at generation time. */
   format: z.string().min(1),
   /** `<theme>-<card>-<promptHash8>-<providerId>-<paramHash4>` — the bytes' content address. */
@@ -104,7 +104,7 @@ const provenanceFileSchema = z.object({
    * string: `"A / B" + "C"` and `"A" + "B / C"` would collide, the same trap
    * `publish-plan.ts` uses a NUL separator to avoid — and a NUL in a JSON key
    * would make this file unreadable to the human it exists for. */
-  themes: z.record(z.record(cardProvenanceSchema)),
+  themes: z.record(z.string(), z.record(z.string(), cardProvenanceSchema)),
 });
 
 export type CardProvenance = z.infer<typeof cardProvenanceSchema>;
