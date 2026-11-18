@@ -24,8 +24,10 @@ overrides:
   # sharp is `next`'s optional image-optimization dependency, pinned below the
   # 0.35.0 that fixes GHSA-f88m-g3jw-g9cj (HIGH). Note this is a 0.x MINOR bump,
   # which for a 0.x package is a breaking-change slot. The seed's manual lane
-  # also depends on sharp directly, so the override matches that ^0.35.4 range;
-  # a lower override rewrites the direct specifier and breaks a frozen install.
+  # also depends on sharp directly (package.json devDependencies, bumped by
+  # dependabot past this range). pnpm records THIS override, not package.json's
+  # range, as that direct dependency's lockfile specifier, so changing this
+  # line without regenerating pnpm-lock.yaml breaks a frozen install.
   sharp: "^0.35.4"
 
   # vitest 3 ACCEPTS vite 5, 6 or 7, so bumping vitest alone left the resolved
